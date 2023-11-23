@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AuthProvider xmlns="http://soap.sforce.com/2006/04/metadata">
+    <authorizeUrl>https://login.microsoftonline.com/common/oauth2/authorize?resource=https://glduat.sharepoint.com&amp;prompt=consent</authorizeUrl>
+    <consumerKey>d4d6ffa8-6c61-433c-9202-f6a647ab0f19</consumerKey>
+    <consumerSecret>Placeholder_Value</consumerSecret>
+    <friendlyName>BV_Office_365OpenID</friendlyName>
+    <includeOrgIdInIdentifier>false</includeOrgIdInIdentifier>
+    <providerType>OpenIdConnect</providerType>
+    <sendAccessTokenInHeader>true</sendAccessTokenInHeader>
+    <sendClientCredentialsInHeader>false</sendClientCredentialsInHeader>
+    <tokenUrl>https://login.microsoftonline.com/common/oauth2/token</tokenUrl>
+</AuthProvider>

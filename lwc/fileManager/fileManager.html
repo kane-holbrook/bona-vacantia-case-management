@@ -1,0 +1,95 @@
+<template>
+        <lightning-card>
+            <div class="slds-theme_default">
+                <div class="expandable-section">
+                    <h3 class="slds-section__title">
+                        <span class="slds-truncate slds-section__title-action" title={title}>{title}</span>
+                    </h3>
+                    <div class="expandable-content slds-p-around_medium">
+
+                    <!-- <div class="slds-text-body_regular slds-m-top_large">{helpText}</div> -->
+                    <div class="slds-text-body_regular slds-m-top_large">
+                        The following document types are accepted:
+                        <ul class="slds-list_dotted">
+                            <li>Death certificate</li>
+                            <li>Land Registry title documents</li>
+                            <li>Halifax bank statements</li>
+                            <li>Letter from local authority</li>
+                            <li>Invoice from funeral director</li>
+                            <li>Letter from solicitors</li>
+                        </ul>
+                    </div>
+
+                        <div class="slds-m-bottom_large">
+                            <lightning-file-upload 
+                                name="fileUploader"
+                                multiple
+                                onuploadfinished={handleUploadFinished}>
+                            </lightning-file-upload>
+                        </div>
+
+                            <div class="slds-grid slds-wrap">
+                            <template if:true={files}>
+                                <template for:each={files} for:item="file">
+                                    <div key={file.Id} class={fileClass}>
+                                        <figure>
+                                            <a class="slds-file__crop" onclick={handlePreview} data-id={file.Title}>
+                                                <span class="slds-assistive-text">Preview:</span>
+                                                <img src={file.previewPath} alt={file.Title} />
+                                            </a>
+                                            <figcaption class="slds-file__title slds-file__title_card slds-file-has-actions">
+                                                <div class="slds-media slds-media_small slds-media_center">
+                                                    <div class="slds-media__figure slds-line-height_reset">
+                                                        <template if:true={file.isPdf}>
+                                                            <span class="slds-icon_container" title="pdf">
+                                                                <lightning-icon icon-name="doctype:pdf" size="xx-small"></lightning-icon>
+                                                            </span>
+                                                        </template>
+                                                        <template if:true={file.isWord}>
+                                                            <span class="slds-icon_container" title="word">
+                                                                <lightning-icon icon-name="doctype:word" size="xx-small"></lightning-icon>
+                                                            </span>
+                                                        </template>
+                                                        <template if:true={file.isExcel}>
+                                                            <span class="slds-icon_container" title="excel">
+                                                                <lightning-icon icon-name="doctype:excel" size="xx-small"></lightning-icon>
+                                                            </span>
+                                                        </template>
+                                                        <template if:true={file.isImage}>
+                                                            <span class="slds-icon_container" title="image">
+                                                                <lightning-icon icon-name="doctype:image" size="xx-small"></lightning-icon>
+                                                            </span>
+                                                        </template>
+                                                        <template if:true={file.isUnknown}>
+                                                            <span class="slds-icon_container" title="unknown">
+                                                                <lightning-icon icon-name="doctype:unknown" size="xx-small"></lightning-icon>
+                                                            </span>
+                                                        </template>
+                                                    </div>
+                                                    <div class="slds-media__body">
+                                                        <span class="slds-file__text slds-truncate" title={file.Title}>{file.Title}</span>
+                                                    </div>
+                                                </div>
+                                            </figcaption>
+                                        </figure>
+                                        <div class="slds-file__actions-menu">
+                                            <lightning-button-menu 
+                                                data-id={file.Title} 
+                                                icon-name="utility:down" 
+                                                variant="bare" 
+                                                alternative-text="More actions" 
+                                                menu-alignment="auto"
+                                                onselect={handleMenuAction}>
+                                                <lightning-menu-item label="View" value="view" data-id={file.Id}></lightning-menu-item>
+                                                <lightning-menu-item label="Delete" value="delete" data-id={file.Title} data-action="delete"></lightning-menu-item>
+                                            </lightning-button-menu>
+                                        </div>
+                                    </div>
+                                </template>
+                            </template>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </lightning-card>
+</template>

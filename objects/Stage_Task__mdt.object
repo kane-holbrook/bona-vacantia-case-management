@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>Assignee_Username__c</fullName>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <label>Assignee Username</label>
+        <length>128</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Due_Date_Offset__c</fullName>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <label>Due Date</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Mandatory__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <label>Mandatory</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Stage__c</fullName>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <label>Stage</label>
+        <required>false</required>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Receipt</fullName>
+                    <default>true</default>
+                    <label>Receipt</label>
+                </value>
+                <value>
+                    <fullName>Advertising (Internal)</fullName>
+                    <default>false</default>
+                    <label>Advertising (Internal)</label>
+                </value>
+                <value>
+                    <fullName>Investigating</fullName>
+                    <default>false</default>
+                    <label>Investigating</label>
+                </value>
+                <value>
+                    <fullName>Advertising (External)</fullName>
+                    <default>false</default>
+                    <label>Advertising (External)</label>
+                </value>
+                <value>
+                    <fullName>Awaiting Grant</fullName>
+                    <default>false</default>
+                    <label>Awaiting Grant</label>
+                </value>
+                <value>
+                    <fullName>Liquidation</fullName>
+                    <default>false</default>
+                    <label>Liquidation</label>
+                </value>
+                <value>
+                    <fullName>Approval</fullName>
+                    <default>false</default>
+                    <label>Approval</label>
+                </value>
+                <value>
+                    <fullName>Put Away</fullName>
+                    <default>false</default>
+                    <label>Put Away</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Title__c</fullName>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <label>Title</label>
+        <length>128</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Stage Task</label>
+    <pluralLabel>Stage Tasks</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

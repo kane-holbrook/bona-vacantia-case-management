@@ -1,0 +1,136 @@
+<template>
+    <lightning-card title="Case Files">
+        <!-- Grid layout with space for sidebar -->
+        <div class="slds-grid slds-gutters">
+
+            <!-- Main content area -->
+            <div class={mainContentClass}>
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col slds-size_11-of-12">
+                        <div class="slds-m-around_medium">
+                            <lightning-input type="text" label="Search by Name" onchange={handleSearch}></lightning-input>
+                        </div>
+                    </div>
+                    <div class="slds-col slds-size_1-of-12 slds-text-align_right slds-p-right_small">
+                        <lightning-button label="Filters" icon-name="utility:filterList" onclick={toggleFilterSidebar}></lightning-button>
+                    </div>
+                </div>
+
+                <template if:true={isLoading}>
+                    <div class="slds-align_absolute-center slds-m-around_medium">
+                        <lightning-spinner alternative-text="Loading"></lightning-spinner>
+                    </div>
+                </template>
+
+                <template if:false={isLoading}>
+                    <template if:true={filteredDocuments.length}>
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                            <thead>
+                                <tr class="slds-line-height_reset">
+                                    <th class="" scope="col">
+                                        <div class="slds-truncate" title="File Name">Document Name</div>
+                                    </th>
+                                    <th class="" scope="col">
+                                        <div class="slds-truncate" title="Document Type">Document Type</div>
+                                    </th>
+                                    <th class="" scope="col">
+                                        <div class="slds-truncate" title="Created">Created</div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={displayDocuments} for:item="doc">
+                                    <tr key={doc.DocumentID__c}>
+                                        <td>
+                                            <a href={doc.previewUrl} target="_blank">{doc.Name}</a>
+                                        </td>
+                                        <td>
+                                            {doc.DocumentType__c}
+                                        </td>
+                                        <td>
+                                            <lightning-formatted-date-time value={doc.Created_Time__c} 
+                                                                           year="numeric" 
+                                                                           month="2-digit" 
+                                                                           day="2-digit">
+                                            </lightning-formatted-date-time>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                        <!-- Pagination Controls -->
+                        <div class="slds-m-around_medium">
+                            <lightning-button variant="neutral" label="Previous" onclick={handlePreviousPage} disabled={isFirstPage}></lightning-button>
+                            <lightning-button variant="neutral" label="Next" onclick={handleNextPage} disabled={isLastPage}></lightning-button>
+                        </div>
+                    </template>
+                    <template if:false={filteredDocuments.length}>
+                        <div class="slds-m-around_medium">No documents to display.</div>
+                    </template>
+                </template>
+            </div>
+
+            <!-- Filter sidebar -->
+            <template if:true={isFilterSidebarOpen}>
+                <div class="slds-panel__body">
+                    <!-- Filters Header -->
+                    <div class="slds-m-bottom_medium">
+                        <h2 class="slds-text-heading_small">Filters</h2>
+                    </div>
+
+                    <lightning-accordion allow-multiple-sections-open>
+                        <!-- Document Type Filter -->
+                        <lightning-accordion-section label="Document Type">
+                            <div class="slds-form-element__control">
+                                <lightning-checkbox-group name="documentType" 
+                                                          label="Select Document Types" 
+                                                          options={documentTypeOptions} 
+                                                          value={documentTypeFilter}
+                                                          onchange={handleDocumentTypeChange}>
+                                </lightning-checkbox-group>
+                            </div>
+                        </lightning-accordion-section>
+            
+                        <!-- Document Extension Filter -->
+                        <lightning-accordion-section label="Document Extension">
+                            <div class="slds-form-element__control">
+                                <lightning-checkbox-group name="documentExtension" 
+                                                          label="Select Document Extensions" 
+                                                          options={documentExtensionOptions} 
+                                                          value={documentExtensionFilter}
+                                                          onchange={handleDocumentExtensionChange}>
+                                </lightning-checkbox-group>
+                            </div>
+                        </lightning-accordion-section>
+                    </lightning-accordion>
+
+                    <!-- Date Range Filter -->
+                    <div class="slds-m-bottom_small">
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col">
+                                <lightning-input type="date" 
+                                                label="Start Date" 
+                                                value={startDateFilter}
+                                                onchange={handleStartDateChange}
+                                                name="startDate">
+                                </lightning-input>
+                            </div>
+                            <div class="slds-col">
+                                <lightning-input type="date" 
+                                                label="End Date" 
+                                                value={endDateFilter}
+                                                onchange={handleEndDateChange}
+                                                name="endDate">
+                                </lightning-input>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Clear Date Filters Button -->
+                    <div class="slds-m-bottom_small">
+                        <lightning-button label="Clear Date Filters" onclick={clearDateFilters}></lightning-button>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

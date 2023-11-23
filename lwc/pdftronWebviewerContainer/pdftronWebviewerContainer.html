@@ -1,0 +1,13 @@
+<template>
+    <lightning-card title="Template Mapper" icon-name="doctype:word" class="slds-var-p-left_small slds-var-p-right_small">
+        <div class="slds-p-around_xx-small">
+            <c-lookup onsearch={handleSearch} onselectionchange={handleSingleSelectionChange}
+                placeholder="Search Templates By Name"></c-lookup>
+        </div>
+        <div class="slds-p-around_xx-small">
+            <div id="comboboxContainer">
+                <c-pdftron-wv-instance></c-pdftron-wv-instance>
+            </div>
+        </div>
+    </lightning-card>
+</template>

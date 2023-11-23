@@ -1,0 +1,12 @@
+.expandable-section .expandable-content {
+    padding: 10px 20px;
+}
+
+.slds-theme_default .slds-section {
+    max-width: 95%;
+    margin: 0 auto;
+}
+
+.slds-file__actions-menu {
+    z-index: 9999;
+}

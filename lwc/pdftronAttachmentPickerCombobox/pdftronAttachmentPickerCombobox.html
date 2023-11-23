@@ -1,0 +1,16 @@
+<template>
+    <lightning-card>
+        <div class="slds-var-p-around_xx-small slds-grid">
+            <template if:false={loadFinished}>
+                <div class="spinnerContainer">
+                    <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+                </div>
+            </template>
+            <div id="attachmentCombobox" class="slds-col">
+                <c-filter-combobox onsearch={handleSearch} onselectionchange={handleSingleSelectionChange}
+                    placeholder="Search Your Files By Name">
+                </c-filter-combobox>
+            </div>
+        </div>
+    </lightning-card>
+</template>

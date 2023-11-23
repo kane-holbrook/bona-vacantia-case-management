@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AuthProvider xmlns="http://soap.sforce.com/2006/04/metadata">
+    <authorizeUrl>https://glduat.sharepoint.com/sites/XansiumUATTestSite/_layouts/15/OauthAuthorize.aspx</authorizeUrl>
+    <consumerKey>cab32bcb-a21f-46a9-a9ce-41d813c777e6</consumerKey>
+    <consumerSecret>Placeholder_Value</consumerSecret>
+    <friendlyName>BV_Office_365</friendlyName>
+    <includeOrgIdInIdentifier>false</includeOrgIdInIdentifier>
+    <providerType>MicrosoftACS</providerType>
+    <sendAccessTokenInHeader>false</sendAccessTokenInHeader>
+    <sendClientCredentialsInHeader>false</sendClientCredentialsInHeader>
+    <tokenUrl>https://accounts.accesscontrol.windows.net/glduat.onmicrosoft.com/tokens/OAuth/2?resource=00000003-0000-0ff1-ce00-000000000000/glduat.sharepoint.com@glduat.onmicrosoft.com</tokenUrl>
+</AuthProvider>

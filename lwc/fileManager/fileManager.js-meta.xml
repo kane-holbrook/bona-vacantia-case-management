@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata" fqn="fileManager">
+    <apiVersion>58.0</apiVersion>
+    <isExposed>true</isExposed>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__HomePage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__AppPage,lightning__RecordPage,lightning__HomePage">
+            <property name="title" type="String" default="File Manager" label="Title" description="Set the title displayed at the top of the component."/>
+            <property name="helpText" type="String" default="Upload files to attach them to this case." label="Help Text" description="Set the help text displayed at the top of the component."/>
+            <property name="fileType" type="String" default="BV1A" label="Type" description="Specify the default file type category for files."/>
+            <property name="maxFiles" type="Integer" default="0" label="Max Files" description="Set the maximum number of files allowed. Use '0' for unlimited."/>
+            <property name="fileExtensionsWhitelist" type="String" default="" label="File Extension Whitelist" description="List of allowed file extensions, separated by commas (e.g., 'jpg,png,gif'). Leave blank to allow all."/>
+            <property name="fileGridSize" label="File Display Grid Size" type="String" default="1-of-6" datasource="1-of-6,1-of-4,1-of-3,1-of-2,1-of-1" description="Sets the grid size for file display. Options range from 1-of-6 (smallest) to 1-of-1 (full width)." />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

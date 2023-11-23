@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>SHDocument</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>SHDocuments</value>
+    </caseValues>
+    <fields>
+        <label><!-- Created Time --></label>
+        <name>Created_Time__c</name>
+    </fields>
+    <fields>
+        <label><!-- DocumentExtension --></label>
+        <name>DocumentExtension__c</name>
+    </fields>
+    <fields>
+        <label><!-- DocumentID --></label>
+        <name>DocumentID__c</name>
+    </fields>
+    <fields>
+        <label><!-- DocumentType --></label>
+        <name>DocumentType__c</name>
+    </fields>
+    <fields>
+        <label><!-- ServerRelativeURL --></label>
+        <name>ServerRelativeURL__c</name>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>
