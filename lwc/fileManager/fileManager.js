@@ -358,5 +358,5 @@ export default class FileManager extends NavigationMixin(LightningElement) {
 
     get bvCaseName() {
         return getFieldValue(this.record.data, 'BV_Case__c.Name');
-    }    
+    }
 }
