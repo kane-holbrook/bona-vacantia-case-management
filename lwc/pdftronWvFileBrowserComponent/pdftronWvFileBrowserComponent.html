@@ -12,7 +12,7 @@
       <lightning-accordion active-section-name="Search">
         <template if:false={hideSearch}>
           <lightning-accordion-section name="Search" label="Search">
-            <c-lookup onsearch={handleSearch} onselectionchange={handleSingleSelectionChange}
+            <c-lookup onsearch={handleSearchSharepoint} onselectionchange={handleSingleSelectionChange}
               placeholder="Search Your Files By Name">
             </c-lookup>
           </lightning-accordion-section>

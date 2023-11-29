@@ -2,7 +2,9 @@ import { LightningElement, wire, track, api } from 'lwc';
 import { NavigationMixin, CurrentPageReference } from 'lightning/navigation';
 import { fireEvent } from 'c/pubsub';
 import apexSearch from '@salesforce/apex/PDFTron_ContentVersionController.search';
+import searchSharePointFiles from '@salesforce/apex/PDFTron_ContentVersionController.searchSharePointFiles';
 import getFileDataFromId from '@salesforce/apex/PDFTron_ContentVersionController.getFileDataFromId';
+import getSharePointFileDataById from '@salesforce/apex/PDFTron_ContentVersionController.getSharePointFileDataById';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 export default class PdftronWvFileBrowserComponent extends NavigationMixin(LightningElement) {
@@ -90,6 +92,7 @@ export default class PdftronWvFileBrowserComponent extends NavigationMixin(Light
 
   handleSearch(event) {
     const lookupElement = event.target;
+    console.log("searchTerm", event.detail);
     apexSearch(event.detail)
       .then(results => {
         console.log("searchResults", results);
@@ -104,6 +107,24 @@ export default class PdftronWvFileBrowserComponent extends NavigationMixin(Light
         this.showNotification('Error', def_message + error.body.message, 'error');
       });
   }
+
+  handleSearchSharepoint(event) {
+    const lookupElement = event.target;
+    const searchTerm = event.detail.searchTerm;
+
+    searchSharePointFiles({ searchTerm }) // Ensure the parameter is passed correctly
+        .then(results => {
+            console.log("searchResults", results);
+            lookupElement.setSearchResultsSharepoint(results); // Ensure this method exists
+        })
+        .catch(error => {
+            this.error = error;
+            console.log(error);
+            let def_message = 'We have encountered an error while searching your file. ';
+
+            this.showNotification('Error', def_message + error.body.message, 'error');
+        });
+    }
 
   handleClose () {
     fireEvent(this.pageRef, 'closeDocument', '*')
@@ -122,13 +143,43 @@ export default class PdftronWvFileBrowserComponent extends NavigationMixin(Light
     this.isLoading = true;
     this.documentTemplate = selection[0]
 
+    console.log('selection', selection[0]);
+
+    // Call method to handle SharePoint files
+    getSharePointFileDataById({ fileId: selection[0].id })
+      .then(result => {
+        fireEvent(this.pageRef, 'blobSelected', result);
+        this.isLoading = false;
+      })
+      .catch(error => {
+        // TODO: handle error
+        this.error = error;
+        console.error(error);
+        this.isLoading = false;
+        let def_message = 'We have encountered an error while handling your file. '
+
+        this.showNotification('Error', def_message + error.body.message, 'error');
+      });
+  }
+
+  handleSingleSelectionChangeBak(event) {
+    this.checkForErrors();
+
+    if (event.detail.length < 1) {
+      this.handleClose()
+      return;
+    }
+
+    const selection = this.template.querySelector('c-lookup').getSelection()
+
+    this.isLoading = true;
+    this.documentTemplate = selection[0]
+
 
     getFileDataFromId({ Id: event.detail[0] })
       .then(result => {
         fireEvent(this.pageRef, 'blobSelected', result);
         this.isLoading = false;
-
-        console.log(result);
       })
       .catch(error => {
         // TODO: handle error
