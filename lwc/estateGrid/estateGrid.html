@@ -4,15 +4,15 @@
             <!-- Header with Reference, Name, and Date of Death -->
             <div class="slds-grid slds-wrap slds-border_bottom">
                 <div class="slds-col slds-size_1-of-3 slds-p-around_small">
-                    <span class="slds-text-title">BV REFERENCE: </span>
+                    <span class="slds-text-title">BV Reference: </span>
                     <span class="slds-text-body_regular">{bvCaseData.Name}</span>
                 </div>
                 <div class="slds-col slds-size_1-of-3 slds-p-around_small">
-                    <span class="slds-text-title">NAME: </span>
+                    <span class="slds-text-title">Deceased Name: </span>
                     <span class="slds-text-body_regular">{bvCaseData.Deceased_name__c}</span>
                 </div>
                 <div class="slds-col slds-size_1-of-3 slds-p-around_small">
-                    <span class="slds-text-title">DATE OF DEATH: </span>
+                    <span class="slds-text-title">Date of Death: </span>
                     <span class="slds-text-body_regular">{bvCaseData.Deceased_date_of_death__c}</span>
                 </div>
             </div>
@@ -22,6 +22,7 @@
                 <div class="slds-col slds-size_1-of-2">
                     <lightning-datatable
                         key-field="Id"
+                        name="assets_datatable"
                         data={estateAccData.Assets__r}
                         columns={accrualsColumns}
                         hide-checkbox-column
@@ -35,6 +36,7 @@
                 <div class="slds-col slds-size_1-of-2">
                     <lightning-datatable
                         key-field="Id"
+                        name="liabilities_datatable"
                         data={estateAccData.Liabilities__r}
                         columns={liabilitiesColumns}
                         hide-checkbox-column
@@ -65,44 +67,48 @@
                 <div class="slds-col slds-size_1-of-2">
                     <!-- NINO Box -->
                     <div class="custom-box nino-box">
-                        <span class="slds-text-title_bold">NINO: </span>
+                        <span class="slds-text-title_bold">NINO (National Insurance Number): </span>
                         <lightning-input 
                             class="slds-text-body_regular" 
                             value={estateAccData.NINO__c} 
                             data-field="NINO__c" 
+                            name="nino"
                             onchange={handleInputChange}>
                         </lightning-input>
                     </div>
                 
                     <!-- KEYS Box -->
                     <div class="custom-box keys-box">
-                        <span class="slds-text-title_bold">KEYS: </span>
+                        <span class="slds-text-title_bold">Keys: </span>
                         <lightning-input 
                             class="slds-text-body_regular" 
-                            value={estateAccData.Keys__c} 
+                            value={estateAccData.Keys__c}
                             data-field="Keys__c" 
+                            name="keys"
                             onchange={handleInputChange}>
                         </lightning-input>
                     </div>
                 
                     <!-- DEEDS Box -->
                     <div class="custom-box deeds-box">
-                        <span class="slds-text-title_bold">DEEDS: </span>
+                        <span class="slds-text-title_bold">Deeds: </span>
                         <lightning-input 
                             class="slds-text-body_regular" 
                             value={estateAccData.Deeds__c} 
-                            data-field="Deeds__c" 
+                            data-field="Deeds__c"
+                            name="deeds"
                             onchange={handleInputChange}>
                         </lightning-input>
                     </div>
                 
                     <!-- JEWELLERY Box -->
                     <div class="custom-box jewellery-box">
-                        <span class="slds-text-title_bold">JEWELLERY: </span>
+                        <span class="slds-text-title_bold">Jewellery: </span>
                         <lightning-input 
                             class="slds-text-body_regular" 
                             value={estateAccData.Jewellery__c} 
-                            data-field="Jewellery__c" 
+                            data-field="Jewellery__c"
+                            name="jewellery" 
                             onchange={handleInputChange}>
                         </lightning-input>
                     </div>
@@ -110,7 +116,7 @@
                 
                 <!-- Net Value Box -->
                 <div class="slds-col slds-size_1-of-2 custom-box net-value-box">
-                    <span class="slds-text-title_bold">NET VALUE: </span>
+                    <span class="slds-text-title_bold">Net Value: </span>
                     <span class="slds-text-body_regular">£{estateAccData.Net_Value__c}</span>
                 </div>
             </div>
