@@ -8,7 +8,7 @@ const events = {};
 
 const samePageRef = (pageRef1, pageRef2) => {
     const obj1 = pageRef1.attributes;
-    const obj2 = pageRef2.attributes;
+    const obj2 = pageRef2.attributes; 
     return Object.keys(obj1)
         .concat(Object.keys(obj2))
         .every(key => {
@@ -83,6 +83,7 @@ const fireEvent = (pageRef, eventName, payload) => {
                     listener.callback.call(listener.thisArg, payload);
                 } catch (error) {
                     // fail silently
+                    console.log(error);
                 }
             }
         });
