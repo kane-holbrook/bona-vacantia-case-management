@@ -14,6 +14,33 @@ const VARIANT_LABEL_HIDDEN = 'label-hidden';
 const REGEX_SOSL_RESERVED = /(\?|&|\||!|\{|\}|\[|\]|\(|\)|\^|~|\*|:|"|\+|-|\\)/g;
 const REGEX_EXTRA_TRAP = /(\$|\\)/g;
 
+const iconMap = {
+    'pdf': 'doctype:pdf',
+    'doc': 'doctype:word_document',
+    'docx': 'doctype:word_document',
+    'xls': 'doctype:excel',
+    'xlsx': 'doctype:excel',
+    'ppt': 'doctype:ppt',
+    'pptx': 'doctype:ppt',
+    'jpg': 'doctype:image',
+    'jpeg': 'doctype:image',
+    'png': 'doctype:image',
+    'mov': 'doctype:movie',
+    'tif': 'doctype:preview',
+    'txt': 'doctype:txt',
+    'zip': 'doctype:zip',
+    'rar': 'doctype:zip',
+    '7z': 'doctype:zip',
+    'gz': 'doctype:zip',
+    'tar': 'doctype:zip',
+    'tgz': 'doctype:zip',
+    'mp3': 'doctype:audio',
+    'wav': 'doctype:audio',
+    'mp4': 'doctype:video',
+    'm4a': 'doctype:video',
+    'exe': 'doctype:unknown'
+};
+
 export default class Lookup extends NavigationMixin(LightningElement) {
     // Public properties
     @api variant = VARIANT_LABEL_STACKED;
@@ -92,6 +119,8 @@ export default class Lookup extends NavigationMixin(LightningElement) {
         this._focusedResultIndex = null;
         const self = this;
         this.searchResultsLocalState = this._searchResults.map((result, i) => {
+            console.log('searchResultsLocalState', this.searchResultsLocalState);
+            console.log('result', result);
             return {
                 result,
                 state: {},
@@ -101,6 +130,71 @@ export default class Lookup extends NavigationMixin(LightningElement) {
                     if (self._focusedResultIndex === i) {
                         cls += ' slds-has-focus';
                     }
+                    console.log('searchResultsFinal' + this.searchResultsLocalState);
+                    return cls;
+                }
+            };
+        });
+    }
+
+    @api
+    setSearchResultsSharepoint(results) {
+        // Reset the spinner
+        this.loading = false;
+        // Clone results before modifying them to avoid Locker restriction
+        let resultsLocal = JSON.parse(JSON.stringify(results));
+        // Remove selected items from search results
+        const selectedIds = this._curSelection.map((sel) => sel.id);
+        resultsLocal = resultsLocal.filter((result) => selectedIds.indexOf(result.id) === -1);
+        // Format results
+        const cleanSearchTerm = this._searchTerm.replace(REGEX_SOSL_RESERVED, '.?').replace(REGEX_EXTRA_TRAP, '\\$1');
+        const regex = new RegExp(`(${cleanSearchTerm})`, 'gi');
+        this._searchResults = resultsLocal.map((result) => {
+            // Format title and subtitle
+            if (this._searchTerm.length > 0) {
+                result.titleFormatted = result.Name
+                    ? result.Name.replace(regex, '<strong>$1</strong>')
+                    : result.Name;
+                result.subtitleFormatted = result.DocumentExtension__c
+                    ? result.DocumentExtension__c.replace(regex, '<strong>$1</strong>')
+                    : result.DocumentExtension__c;
+            } else {
+                result.titleFormatted = result.Name;
+                result.subtitleFormatted = result.DocumentExtension__c;
+            }
+            // Add icon if missing
+            const extension = result.DocumentExtension__c;
+            if (extension && iconMap[extension.toLowerCase()]) {
+                result.icon = iconMap[extension.toLowerCase()];
+            } else {
+                result.icon = 'standard:default'; // default icon if no match
+            }
+            // Set ID if missing
+            if (typeof result.id === 'undefined') {
+                result.id = result.DocumentID__c.replace(/^\{|\}$/g, '');
+            }
+
+            result.titleFormatted = `${result.titleFormatted}`;
+            result.subtitleFormatted = `<font size="0"><i>${result.subtitleFormatted}</i></font>`;
+            console.log(this._searchResults);
+            return result;
+        });
+        // Add local state and dynamic class to search results
+        this._focusedResultIndex = null;
+        const self = this;
+        this.searchResultsLocalState = this._searchResults.map((result, i) => {
+            console.log('searchResultsLocalState', this.searchResultsLocalState);
+            console.log('result', result);
+            return {
+                result,
+                state: {},
+                get classes() {
+                    let cls =
+                        'slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta';
+                    if (self._focusedResultIndex === i) {
+                        cls += ' slds-has-focus';
+                    }
+                    console.log('searchResultsFinal' + this.searchResultsLocalState);
                     return cls;
                 }
             };
@@ -189,6 +283,24 @@ export default class Lookup extends NavigationMixin(LightningElement) {
         }
     }
 
+    processSelectionUpdateSharepoint(isUserInteraction) {
+        // Reset search
+        this._cleanSearchTerm = '';
+        this._searchTerm = '';
+        this.setSearchResultsSharepoint([...this._defaultSearchResults]);
+        // Indicate that component was interacted with
+        this._isDirty = isUserInteraction;
+        // If selection was changed by user, notify parent components
+        if (isUserInteraction) {
+            const selectedIds = this._curSelection.map((sel) => sel.id);
+            this.dispatchEvent(new CustomEvent('selectionchange', { detail: selectedIds }));
+
+            console.log(selectedIds);
+        }
+
+        console.log('processSelectionUpdateSharepoint');
+    }
+
     // EVENT HANDLING
 
     handleInput(event) {
@@ -240,6 +352,27 @@ export default class Lookup extends NavigationMixin(LightningElement) {
 
         // Process selection update
         this.processSelectionUpdate(true);
+    }
+
+    handleResultClickSharepoint(event) {
+        const recordId = event.currentTarget.dataset.recordid;
+
+        // Save selection
+        const selectedItem = this._searchResults.find((result) => result.id === recordId);
+        console.log(selectedItem);
+        if (!selectedItem) {
+            return;
+        }
+
+        const newSelection = [...this._curSelection];
+        newSelection.push(selectedItem);
+        this._curSelection = newSelection;
+
+        console.log('curselection below');
+        console.log(this._curSelection);
+
+        // Process selection update
+        this.processSelectionUpdateSharepoint(true);
     }
 
     handleComboboxMouseDown(event) {
@@ -401,11 +534,25 @@ export default class Lookup extends NavigationMixin(LightningElement) {
         return this.hasSelection() ? this._curSelection[0].title : this._searchTerm;
     }
 
+    get getInputValueSharepoint() {
+        if (this.isMultiEntry) {
+            return this._searchTerm;
+        }
+        return this.hasSelection() ? this._curSelection[0].Name : this._searchTerm;
+    }
+
     get getInputTitle() {
         if (this.isMultiEntry) {
             return '';
         }
         return this.hasSelection() ? this._curSelection[0].title : '';
+    }
+
+    get getInputTitleSharepoint() {
+        if (this.isMultiEntry) {
+            return '';
+        }
+        return this.hasSelection() ? this._curSelection[0].Name : '';
     }
 
     get getListboxClass() {
