@@ -96,6 +96,65 @@ public with sharing class PDFTron_ContentVersionController {
     }
 
     @AuraEnabled
+    public static String saveDocumentToSharePoint(String jsonpayload, String folderName) {
+        try {
+            PDFTron_ContentVersionPayload pl = new PDFTron_ContentVersionPayload(jsonpayload);
+            // Decode the base64 string to get the binary content of the file
+            Blob fileContent = EncodingUtil.base64Decode(pl.base64Data);
+        
+            // Manually encode the file name to ensure all special characters are properly URL encoded
+            String encodedFolderName = EncodingUtil.urlEncode(folderName, 'UTF-8');
+            
+            // Check if the folder exists; if not, create it
+            if (!FileController.doesFolderExist(encodedFolderName)) {
+                FileController.createSharePointFolder(encodedFolderName);
+            }
+
+            String fileName = pl.filename;
+            
+            // Replace problematic characters in the file name
+            fileName = fileName.replace('\'', '_').replace('#', '_');
+            
+            String encodedFileName = EncodingUtil.urlEncode(fileName, 'UTF-8');
+
+            // SharePoint API endpoint
+            String endpoint = 'callout:BVSharepointNamed/_api/web/GetFolderByServerRelativeUrl(\'' +
+            'Shared%20Documents/' + encodedFolderName + '\')/Files/Add(url=\'' +
+            encodedFileName + '\',overwrite=true)';
+
+            // Prepare the HTTP request
+            HttpRequest req = new HttpRequest();
+            req.setEndpoint(endpoint);
+            req.setMethod('POST');
+            req.setHeader('Content-Type', 'application/octet-stream');
+            req.setHeader('Accept', 'application/json;odata=verbose');
+            req.setBodyAsBlob(fileContent);
+
+            // Send the request
+            Http http = new Http();
+            HttpResponse response = http.send(req);
+
+            // Check the response status and parse if successful
+            if (response.getStatusCode() == 200) {
+                // Parse the JSON response
+                Map<String, Object> jsonResponse = (Map<String, Object>)JSON.deserializeUntyped(response.getBody());
+                Map<String, Object> d = (Map<String, Object>)jsonResponse.get('d');
+                Map<String, Object> listItemAllFields = (Map<String, Object>)d.get('ListItemAllFields');
+
+                // Extract and return the SharePoint Document ID
+                return (String)listItemAllFields.get('UniqueId');
+            } else {
+                // Handle the error accordingly
+                System.debug('Error from SharePoint: ' + response.getBody());
+                throw new AuraHandledException('Error saving document to SharePoint: ' + response.getStatus());
+            }
+        } catch (Exception e) {
+            System.debug('Error saving document to SharePoint: ' + e.getMessage());
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
+    @AuraEnabled
     public static String createCMTRecord(String jsonString){
         try {
             Map<String, Object> parsedData = (Map<String, Object>)JSON.deserializeUntyped(jsonString);
@@ -206,6 +265,86 @@ public with sharing class PDFTron_ContentVersionController {
         return results;
     }
 
+    @AuraEnabled(cacheable=true)
+    public static List<SHDocument__c> searchSharePointFiles(String searchTerm) {
+        System.debug('Searching SharePoint for: ' + searchTerm);
+
+        // Encode the search term for use in a URL
+        String encodedSearchTerm = EncodingUtil.urlEncode(searchTerm, 'UTF-8');
+        String siteUrl = 'callout:BVSharepointNamed';
+    
+        // Construct the search query endpoint
+        String searchEndpoint = siteUrl + '/_api/search/query?querytext=\'' + encodedSearchTerm + '\'';
+    
+        System.debug(searchEndpoint);
+    
+        // Create and send the HTTP request to SharePoint
+        HttpRequest request = new HttpRequest();
+        request.setEndpoint(searchEndpoint);
+        request.setMethod('GET');
+        request.setHeader('Accept', 'application/json;odata=verbose');
+    
+        Http http = new Http();
+        HttpResponse response = http.send(request);
+    
+        // Check the response status and parse if successful
+        if (response.getStatusCode() == 200) {
+            // Parse the JSON response
+            Map<String, Object> jsonResponse = (Map<String, Object>) JSON.deserializeUntyped(response.getBody());
+            Map<String, Object> d = (Map<String, Object>) jsonResponse.get('d');
+            Map<String, Object> query = (Map<String, Object>) d.get('query');
+            Map<String, Object> primaryQueryResult = (Map<String, Object>) query.get('PrimaryQueryResult');
+            Map<String, Object> relevantResults = (Map<String, Object>) primaryQueryResult.get('RelevantResults');
+            Map<String, Object> table = (Map<String, Object>) relevantResults.get('Table');
+            Map<String, Object> rowsMap = (Map<String, Object>) table.get('Rows');
+            List<Object> rows = (List<Object>) rowsMap.get('results');
+    
+            system.debug(JSON.serializePretty(rows));
+    
+            // Extract and return the search results
+            return parseSearchResults(rows);
+        } else {
+            // Handle the error accordingly
+            System.debug('Error from SharePoint: ' + response.getBody());
+            throw new AuraHandledException('Error searching SharePoint: ' + response.getStatus());
+        }
+    }
+    
+    // Helper method to parse the search results
+    private static List<SHDocument__c> parseSearchResults(List<Object> rows) {
+        List<SHDocument__c> documents = new List<SHDocument__c>();
+    
+        for (Object rowObj : rows) {
+            Map<String, Object> row = (Map<String, Object>) rowObj;
+            Map<String, Object> cellsMap = (Map<String, Object>) row.get('Cells');
+            List<Object> cells = (List<Object>) cellsMap.get('results');
+    
+            SHDocument__c doc = new SHDocument__c();
+    
+            for (Object cellObj : cells) {
+                Map<String, Object> cell = (Map<String, Object>) cellObj;
+                String key = (String) cell.get('Key');
+                String value = (String) cell.get('Value');
+    
+                // Map the SharePoint fields to SHDocument__c fields
+                if (key == 'Title') {
+                    doc.Name = value;
+                } else if (key == 'FileType') {
+                    doc.DocumentExtension__c = value;
+                } else if (key == 'Created') {
+                    doc.Created_Time__c = value; // Adjust this line according to your date field type
+                } else if (key == 'UniqueId') {
+                    doc.DocumentID__c = value;
+                }
+                // Continue mapping other fields as needed
+            }
+    
+            documents.add(doc);
+        }
+    
+        return documents;
+    }
+
     @AuraEnabled(Cacheable=true)
     public static List<TemplateWrapper> getTemplateMappingResults() {
 
@@ -247,6 +386,61 @@ public with sharing class PDFTron_ContentVersionController {
             throw new AuraHandledException(e.getMessage());
         }
     }
+
+    @AuraEnabled(cacheable=true)
+    public static SHDocument__c getSharePointFileDataById(String fileId) {
+        // Endpoint to get the file properties
+        String propertiesEndpoint = 'callout:BVSharepointNamed/_api/web/GetFileById(guid\'' + fileId + '\')';
+        
+        // Endpoint to get the binary content of the file
+        String contentEndpoint = 'callout:BVSharepointNamed/_api/web/GetFileById(guid\'' + fileId + '\')/$value';
+    
+        // First, get the file properties (including name and extension)
+        HttpRequest propertiesRequest = new HttpRequest();
+        propertiesRequest.setEndpoint(propertiesEndpoint);
+        propertiesRequest.setMethod('GET');
+        propertiesRequest.setHeader('Accept', 'application/json;odata=verbose');
+        
+        Http http = new Http();
+        HttpResponse propertiesResponse = http.send(propertiesRequest);
+    
+        if (propertiesResponse.getStatusCode() != 200) {
+            System.debug('Error getting file properties from SharePoint: ' + propertiesResponse.getBody());
+            throw new AuraHandledException('Error retrieving file properties from SharePoint: ' + propertiesResponse.getStatus());
+        }
+    
+        // Parse the response to get file name and extension
+        Map<String, Object> properties = (Map<String, Object>) JSON.deserializeUntyped(propertiesResponse.getBody());
+        Map<String, Object> fileInfo = (Map<String, Object>) properties.get('d');
+        String fileName = (String) fileInfo.get('Name');
+        String fileDocId = (String) fileInfo.get('UniqueId');
+        String fileExtension = fileName.substringAfterLast('.');
+    
+        // Now, get the binary content of the file
+        HttpRequest contentRequest = new HttpRequest();
+        contentRequest.setEndpoint(contentEndpoint);
+        contentRequest.setMethod('GET');
+        contentRequest.setHeader('Accept', 'application/octet-stream');
+    
+        HttpResponse contentResponse = http.send(contentRequest);
+    
+        if (contentResponse.getStatusCode() == 200) {
+            // Convert binary data to base64 string
+            String base64Content = EncodingUtil.base64Encode(contentResponse.getBodyAsBlob());
+    
+            // Create SHDocument__c instance and populate with base64 content, name, and extension
+            SHDocument__c fileData = new SHDocument__c();
+            fileData.FileContent__c = base64Content;
+            fileData.DocumentID__c = fileDocId;
+            fileData.Name = fileName;
+            fileData.DocumentExtension__c = fileExtension;
+    
+            return fileData;
+        } else {
+            System.debug('Error getting file content from SharePoint: ' + contentResponse.getBody());
+            throw new AuraHandledException('Error retrieving file content from SharePoint: ' + contentResponse.getStatus());
+        }
+    }    
 
     //get multiple files from Ids
     @AuraEnabled(Cacheable=true) 
