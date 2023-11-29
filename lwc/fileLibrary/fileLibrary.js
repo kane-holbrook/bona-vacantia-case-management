@@ -3,7 +3,33 @@ import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import fetchAllDocumentsForCase from '@salesforce/apex/FileController.fetchAllDocumentsForCase';
 
 const FIELDS = ['BV_Case__c.Name'];
-const PAGE_SIZE = 20; // Number of records per page
+const PAGE_SIZE = 10; // Number of records per page
+
+const extensionMapping = {
+    'pdf': 'PDF Document (.pdf)',
+    'docx': 'Word Document (.docx)',
+    'doc': 'Word Document (.doc)',
+    'xls': 'Excel Spreadsheet (.xls)',
+    'xlsx': 'Excel Spreadsheet (.xlsx)',
+    'ppt': 'PowerPoint Presentation (.ppt)',
+    'pptx': 'PowerPoint Presentation (.pptx)',
+    'csv': 'CSV Spreadsheet (.csv)',
+    'png': 'Image (.png)',
+    'jpg': 'Image (.jpg)',
+    'jpeg': 'Image (.jpeg)',
+    'gif': 'Image (.gif)',
+    'bmp': 'Image (.bmp)',
+    'txt': 'Text Document (.txt)',
+    'zip': 'ZIP Archive (.zip)',
+    'rar': 'RAR Archive (.rar)',
+    '7z': '7-Zip Archive (.7z)',
+    'tar': 'TAR Archive (.tar)',
+    'gz': 'GZIP Archive (.gz)',
+    'bz2': 'BZIP2 Archive (.bz2)',
+    'xz': 'XZ Archive (.xz)',
+    'exe': 'Executable (.exe)',
+    'msi': 'Windows Installer (.msi)',
+};
 
 export default class FileLibrary extends LightningElement {
     @api recordId;
@@ -70,6 +96,9 @@ export default class FileLibrary extends LightningElement {
         let documentTypes = new Set([]);
         let documentExtensions = new Set([]);
     
+        // Define preferred extensions
+        const preferredExtensions = ['pdf', 'docx', 'doc', 'xls', 'xlsx', 'ppt', 'pptx'];
+    
         this.documents.forEach(doc => {
             if (doc.DocumentType__c) {
                 documentTypes.add(doc.DocumentType__c);
@@ -79,12 +108,27 @@ export default class FileLibrary extends LightningElement {
             }
         });
     
-        // Add 'All' option at the start of the arrays
+        // Create options for preferred extensions first
+        let extensionOptions = preferredExtensions
+            .filter(ext => documentExtensions.has(ext))
+            .map(ext => ({
+                label: extensionMapping[ext],
+                value: ext
+            }));
+    
+        // Add other extensions
+        extensionOptions.push(...Array.from(documentExtensions)
+            .filter(ext => !preferredExtensions.includes(ext))
+            .map(ext => ({ 
+                label: extensionMapping[ext.toLowerCase()] || `${ext.toUpperCase()} File (${ext})`, 
+                value: ext 
+            })));
+    
+        // Add 'All' option at the start
         this.documentTypeOptions = [{ label: 'All', value: '' }, 
                                     ...Array.from(documentTypes).map(type => ({ label: type, value: type }))];
-        this.documentExtensionOptions = [{ label: 'All', value: '' }, 
-                                         ...Array.from(documentExtensions).map(ext => ({ label: ext, value: ext }))];
-    }
+        this.documentExtensionOptions = [{ label: 'All', value: '' }, ...extensionOptions];
+    }    
 
     applyFilters() {
         // Start with all documents and then apply filters sequentially
@@ -110,8 +154,10 @@ export default class FileLibrary extends LightningElement {
         // Filter by date range only if both start and end dates are provided
         if (this.startDateFilter && this.endDateFilter) {
             const startDate = new Date(this.startDateFilter);
+            startDate.setUTCHours(0, 0, 0, 0); // Set to the start of the day in UTC
             const endDate = new Date(this.endDateFilter);
-
+            endDate.setUTCHours(23, 59, 59, 999); // Set to the end of the day in UTC
+        
             filtered = filtered.filter(doc => {
                 const createdDate = new Date(doc.Created_Time__c);
                 return createdDate >= startDate && createdDate <= endDate;
@@ -174,10 +220,6 @@ export default class FileLibrary extends LightningElement {
         this.applyFilters();
     }
 
-    get mainContentClass() {
-        return `slds-col ${this.isFilterSidebarOpen ? 'slds-size_11-of-12' : 'slds-size_1-of-1'}`;
-    }
-
     get isFirstPage() {
         return this.currentPage === 1;
     }
@@ -186,7 +228,9 @@ export default class FileLibrary extends LightningElement {
         return this.currentPage >= Math.ceil(this.totalRecords / PAGE_SIZE);
     }
 
-    get containerClass() {
-        return `slds-grid slds-gutters ${this.isFilterSidebarOpen ? 'slds-has-sidebar' : ''}`;
-    }
+    get pageInfo() {
+        const startIndex = (this.currentPage - 1) * PAGE_SIZE + 1;
+        const endIndex = Math.min(startIndex + PAGE_SIZE - 1, this.totalRecords);
+        return `Page ${this.currentPage} - Showing ${startIndex}-${endIndex} of ${this.totalRecords} results`;
+    }    
 }
