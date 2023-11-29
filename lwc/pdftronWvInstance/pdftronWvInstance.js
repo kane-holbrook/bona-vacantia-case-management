@@ -1,4 +1,5 @@
 import { LightningElement, wire, track, api } from 'lwc';
+import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import { CurrentPageReference } from 'lightning/navigation';
 import { loadScript } from 'lightning/platformResourceLoader';
 import libUrl from "@salesforce/resourceUrl/lib";
@@ -9,6 +10,7 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import mimeTypes from './mimeTypes'
 import { fireEvent, registerListener, unregisterAllListeners } from 'c/pubsub';
 import saveDocument from '@salesforce/apex/PDFTron_ContentVersionController.saveDocument';
+import saveDocumentToSharePoint from '@salesforce/apex/PDFTron_ContentVersionController.saveDocumentToSharePoint';
 import getFileDataFromIds from '@salesforce/apex/PDFTron_ContentVersionController.getFileDataFromIds';
 import getUser from "@salesforce/apex/PDFTron_ContentVersionController.getUser";
 
@@ -37,6 +39,9 @@ export default class PdftronWvInstance extends LightningElement {
 
   @wire(CurrentPageReference)
   pageRef;
+
+  @wire(getRecord, { recordId: '$recordId', fields: ['BV_Case__c.Name'] })
+  record;
 
   connectedCallback() {
     this.handleSubscribe();
@@ -108,6 +113,7 @@ export default class PdftronWvInstance extends LightningElement {
   }
 
   handleFileIdsSelected(records) {
+    console.log('handleids' + records);
     records = JSON.parse(records);
     console.log(records);
     getFileDataFromIds({ Ids: records })
@@ -155,6 +161,21 @@ export default class PdftronWvInstance extends LightningElement {
   }
 
   handleBlobSelected(record) {
+    const blobby = new Blob([_base64ToArrayBuffer(record.FileContent__c)], {
+      type: mimeTypes[record.DocumentExtension__c]
+    });
+
+    const payload = {
+      blob: blobby,
+      extension: record.DocumentExtension__c,
+      filename: record.Name,
+      documentId: record.DocumentID__c
+    };
+    this.iframeWindow.postMessage({ type: "OPEN_DOCUMENT_BLOB", payload }, "*");
+  }
+
+  handleBlobSelectedBak(record) {
+    console.log("record", record);
     const blobby = new Blob([_base64ToArrayBuffer(record.body)], {
       type: mimeTypes[record.FileExtension]
     });
@@ -264,6 +285,29 @@ export default class PdftronWvInstance extends LightningElement {
             this.showNotification('Error', error.body, 'error');
           });
           break;
+        case 'SAVE_SHAREPOINT_DOCUMENT':
+          const folderName = '/' + this.bvCaseName;
+
+          console.log(event.data.payload);
+          saveDocumentToSharePoint({ 
+            jsonpayload: JSON.stringify(event.data.payload),
+            folderName: folderName
+          })
+          .then((response) => {
+            me.iframeWindow.postMessage({ type: 'DOCUMENT_SAVED', response }, '*');
+            
+            fireEvent(this.pageRef, 'refreshOnSave', response);
+
+            this.showNotification('Success', event.data.payload.filename + ' Saved', 'success');
+          })
+          .catch(error => {
+            me.iframeWindow.postMessage({ type: 'DOCUMENT_SAVED', error }, '*')
+            fireEvent(this.pageRef, 'refreshOnSave', error);
+            console.error(event.data.payload.contentDocumentId);
+            console.error(JSON.stringify(error));
+            this.showNotification('Error', error.body, 'error');
+          });
+          break;
         default:
           break;
       }
@@ -277,5 +321,9 @@ export default class PdftronWvInstance extends LightningElement {
   @api
   closeDocument() {
     this.iframeWindow.postMessage({ type: "CLOSE_DOCUMENT" }, "*");
+  }
+
+  get bvCaseName() {
+    return getFieldValue(this.record.data, 'BV_Case__c.Name');
   }
 }
