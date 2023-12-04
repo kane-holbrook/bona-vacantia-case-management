@@ -1,13 +1,16 @@
 import { LightningElement, track, api, wire } from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
-import { NavigationMixin } from 'lightning/navigation';
+import { NavigationMixin, CurrentPageReference } from 'lightning/navigation';
 import LightningConfirm from 'lightning/confirm';
+import { fireEvent } from 'c/pubsub';
 import getFiles from '@salesforce/apex/FileController.getFiles';
 import deleteFile from '@salesforce/apex/FileController.deleteFile';
 import deleteSharepointFile from '@salesforce/apex/FileController.deleteSharepointFile';
 import uploadFileToSharePoint from '@salesforce/apex/FileController.uploadFileToSharePoint';
 import associateFileWithCase from '@salesforce/apex/FileController.associateFileWithCase';
 import fetchDocumentsByType from '@salesforce/apex/FileController.fetchDocumentsByType';
+import getSharePointFileDataById from '@salesforce/apex/PDFTron_ContentVersionController.getSharePointFileDataById';
+import getMappedTemplateData from '@salesforce/apex/PDFTron_ContentVersionController.getMappedTemplateData';
 import processFiles from '@salesforce/apex/FileController.processFiles';
 
 export default class FileManager extends NavigationMixin(LightningElement) {
@@ -23,6 +26,7 @@ export default class FileManager extends NavigationMixin(LightningElement) {
     @track files = [];
     fileToDelete = null;
 
+    @wire(CurrentPageReference) pageRef;
     @wire(getRecord, { recordId: '$recordId', fields: ['BV_Case__c.Name'] })
     record;
 
@@ -59,6 +63,9 @@ export default class FileManager extends NavigationMixin(LightningElement) {
                     case 'xlsx':
                     case 'csv':
                         fileExtensionType = 'excel';
+                        break;
+                    default:
+                        fileExtensionType = 'unknown';
                         break;
                 }
                 
@@ -110,6 +117,9 @@ export default class FileManager extends NavigationMixin(LightningElement) {
                         case 'csv':
                             fileExtensionType = 'excel';
                             break;
+                        default:
+                            fileExtensionType = 'unknown';
+                            break;
                     }
     
                     return {
@@ -135,10 +145,10 @@ export default class FileManager extends NavigationMixin(LightningElement) {
     handleMenuAction(event) {
         const actionName = event.detail.value;
         const fileId = event.target.dataset.id;
+        const doc = this.files.find(d => d.Title === fileId);
         
         switch(actionName) {
             case 'view':
-                const doc = this.files.find(d => d.Title === fileId);
                 const sharePointDomain = 'https://glduat.sharepoint.com';
                 const siteName = 'sites/XansiumUATTestSite';
                 const parentFolderPath = encodeURIComponent(`123`); // Required for some reason
@@ -150,11 +160,48 @@ export default class FileManager extends NavigationMixin(LightningElement) {
             case 'delete':
                 this.handleDeleteFile(fileId);
                 break;
+            case 'generate':
+                getSharePointFileDataById({ fileId: doc.Id })
+                    .then(result => {
+                        console.log('data by id result', result);
+
+                        fireEvent(this.pageRef, 'blobSelected', result);
+                    })
+                    .catch(error => {
+                        console.log("Error fetching file data", error);
+                    }
+                );
+
+                console.log('doc', doc);
+
+                setTimeout(() => {
+                    getMappedTemplateData({ templateName: doc.Title, recordId: this.recordId })
+                        .then(result => {
+
+                            console.log('template mapping result', result);
+                            fireEvent(this.pageRef, 'bulk_mapping', result);
+                        })
+                        .catch(error => {
+                            console.log("Error fetching template mapping results", error);
+                        }
+                    );
+                }, 5000);
+                break;
             default:
                 // Handle or log an unexpected action
                 console.warn(`Unexpected action: ${actionName}`);
                 break;
         }
+    }
+
+    _base64ToArrayBuffer(base64) {
+        var binary_string = window.atob(base64);
+        var len = binary_string.length;
+        var bytes = new Uint8Array(len);
+        for (var i = 0; i < len; i++) {
+          bytes[i] = binary_string.charCodeAt(i);
+        }
+        return bytes.buffer;
     }
     
     async handleDeleteFile(fileId) {
@@ -357,6 +404,8 @@ export default class FileManager extends NavigationMixin(LightningElement) {
     }
 
     get bvCaseName() {
-        return getFieldValue(this.record.data, 'BV_Case__c.Name');
+        let caseName = getFieldValue(this.record.data, 'BV_Case__c.Name');
+        // Replace all occurrences of '/' with '_'
+        return caseName.replace(/\//g, '_');
     }
 }

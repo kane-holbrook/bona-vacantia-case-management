@@ -5,6 +5,7 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import queryRecords from '@salesforce/apex/PDFTron_ContentVersionController.queryRecords';
 import templateSearch from '@salesforce/apex/PDFTron_ContentVersionController.getTemplateMappingResults';
 import getFileDataFromId from '@salesforce/apex/PDFTron_ContentVersionController.getFileDataFromId';
+import getSharePointFileDataById from '@salesforce/apex/PDFTron_ContentVersionController.getSharePointFileDataById';
 import getSObjects from '@salesforce/apex/PDFTron_ContentVersionController.getSObjects';
 import getObjectFields from '@salesforce/apex/PDFTron_ContentVersionController.getObjectFields'
 
@@ -209,25 +210,26 @@ export default class PdftronBulkTemplateGenerator extends LightningElement {
             }
         })
 
+        this.isLoading = false;
+}
+
+    handleTemplateSearchBak(event) {
         getFileDataFromId({ Id: this.sTemplate.Template_Id__c })
-            .then(result => {
-                fireEvent(this.pageRef, 'blobSelected', result);
-                this.isLoading = false;
+        .then(result => {
+            fireEvent(this.pageRef, 'blobSelected', result);
+            this.isLoading = false;
 
-            })
-            .catch(error => {
-                // TODO: handle error
-                this.error = error;
-                console.error(error);
-                this.isLoading = false;
-                let def_message = 'We have encountered an error while handling your file. '
+        })
+        .catch(error => {
+            // TODO: handle error
+            this.error = error;
+            console.error(error);
+            this.isLoading = false;
+            let def_message = 'We have encountered an error while handling your file. '
 
-                this.showNotification('Error', def_message + error.body.message, 'error');
-            });  
+            this.showNotification('Error', def_message + error.body.message, 'error');
+        });  
     }
-    
-    
-
 
     handleClick () {
         if (this.soqlText !== ''){

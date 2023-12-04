@@ -372,6 +372,71 @@ public with sharing class PDFTron_ContentVersionController {
         return results;
     }
 
+    @AuraEnabled(cacheable=true)
+    public static TemplateWrapper getTemplateMappingResultsByName(String filename) {
+        // Prepare result
+        TemplateWrapper result;
+
+        // Query for the template that matches the filename
+        for (PDFTron_Template_Mapping__mdt template : [
+            SELECT id, sObject__c, Mapping__c, Template_Id__c, DeveloperName, Template_Name__c
+            FROM PDFTron_Template_Mapping__mdt
+            WHERE Template_Name__c = :filename
+            LIMIT 1
+        ]) {
+            String icon = 'doctype:unknown';
+            String subtitle = template.sObject__c + ' - ' + template.Template_Name__c;
+
+            if (String.isNotBlank(template.sObject__c)){
+                icon = 'standard:' + template.sObject__c.toLowerCase();
+            }
+
+            result = new TemplateWrapper(new LookupSearchResult(template.id, 'PDFTron_Template_Mapping__mdt', icon, template.DeveloperName, subtitle), template);
+        }
+
+        return result;
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static Map<String, Object> getMappedTemplateData(String templateName, String recordId) {
+        // Retrieve the template mapping and sObjectName
+        PDFTron_Template_Mapping__mdt template = [SELECT Mapping__c, sObject__c FROM PDFTron_Template_Mapping__mdt WHERE Template_Name__c = :templateName LIMIT 1];
+
+        String sObjectName = template.sObject__c;
+        Map<String, String> fieldMapping = (Map<String, String>) JSON.deserialize(template.Mapping__c, Map<String, String>.class);
+
+        // Validate if the sObjectName is set
+        if (String.isEmpty(sObjectName)) {
+            throw new AuraHandledException('The sObject name is not set for the template mapping: ' + templateName);
+        }
+
+        // Create a list of Salesforce field names to query, excluding non-Salesforce fields
+        List<String> sfFields = new List<String>();
+        for (String key : fieldMapping.keySet()) {
+            if (!key.equals('templateName') && !key.equals('sObjectName')) { // Exclude non-Salesforce fields
+                sfFields.add(key);
+            }
+        }
+
+        // Construct dynamic SOQL query
+        String queryString = 'SELECT ' + String.join(sfFields, ', ') + ' FROM ' + sObjectName + ' WHERE Id = :recordId';
+
+        // Execute SOQL query
+        SObject record = Database.query(queryString);
+
+        // Map Salesforce fields to Template keys
+        Map<String, Object> templateData = new Map<String, Object>();
+        for (String sfField : sfFields) {
+            String templateKey = fieldMapping.get(sfField);
+            Object sfValue = record.get(sfField); // Get the value of the Salesforce field
+            templateData.put(templateKey, sfValue); // Map to the template key
+        }
+
+        templateData.put('Id', recordId);
+
+        return templateData;
+    }
+
     //get single file from Id
     @AuraEnabled(Cacheable=true) 
     public static ContentVersionWrapper getFileDataFromId(String Id) {
