@@ -201,7 +201,7 @@ export default class PdftronWvFileBrowserComponent extends NavigationMixin(Light
       '.pdf',
       '.xfdf',
       '.fdf',
-      'doc',
+      '.doc',
       '.docx',
       '.xlsx',
       'ppt',
