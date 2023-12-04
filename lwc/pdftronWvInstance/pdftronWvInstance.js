@@ -324,6 +324,8 @@ export default class PdftronWvInstance extends LightningElement {
   }
 
   get bvCaseName() {
-    return getFieldValue(this.record.data, 'BV_Case__c.Name');
+    let caseName = getFieldValue(this.record.data, 'BV_Case__c.Name');
+    // Replace all occurrences of '/' with '_'
+    return caseName.replace(/\//g, '_');
   }
 }
