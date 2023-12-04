@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>My_Cases</fullName>
+    <columns>NAME</columns>
+    <columns>Deceased_name__c</columns>
+    <columns>Deceased_date_of_birth__c</columns>
+    <columns>Deceased_date_of_death__c</columns>
+    <columns>Informant_first_name__c</columns>
+    <columns>Informant_last_name__c</columns>
+    <columns>Stage__c</columns>
+    <columns>OWNER.ALIAS</columns>
+    <filterScope>Mine</filterScope>
+    <label>My Cases</label>
+</ListView>
