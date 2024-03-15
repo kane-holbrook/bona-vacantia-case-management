@@ -1,0 +1,153 @@
+<apex:page controller="SOSFinanceController" lightningStylesheets="true">
+    <apex:slds />
+    <apex:includeLightning />
+    
+    <link rel="stylesheet" href="https://cdn.metroui.org.ua/current/metro.css" />
+
+    
+    <div class="slds-scope" style="width:50%; margin-left:auto; margin-right:auto; margin-top:4em; margin-bottom:4em;">
+        <h1 class="slds-text-heading_large slds-m-bottom_x-large">{!MatterCode}</h1>
+        
+        <h1 class="slds-text-heading_medium slds-m-bottom_x-large">Post slips</h1>
+        
+        <apex:form >
+        	<apex:commandButton action="{!createPostingSlip}" value="Post accrual AND reverse accrual" />
+            <br /><br />
+        </apex:form>
+        <apex:variable value="{!0}" var="num" />
+        <table class="table" data-role="table" style="width:100%;">
+            <thead>
+                
+            <!--
+{
+      "BANK": "01",
+      "BANK-DESC": "Office - Matter A/c",
+      "BRANCH": "001",
+      "CL-NAME": "  TAZA LIMITED",
+      "CONTRA-CODE": "",
+      "CPD": false,
+      "CSB-STAGE": "",
+      "CURRENCY-CODE": "",
+      "DATE-CREATED": "2024-02-06T00:00:00",
+      "DESCRIPTION": "TAZA LIMITED   {VM} dis 31/05/2016 08197575",
+      "DRCR": "CR",
+      "DRCR-DESC": "Credit",
+      "FEE-EARNER": "VM",
+      "GROSS-VAL": 0.0,
+      "INSTRUCTION": "Office - Matter A/c,Cheque,Received",
+      "MKT-ACTIVITY": "",
+      "MT-CODE": "21609809/2",
+      "NARRATIVE": "RL 20240206 1124",
+      "NET": 145.21,
+      "NL-CODE": "",
+      "NOTES": "",
+      "PAYEE": "test",
+      "PERIOD": 0,
+      "POST-TYPE": "01",
+      "POST-TYPE-DESC": "Cheque",
+      "POSTED": false,
+      "REFERENCE": "",
+      "SLIP-STATUS": "Not Posted",
+      "USER-ID": "ISHELP",
+      "VAT-CODE": "",
+      "VAT-VAL": 0.0,
+      "YEAR": "",
+      "SYS-ROWID": "0x0000000000078b13",
+      "SYS-ROW-OVERRIDE": false
+    },
+-->
+                
+                <tr class="slds-line-height_reset">
+                    <th data-sortable="true">Branch</th>
+                    <th data-sortable="true">Date</th>
+                    <th data-sortable="true">Net Value</th>
+                    <th data-sortable="true">VC</th>
+                    <th data-sortable="true">VAT Amount</th>
+                    <th data-sortable="true">Narrative</th>
+                    <th data-sortable="true">Bank</th>
+                    <th data-sortable="true">Ref/Cheque No</th>
+                    <th data-sortable="true">Type</th>
+                    <th data-sortable="true">Entered By</th>
+                </tr>
+            </thead>
+            
+            <tbody>
+                <apex:repeat var="m" value="{!PostSlips}">
+                    <tr>
+                        <td>{!m['BRANCH']}</td>
+                        <td>{!m['DATE-CREATED']}</td>
+                        <td>{!m['NET']}</td>
+                        <td>{!m['VAT-CODE']}</td>
+                        <td>{!m['VAT-VAL']}</td>
+                        <td>{!m['NARRATIVE']}</td>
+                        <td>{!m['BANK']}</td>
+                        <td>{!m['REFERENCE']}</td>
+                        <td>{!m['DRCR']} ({!IF(m['DRCR'] = 'DR', 'Reversal', 'Accrual')})</td>
+                        <td>{!m['USER-ID']}</td>
+                    </tr>
+                    <apex:variable value="{!num + 1}" var="num" />
+                </apex:repeat>
+            </tbody>
+            
+        </table>
+        <b>Count ----- </b> {!num}
+        <apex:variable value="{!0}" var="num" />
+        <br /><br /><br />
+        
+        <h1 class="slds-text-heading_medium slds-m-bottom_x-large">Ledger</h1>
+        
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered" style="width:100%;">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th>Post Date</th>
+                    <th>Post Type</th>
+                    <th>Narrative</th>
+                    <th>Office Debit</th>
+                    <th>Office Credit</th>
+                    <th>Office Balance</th>
+                    <th>Ref</th>
+                    <th>Bill/Pay</th>
+                    <th>Code</th>
+                    <th>Outst</th>
+                    <th>VAT Code</th>
+                    <th>VAT Value</th>
+                    <th>Trans-No</th>
+                </tr>
+            </thead>
+            
+            <tbody>
+                <apex:repeat var="m" value="{!Ledger}">
+                    <tr>
+                        
+                        <td>{!m['POST-DATE']}</td>
+                        <td>{!m['POST-TYPE']}</td>
+                        <td>{!m['NARRATIVE']}</td>
+                        <td>{!m['OFFICE-DEBIT']}</td>
+                        <td>{!m['OFFICE-CREDIT']}</td>
+                        <td>{!m['OFFICE-BALANCE']}</td>
+                        <td>{!m['REFERENCE']}</td>
+                        <td>{!m['BILL-NO']}</td>
+                        <td>{!m['CONTRA-CODE']}</td>
+                        <td>{!m['OUTST-VALUE']}</td>
+                        <td>{!m['VAT-CODE']}</td>
+                        <td>{!m['VAT-VALUE']}</td>
+                        <td>{!m['TRANS-NO']}</td>
+                        <apex:variable value="{!num + 1}" var="num" />
+                    </tr>
+                </apex:repeat>
+            </tbody>
+            
+        </table>
+        
+        <b>Count ----- </b> {!num}
+        <br /><br /><br />
+        
+        <h1 class="slds-text-heading_medium slds-m-bottom_x-large">Raw Data</h1>
+        <pre style="height:90vh; overflow:auto; background-color:#eaeaea; border:1px solid #ccc; font-size:125%; width:90%; margin-left:auto; margin-right:auto;">
+<apex:outputText value="{!Output}" />
+</pre>
+    </div>
+    
+    <script src="https://cdn.metroui.org.ua/current/metro.js">
+    </script>
+</apex:page>
