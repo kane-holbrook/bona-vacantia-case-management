@@ -8,7 +8,7 @@ const events = {};
 
 const samePageRef = (pageRef1, pageRef2) => {
     const obj1 = pageRef1.attributes;
-    const obj2 = pageRef2.attributes; 
+    const obj2 = pageRef2.attributes;
     return Object.keys(obj1)
         .concat(Object.keys(obj2))
         .every(key => {
@@ -30,15 +30,21 @@ const registerListener = (eventName, callback, thisArg) => {
         );
     }
 
+    console.log('registerListener', eventName, callback, thisArg);
+
     if (!events[eventName]) {
         events[eventName] = [];
     }
+
+    console.log('events', events);
     const duplicate = events[eventName].find(listener => {
         return listener.callback === callback && listener.thisArg === thisArg;
     });
     if (!duplicate) {
         events[eventName].push({ callback, thisArg });
     }
+
+    console.log('events', events);
 };
 
 /**
@@ -75,11 +81,15 @@ const unregisterAllListeners = thisArg => {
  * @param {*} payload - Payload of the event to fire.
  */
 const fireEvent = (pageRef, eventName, payload) => {
+    console.log('fireEvent', pageRef, eventName, payload);
     if (events[eventName]) {
         const listeners = events[eventName];
+        console.log('listeners', listeners);
         listeners.forEach(listener => {
+            console.log('listener.thisArg.pageRef', listener.thisArg.pageRef);
             if (samePageRef(pageRef, listener.thisArg.pageRef)) {
                 try {
+                    console.log('listener.payload', payload);
                     listener.callback.call(listener.thisArg, payload);
                 } catch (error) {
                     // fail silently

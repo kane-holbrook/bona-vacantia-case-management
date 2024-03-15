@@ -14,6 +14,7 @@ const extensionMapping = {
     'ppt': 'PowerPoint Presentation (.ppt)',
     'pptx': 'PowerPoint Presentation (.pptx)',
     'csv': 'CSV Spreadsheet (.csv)',
+    'wpd': 'WordPerfect Document (.wpd)',
     'png': 'Image (.png)',
     'jpg': 'Image (.jpg)',
     'jpeg': 'Image (.jpeg)',

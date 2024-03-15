@@ -38,6 +38,7 @@ export default class PdftronWebviewerContainer extends LightningElement {
 
     handleSingleSelectionChange(event) {
         console.log(event.detail[0]);
+        console.log('test');
         this.checkForErrors();
 
         if (event.detail.length < 1) {
