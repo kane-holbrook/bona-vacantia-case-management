@@ -8,5 +8,6 @@
     <providerType>OpenIdConnect</providerType>
     <sendAccessTokenInHeader>true</sendAccessTokenInHeader>
     <sendClientCredentialsInHeader>false</sendClientCredentialsInHeader>
+    <sendSecretInApis>true</sendSecretInApis>
     <tokenUrl>https://login.microsoftonline.com/common/oauth2/token</tokenUrl>
 </AuthProvider>

@@ -8,6 +8,10 @@
         <layoutColumns>
             <layoutItems>
                 <behavior>Readonly</behavior>
+                <field>TotalProductLineItemCount</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
                 <field>TotalLineItemsWithErrors</field>
             </layoutItems>
             <layoutItems>
@@ -43,6 +47,10 @@
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>OwnerId</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Required</behavior>
+                <field>AccountId</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
@@ -92,6 +100,10 @@
         <editHeading>true</editHeading>
         <label>PaymentInformation</label>
         <layoutColumns>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>PaymentMethodId</field>
+            </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
                 <field>IsRepricingNeeded</field>
@@ -160,6 +172,7 @@
         <style>CustomLinks</style>
     </layoutSections>
     <miniLayout>
+        <fields>TotalProductLineItemCount</fields>
         <fields>TotalLineItemsWithErrors</fields>
         <fields>TotalAdjustmentAmount</fields>
     </miniLayout>

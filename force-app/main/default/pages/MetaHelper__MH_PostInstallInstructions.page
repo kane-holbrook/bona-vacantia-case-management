@@ -1,0 +1,55 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false">
+    <style type="text/css">
+        /* Define custom styles for the page */
+        .container {
+            margin: 20px auto;
+            max-width: 600px;
+            text-align: center;
+        }
+        .keyPoints{
+            text-align: left;
+        }
+        .heading {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .description {
+            font-size: 18px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 18px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-top: 20px;
+        }
+        .button:hover {
+            background-color: #3E8E41;
+        }
+    </style>
+    
+    <div class="container">
+        <div class="heading">Post-Install Instructions</div>
+        <div class="description">
+            Thank you for installing our app! To get started, please follow the instructions below:
+            <ul class="keyPoints">
+                <li>Step 1: Click on App Launcher menu item, then type Field Create Wizard.</li>
+                <li>Step 2: Open Field Create Wizard lightning tab.</li>
+                <li>Step 3: Now you have to authorize the app if not done earlier. 
+                    To authorize click on Authorize User button. If already authorized then ignored this step.</li>
+                <li>Step 4: On the main Field Create Wizard UI, select the object on which you have to create fields.</li>
+                <li>Step 5: Fill the required details of fields and select data type and proceed with Deploy Fields button.
+                    If you want to create multiple fields on same object then add more rows to create multiple fields.
+                </li>
+                <li>Step 6: You can also set the FLS of the fields using the profile button present in each rows.</li>
+                </ul>
+        </div>
+        <a target="_top" href="{!$Site.BaseUrl}/lightning/n/MetaHelper__Field_Create_Wizard" class="button">Open App</a>
+    </div>
+</apex:page>

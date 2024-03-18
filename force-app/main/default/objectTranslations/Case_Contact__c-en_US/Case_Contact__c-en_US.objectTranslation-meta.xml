@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Case Contact</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Case Contacts</value>
+    </caseValues>
+    <layouts>
+        <layout>Administrator</layout>
+        <sections>
+            <label></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Applicants</layout>
+        <sections>
+            <label></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Beneficiaries</layout>
+        <sections>
+            <label></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Claimant</layout>
+        <sections>
+            <label></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Claimant&apos;s Solicitors</layout>
+        <sections>
+            <label></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Executors</layout>
+        <sections>
+            <label></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Informant</layout>
+        <sections>
+            <label></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Other Addresses</layout>
+        <sections>
+            <label></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Witnesses</layout>
+        <sections>
+            <label></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <recordTypes>
+        <label></label>
+        <name>Administrator</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>Applicants</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>Beneficiaries</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>Claimant</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>Claimant_s_Solicitors</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>Executors</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>Informant</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>Other_Addresses</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>Witnesses</name>
+    </recordTypes>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

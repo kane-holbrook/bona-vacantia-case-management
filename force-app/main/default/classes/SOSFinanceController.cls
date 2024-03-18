@@ -26,6 +26,8 @@ public class SOSFinanceController
             
             Output = responseBody;
             Data = (Map<String, Object>)JSON.deserializeUntyped(responseBody);
+
+            System.debug('Data: ' + Data);
         } else {
             System.debug('HTTP Request failed with status code: ' + res.getStatusCode() + ' ' + res.getBody());
         }
@@ -60,11 +62,21 @@ public class SOSFinanceController
     
     public object getPostSlips()
     {
-        return Data.containsKey('dsPostSlipCreate') ? Data.get('dsPostSlipCreate') : new Map<string, object>();
+        try {
+            return Data.containsKey('dsPostSlipCreate') ? Data.get('dsPostSlipCreate') : new Map<string, object>();
+        } catch (Exception e) {
+            return new Map<string, object>();
+        }
     }
     
     public object getLedger()
     {
-        return Data.containsKey('dsaccledger') ? Data.get('dsaccledger') : new Map<string, object>();
+        try {
+            return Data.containsKey('dsaccledger') ? Data.get('dsaccledger') : new Map<string, object>();
+        } catch (Exception e) {
+            return new Map<string, object>();
+        }
     }
+    
+
 }

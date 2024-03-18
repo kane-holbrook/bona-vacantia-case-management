@@ -8,43 +8,10 @@
         <plural>true</plural>
         <value>Estate and Accruals</value>
     </caseValues>
-    <fields>
-        <label><!-- BV Case --></label>
-        <name>BV_Case__c</name>
-        <relationshipLabel><!-- Estate and Accruals --></relationshipLabel>
-    </fields>
-    <fields>
-        <label><!-- Balance of Accruals --></label>
-        <name>Date_of_Death_Summary__c</name>
-    </fields>
-    <fields>
-        <label><!-- Deeds --></label>
-        <name>Deeds__c</name>
-    </fields>
-    <fields>
-        <label><!-- Jewellery --></label>
-        <name>Jewellery__c</name>
-    </fields>
-    <fields>
-        <label><!-- Keys --></label>
-        <name>Keys__c</name>
-    </fields>
-    <fields>
-        <label><!-- Balance of Liabilities --></label>
-        <name>Liability_at_Date_of_Death_Summary__c</name>
-    </fields>
-    <fields>
-        <label><!-- NINO --></label>
-        <name>NINO__c</name>
-    </fields>
-    <fields>
-        <label><!-- Net Value --></label>
-        <name>Net_Value__c</name>
-    </fields>
     <layouts>
         <layout>EstateAccrual Layout</layout>
         <sections>
-            <label><!-- Custom Links --></label>
+            <label></label>
             <section>Custom Links</section>
         </sections>
     </layouts>

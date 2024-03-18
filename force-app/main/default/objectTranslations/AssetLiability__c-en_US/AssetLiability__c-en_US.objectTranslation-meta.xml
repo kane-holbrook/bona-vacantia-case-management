@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Asset or Liability</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Assets &amp; Liabilities</value>
+    </caseValues>
+    <layouts>
+        <layout>Bank/Building Society</layout>
+        <sections>
+            <label></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Cash</layout>
+        <sections>
+            <label></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Deed Holder</layout>
+        <sections>
+            <label></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Employment</layout>
+        <sections>
+            <label></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Estate Agent</layout>
+        <sections>
+            <label></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Funeral expenses</layout>
+        <sections>
+            <label></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Furniture/Effects</layout>
+        <sections>
+            <label></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Inland Revenue</layout>
+        <sections>
+            <label></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Insurance Policies</layout>
+        <sections>
+            <label></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Jewellery</layout>
+        <sections>
+            <label></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Landlords/Agents</layout>
+        <sections>
+            <label></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Lease</layout>
+        <sections>
+            <label></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Local Authority</layout>
+        <sections>
+            <label></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Memorial</layout>
+        <sections>
+            <label></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Mortgages</layout>
+        <sections>
+            <label></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>National Savings</layout>
+        <sections>
+            <label></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Nursing home fees</layout>
+        <sections>
+            <label></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Other Assets</layout>
+        <sections>
+            <label></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Other Creditors</layout>
+        <sections>
+            <label></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Pensions</layout>
+        <sections>
+            <label></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Property Details</layout>
+        <sections>
+            <label></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Rent</layout>
+        <sections>
+            <label></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>State Benefit</layout>
+        <sections>
+            <label></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Stockbrokers</layout>
+        <sections>
+            <label></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Stocks/Shares</layout>
+        <sections>
+            <label></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Tenant</layout>
+        <sections>
+            <label></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Unit Trusts/PEPs</layout>
+        <sections>
+            <label></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Utilities/Services</layout>
+        <sections>
+            <label></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Vehicle</layout>
+        <sections>
+            <label></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <recordTypes>
+        <label></label>
+        <name>Bank_Building_Society</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>Cash</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>Deed_Holder</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>Employment</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>Estate_Agent</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>Funeral_Expenses</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>Furniture_Effects</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>Inland_Revenue</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>Insurance_Policies</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>Jewellery</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>Landlord_Agent</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>Lease</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>Local_Authority</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>Memorial</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>Mortgages</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>National_Savings</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>Nursing_home_fees</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>Other_Assets</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>Other_Creditors</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>Pensions</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>Property_Details</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>Rent</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>State_Benefit</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>Stockbrokers</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>Stocks_Shares</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>Tenant</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>Unit_Trusts_PEPs</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>Utilities_Services</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>Vehicle</name>
+    </recordTypes>
+    <startsWith>Vowel</startsWith>
+</CustomObjectTranslation>

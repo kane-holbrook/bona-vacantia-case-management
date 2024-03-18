@@ -8,26 +8,5 @@
         <plural>true</plural>
         <value>Liabilities</value>
     </caseValues>
-    <fields>
-        <label><!-- Accruals Liability Value --></label>
-        <name>Accruals_Liability_Value__c</name>
-    </fields>
-    <fields>
-        <label><!-- Estate and Accrual --></label>
-        <name>Estate_and_Accrual__c</name>
-        <relationshipLabel><!-- Liabilities --></relationshipLabel>
-    </fields>
-    <fields>
-        <label><!-- Liabilities Paid --></label>
-        <name>Liabilities_Paid__c</name>
-    </fields>
-    <fields>
-        <label><!-- Liability at Date of Death --></label>
-        <name>Liability_at_Date_of_Death__c</name>
-    </fields>
-    <fields>
-        <label><!-- Liability owed to and reason --></label>
-        <name>Liability_owed_to_and_reason__c</name>
-    </fields>
     <startsWith>Consonant</startsWith>
 </CustomObjectTranslation>

@@ -1,0 +1,57 @@
+<apex:page controller="MetaHelper.MH_ConfigureController" showHeader="false" sidebar="false" standardStylesheets="false">
+    <style type="text/css">
+        /* Define custom styles for the page */
+        .container {
+            margin: 20px auto;
+            max-width: 600px;
+            text-align: center;
+        }
+        .heading {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .description {
+            font-size: 18px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 18px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-top: 20px;
+        }
+        .button:hover {
+            background-color: #3E8E41;
+        }
+    </style>
+    
+    <div class="container">
+        <apex:pageBlock rendered="{!NOT(authorizedUser)}">
+        <div class="heading">Authorize Access</div>
+        <div class="description">
+            To use our app, you need to authorize us to get started with bulk field creator. This will allow us to provide you with the full range of features and functionality.
+            <br/>
+            After successful authorization it will redirect you to Bulk Field Creator.
+        </div>
+        <a target="_top" href="{!authorizeUrl}" class="button">Authorize User</a>
+        </apex:pageBlock>
+        <apex:pageBlock rendered="{!(authorizedUser)}">
+            <div class="heading">Already Authorized!</div>
+            <div class="description">
+                To open our app you can click on the button below, or you can search Field Create Wizard from App Launcher.
+                <br/>
+                You can also re-authorize with another user.
+            </div>
+            <a target="_top" href="{!$Site.BaseUrl}/lightning/n/MetaHelper__Field_Create_Wizard" class="button">Open App</a>
+            <a target="_top" href="{!authorizeUrl}" class="button">ReAuthorize User</a>
+
+        </apex:pageBlock>
+    </div>
+
+</apex:page>

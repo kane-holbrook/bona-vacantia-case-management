@@ -8,26 +8,5 @@
         <plural>true</plural>
         <value>Assets</value>
     </caseValues>
-    <fields>
-        <label><!-- Accruals Asset Value --></label>
-        <name>Accruals_Asset_Value__c</name>
-    </fields>
-    <fields>
-        <label><!-- Asset Holder Name and Ref Number --></label>
-        <name>Asset_Holder_Name_and_Ref_Number__c</name>
-    </fields>
-    <fields>
-        <label><!-- Date of Death Value --></label>
-        <name>Date_of_Death_Value__c</name>
-    </fields>
-    <fields>
-        <label><!-- Estate and Accrual --></label>
-        <name>Estate_and_Accrual__c</name>
-        <relationshipLabel><!-- Assets --></relationshipLabel>
-    </fields>
-    <fields>
-        <label><!-- Value of Assets Collected --></label>
-        <name>Value_of_Assets_Collected__c</name>
-    </fields>
     <startsWith>Consonant</startsWith>
 </CustomObjectTranslation>

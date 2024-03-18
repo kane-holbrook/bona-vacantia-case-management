@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>qsyd_FE__All</fullName>
+    <columns>NAME</columns>
+    <columns>qsyd_FE__ContentDocumentId__c</columns>
+    <columns>qsyd_FE__Folder__c</columns>
+    <columns>qsyd_FE__Tags__c</columns>
+    <columns>qsyd_FE__Label__c</columns>
+    <columns>qsyd_FE__FileType__c</columns>
+    <columns>qsyd_FE__FileExtension__c</columns>
+    <columns>qsyd_FE__FileOwner__c</columns>
+    <columns>qsyd_FE__ContentSize__c</columns>
+    <columns>qsyd_FE__LinkedEntityId__c</columns>
+    <columns>OBJECT_ID</columns>
+    <columns>UPDATEDBY_USER</columns>
+    <columns>qsyd_FE__IsDeleted__c</columns>
+    <filterScope>Everything</filterScope>
+    <label>All</label>
+</ListView>

@@ -8,185 +8,48 @@
         <plural>true</plural>
         <value>BV Cases</value>
     </caseValues>
-    <fields>
-        <label><!-- Balance at date of death --></label>
-        <name>Balance_at_date_of_death__c</name>
-    </fields>
-    <fields>
-        <label><!-- Current balance --></label>
-        <name>Current_balance__c</name>
-    </fields>
-    <fields>
-        <label><!-- Deceased date of birth --></label>
-        <name>Deceased_date_of_birth__c</name>
-    </fields>
-    <fields>
-        <label><!-- Deceased date of death --></label>
-        <name>Deceased_date_of_death__c</name>
-    </fields>
-    <fields>
-        <label><!-- Deceased did not leave valid will --></label>
-        <name>Deceased_did_not_leave_valid_will__c</name>
-    </fields>
-    <fields>
-        <label><!-- Deceased last known address --></label>
-        <name>Deceased_last_known_address__c</name>
-    </fields>
-    <fields>
-        <label><!-- Deceased lived in England/Wales --></label>
-        <name>Deceased_lived_in_England_Wales__c</name>
-    </fields>
-    <fields>
-        <label><!-- Deceased marital status --></label>
-        <name>Deceased_martial_status__c</name>
-        <picklistValues>
-            <masterLabel>Civil Partnership</masterLabel>
-            <translation><!-- Civil Partnership --></translation>
-        </picklistValues>
-        <picklistValues>
-            <masterLabel>Divorced</masterLabel>
-            <translation><!-- Divorced --></translation>
-        </picklistValues>
-        <picklistValues>
-            <masterLabel>Married</masterLabel>
-            <translation><!-- Married --></translation>
-        </picklistValues>
-        <picklistValues>
-            <masterLabel>Single</masterLabel>
-            <translation><!-- Single --></translation>
-        </picklistValues>
-        <picklistValues>
-            <masterLabel>Widowed</masterLabel>
-            <translation><!-- Widowed --></translation>
-        </picklistValues>
-    </fields>
-    <fields>
-        <label><!-- Deceased name --></label>
-        <name>Deceased_name__c</name>
-    </fields>
-    <fields>
-        <label><!-- Deceased other known addresses --></label>
-        <name>Deceased_other_known_addresses__c</name>
-    </fields>
-    <fields>
-        <label><!-- Deceased other names --></label>
-        <name>Deceased_other_names__c</name>
-    </fields>
-    <fields>
-        <label><!-- Deceased owned this property --></label>
-        <name>Deceased_owned_this_property__c</name>
-    </fields>
-    <fields>
-        <label><!-- Deceased place of birth --></label>
-        <name>Deceased_place_of_birth__c</name>
-    </fields>
-    <fields>
-        <label><!-- Funeral expenses paid --></label>
-        <name>Funeral_expanses_paid__c</name>
-    </fields>
-    <fields>
-        <label><!-- Funeral expenses paid from account --></label>
-        <name>Funeral_expenses_paid_from_account__c</name>
-    </fields>
-    <fields>
-        <label><!-- Informant email address --></label>
-        <name>Informant_email_address__c</name>
-    </fields>
-    <fields>
-        <label><!-- Informant first name --></label>
-        <name>Informant_first_name__c</name>
-    </fields>
-    <fields>
-        <label><!-- Informant last name --></label>
-        <name>Informant_last_name__c</name>
-    </fields>
-    <fields>
-        <label><!-- Informant mailing city/town --></label>
-        <name>Informant_mailing_city_town__c</name>
-    </fields>
-    <fields>
-        <label><!-- Informant mailing country --></label>
-        <name>Informant_mailing_country__c</name>
-    </fields>
-    <fields>
-        <label><!-- Informant mailing county --></label>
-        <name>Informant_mailing_county__c</name>
-    </fields>
-    <fields>
-        <label><!-- Informant mailing postal code --></label>
-        <name>Informant_mailing_postal_code__c</name>
-    </fields>
-    <fields>
-        <label><!-- Informant mailing street --></label>
-        <name>Informant_mailing_street__c</name>
-    </fields>
-    <fields>
-        <label><!-- Informant telephone number --></label>
-        <name>Informant_telephone_number__c</name>
-    </fields>
-    <fields>
-        <label><!-- Net estate over £500 --></label>
-        <name>Net_estate_over500__c</name>
-    </fields>
-    <fields>
-        <label><!-- No grant issued for estate --></label>
-        <name>No_grant_issued_for_estate__c</name>
-    </fields>
-    <fields>
-        <label><!-- No known entitled relatives --></label>
-        <name>No_known_entitled_relatives__c</name>
-    </fields>
-    <fields>
-        <label><!-- Relationship of the informant --></label>
-        <name>Relationship_of_the_informant__c</name>
-    </fields>
-    <fields>
-        <label><!-- Stage --></label>
-        <name>Stage__c</name>
-        <picklistValues>
-            <masterLabel>Advertising (External)</masterLabel>
-            <translation><!-- Advertising (External) --></translation>
-        </picklistValues>
-        <picklistValues>
-            <masterLabel>Advertising (Internal)</masterLabel>
-            <translation><!-- Advertising (Internal) --></translation>
-        </picklistValues>
-        <picklistValues>
-            <masterLabel>Approval</masterLabel>
-            <translation><!-- Approval --></translation>
-        </picklistValues>
-        <picklistValues>
-            <masterLabel>Awaiting Grant</masterLabel>
-            <translation><!-- Awaiting Grant --></translation>
-        </picklistValues>
-        <picklistValues>
-            <masterLabel>Investigating</masterLabel>
-            <translation><!-- Investigating --></translation>
-        </picklistValues>
-        <picklistValues>
-            <masterLabel>Liquidation</masterLabel>
-            <translation><!-- Liquidation --></translation>
-        </picklistValues>
-        <picklistValues>
-            <masterLabel>Put Away</masterLabel>
-            <translation><!-- Put Away --></translation>
-        </picklistValues>
-        <picklistValues>
-            <masterLabel>Receipt</masterLabel>
-            <translation><!-- Receipt --></translation>
-        </picklistValues>
-    </fields>
+    <layouts>
+        <layout>Advertising</layout>
+        <sections>
+            <label></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label></label>
+            <section>Fields</section>
+        </sections>
+    </layouts>
     <layouts>
         <layout>BV Case Layout</layout>
         <sections>
-            <label><!-- Custom Links --></label>
+            <label></label>
             <section>Custom Links</section>
         </sections>
     </layouts>
     <nameFieldLabel>Case Name</nameFieldLabel>
     <quickActions>
-        <label><!-- New Estate and Accrual --></label>
+        <label></label>
         <name>Create_estate_and_accual</name>
     </quickActions>
+    <recordTypes>
+        <label></label>
+        <name>Administration_Checklist</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>Advertising</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>Hidden_screen</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>MP_s_Letters</name>
+    </recordTypes>
+    <recordTypes>
+        <label></label>
+        <name>Pre_Admin_Checklist</name>
+    </recordTypes>
     <startsWith>Consonant</startsWith>
 </CustomObjectTranslation>

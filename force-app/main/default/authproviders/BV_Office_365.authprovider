@@ -8,5 +8,6 @@
     <providerType>MicrosoftACS</providerType>
     <sendAccessTokenInHeader>false</sendAccessTokenInHeader>
     <sendClientCredentialsInHeader>false</sendClientCredentialsInHeader>
+    <sendSecretInApis>true</sendSecretInApis>
     <tokenUrl>https://accounts.accesscontrol.windows.net/glduat.onmicrosoft.com/tokens/OAuth/2?resource=00000003-0000-0ff1-ce00-000000000000/glduat.sharepoint.com@glduat.onmicrosoft.com</tokenUrl>
 </AuthProvider>

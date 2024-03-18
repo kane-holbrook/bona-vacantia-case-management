@@ -49,6 +49,7 @@ export default class AssetsLiabilitiesList extends NavigationMixin(LightningElem
 
     get iframeSrc() {
         // Construct the URL for the iframe
+        // You'll need the base URL of your Salesforce Org and the record ID
         return `${this.recordUrl}/${this.selectedRecordId}/view`;
     }
 }

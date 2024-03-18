@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PathAssistant xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <entityName>BV_Case__c</entityName>
+    <fieldName>Stage__c</fieldName>
+    <masterLabel>Case Stage</masterLabel>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;Estate advertised through two newspapers.&lt;/p&gt;</info>
+        <picklistValueName>Advertising (External)</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;Estate advertised on BV website for 90 days.&lt;/p&gt;</info>
+        <picklistValueName>Advertising (Internal)</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;In special circumstances, approval goes through team leader or Caroline.&lt;/p&gt;</info>
+        <picklistValueName>Approval</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;Applying for grant via Probate Office&lt;/p&gt;</info>
+        <picklistValueName>Awaiting Grant</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;Case officer investigates assets and liabilities, writing to asset holders and creditors.&lt;/p&gt;</info>
+        <picklistValueName>Investigating</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;Assets are collected and liquidated.&lt;/p&gt;</info>
+        <picklistValueName>Liquidation</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <fieldNames>OwnerId</fieldNames>
+        <info>&lt;p&gt;Team leader reviews quality and confirms receipt.&lt;/p&gt;</info>
+        <picklistValueName>Receipt</picklistValueName>
+    </pathAssistantSteps>
+    <recordTypeName>__MASTER__</recordTypeName>
+</PathAssistant>

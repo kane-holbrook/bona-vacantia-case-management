@@ -5,7 +5,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -13,7 +33,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -21,7 +61,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>New</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -29,7 +89,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
@@ -40,166 +120,7 @@
     <enableSearch>true</enableSearch>
     <externalDataSource>BV_Sharepoint</externalDataSource>
     <externalName>items_BV_Sharepoint</externalName>
-    <fields>
-        <fullName>Author__c</fullName>
-        <externalDeveloperName>Author</externalDeveloperName>
-        <externalId>false</externalId>
-        <isFilteringDisabled>false</isFilteringDisabled>
-        <isNameField>false</isNameField>
-        <isSortingDisabled>false</isSortingDisabled>
-        <label>Author</label>
-        <length>255</length>
-        <readOnlyProxy>true</readOnlyProxy>
-        <required>false</required>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Comment__c</fullName>
-        <externalDeveloperName>Comment</externalDeveloperName>
-        <externalId>false</externalId>
-        <isFilteringDisabled>false</isFilteringDisabled>
-        <isNameField>false</isNameField>
-        <isSortingDisabled>false</isSortingDisabled>
-        <label>Comment</label>
-        <length>32000</length>
-        <readOnlyProxy>true</readOnlyProxy>
-        <type>LongTextArea</type>
-        <visibleLines>10</visibleLines>
-    </fields>
-    <fields>
-        <fullName>ContentLength__c</fullName>
-        <externalDeveloperName>ContentLength</externalDeveloperName>
-        <externalId>false</externalId>
-        <isFilteringDisabled>false</isFilteringDisabled>
-        <isNameField>false</isNameField>
-        <isSortingDisabled>false</isSortingDisabled>
-        <label>ContentLength</label>
-        <precision>18</precision>
-        <readOnlyProxy>true</readOnlyProxy>
-        <required>false</required>
-        <scale>0</scale>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>CreationDate__c</fullName>
-        <externalDeveloperName>CreationDate</externalDeveloperName>
-        <externalId>false</externalId>
-        <isFilteringDisabled>false</isFilteringDisabled>
-        <isNameField>false</isNameField>
-        <isSortingDisabled>false</isSortingDisabled>
-        <label>CreationDate</label>
-        <readOnlyProxy>true</readOnlyProxy>
-        <required>false</required>
-        <type>DateTime</type>
-    </fields>
-    <fields>
-        <fullName>DocumentType__c</fullName>
-        <externalDeveloperName>DocumentType</externalDeveloperName>
-        <externalId>false</externalId>
-        <isFilteringDisabled>false</isFilteringDisabled>
-        <isNameField>false</isNameField>
-        <isSortingDisabled>false</isSortingDisabled>
-        <label>DocumentType</label>
-        <length>255</length>
-        <required>false</required>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>DownloadUrl__c</fullName>
-        <externalDeveloperName>DownloadUrl</externalDeveloperName>
-        <externalId>false</externalId>
-        <isFilteringDisabled>true</isFilteringDisabled>
-        <isNameField>false</isNameField>
-        <isSortingDisabled>true</isSortingDisabled>
-        <label>DownloadUrl</label>
-        <readOnlyProxy>true</readOnlyProxy>
-        <required>false</required>
-        <type>Url</type>
-    </fields>
-    <fields>
-        <fullName>IsFolder__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalDeveloperName>IsFolder</externalDeveloperName>
-        <externalId>false</externalId>
-        <isFilteringDisabled>false</isFilteringDisabled>
-        <isNameField>false</isNameField>
-        <isSortingDisabled>true</isSortingDisabled>
-        <label>IsFolder</label>
-        <readOnlyProxy>true</readOnlyProxy>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>MimeType__c</fullName>
-        <externalDeveloperName>MimeType</externalDeveloperName>
-        <externalId>false</externalId>
-        <isFilteringDisabled>false</isFilteringDisabled>
-        <isNameField>false</isNameField>
-        <isSortingDisabled>false</isSortingDisabled>
-        <label>MimeType</label>
-        <length>255</length>
-        <readOnlyProxy>true</readOnlyProxy>
-        <required>false</required>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Name__c</fullName>
-        <externalDeveloperName>Name</externalDeveloperName>
-        <externalId>false</externalId>
-        <isFilteringDisabled>false</isFilteringDisabled>
-        <isNameField>true</isNameField>
-        <isSortingDisabled>false</isSortingDisabled>
-        <label>Name</label>
-        <length>255</length>
-        <readOnlyProxy>true</readOnlyProxy>
-        <required>false</required>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>ParentId__c</fullName>
-        <externalDeveloperName>ParentId</externalDeveloperName>
-        <externalId>false</externalId>
-        <isFilteringDisabled>false</isFilteringDisabled>
-        <isNameField>false</isNameField>
-        <isSortingDisabled>true</isSortingDisabled>
-        <label>ParentId</label>
-        <length>255</length>
-        <readOnlyProxy>true</readOnlyProxy>
-        <required>false</required>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>UpdateDate__c</fullName>
-        <externalDeveloperName>UpdateDate</externalDeveloperName>
-        <externalId>false</externalId>
-        <isFilteringDisabled>false</isFilteringDisabled>
-        <isNameField>false</isNameField>
-        <isSortingDisabled>false</isSortingDisabled>
-        <label>UpdateDate</label>
-        <readOnlyProxy>true</readOnlyProxy>
-        <required>false</required>
-        <type>DateTime</type>
-    </fields>
-    <fields>
-        <fullName>UpdatedBy__c</fullName>
-        <externalDeveloperName>UpdatedBy</externalDeveloperName>
-        <externalId>false</externalId>
-        <isFilteringDisabled>false</isFilteringDisabled>
-        <isNameField>false</isNameField>
-        <isSortingDisabled>false</isSortingDisabled>
-        <label>UpdatedBy</label>
-        <length>255</length>
-        <readOnlyProxy>true</readOnlyProxy>
-        <required>false</required>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
     <label>Sharepoint Document</label>
     <pluralLabel>Sharepoint Documents</pluralLabel>
-    <searchLayouts/>
+    <searchLayouts></searchLayouts>
 </CustomObject>

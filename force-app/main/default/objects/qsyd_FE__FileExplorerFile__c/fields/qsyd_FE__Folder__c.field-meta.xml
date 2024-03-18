@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>qsyd_FE__Folder__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <deprecated>false</deprecated>
+    <description>File folder</description>
+    <externalId>false</externalId>
+    <inlineHelpText>File folder</inlineHelpText>
+    <label>Folder</label>
+    <referenceTo>qsyd_FE__FileExplorerFolder__c</referenceTo>
+    <relationshipLabel>Files</relationshipLabel>
+    <relationshipName>File_Explorer_Files</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

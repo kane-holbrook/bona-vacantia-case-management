@@ -8,25 +8,5 @@
         <plural>true</plural>
         <value>SHDocuments</value>
     </caseValues>
-    <fields>
-        <label><!-- Created Time --></label>
-        <name>Created_Time__c</name>
-    </fields>
-    <fields>
-        <label><!-- DocumentExtension --></label>
-        <name>DocumentExtension__c</name>
-    </fields>
-    <fields>
-        <label><!-- DocumentID --></label>
-        <name>DocumentID__c</name>
-    </fields>
-    <fields>
-        <label><!-- DocumentType --></label>
-        <name>DocumentType__c</name>
-    </fields>
-    <fields>
-        <label><!-- ServerRelativeURL --></label>
-        <name>ServerRelativeURL__c</name>
-    </fields>
     <startsWith>Consonant</startsWith>
 </CustomObjectTranslation>

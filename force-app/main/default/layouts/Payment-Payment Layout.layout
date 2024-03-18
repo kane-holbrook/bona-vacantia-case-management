@@ -23,6 +23,10 @@
                 <field>PaymentAuthorizationId</field>
             </layoutItems>
             <layoutItems>
+                <behavior>Edit</behavior>
+                <field>PaymentMethodId</field>
+            </layoutItems>
+            <layoutItems>
                 <behavior>Required</behavior>
                 <field>ProcessingMode</field>
             </layoutItems>

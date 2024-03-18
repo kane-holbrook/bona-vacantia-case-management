@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <brand>
+        <headerColor>#0070D2</headerColor>
+        <logo>MetaHelper__logo_BFC</logo>
+        <logoVersion>1</logoVersion>
+        <shouldOverrideOrgTheme>true</shouldOverrideOrgTheme>
+    </brand>
+    <description>This is a Lightning App for Bulk Field Creator which gives you the ability to create multiple fields using a single UI.</description>
+    <formFactors>Small</formFactors>
+    <formFactors>Large</formFactors>
+    <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
+    <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
+    <isNavTabPersistenceDisabled>false</isNavTabPersistenceDisabled>
+    <label>Bulk Field Creator</label>
+    <navType>Standard</navType>
+    <tabs>MetaHelper__Field_Create_Wizard</tabs>
+    <uiType>Lightning</uiType>
+    <utilityBar>MetaHelper__Bulk_Field_Creator_UtilityBar</utilityBar>
+</CustomApplication>

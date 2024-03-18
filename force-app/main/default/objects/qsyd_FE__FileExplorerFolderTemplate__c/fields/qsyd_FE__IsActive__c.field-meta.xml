@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>qsyd_FE__IsActive__c</fullName>
+    <defaultValue>false</defaultValue>
+    <deprecated>false</deprecated>
+    <description>Active folders are available for selection by users</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Active folders are available for selection by users</inlineHelpText>
+    <label>Is Active?</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>
