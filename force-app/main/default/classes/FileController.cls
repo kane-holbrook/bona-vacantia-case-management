@@ -112,15 +112,15 @@ public with sharing class FileController {
         }
     }
 
-    @AuraEnabled(cacheable=true)
-    public static List<Items_BV_Sharepoint__x> getSharepointDocuments(String searchKey) {
-        // Build the SOQL query string dynamically based on search criteria
-        String query = 'SELECT Author__c, ContentLength__c, CreationDate__c, ExternalId, IsFolder__c, MimeType__c, Name__c, UpdateDate__c, UpdatedBy__c FROM Items_BV_Sharepoint__x WHERE Name__c LIKE :searchKey ORDER BY CreationDate__c DESC';
+    // @AuraEnabled(cacheable=true)
+    // public static List<Items_BV_Sharepoint__x> getSharepointDocuments(String searchKey) {
+    //     // Build the SOQL query string dynamically based on search criteria
+    //     String query = 'SELECT Author__c, ContentLength__c, CreationDate__c, ExternalId, IsFolder__c, MimeType__c, Name__c, UpdateDate__c, UpdatedBy__c FROM Items_BV_Sharepoint__x WHERE Name__c LIKE :searchKey ORDER BY CreationDate__c DESC';
         
-        // Execute the query and return the results
-        List<Items_BV_Sharepoint__x> documents = Database.query(query);
-        return documents;
-    }
+    //     // Execute the query and return the results
+    //     List<Items_BV_Sharepoint__x> documents = Database.query(query);
+    //     return documents;
+    // }
 
     public static void createSharePointFolder(String folderPath) {
         // Construct the endpoint URL for SharePoint folder creation
