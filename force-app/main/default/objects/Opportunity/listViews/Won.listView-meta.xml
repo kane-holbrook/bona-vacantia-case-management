@@ -3,12 +3,12 @@
     <fullName>Won</fullName>
     <filterScope>Everything</filterScope>
     <filters>
-        <field>OPPORTUNITY.CLOSED</field>
+        <field>OPPORTUNITY.WON</field>
         <operation>equals</operation>
         <value>1</value>
     </filters>
     <filters>
-        <field>OPPORTUNITY.WON</field>
+        <field>OPPORTUNITY.CLOSED</field>
         <operation>equals</operation>
         <value>1</value>
     </filters>

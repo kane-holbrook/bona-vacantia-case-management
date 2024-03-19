@@ -131,9 +131,13 @@
     <externalSharingModel>Private</externalSharingModel>
     <searchLayouts>
         <customTabListAdditionalFields>LocationType</customTabListAdditionalFields>
+        <customTabListAdditionalFields>VisitorAddress</customTabListAdditionalFields>
         <lookupDialogsAdditionalFields>LocationType</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>VisitorAddress</lookupDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>LocationType</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>VisitorAddress</lookupPhoneDialogsAdditionalFields>
         <searchResultsAdditionalFields>LocationType</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>VisitorAddress</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>ReadWrite</sharingModel>
 </CustomObject>

@@ -3,14 +3,14 @@
     <fullName>TodaysTasks</fullName>
     <filterScope>Mine</filterScope>
     <filters>
-        <field>ACTIVITY.TASK</field>
-        <operation>equals</operation>
-        <value>1</value>
-    </filters>
-    <filters>
         <field>TASK.CLOSED</field>
         <operation>equals</operation>
         <value>0</value>
+    </filters>
+    <filters>
+        <field>ACTIVITY.TASK</field>
+        <operation>equals</operation>
+        <value>1</value>
     </filters>
     <filters>
         <field>TASK.DUE_DATE</field>
