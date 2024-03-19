@@ -4,7 +4,7 @@
         
         <!-- Sidebar with a sticky position -->
         <div class="slds-col custom-sidebar">
-            <lightning-accordion allow-multiple-sections-open>
+            <lightning-accordion allow-multiple-sections-open if:true={recordTypeGroupsWithCounts}>
                 <template for:each={recordTypeGroupsWithCounts} for:item="group">
                     <lightning-accordion-section name={group.recordTypeName} label={group.labelWithCount} key={group.recordTypeName}>
                         <ul class="slds-m-left_medium">
@@ -19,6 +19,9 @@
                     </lightning-accordion-section>
                 </template>
             </lightning-accordion>
+            <template if:false={recordTypeGroupsWithCounts}>
+                <p>No assets/liabilities found.</p>
+            </template>
         </div>
         
         <!-- Main content area, including inline modal -->

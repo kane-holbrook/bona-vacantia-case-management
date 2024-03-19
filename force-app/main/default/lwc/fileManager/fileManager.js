@@ -406,6 +406,11 @@ export default class FileManager extends NavigationMixin(LightningElement) {
     get bvCaseName() {
         let caseName = getFieldValue(this.record.data, 'BV_Case__c.Name');
         // Replace all occurrences of '/' with '_'
-        return caseName.replace(/\//g, '_');
+
+        if (caseName) {
+            return caseName.replace(/\//g, '_');
+        } else {
+            return '';
+        }
     }
 }

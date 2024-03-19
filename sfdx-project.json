@@ -1,12 +1,8 @@
-{
-  "packageDirectories": [
-    {
-      "path": "force-app",
-      "default": true
-    }
+{ 
+"packageDirectories" : [ 
+    { "path": "force-app", "default": true}
   ],
-  "name": "dx-empty",
-  "namespace": "",
-  "sfdcLoginUrl": "https://login.salesforce.com",
-  "sourceApiVersion": "58.0"
+"namespace": "", 
+"sfdcLoginUrl" : "https://login.salesforce.com", 
+"sourceApiVersion": "55.0"
 }
