@@ -1,0 +1,13 @@
+<template>
+    <lightning-datatable
+        class="slds-table_col-bordered"
+        key-field="id"
+        data={filteredData}
+        columns={columns}
+        onrowselection={handleRowSelection}
+        default-sort-direction={defaultSorDirection}
+        sorted-direction={sortDirection}
+        sorted-by={sortedBy}
+        onsort={onHandleSort}>
+    </lightning-datatable>
+</template>

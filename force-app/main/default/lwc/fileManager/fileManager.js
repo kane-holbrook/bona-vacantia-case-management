@@ -164,7 +164,6 @@ export default class FileManager extends NavigationMixin(LightningElement) {
                 getSharePointFileDataById({ fileId: doc.Id })
                     .then(result => {
                         console.log('data by id result', result);
-
                         fireEvent(this.pageRef, 'blobSelected', result);
                     })
                     .catch(error => {

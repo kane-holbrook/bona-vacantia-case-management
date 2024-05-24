@@ -1,26 +1,10 @@
 <template>
     <template if:true={estateAccData}>
-        <div class="slds-scope">
-            <!-- Header with Reference, Name, and Date of Death -->
-            <div class="slds-grid slds-wrap slds-border_bottom">
-                <div class="slds-col slds-size_1-of-3 slds-p-around_small">
-                    <span class="slds-text-title">BV Reference: </span>
-                    <span class="slds-text-body_regular">{bvCaseData.Name}</span>
-                </div>
-                <div class="slds-col slds-size_1-of-3 slds-p-around_small">
-                    <span class="slds-text-title">Deceased Name: </span>
-                    <span class="slds-text-body_regular">{bvCaseData.Deceased_name__c}</span>
-                </div>
-                <div class="slds-col slds-size_1-of-3 slds-p-around_small">
-                    <span class="slds-text-title">Date of Death: </span>
-                    <span class="slds-text-body_regular">{bvCaseData.Deceased_date_of_death__c}</span>
-                </div>
-            </div>
-
             <!-- Datatable for Estate Records (Assets) -->
             <div class="slds-grid slds-wrap">
                 <div class="slds-col slds-size_1-of-2">
                     <lightning-datatable
+                        class="slds-table_col-bordered"
                         key-field="Id"
                         name="assets_datatable"
                         data={estateAccData.Assets__r}
@@ -35,6 +19,7 @@
                 <!-- Datatable for Accruals Records (Liabilities) -->
                 <div class="slds-col slds-size_1-of-2">
                     <lightning-datatable
+                        class="slds-table_col-bordered"
                         key-field="Id"
                         name="liabilities_datatable"
                         data={estateAccData.Liabilities__r}

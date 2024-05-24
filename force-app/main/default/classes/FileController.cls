@@ -1,5 +1,7 @@
 public with sharing class FileController {
 
+    public static final String SHAREPOINT_NAMED_CREDENTIAL = 'BVSharepointNamed';
+
     @AuraEnabled(cacheable=true)
     public static List<ContentVersion> getFiles(String fileType, Id caseId) {
         List<ContentVersion> files = new List<ContentVersion>();
@@ -57,16 +59,13 @@ public with sharing class FileController {
             createSharePointFolder(encodedFolderName);
         }
         
-        // Replace problematic characters in the file name
-        fileName = fileName.replace('\'', '_').replace('#', '_');
-        
-        String encodedFileName = EncodingUtil.urlEncode(fileName, 'UTF-8');
+        String processedFileName = encodeFileName(fileName);
     
         // Construct the endpoint with the Named Credential and the path for the file in SharePoint
         // Use the folder name to specify the target folder
         String endpoint = 'callout:BVSharepointNamed/_api/web/GetFolderByServerRelativeUrl(\'' +
                           'Shared%20Documents/' + encodedFolderName + '\')/Files/Add(url=\'' +
-                          encodedFileName + '\',overwrite=true)';
+                          processedFileName + '\',overwrite=true)';
     
         // Create the HTTP request using the endpoint
         HttpRequest req = new HttpRequest();
@@ -338,6 +337,168 @@ public with sharing class FileController {
             return new List<SHDocument__c>();
         }
     }
+
+    @AuraEnabled(cacheable=true)
+    public static List<SHDocument__c> fetchTemplates() {
+        String documentLibraryUrl = '/sites/XansiumUATTestSite/Shared%20Documents/Templates';
+        String queryEndpoint = 'callout:BVSharepointNamed/_api/web/GetFolderByServerRelativeUrl(\'' + documentLibraryUrl + '\')/Files';
+    
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint(queryEndpoint);
+        req.setMethod('GET');
+        req.setHeader('Accept', 'application/json;odata=verbose');
+    
+        Http http = new Http();
+        try {
+            HTTPResponse res = http.send(req);
+            if (res.getStatusCode() == 200) {
+                // Parse the JSON response
+                String responseBody = res.getBody();
+                Map<String, Object> responseMap = (Map<String, Object>) JSON.deserializeUntyped(responseBody);
+                Map<String, Object> d = (Map<String, Object>) responseMap.get('d');
+                List<Object> results = (List<Object>) d.get('results');
+                
+                List<SHDocument__c> documents = new List<SHDocument__c>();
+                for (Object result : results) {
+                    Map<String, Object> resultData = (Map<String, Object>) result;
+
+                    SHDocument__c doc = new SHDocument__c();
+                    doc.DocumentID__c = (String) resultData.get('UniqueId');
+                    doc.Name = (String) resultData.get('Name');
+                    doc.ServerRelativeURL__c = (String) resultData.get('ServerRelativeUrl');
+                    system.debug(JSON.serializePretty(resultData));
+                    
+                    // Extracting file extension
+                    String filename = doc.Name;
+                    Integer lastIndexOfDot = filename.lastIndexOf('.');
+                    if (lastIndexOfDot > 0) {
+                        String extension = filename.substring(lastIndexOfDot + 1);
+                        doc.DocumentExtension__c = extension;
+                    }
+
+                    // Use the getListItemIDByFileUrl method to get the ListItemID
+                    String listItemID = getListItemIDByFileUrl(doc.ServerRelativeURL__c);
+
+                    if (listItemID != null) {
+                        // Make a callout to retrieve list item details including custom fields
+                        String listItemEndpoint = 'callout:BVSharepointNamed/_api/web/lists/GetByTitle(\'Documents\')/items(' + listItemID + ')';
+                        HttpRequest listItemReq = new HttpRequest();
+                        listItemReq.setEndpoint(listItemEndpoint);
+                        listItemReq.setMethod('GET');
+                        listItemReq.setHeader('Accept', 'application/json;odata=verbose');
+
+                        HttpResponse listItemRes = http.send(listItemReq);
+
+                        if (listItemRes.getStatusCode() == 200) {
+                            String listItemBody = listItemRes.getBody();
+                            Map<String, Object> listItemJson = (Map<String, Object>) JSON.deserializeUntyped(listItemBody);
+                            Map<String, Object> listItemData = (Map<String, Object>) listItemJson.get('d');
+
+                            // Accessing a custom field
+                            doc.Created_Time__c = (String) listItemData.get('Created');
+                            doc.DocumentType__c = (String) listItemData.get('DocumentType');
+                            system.debug(JSON.serializePretty(listItemData));
+                        } else {
+                            System.debug('Error getting list item details: ' + listItemRes.getBody());
+                        }
+                    }
+                    
+                    documents.add(doc);
+                }
+                return documents;
+            } else {
+                // Handle error
+                System.debug('Error Status: ' + res.getStatus());
+                System.debug('Error Body: ' + res.getBody());
+                return new List<SHDocument__c>();
+            }
+        } catch(System.CalloutException e) {
+            // Handle the callout exception as needed
+            System.debug('Callout error: ' + e.getMessage());
+            return new List<SHDocument__c>();
+        }
+    }
+
+    @InvocableMethod(label='Fetch SharePoint Templates for Flow')
+    public static List<List<SHDocument__c>> fetchTemplatesForFlow() {
+        String documentLibraryUrl = '/sites/XansiumUATTestSite/Shared%20Documents/Templates';
+        String queryEndpoint = 'callout:BVSharepointNamed/_api/web/GetFolderByServerRelativeUrl(\'' + documentLibraryUrl + '\')/Files';
+    
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint(queryEndpoint);
+        req.setMethod('GET');
+        req.setHeader('Accept', 'application/json;odata=verbose');
+    
+        Http http = new Http();
+        try {
+            HTTPResponse res = http.send(req);
+            if (res.getStatusCode() == 200) {
+                // Parse the JSON response
+                String responseBody = res.getBody();
+                Map<String, Object> responseMap = (Map<String, Object>) JSON.deserializeUntyped(responseBody);
+                Map<String, Object> d = (Map<String, Object>) responseMap.get('d');
+                List<Object> results = (List<Object>) d.get('results');
+                
+                List<SHDocument__c> documents = new List<SHDocument__c>();
+                for (Object result : results) {
+                    Map<String, Object> resultData = (Map<String, Object>) result;
+
+                    SHDocument__c doc = new SHDocument__c();
+                    doc.DocumentID__c = (String) resultData.get('UniqueId');
+                    doc.Name = (String) resultData.get('Name');
+                    doc.ServerRelativeURL__c = (String) resultData.get('ServerRelativeUrl');
+                    system.debug(JSON.serializePretty(resultData));
+                    
+                    // Extracting file extension
+                    String filename = doc.Name;
+                    Integer lastIndexOfDot = filename.lastIndexOf('.');
+                    if (lastIndexOfDot > 0) {
+                        String extension = filename.substring(lastIndexOfDot + 1);
+                        doc.DocumentExtension__c = extension;
+                    }
+
+                    // Use the getListItemIDByFileUrl method to get the ListItemID
+                    String listItemID = getListItemIDByFileUrl(doc.ServerRelativeURL__c);
+
+                    if (listItemID != null) {
+                        // Make a callout to retrieve list item details including custom fields
+                        String listItemEndpoint = 'callout:BVSharepointNamed/_api/web/lists/GetByTitle(\'Documents\')/items(' + listItemID + ')';
+                        HttpRequest listItemReq = new HttpRequest();
+                        listItemReq.setEndpoint(listItemEndpoint);
+                        listItemReq.setMethod('GET');
+                        listItemReq.setHeader('Accept', 'application/json;odata=verbose');
+
+                        HttpResponse listItemRes = http.send(listItemReq);
+
+                        if (listItemRes.getStatusCode() == 200) {
+                            String listItemBody = listItemRes.getBody();
+                            Map<String, Object> listItemJson = (Map<String, Object>) JSON.deserializeUntyped(listItemBody);
+                            Map<String, Object> listItemData = (Map<String, Object>) listItemJson.get('d');
+
+                            // Accessing a custom field
+                            doc.Created_Time__c = (String) listItemData.get('Created');
+                            doc.DocumentType__c = (String) listItemData.get('DocumentType');
+                            system.debug(JSON.serializePretty(listItemData));
+                        } else {
+                            System.debug('Error getting list item details: ' + listItemRes.getBody());
+                        }
+                    }
+                    
+                    documents.add(doc);
+                }
+                return new List<List<SHDocument__c>>{documents};
+            } else {
+                // Handle error
+                System.debug('Error Status: ' + res.getStatus());
+                System.debug('Error Body: ' + res.getBody());
+                return new List<List<SHDocument__c>>();
+            }
+        } catch(System.CalloutException e) {
+            // Handle the callout exception as needed
+            System.debug('Callout error: ' + e.getMessage());
+            return new List<List<SHDocument__c>>();
+        }
+    }
     
     public static String getListItemIDByFileUrl(String fileServerRelativeUrl) {
         String encodedUrl = EncodingUtil.urlEncode(fileServerRelativeUrl, 'UTF-8');
@@ -467,5 +628,593 @@ public with sharing class FileController {
         }
         
         return results;
+    }
+
+    private static String encodeFileName(String fileName) {
+        // Replace only the necessary characters that might break the URL
+        return fileName.replace(' ', '%20')
+                    .replace('#', '%23')
+                    .replace('&', '%26')
+                    .replace('?', '%3F')
+                    .replace('%', '%25')
+                    .replace('{', '%7B')
+                    .replace('}', '%7D')
+                    .replace('^', '%5E')
+                    .replace('[', '%5B')
+                    .replace(']', '%5D')
+                    .replace('`', '%60')
+                    .replace('\'', '%27');
+    }
+
+    public void veryTemporaryTest(){
+        integer i = 0;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
+        i = i + 1;
     }
 }

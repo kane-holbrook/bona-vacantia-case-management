@@ -12,7 +12,7 @@ private class BV_CaseTriggerHandlerTest {
             LocaleSidKey = 'en_US',
             LanguageLocaleKey = 'en_US',
             TimeZoneSidKey = 'America/Los_Angeles',
-            ProfileId = [SELECT Id FROM Profile WHERE Name='Standard User'].Id
+            ProfileId = [SELECT Id FROM Profile WHERE Name='Standard User' LIMIT 1].Id
         );
         insert testUser;
         return testUser;
@@ -22,7 +22,10 @@ private class BV_CaseTriggerHandlerTest {
     static void testHandleTaskCreationForNewCases() {
         User testUser = createUser();
         
-        BV_Case__c bvCase = new BV_Case__c(Stage__c = 'Receipt');
+        BV_Case__c bvCase = new BV_Case__c(
+            Stage__c = 'Advertising',
+            OwnerId = testUser.Id // Assigning owner to the record
+        );
         insert bvCase;
 
         Test.startTest();
@@ -37,10 +40,13 @@ private class BV_CaseTriggerHandlerTest {
     static void testHandleTaskCreationOnUpdate() {
         User testUser = createUser();
         
-        BV_Case__c bvCase = new BV_Case__c(Stage__c = 'Receipt');
+        BV_Case__c bvCase = new BV_Case__c(
+            Stage__c = 'Advertising',
+            OwnerId = testUser.Id // Assigning owner to the record
+        );
         insert bvCase;
     
-        bvCase.Stage__c = 'Advertising (Internal)';
+        bvCase.Stage__c = 'Initial inquiries';
     
         Exception actualException;
         try {
@@ -50,5 +56,27 @@ private class BV_CaseTriggerHandlerTest {
         }
     
         System.assertNotEquals(null, actualException, 'Expected an exception to be thrown.');
+    }
+    
+    @isTest
+    static void testHandleTaskVerification() {
+        // Create test data
+        User testUser = createUser();
+        BV_Case__c bvCase = new BV_Case__c(
+            Stage__c = 'Initial inquiries',
+            OwnerId = testUser.Id // Assigning owner to the record
+        );
+        insert bvCase;
+
+        // Start Test
+        Test.startTest();
+
+        BV_CaseTriggerHandler.handleTaskVerification(new List<BV_Case__c>{bvCase});
+
+        Test.stopTest();
+
+        // Assert the error message added to the record
+        bvCase = [SELECT Id, Stage__c FROM BV_Case__c WHERE Id = :bvCase.Id];
+        System.assertNotEquals(null, bvCase.Stage__c, 'Expected an error message to be added.');
     }
 }

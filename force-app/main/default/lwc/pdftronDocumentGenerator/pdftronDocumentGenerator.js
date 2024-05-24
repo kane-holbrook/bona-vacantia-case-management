@@ -48,6 +48,7 @@ export default class PdftronDocumentGenerator extends LightningElement {
 
     handleChange(event) {
         this.mapping[event.target.dataset.key] = event.target.value;
+        console.log('mapping:', this.mapping);
     }
 
     handleFill() {

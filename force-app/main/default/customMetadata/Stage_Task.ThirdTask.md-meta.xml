@@ -16,7 +16,7 @@
     </values>
     <values>
         <field>Stage__c</field>
-        <value xsi:type="xsd:string">Receipt</value>
+        <value xsi:type="xsd:string">Initial enquiries</value>
     </values>
     <values>
         <field>Title__c</field>

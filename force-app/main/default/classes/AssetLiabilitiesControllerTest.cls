@@ -5,7 +5,8 @@ private class AssetLiabilitiesControllerTest {
     static void testGetAssetsLiabilitiesGrouped() {
         // Create a BV_Case__c record for test assignment
         BV_Case__c bvCase = new BV_Case__c(
-            Name = 'Test BV Case'
+            Name = 'Test BV Case',
+            Stage__c = 'Advertising'
         );
         insert bvCase;
 
@@ -37,7 +38,8 @@ private class AssetLiabilitiesControllerTest {
     static void testGetAssetLiabilityDetail() {
         // Create a BV_Case__c record for test assignment
         BV_Case__c bvCase = new BV_Case__c(
-            Name = 'Test BV Case'
+            Name = 'Test BV Case',
+            Stage__c = 'Advertising'
         );
         insert bvCase;
 

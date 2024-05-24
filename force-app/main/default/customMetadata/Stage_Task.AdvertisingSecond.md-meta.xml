@@ -16,7 +16,7 @@
     </values>
     <values>
         <field>Stage__c</field>
-        <value xsi:type="xsd:string">Advertising (Internal)</value>
+        <value xsi:type="xsd:string">Advertising</value>
     </values>
     <values>
         <field>Title__c</field>

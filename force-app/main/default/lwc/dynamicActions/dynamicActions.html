@@ -1,0 +1,12 @@
+<template>
+    <template for:each={actions} for:item="action">
+        <lightning-button 
+            key={action.actionId} 
+            label={action.label} 
+            onclick={handleActionClick} 
+            disabled={action.disabled}
+            stretch
+            class="slds-m-bottom_x-small slds-align_absolute-center">
+        </lightning-button>
+    </template>
+</template>
