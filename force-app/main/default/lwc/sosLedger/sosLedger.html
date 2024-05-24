@@ -1,0 +1,132 @@
+<template>
+    <lightning-card title="SOS Ledger">
+        <header class="slds-theme_default slds-border_bottom slds-p-around_small slds-text-align_right" style="z-index:1">
+            <lightning-button label="Add Accrual" variant="brand" onclick={openModal}></lightning-button>
+            <lightning-button label="Reverse Accrual" variant="destructive" class="slds-m-left_small" onclick={handleReverseAccrual}></lightning-button>
+            <lightning-button-icon icon-name="utility:filterList"
+                                   variant="border-filled"
+                                   title="Toggle filter panel"
+                                   class="slds-m-left_small"
+                                   onclick={toggleFilterSidebar}>
+            </lightning-button-icon>
+        </header>
+        <div class="slds-grid slds-wrap" style="background-color:#fafaf9; position:relative; overflow:hidden; height:600px;">
+            <!-- Filter Sidebar (Box) -->
+            <template if:true={isFilterSidebarOpen}>
+                <div class="slds-box slds-theme_default slds-p-around_medium" style="position: absolute; top: 0; left: 0; right: 0; z-index: 999;">
+                    <h2 class="slds-text-heading_small">Filter</h2>
+                    <lightning-accordion allow-multiple-sections-open>
+                        <lightning-accordion-section label="Status">
+                            <div class="slds-form-element__control">
+                                <lightning-checkbox-group name="statusFilter"
+                                                          label="Select Status"
+                                                          options={statusOptions}
+                                                          value={statusFilter}
+                                                          onchange={handleStatusChange}>
+                                </lightning-checkbox-group>
+                            </div>
+                        </lightning-accordion-section>
+                        <lightning-accordion-section label="Date Range">
+                            <div class="slds-form-element__control">
+                                <lightning-input type="date" label="From Date" value={fromDate} onchange={handleFromDateChange}></lightning-input>
+                                <lightning-input type="date" label="To Date" value={toDate} onchange={handleToDateChange}></lightning-input>
+                            </div>
+                            <div class="slds-m-bottom_small slds-m-top_small">
+                                <lightning-button label="Clear Date Filters" onclick={clearDateFilters}></lightning-button>
+                            </div>
+                        </lightning-accordion-section>
+                        <lightning-accordion-section label="Description">
+                            <div class="slds-form-element__control">
+                                <lightning-input type="text" label="Description" onchange={handleDescriptionChange}></lightning-input>
+                            </div>
+                        </lightning-accordion-section>
+                        <lightning-accordion-section label="Amount">
+                            <div class="slds-form-element__control">
+                                <lightning-input type="number" label="Amount" onchange={handleAmountChange}></lightning-input>
+                            </div>
+                        </lightning-accordion-section>
+                    </lightning-accordion>
+                    <div class="slds-m-top_medium">
+                        <lightning-button label="Close" onclick={toggleFilterSidebar}></lightning-button>
+                    </div>
+                </div>
+            </template>
+            <!-- Main Content Area -->
+            <div class="slds-col slds-p-around_medium" style={getTableContainerStyle}>
+                <!-- Ledger Table -->
+                <template if:true={isLoading}>
+                    <div class="slds-align_absolute-center slds-m-around_medium">
+                        <lightning-spinner alternative-text="Loading"></lightning-spinner>
+                    </div>
+                </template>
+                <template if:false={isLoading}>
+                    <div style={getTableMaxHeight}>
+                        <lightning-datatable
+                                            class="slds-table_col-bordered" 
+                                            key-field="id"
+                                            data={filteredData}
+                                            columns={columns}
+                                            onrowselection={handleRowSelection}
+                                            default-sort-direction={defaultSorDirection}
+                                            sorted-direction={sortDirection}
+                                            sorted-by={sortedBy}
+                                            hide-checkbox-column="true"
+                                            onsort={onHandleSort}>
+                        </lightning-datatable>
+                    </div>
+                </template>
+                <!-- Totals Display -->
+                <div class="slds-grid slds-grid_align-spread slds-m-around_medium">
+                    <div class="slds-box slds-theme_default slds-theme--shade slds-text-heading_small">
+                        <span>Office Total: {officeTotal}</span>
+                    </div>
+                    <div class="slds-box slds-theme_default slds-theme--shade slds-text-heading_small">
+                        <span>Accruals Total: {accrualsTotal}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </lightning-card>
+
+        <!-- Modal Section -->
+        <template if:true={isModalOpen}>
+            <section role="dialog" tabindex="-1" aria-modal="true" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- Modal Header -->
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                            <lightning-icon icon-name="utility:close" alternative-text="close" size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 class="slds-text-heading_medium">Accrual Details</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <c-sos-create-accrual case-number={bvCaseName}></c-sos-create-accrual>
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+        <template if:true={isReverseAccrualModalOpen}>
+            <section role="dialog" tabindex="-1" aria-modal="true" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeReverseAccrualModal}>
+                            <lightning-icon icon-name="utility:close" alternative-text="close" size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 class="slds-text-heading_medium">Reverse Accrual</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <c-sos-reverse-accrual case-number={bvCaseName} onselectedaccrual={handleSelectedAccrual}></c-sos-reverse-accrual>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <lightning-button variant="neutral" label="Cancel" onclick={closeReverseAccrualModal}></lightning-button>
+                        <lightning-button variant="brand" label="Reverse" class="slds-m-left_small" onclick={reverseAccrual}></lightning-button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+</template>

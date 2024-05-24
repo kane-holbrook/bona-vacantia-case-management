@@ -1,0 +1,4 @@
+.slds-m-vertical_medium {
+    display: flex;
+    flex-direction: column;
+}

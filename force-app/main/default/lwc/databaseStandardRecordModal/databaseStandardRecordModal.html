@@ -1,0 +1,25 @@
+<template>
+    <template for:each={combinedData} for:item="record">
+        <div key={record.id}>
+            <template for:each={record.fields} for:item="item">
+                <div key={item.fieldName} class="slds-form-element slds-m-around_medium">
+                    <div class="slds-form-element__control">
+                        <lightning-input 
+                            type={item.type} 
+                            data-record-id={record.id} 
+                            name={item.fieldName} 
+                            label={item.label} 
+                            value={item.value} 
+                            onchange={handleInputChange}>
+                        </lightning-input>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </template>
+
+    <div class="slds-form-element slds-m-around_medium">
+        <button class="slds-button slds-button_brand" onclick={handleSave}>Confirm</button>
+        <button class="slds-button" onclick={handleCancel}>Cancel</button>
+    </div>
+</template>

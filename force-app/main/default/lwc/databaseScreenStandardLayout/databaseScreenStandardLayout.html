@@ -1,0 +1,139 @@
+<template>
+    <template for:each={layoutSections} for:item="section">
+        <div class="slds-box" key={section.heading}>
+            <article class="slds-card database-card">
+                <div class="slds-card__header slds-grid slds-align_absolute-center" style="padding: 1em;">
+                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                        <div class="slds-media__figure">
+                            <span class="slds-icon_container slds-icon-standard-account" title={section.heading}>
+                                <lightning-icon icon-name="standard:account" alternative-text={section.heading} size="small"></lightning-icon>
+                            </span>
+                        </div>
+                        <div class="slds-media__body">
+                            <div class="slds-card__header-subtitle">
+                                <span>{cardSubtitle}</span>
+                            </div>
+                            <h2 class="slds-card__header-title">
+                                <a href="#" class="slds-card__header-link slds-truncate" title={section.heading}>
+                                    <span>{section.heading}</span>
+                                </a>
+                            </h2>
+                        </div>
+                        <div class="slds-media__figure slds-media__figure_reverse">
+                            <template if:true={isBVCase}>
+                                <template if:true={hasData}>
+                                    <button class="slds-button slds-button_brand" onclick={openModal}>
+                                        <lightning-icon icon-name="utility:add" alternative-text="Add" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                                        Edit
+                                    </button>
+                                </template>
+                                <template if:false={hasData}>
+                                    <button class="slds-button slds-button_brand" onclick={openModal}>
+                                        <lightning-icon icon-name="utility:add" alternative-text="Add" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                                        Add
+                                    </button>
+                                </template>
+                            </template>
+                            <template if:false={isBVCase}>
+                                <button class="slds-button slds-button_brand" onclick={openModal}>
+                                    <lightning-icon icon-name="utility:add" alternative-text="Add" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                                    Add
+                                </button>
+                            </template>
+                        </div>
+                    </header>
+                </div>
+                <div class="slds-card__body">
+                    <template if:true={hasData}>
+                        <lightning-datatable
+                            class="slds-table_bordered"
+                            key-field="id"
+                            data={tableData}
+                            columns={columns}
+                            hide-checkbox-column
+                            show-row-number-column
+                            onrowaction={handleRowAction}
+                            onrowselection={handleRowSelection}
+                            default-sort-direction={defaultSortDirection}
+                            sorted-direction={sortDirection}
+                            sorted-by={sortedBy}
+                            onsort={onHandleSort}>
+                        </lightning-datatable>
+                    </template>
+                    <template if:false={hasData}>
+                        <p>There are no {section.heading} associated with this case.</p>
+                    </template>
+                </div>
+            </article>
+        </div>
+    </template>
+
+    <template if:true={isModalOpen}>
+        <section role="dialog" tabindex="-1" aria-modal="true" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <!-- Modal Header -->
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                        <lightning-icon icon-name="utility:close" alternative-text="close" size="small"></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <template if:true={isBVCase}>
+                        <template if:true={hasData}>
+                            <h2 class="slds-text-heading_medium">Edit record</h2>
+                        </template>
+                        <template if:false={hasData}>
+                            <h2 class="slds-text-heading_medium">Add a record</h2>
+                        </template>
+                    </template>
+                    <template if:false={isBVCase}>
+                        <template if:false={hasData}>
+                            <h2 class="slds-text-heading_medium">Add a record</h2>
+                        </template>
+                    </template>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <c-database-standard-record-modal
+                        record-id={recordId}
+                        object-api-name={objectApiName}
+                        record-type-id={recordTypeId}
+                        record-data={recordData}
+                        sub-record-id={subRecordId}
+                        columns={columns}
+                        oncancelupdate={handleCancelUpdate}
+                        onrecordupdated={handleRecordUpdated}>
+                    </c-database-standard-record-modal>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+    <template if:true={isModalOpenDelete}>
+        <section role="dialog" tabindex="-1" aria-modal="true" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <!-- Modal Header -->
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                        <lightning-icon icon-name="utility:close" alternative-text="close" size="small"></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 class="slds-text-heading_medium">Are you sure you want to delete this record?</h2>
+                </header>
+    
+                <!-- Modal Body -->
+                <div class="slds-modal__content slds-p-around_medium">
+                    <c-database-standard-record-modal-delete 
+                        record-id={recordId}
+                        object-api-name={objectApiName}
+                        record-data={recordData}
+                        columns={columns}
+                        sub-record-id={subRecordId}
+                        oncanceldelete={handleCancelUpdate}
+                        onrecorddeleted={handleRecordDeleted}>
+                    </c-database-standard-record-modal-delete>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>

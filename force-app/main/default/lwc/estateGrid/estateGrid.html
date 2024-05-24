@@ -1,0 +1,127 @@
+<template>
+    <template if:true={estateAccData}>
+            <!-- Datatable for Estate Records (Assets) -->
+            <div class="slds-grid slds-wrap">
+                <div class="slds-col slds-size_1-of-2">
+                    <lightning-datatable
+                        class="slds-table_col-bordered"
+                        key-field="Id"
+                        name="assets_datatable"
+                        data={estateAccData.Assets__r}
+                        columns={accrualsColumns}
+                        hide-checkbox-column
+                        resize-column-disabled
+                        show-row-number-column
+                        onsave={handleSaveAssets}>
+                    </lightning-datatable>
+                </div>
+
+                <!-- Datatable for Accruals Records (Liabilities) -->
+                <div class="slds-col slds-size_1-of-2">
+                    <lightning-datatable
+                        class="slds-table_col-bordered"
+                        key-field="Id"
+                        name="liabilities_datatable"
+                        data={estateAccData.Liabilities__r}
+                        columns={liabilitiesColumns}
+                        hide-checkbox-column
+                        resize-column-disabled
+                        show-row-number-column
+                        onsave={handleSaveLiabilities}>
+                    </lightning-datatable>
+                </div>
+            </div>
+
+            <!-- Estates and Accruals Balance Boxes -->
+            <div class="slds-grid slds-wrap slds-m-top_medium">
+                <!-- Estates Balance Box -->
+                <div class="slds-col slds-size_1-of-2 custom-box estates-balance-box">
+                    <span class="slds-text-title_bold">Balance of Accruals: </span>
+                    <span class="slds-text-body_regular">£{estateAccData.Date_of_Death_Summary__c}</span>
+                </div>
+                <!-- Accruals Balance Box -->
+                <div class="slds-col slds-size_1-of-2 custom-box accruals-balance-box">
+                    <span class="slds-text-title_bold">Balance of Liabilities: </span>
+                    <span class="slds-text-body_regular">£{estateAccData.Liability_at_Date_of_Death_Summary__c}</span>
+                </div>
+            </div>
+
+            <!-- Additional Information and Net Value -->
+            <div class="slds-grid slds-wrap slds-m-top_small">
+                <!-- Additional Information Boxes -->
+                <div class="slds-col slds-size_1-of-2">
+                    <!-- NINO Box -->
+                    <div class="custom-box nino-box">
+                        <span class="slds-text-title_bold">NINO (National Insurance Number): </span>
+                        <lightning-input 
+                            class="slds-text-body_regular" 
+                            value={estateAccData.NINO__c} 
+                            data-field="NINO__c" 
+                            name="nino"
+                            onchange={handleInputChange}>
+                        </lightning-input>
+                    </div>
+                
+                    <!-- KEYS Box -->
+                    <div class="custom-box keys-box">
+                        <span class="slds-text-title_bold">Keys: </span>
+                        <lightning-input 
+                            class="slds-text-body_regular" 
+                            value={estateAccData.Keys__c}
+                            data-field="Keys__c" 
+                            name="keys"
+                            onchange={handleInputChange}>
+                        </lightning-input>
+                    </div>
+                
+                    <!-- DEEDS Box -->
+                    <div class="custom-box deeds-box">
+                        <span class="slds-text-title_bold">Deeds: </span>
+                        <lightning-input 
+                            class="slds-text-body_regular" 
+                            value={estateAccData.Deeds__c} 
+                            data-field="Deeds__c"
+                            name="deeds"
+                            onchange={handleInputChange}>
+                        </lightning-input>
+                    </div>
+                
+                    <!-- JEWELLERY Box -->
+                    <div class="custom-box jewellery-box">
+                        <span class="slds-text-title_bold">Jewellery: </span>
+                        <lightning-input 
+                            class="slds-text-body_regular" 
+                            value={estateAccData.Jewellery__c} 
+                            data-field="Jewellery__c"
+                            name="jewellery" 
+                            onchange={handleInputChange}>
+                        </lightning-input>
+                    </div>
+                </div>
+                
+                <!-- Net Value Box -->
+                <div class="slds-col slds-size_1-of-2 custom-box net-value-box">
+                    <span class="slds-text-title_bold">Net Value: </span>
+                    <span class="slds-text-body_regular">£{estateAccData.Net_Value__c}</span>
+                </div>
+            </div>
+        </div>
+        <!-- Save Button Footer -->
+        <template if:true={isChanged}>
+            <div class="slds-docked-form-footer">
+                <lightning-button
+                    label="Save"
+                    variant="brand"
+                    onclick={handleSaveFields}
+                    class="slds-p-around_xxx-small">
+                </lightning-button>
+                <lightning-button
+                    label="Cancel"
+                    variant="neutral"
+                    onclick={handleCancelFields}
+                    class="slds-p-around_xxx-small">
+                </lightning-button>
+            </div>
+        </template>
+    </template>
+</template>

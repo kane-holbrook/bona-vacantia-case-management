@@ -1,0 +1,16 @@
+.container {
+    display: flex;
+    height: 100vh; /* Adjust height as needed */
+}
+.left-sidebar, .right-sidebar {
+    flex: 1; /* Adjust flex value to change width */
+    /* background-color: #f4f4f4; */
+    padding: 10px;
+    overflow-y: auto; /* Enables scrolling */
+}
+.main-content {
+    flex: 5; /* Main content area is larger */
+    background-color: #fff; /* White background */
+    padding: 10px;
+    overflow-y: auto; /* Enables scrolling */
+}
