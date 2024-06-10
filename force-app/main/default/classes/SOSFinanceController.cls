@@ -202,7 +202,7 @@ public class SOSFinanceController
     public static string reverseAccrual(String MtCode, String Net, String Narrative, String Reference, String Type) {
         
         HttpRequest req = new HttpRequest();
-        req.setEndpoint(sosEndpoint
+        req.setEndpoint(sosEndpoint); // Replace with your API endpoint URL
         req.setMethod('POST');
 
         mtcode = MtCode.replace('_', '/');

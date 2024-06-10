@@ -1,5 +1,5 @@
 <template>
-    <template for:each={layoutSections} for:item="section">
+    <template for:each={sectionsMain} for:item="section">
         <div class="slds-box" key={section.heading}>
             <article class="slds-card database-card">
                 <div class="slds-card__header slds-grid slds-align_absolute-center" style="padding: 1em;">
@@ -45,20 +45,87 @@
                 </div>
                 <div class="slds-card__body">
                     <template if:true={hasData}>
-                        <lightning-datatable
+                        <!--<lightning-datatable
                             class="slds-table_bordered"
                             key-field="id"
                             data={tableData}
-                            columns={columns}
+                            columns={columnsMain}
                             hide-checkbox-column
-                            show-row-number-column
                             onrowaction={handleRowAction}
                             onrowselection={handleRowSelection}
                             default-sort-direction={defaultSortDirection}
                             sorted-direction={sortDirection}
                             sorted-by={sortedBy}
                             onsort={onHandleSort}>
-                        </lightning-datatable>
+                        </lightning-datatable>-->
+                        <!--<c-database-expandable-table table-data={tableData} columns-main={columnsMain}></c-database-expandable-table>-->
+
+                        <table aria-multiselectable="true" class="slds-table slds-table_bordered slds-table_fixed-layout slds-table_resizable-cols" role="grid" aria-label="Example advanced table of Opportunities in actionable mode">
+                            <thead>
+                                <tr class="slds-line-height_reset">
+                                    <th style="width: 3.25rem;"></th>
+                                    <template for:each={columnsMain} for:item="column">
+                                        <th aria-sort="none" class="slds-is-resizable slds-is-sortable slds-cell_action-mode" scope="col" key={column.apiName}>
+                                            <a class="slds-th__action slds-text-link_reset" href="#" role="button" tabindex="0">
+                                            <span class="slds-assistive-text">Sort by: </span>
+                                            <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                                <span class="slds-truncate" title={column.label}>{column.label}</span>
+                                                <span class="slds-icon_container slds-icon-utility-arrowdown">
+                                                <svg class="slds-icon slds-icon-text-default slds-is-sortable__icon " aria-hidden="true">
+                                                    <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#down"></use>
+                                                </svg>
+                                                </span>
+                                            </div>
+                                            </a>
+                                            <div class="slds-resizable">
+                                            <input type="range" aria-label="Account Name column width" class="slds-resizable__input slds-assistive-text" max="1000" min="20" tabindex="0" />
+                                            <span class="slds-resizable__handle">
+                                                <span class="slds-resizable__divider"></span>
+                                            </span>
+                                            </div>
+                                        </th>
+                                    </template>
+                                    <th style="width: 3.25rem;"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={tableDataObj} for:item="row">
+                                    <tr aria-selected="false" class="slds-hint-parent" key={row.Id}>
+                                        <td class="slds-cell_action-mode" role="gridcell">
+                                            <div class="slds-truncate">
+                                                <button class="slds-button slds-button_icon slds-m-right_x-small" aria-hidden="true" tabindex="-1" data-targetrow={row.Id} onclick={expandSection}>
+                                                    <lightning-icon icon-name="utility:chevronright" alternative-text="Expand" size="x-small"></lightning-icon>
+                                                </button>
+                                            </div>
+                                        </td>
+                                        <template for:each={row.Cells} for:item="cell" for:index="index">
+                                            <td class="slds-cell_action-mode" role="gridcell" key={cell.Id}>
+                                                <div class="slds-truncate" title={cell.value}>{cell.value}</div>
+                                            </td>
+                                        </template>
+                                        <td class="slds-cell_action-mode" role="gridcell">
+                                            <div class="lgc-bg">
+                                                <lightning-button-menu icon-size="small" menu-alignment="right" alternative-text="Show menu" data-row={row.Id} onselect={handleRowAction}>
+                                                    <lightning-menu-item value="edit" label="Edit"></lightning-menu-item>
+                                                    <lightning-menu-item value="delete" label="Delete"></lightning-menu-item>
+                                                </lightning-button-menu>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <div class="slds-p-around_x-small expanded-section" key={row.Id} data-rowid={row.Id} style="display:none;">
+                                        <template for:each={row.fullData} for:item="dataRow">
+                                            <dl class="slds-dl_horizontal" key={dataRow.Id} style="row-gap: 8px;">
+                                                <template for:each={dataRow.fields} for:item="field">
+                                                    <dt class="slds-dl_horizontal__label" key={field.fieldName} title={field.label} style="font-weight: bold;">{field.label}</dt>
+                                                    <dd class="slds-dl_horizontal__detail" key={field.fieldName} title={field.value}>{field.value}</dd>
+                                                </template>
+                                            </dl>
+                                        </template>
+                                    </div>
+                                </template>
+                            </tbody>
+                        </table>
+
                     </template>
                     <template if:false={hasData}>
                         <p>There are no {section.heading} associated with this case.</p>
@@ -90,6 +157,7 @@
                             <h2 class="slds-text-heading_medium">Add a record</h2>
                         </template>
                     </template>
+                    <h2 class="slds-text-heading_medium">Add a witness</h2>
                 </header>
                 <div class="slds-modal__content slds-p-around_medium">
                     <c-database-standard-record-modal

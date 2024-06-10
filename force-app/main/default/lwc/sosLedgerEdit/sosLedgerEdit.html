@@ -1,0 +1,91 @@
+<template>
+  <div class="slds-p-around_medium">
+      <button class="slds-button slds-button_brand" onclick={openModal}>Open Modal</button>
+  </div>
+
+  <div if:true={isModalOpen} class="slds-modal slds-fade-in-open">
+      <div class="slds-modal__container">
+
+          <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+            <lightning-icon icon-name="utility:close" alternative-text="close" size="small"></lightning-icon>
+            <span class="slds-assistive-text">Close</span>
+        </button>
+
+        
+          <header class="slds-modal__header">
+              <h2 class="slds-text-heading_medium slds-hyphenate">View and edit an asset</h2>
+          </header>
+          <div class="slds-modal__content slds-p-around_medium">
+              <div class="slds-grid slds-gutters">
+                  <div class="slds-col slds-size_1-of-2">
+                      <div class="slds-form-element slds-size_1-of-2">
+                          <label class="slds-form-element__label" for="cash-input" id="cash-label">Cash</label>
+                          <div class="slds-form-element__control slds-input-has-fixed-addon">
+                              <span class="slds-form-element__addon" id="cash-label-pre">£</span>
+                              <input type="text" id="cash-input" value={cashAmount} aria-labelledby="cash-label cash-label-pre" class="slds-input" />
+                          </div>
+                      </div>
+
+                      <div class="slds-form-element slds-size_1-of-1">
+                          <label class="slds-form-element__label" for="name-input" id="name-label">From</label>
+                          <div class="slds-form-element__control">
+                              <input spellcheck="false" type="text" id="name-input" value={deceasedName} aria-labelledby="name-label" class="slds-input" />
+                          </div>
+                      </div>
+
+                      <div class="slds-form-element slds-size_1-of-1">
+                          <label class="slds-form-element__label" for="holder-input" id="holder-label">Holder</label>
+                          <div class="slds-form-element__control">
+                              <input spellcheck="false" type="text" id="holder-input" value='Placeholder Name' aria-labelledby="holder-label" class="slds-input" />
+                          </div>
+                      </div>
+  
+                      <div class="slds-form-element slds-size_1-of-1">
+                          <label class="slds-form-element__label" for="email-input" id="email-label">Email</label>
+                          <div class="slds-form-element__control">
+                              <input spellcheck="false" type="text" id="email-input" value='Placeholder Name' aria-labelledby="email-label" class="slds-input" />
+                          </div>
+                      </div>
+  
+                      <div class="slds-form-element slds-size_1-of-1">
+                        <label class="slds-form-element__label" for="reference-textarea" id="reference-label">Reference</label>
+                        <div class="slds-form-element__control">
+                            <textarea spellcheck="false" id="reference-textarea" aria-labelledby="reference-label" class="slds-textarea">{getReference}</textarea>
+                        </div>
+                    </div>
+                  </div>
+
+                  <div class="slds-col slds-size_1-of-2">
+                      <div class="slds-form-element slds-size_1-of-1">
+                          <label class="slds-form-element__label" for="address-input" id="address-label">Address</label>
+                          <div class="slds-form-element__control">
+                              <input spellcheck="false" type="text" id="address-input" value='Placeholder Address' aria-labelledby="address-label" class="slds-input" />
+                          </div>
+                          <div class="slds-form-element__control slds-m-top_xx-small">
+                              <input spellcheck="false" type="text" id="address1-input" value='' aria-labelledby="address-label" class="slds-input" />
+                          </div>
+                          <div class="slds-form-element__control slds-m-top_xx-small">
+                              <input spellcheck="false" type="text" id="address2-input" value='' aria-labelledby="address-label" class="slds-input" />
+                          </div>
+                          <div class="slds-form-element__control slds-m-top_xx-small">
+                              <input spellcheck="false" type="text" id="address3-input" value='' aria-labelledby="address-label" class="slds-input" />
+                          </div>
+                      </div>
+  
+                      <div class="slds-form-element slds-size_1-of-2">
+                          <label class="slds-form-element__label" for="postcode-input" id="postcode-label">Postcode</label>
+                          <div class="slds-form-element__control">
+                              <input spellcheck="false" type="text" id="postcode-input" value='A12 3BC' aria-labelledby="postcode-label" class="slds-input" />
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <footer class="slds-modal__footer">
+              <button class="slds-button slds-button_brand slds-float_left" onclick={closeModal}>Close</button>
+              <button class="slds-button slds-button_destructive slds-float_right" onclick={saveModal}>Remove Asset</button>
+          </footer>
+      </div>
+  </div>
+  <div if:true={isModalOpen} class="slds-backdrop slds-backdrop_open"></div>
+</template>

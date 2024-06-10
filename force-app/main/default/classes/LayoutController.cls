@@ -15,9 +15,37 @@ public with sharing class LayoutController {
         if (res.getStatusCode() != 200) {
             return null;
         }
+        System.debug('Full Layout: ' + res.getBody());
+
+        // Get the headers from compact layout using UI API
+        String headerLayoutUrl = '/services/data/v59.0/ui-api/layout/' + objectApiName + '?recordTypeId=' + recordTypeId + '&layoutType=Compact';
+        HttpRequest req2 = new HttpRequest();
+        req2.setEndpoint('callout:Apex_Metadata_API_Named' + headerLayoutUrl);
+        req2.setMethod('GET');
+        
+        Http http2 = new Http();
+        HttpResponse res2 = http2.send(req2);
+        
+        if (res2.getStatusCode() != 200) {
+            return null;
+        }
+        System.debug('Compact Layout: ' + res2.getBody());
         
         // Parse the layout metadata
         Map<String, Object> layoutMetadata = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
+        Map<String, Object> headingMetadata = (Map<String, Object>) JSON.deserializeUntyped(res2.getBody());
+
+        //Merge heading fields with the main layout metadata
+        List<Object> layoutSections = (List<Object>) layoutMetadata.get('sections');
+        List<Object> tableHeaders = (List<Object>) headingMetadata.get('sections');
+
+        for(Integer i = 0; i < tableHeaders.size(); i++){
+            //tableHeaders should only ever have one section
+            layoutSections.add(0, tableHeaders[i]);
+        }
+
+        layoutMetadata.put('sections', layoutSections);
+        System.debug('Combined layout: ' + JSON.serialize(layoutMetadata));
 
         // Extract apiName fields from layout metadata
         Set<String> fieldApiNames = new Set<String>();

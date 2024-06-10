@@ -1,0 +1,27 @@
+<template>
+    <lightning-card title="My open tasks" icon-name="standard:task" class="custom-card">
+        <div class="slds-grid">
+            <div class="slds-col slds-align-bottom">
+                <p style="padding-left:15px; font-weight:normal;">{taskCardInformation}</p>
+            </div>
+            <div class="slds-col_bump-right slds-align-bottom slds-p-right_x-small">
+                <lightning-button-icon icon-name="utility:contract" variant="border-filled" alternative-text="Contract button" slot="actions"></lightning-button-icon>
+            </div>
+            <div class="slds-col slds-align-bottom slds-p-right_x-small">
+                <lightning-input type="search" placeholder="Search this list..." onchange={handleSearchChange} slot="actions" variant="label-hidden"></lightning-input>
+            </div>
+        </div>
+        <div slot="footer">
+            <lightning-datatable
+                key-field="Id"
+                name="tasks_datatable"
+                data={data}
+                columns={columns}
+                resize-column-disabled
+                show-row-number-column
+                hide-checkbox-column
+                class="custom-datatable">
+            </lightning-datatable>
+        </div>
+    </lightning-card>
+</template>
