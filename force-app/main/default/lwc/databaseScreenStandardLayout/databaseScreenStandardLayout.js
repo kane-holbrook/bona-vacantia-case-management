@@ -304,7 +304,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
         //const row = event.detail.row;
 
         //const recordId = this.objectApiName === 'BV_Case__c' ? row.Id : row.subRecordId;
-        const recordId = event.target.data.row;
+        const recordId = event.target.dataset.row;
         this.subRecordId = recordId;
         switch (actionName) {
             case 'delete':
