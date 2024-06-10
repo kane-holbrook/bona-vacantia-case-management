@@ -81,12 +81,21 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
         if (data) {
             console.log('Layout Data: ', JSON.stringify(data));
     
-            // Handle recordData for BV_Case__c as a single record
-            if (this.objectApiName === 'BV_Case__c') {
-                this.recordData = [data.recordData[0] || {}]; // Ensure recordData is an array with a single object
-            } else {
+            let isMultipleRecords = false;
+        
+            // Check if the layout contains "Multiple Records: YES"
+            data.sections.forEach(section => {
+                if (section.heading && section.heading.includes("Multiple Records: YES")) {
+                    isMultipleRecords = true;
+                }
+            });
+    
+            // Handle recordData based on Multiple Records
+            if (isMultipleRecords) {
                 this.recordData = data.recordData;
-            }
+            } else {
+                this.recordData = [data.recordData[0] || {}]; // Ensure recordData is an array with a single object
+            }    
     
             // Create deep copies of layoutSections and attach field values
             this.layoutSections = JSON.parse(JSON.stringify(data.sections));
