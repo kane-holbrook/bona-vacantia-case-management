@@ -95,7 +95,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                 this.recordData = data.recordData;
             } else {
                 this.recordData = [data.recordData[0] || {}]; // Ensure recordData is an array with a single object
-            }    
+            }
     
             // Create deep copies of layoutSections and attach field values
             this.layoutSections = JSON.parse(JSON.stringify(data.sections));
@@ -432,8 +432,11 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
     }
 
     get hasData() {
-        // Check if there are columns and data available
-        return this.columns.length > 0 && Object.keys(this.tableData[0]).length > 0;
+        // Check if tableData is defined and not empty
+        return Array.isArray(this.tableData) && this.tableData.length > 0 && 
+            this.columns.length > 0 && 
+            this.tableData[0] !== undefined && 
+            Object.keys(this.tableData[0]).length > 0;
     }
 
     get isBVCase() {
