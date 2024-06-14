@@ -1,21 +1,125 @@
 <template>
-    <template for:each={combinedData} for:item="record">
-        <div key={record.id}>
-            <template for:each={record.fields} for:item="item">
-                <div key={item.fieldName} class="slds-form-element slds-m-around_medium">
-                    <div class="slds-form-element__control">
-                        <lightning-input 
-                            type={item.type} 
-                            data-record-id={record.id} 
-                            name={item.fieldName} 
-                            label={item.label} 
-                            value={item.value} 
-                            onchange={handleInputChange}>
-                        </lightning-input>
+    <template if:true={isTwoColumnLayout}>
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-size_1-of-2">
+                <template for:each={leftColumnFields} for:item="item">
+                    <div key={item.fieldName} class="slds-form-element slds-m-around_medium">
+                        <div class="slds-form-element__control">
+                            <template if:true={item.isPicklist}>
+                                <lightning-combobox
+                                    data-record-id={item.recordId}
+                                    name={item.fieldName}
+                                    label={item.label}
+                                    value={item.value}
+                                    options={item.options}
+                                    onchange={handleInputChange}>
+                                </lightning-combobox>
+                            </template>
+                            <template if:true={item.isCheckbox}>
+                                <lightning-input 
+                                    type="checkbox" 
+                                    data-record-id={item.recordId} 
+                                    name={item.fieldName} 
+                                    label={item.label} 
+                                    checked={item.checked} 
+                                    onchange={handleInputChange}>
+                                </lightning-input>
+                            </template>
+                            <template if:true={item.isDefault}>
+                                <lightning-input 
+                                    type={item.type} 
+                                    data-record-id={item.recordId} 
+                                    name={item.fieldName} 
+                                    label={item.label} 
+                                    value={item.value} 
+                                    onchange={handleInputChange}>
+                                </lightning-input>
+                            </template>
+                        </div>
                     </div>
-                </div>
-            </template>
+                </template>
+            </div>
+            <div class="slds-col slds-size_1-of-2">
+                <template for:each={rightColumnFields} for:item="item">
+                    <div key={item.fieldName} class="slds-form-element slds-m-around_medium">
+                        <div class="slds-form-element__control">
+                            <template if:true={item.isPicklist}>
+                                <lightning-combobox
+                                    data-record-id={item.recordId}
+                                    name={item.fieldName}
+                                    label={item.label}
+                                    value={item.value}
+                                    options={item.options}
+                                    onchange={handleInputChange}>
+                                </lightning-combobox>
+                            </template>
+                            <template if:true={item.isCheckbox}>
+                                <lightning-input 
+                                    type="checkbox" 
+                                    data-record-id={item.recordId} 
+                                    name={item.fieldName} 
+                                    label={item.label} 
+                                    checked={item.checked} 
+                                    onchange={handleInputChange}>
+                                </lightning-input>
+                            </template>
+                            <template if:true={item.isDefault}>
+                                <lightning-input 
+                                    type={item.type} 
+                                    data-record-id={item.recordId} 
+                                    name={item.fieldName} 
+                                    label={item.label} 
+                                    value={item.value} 
+                                    onchange={handleInputChange}>
+                                </lightning-input>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+            </div>
         </div>
+    </template>
+    <template if:false={isTwoColumnLayout}>
+        <template for:each={combinedData} for:item="record">
+            <div key={record.id}>
+                <template for:each={record.fields} for:item="item">
+                    <div key={item.fieldName} class="slds-form-element slds-m-around_medium">
+                        <div class="slds-form-element__control">
+                            <template if:true={item.isPicklist}>
+                                <lightning-combobox
+                                    data-record-id={record.id}
+                                    name={item.fieldName}
+                                    label={item.label}
+                                    value={item.value}
+                                    options={item.options}
+                                    onchange={handleInputChange}>
+                                </lightning-combobox>
+                            </template>
+                            <template if:true={item.isCheckbox}>
+                                <lightning-input 
+                                    type="checkbox" 
+                                    data-record-id={record.id} 
+                                    name={item.fieldName} 
+                                    label={item.label} 
+                                    checked={item.checked} 
+                                    onchange={handleInputChange}>
+                                </lightning-input>
+                            </template>
+                            <template if:true={item.isDefault}>
+                                <lightning-input 
+                                    type={item.type} 
+                                    data-record-id={record.id} 
+                                    name={item.fieldName} 
+                                    label={item.label} 
+                                    value={item.value} 
+                                    onchange={handleInputChange}>
+                                </lightning-input>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </template>
     </template>
 
     <div class="slds-form-element slds-m-around_medium">

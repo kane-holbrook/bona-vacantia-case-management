@@ -39,11 +39,13 @@ export default class DatabaseStandardRecordModalDelete extends LightningElement 
         }));
 
         console.log('Combined Data:', JSON.stringify(this.combinedData));
+
+        console.log('Subrecord' + this.subRecordId);
     }
 
     // Handle delete action
     handleDelete() {
-        if (this.subRecordId) {
+        if (this.subRecordId && this.objectApiName != 'BV_Case__c') {
             // Call Apex method to delete the sub-record
             deleteRecord({ recordId: this.subRecordId, objectName: this.objectApiName })
                 .then(() => {

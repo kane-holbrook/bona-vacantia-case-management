@@ -21,12 +21,12 @@
                         </div>
                         <div class="slds-media__figure slds-media__figure_reverse">
                             <template if:true={isBVCase}>
-                                <template if:true={hasData}>
+                                <!-- <template if:true={hasData}>
                                     <button class="slds-button slds-button_brand" onclick={openModal}>
                                         <lightning-icon icon-name="utility:add" alternative-text="Add" size="x-small" class="slds-m-right_x-small"></lightning-icon>
                                         Edit
                                     </button>
-                                </template>
+                                </template> -->
                                 <template if:false={hasData}>
                                     <button class="slds-button slds-button_brand" onclick={openModal}>
                                         <lightning-icon icon-name="utility:add" alternative-text="Add" size="x-small" class="slds-m-right_x-small"></lightning-icon>
@@ -35,53 +35,40 @@
                                 </template>
                             </template>
                             <template if:false={isBVCase}>
-                                <button class="slds-button slds-button_brand" onclick={openModal}>
-                                    <lightning-icon icon-name="utility:add" alternative-text="Add" size="x-small" class="slds-m-right_x-small"></lightning-icon>
-                                    Add
-                                </button>
+                                <template if:false={isEdgeCase}>
+                                    <button class="slds-button slds-button_brand" onclick={openModal}>
+                                        <lightning-icon icon-name="utility:add" alternative-text="Add" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                                        Add
+                                    </button>
+                                </template>
                             </template>
-                        </div>
+                        </div>                        
                     </header>
                 </div>
                 <div class="slds-card__body">
                     <template if:true={hasData}>
-                        <!--<lightning-datatable
-                            class="slds-table_bordered"
-                            key-field="id"
-                            data={tableData}
-                            columns={columnsMain}
-                            hide-checkbox-column
-                            onrowaction={handleRowAction}
-                            onrowselection={handleRowSelection}
-                            default-sort-direction={defaultSortDirection}
-                            sorted-direction={sortDirection}
-                            sorted-by={sortedBy}
-                            onsort={onHandleSort}>
-                        </lightning-datatable>-->
-                        <!--<c-database-expandable-table table-data={tableData} columns-main={columnsMain}></c-database-expandable-table>-->
-
                         <table aria-multiselectable="true" class="slds-table slds-table_bordered slds-table_fixed-layout slds-table_resizable-cols" role="grid" aria-label="Example advanced table of Opportunities in actionable mode">
                             <thead>
                                 <tr class="slds-line-height_reset">
                                     <th style="width: 3.25rem;"></th>
                                     <template for:each={columnsMain} for:item="column">
-                                        <th aria-sort="none" class="slds-is-resizable slds-is-sortable slds-cell_action-mode" scope="col" key={column.apiName}>
+                                        <th aria-sort="none" class="slds-is-resizable slds-is-sortable slds-cell_action-mode" scope="col" key={column.apiName} onclick={onHandleSort} data-field={column.fieldName}>
                                             <a class="slds-th__action slds-text-link_reset" href="#" role="button" tabindex="0">
-                                            <span class="slds-assistive-text">Sort by: </span>
-                                            <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
-                                                <span class="slds-truncate" title={column.label}>{column.label}</span>
-                                                <span class="slds-icon_container slds-icon-utility-arrowdown">
-                                                <svg class="slds-icon slds-icon-text-default slds-is-sortable__icon " aria-hidden="true">
-                                                    <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#down"></use>
-                                                </svg>
-                                                </span>
-                                            </div>
+                                                <span class="slds-assistive-text">Sort by: </span>
+                                                <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                                    <span class="slds-truncate" title={column.label}>{column.label}</span>
+                                                    <span class="slds-icon_container slds-icon-utility-arrowdown">
+                                                        <svg class="slds-icon slds-icon-text-default slds-is-sortable__icon " aria-hidden="true">
+                                                            <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#down"></use>
+                                                        </svg>
+                                                    </span>
+                                                </div>
                                             </a>
                                             <div class="slds-resizable">
-                                            <input type="range" aria-label="Account Name column width" class="slds-resizable__input slds-assistive-text" max="1000" min="20" tabindex="0" />
-                                            <span class="slds-resizable__handle">
-                                                <span class="slds-resizable__divider"></span>
-                                            </span>
+                                                <input type="range" aria-label="Account Name column width" class="slds-resizable__input slds-assistive-text" max="1000" min="20" tabindex="0" />
+                                                <span class="slds-resizable__handle">
+                                                    <span class="slds-resizable__divider"></span>
+                                                </span>
                                             </div>
                                         </th>
                                     </template>
@@ -93,9 +80,11 @@
                                     <tr aria-selected="false" class="slds-hint-parent" key={row.Id}>
                                         <td class="slds-cell_action-mode" role="gridcell">
                                             <div class="slds-truncate">
-                                                <button class="slds-button slds-button_icon slds-m-right_x-small" aria-hidden="true" tabindex="-1" data-targetrow={row.Id} onclick={expandSection}>
-                                                    <lightning-icon icon-name="utility:chevronright" alternative-text="Expand" size="x-small"></lightning-icon>
-                                                </button>
+                                                <template if:true={expandedView}>
+                                                    <button class="slds-button slds-button_icon slds-m-right_x-small" aria-hidden="true" tabindex="-1" data-targetrow={row.Id} onclick={expandSection}>
+                                                        <lightning-icon icon-name="utility:chevronright" alternative-text="Expand" size="x-small"></lightning-icon>
+                                                    </button>
+                                                </template>
                                             </div>
                                         </td>
                                         <template for:each={row.Cells} for:item="cell" for:index="index">
@@ -128,7 +117,8 @@
 
                     </template>
                     <template if:false={hasData}>
-                        <p>There are no {section.heading} associated with this case.</p>
+                        <!-- <p>There are no {section.heading} associated with this case.</p> -->
+                        <p>There are no records of this type associated with this case</p>
                     </template>
                 </div>
             </article>
@@ -146,18 +136,20 @@
                     </button>
                     <template if:true={isBVCase}>
                         <template if:true={hasData}>
-                            <h2 class="slds-text-heading_medium">Edit record</h2>
+                            <h2 class="slds-text-heading_medium">{editModalHeading}</h2>
                         </template>
                         <template if:false={hasData}>
-                            <h2 class="slds-text-heading_medium">Add a record</h2>
+                            <h2 class="slds-text-heading_medium">{modalHeading}</h2>
                         </template>
                     </template>
                     <template if:false={isBVCase}>
+                        <template if:true={hasData}>
+                            <h2 class="slds-text-heading_medium">{editModalHeading}</h2>
+                        </template>
                         <template if:false={hasData}>
-                            <h2 class="slds-text-heading_medium">Add a record</h2>
+                            <h2 class="slds-text-heading_medium">{modalHeading}</h2>
                         </template>
                     </template>
-                    <h2 class="slds-text-heading_medium">Add a witness</h2>
                 </header>
                 <div class="slds-modal__content slds-p-around_medium">
                     <c-database-standard-record-modal
@@ -166,6 +158,7 @@
                         record-type-id={recordTypeId}
                         record-data={recordData}
                         sub-record-id={subRecordId}
+                        column-layout-style={columnLayoutStyle}
                         columns={columns}
                         oncancelupdate={handleCancelUpdate}
                         onrecordupdated={handleRecordUpdated}>
@@ -181,11 +174,11 @@
             <div class="slds-modal__container">
                 <!-- Modal Header -->
                 <header class="slds-modal__header">
-                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModalDelete}>
                         <lightning-icon icon-name="utility:close" alternative-text="close" size="small"></lightning-icon>
                         <span class="slds-assistive-text">Close</span>
                     </button>
-                    <h2 class="slds-text-heading_medium">Are you sure you want to delete this record?</h2>
+                    <h2 class="slds-text-heading_medium">{deleteModalHeading}</h2>
                 </header>
     
                 <!-- Modal Body -->

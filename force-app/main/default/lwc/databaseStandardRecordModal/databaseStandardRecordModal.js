@@ -1,6 +1,7 @@
-import { LightningElement, api, track } from 'lwc';
+import { LightningElement, api, track, wire } from 'lwc';
 import updateRecord from '@salesforce/apex/LayoutController.updateRecord';
 import createRecord from '@salesforce/apex/LayoutController.createRecord';
+import getPicklistValues from '@salesforce/apex/LayoutController.getPicklistValues';
 
 export default class DatabaseStandardRecordModal extends LightningElement {
     @api recordId;
@@ -8,7 +9,11 @@ export default class DatabaseStandardRecordModal extends LightningElement {
     @api recordData = []; // Record data passed from parent component
     @api subRecordId;
     @api columns = []; // Columns configuration passed from parent component
+    @api columnLayoutStyle; // Column layout style passed from parent component
+    @api recordTypeId; // Record Type Id passed from parent component
     @track combinedData = []; // Combined data to be used in the template
+    @track leftColumnFields = [];
+    @track rightColumnFields = [];
 
     connectedCallback() {
         // Ensure recordData is an array
@@ -36,11 +41,33 @@ export default class DatabaseStandardRecordModal extends LightningElement {
                     label: column.label,
                     fieldName: column.fieldName,
                     type: column.type === 'action' ? 'text' : column.type, // Default to text if action
-                    value: record[column.fieldName] || ''
+                    value: record[column.fieldName] || '',
+                    isPicklist: column.type === 'picklist',
+                    isCheckbox: column.type === 'checkbox',
+                    isDefault: column.type !== 'picklist' && column.type !== 'checkbox',
+                    checked: column.type === 'checkbox' ? !!record[column.fieldName] : false,
+                    options: column.type === 'picklist' ? [] : []
                 }))
         }));
 
+        this.splitFieldsByColumns();
+
+        this.loadPicklistOptions();
+
         console.log('Combined Data:', JSON.stringify(this.combinedData));
+    }
+
+    async loadPicklistOptions() {
+        const promises = this.combinedData.flatMap(record =>
+            record.fields
+                .filter(item => item.isPicklist)
+                .map(async item => {
+                    const options = await getPicklistValues({ objectName: this.objectApiName, fieldName: item.fieldName });
+                    item.options = options.map(value => ({ label: value, value }));
+                })
+        );
+        await Promise.all(promises);
+        this.combinedData = [...this.combinedData]; // trigger reactivity
     }
 
     getEmptyRecordFields() {
@@ -53,24 +80,41 @@ export default class DatabaseStandardRecordModal extends LightningElement {
         return emptyFields;
     }
 
+    splitFieldsByColumns() {
+        this.leftColumnFields = [];
+        this.rightColumnFields = [];
+
+        this.combinedData.forEach(record => {
+            record.fields.forEach((field, index) => {
+                if (index % 2 === 0) {
+                    this.leftColumnFields.push(field);
+                } else {
+                    this.rightColumnFields.push(field);
+                }
+            });
+        });
+    }
+
     // Handle changes in input fields
     handleInputChange(event) {
         const recordId = event.target.dataset.recordId;
         const fieldName = event.target.name;
-        const updatedValue = event.target.value;
+        const updatedValue = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
 
         // Find the corresponding item in combinedData and update its value
         this.combinedData = this.combinedData.map(record => {
             if (record.id === recordId) {
                 record.fields = record.fields.map(item => {
                     if (item.fieldName === fieldName) {
-                        return { ...item, value: updatedValue };
+                        return { ...item, value: updatedValue, checked: event.target.type === 'checkbox' ? updatedValue : item.checked };
                     }
                     return item;
                 });
             }
             return record;
         });
+
+        this.splitFieldsByColumns();
     }
 
     // Handle save action
@@ -79,6 +123,16 @@ export default class DatabaseStandardRecordModal extends LightningElement {
             const updatedFields = {};
             record.fields.forEach(item => {
                 updatedFields[item.fieldName] = item.value;
+
+                // Sometimes a item.type of "number" gets converted to a string, we want to make sure they stay as strings due to BigInt limitations
+                if (item.type === 'number') {
+                    // Convert to String
+                    if (item.value === '') {
+                        updatedFields[item.fieldName] = null;
+                    } else {
+                        updatedFields[item.fieldName] = String(item.value);
+                    }
+                }
             });
 
             console.log('Updated fields for record:', record.id, updatedFields);
@@ -88,7 +142,7 @@ export default class DatabaseStandardRecordModal extends LightningElement {
                 updatedFields.BV_Case__c = this.recordId;
 
                 // Create new record
-                createRecord({ objectName: this.objectApiName, fields: updatedFields })
+                createRecord({ objectName: this.objectApiName, fields: updatedFields, recordTypeId: this.recordTypeId})
                     .then(() => {
                         console.log('Record created successfully');
 
@@ -119,5 +173,9 @@ export default class DatabaseStandardRecordModal extends LightningElement {
     // Handle cancel action
     handleCancel() {
         this.dispatchEvent(new CustomEvent('cancelupdate'));
+    }
+
+    get isTwoColumnLayout() {
+        return this.columnLayoutStyle === 2;
     }
 }

@@ -22,9 +22,11 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
     @track sortedBy;
     @track sortedDirection;
     @track subRecordId;
+    @track columnLayoutStyle = 2;
     hasDataBeenUpdated = false;
     isModalOpen = false;
     isModalOpenDelete = false;
+    expandedView = true;
 
     // Stuff for table
     defaultSortDirection = 'asc';
@@ -82,11 +84,19 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
             console.log('Layout Data: ', JSON.stringify(data));
     
             let isMultipleRecords = false;
-        
+    
             // Check if the layout contains "Multiple Records: YES"
             data.sections.forEach(section => {
                 if (section.heading && section.heading.includes("Multiple Records: YES")) {
                     isMultipleRecords = true;
+                    this.multipleRecords = true;
+                }
+            });
+    
+            // Check if the layout contains "Expanded View: NO"
+            data.sections.forEach(section => {
+                if (section.heading && section.heading.includes("Expanded View: NO")) {
+                    this.expandedView = false;
                 }
             });
     
@@ -96,6 +106,11 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
             } else {
                 this.recordData = [data.recordData[0] || {}]; // Ensure recordData is an array with a single object
             }
+    
+            console.log(this.recordData);
+    
+            // Extract fieldDataTypes from data
+            const fieldDataTypes = data.fieldDataTypes || {};
     
             // Create deep copies of layoutSections and attach field values
             this.layoutSections = JSON.parse(JSON.stringify(data.sections));
@@ -112,17 +127,76 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                                 // Set column definitions if not already set + filter empty spaces on page layout
                                 if ((!columnsTemp.some(col => col.fieldName === component.apiName)) && (component.apiName !== null && component.apiName !== undefined)) {
                                     //Section at index 2 contains all fields used on the screen
-                                    if(section == this.layoutSections[2]){
+                                    if (section === this.layoutSections[2]) {
+                                        const fieldType = fieldDataTypes[component.apiName] || 'text';
+                                        let columnType = 'text'; // default type
+    
+                                        if (fieldType.startsWith('Text') || fieldType === 'String' || fieldType === 'TextArea' || fieldType === 'EncryptedString') {
+                                            columnType = 'text';
+                                        } else if (fieldType === 'Picklist') {
+                                            columnType = 'picklist';
+                                        } else if (fieldType === 'Picklist (Multi-Select)') {
+                                            columnType = 'multipicklist';
+                                        } else if (fieldType.startsWith('Number') || fieldType === 'Integer' || fieldType === 'Double' || fieldType === 'Percent' || fieldType === 'Long') {
+                                            columnType = 'number';
+                                        } else if (fieldType === 'Date') {
+                                            columnType = 'date';
+                                        } else if (fieldType === 'Date/Time') {
+                                            columnType = 'datetime';
+                                        } else if (fieldType.startsWith('Currency')) {
+                                            columnType = 'currency';
+                                        } else if (fieldType === 'Email') {
+                                            columnType = 'email';
+                                        } else if (fieldType === 'Phone') {
+                                            columnType = 'tel';
+                                        } else if (fieldType === 'URL') {
+                                            columnType = 'url';
+                                        } else if (fieldType === 'Checkbox' || fieldType === 'Boolean') {
+                                            columnType = 'checkbox';
+                                        } else if (fieldType === 'Time') {
+                                            columnType = 'time';
+                                        } else if (fieldType === 'File') {
+                                            columnType = 'file';
+                                        } else if (fieldType === 'Password') {
+                                            columnType = 'password';
+                                        } else if (fieldType === 'Search') {
+                                            columnType = 'search';
+                                        } else if (fieldType === 'Toggle') {
+                                            columnType = 'toggle';
+                                        } else {
+                                            columnType = 'text'; // default to text if no match is found
+                                        }
+    
                                         columnsTemp.push({
                                             label: component.label,
                                             fieldName: component.apiName,
-                                            type: 'text'
+                                            type: columnType
                                         });
                                     }
+
+                                    console.log(section);
+                                    console.log(this.layoutSections[0]);
                                     //Section at index 0 contains table headers (filter by section so fields are not repeated in variables)
-                                    if(section == this.layoutSections[0]){
-                                        section.heading = 'headers';
-                                        columnsMainTemp.set(component.apiName, section.heading);
+                                    if (!this.isBVCase) {
+                                        if (this.expandedView) {
+                                            // Run the 0 index check when not bvCase and expanded view
+                                            if (section === this.layoutSections[0]) {
+                                                section.heading = 'headers';
+                                                columnsMainTemp.set(component.apiName, section.heading);
+                                            }
+                                            console.log('Expanded view and not BV case code ran');
+                                        } else {
+                                            section.heading = 'headers';
+                                            columnsMainTemp.set(component.apiName, section.heading);
+                                        }
+                                    } else {
+                                        // Run the else statement code for when bvCase
+                                        // Section at index 0 contains table headers (filter by section so fields are not repeated in variables)
+                                        if (section === this.layoutSections[0]) {
+                                            section.heading = 'headers';
+                                            columnsMainTemp.set(component.apiName, section.heading);
+                                        }
+                                        console.log('BV case code ran');
                                     }
                                 }
                             });
@@ -132,7 +206,6 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
     
             // Set table data for multiple records
             this.recordData.forEach(record => {
-                //Add record id to later be used for matching field values and as a key for template tags
                 let recordTemp = {
                     rowId: record.Id
                 };
@@ -142,13 +215,11 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                         recordTemp[col.fieldName] = fieldValue;
                     }
                 });
-                // Add subRecordId if applicable
                 if (this.objectApiName !== 'BV_Case__c') {
                     recordTemp.subRecordId = record.Id; // or however you derive the sub-record ID
                 }
                 tableDataTemp.push(recordTemp);
             });
-            console.log('tableDataTemp: ', JSON.stringify(tableDataTemp));
     
             // Add row actions column, this may no longer be needed with new table component (action column is hardcoded) but doesn't currently seem to affect data prepping
             columnsTemp.push({ type: 'action', typeAttributes: { rowActions: this.getRowActions.bind(this) } });
@@ -158,70 +229,65 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                 return { ...col, sortable: true };
             });
     
-            // Filter out empty columns, appears this is no longer needed with new table component
-            /*columnsTemp = columnsTemp.filter((col, index) => {
-                // Exclude the very first blank field (index === 0) if it exists
-                if (index === 0) {
-                    const fieldValue = tableDataTemp[0][col.fieldName];
-                    return fieldValue !== null && fieldValue !== undefined;
-                }
-                return true; // Include all other columns
-            });*/
-
-            //Was previously used to filter table header fields but could now probably be refactored into the nested loop above
             let columnsMainFiltered = [];
             columnsTemp.forEach(col => {
                 let colSection = columnsMainTemp.get(col.fieldName);
-                if(colSection != undefined){
-                    if(col.type !== 'action'){
+                if (colSection !== undefined) {
+                    if (col.type !== 'action') {
                         columnsMainFiltered.push(col);
                     }
                 }
             });
     
-            //sectionsMain is only used for screen title, could be refactored as string variable and remove the outer template tag from html
             this.columnsMain = columnsMainFiltered;
             this.columns = columnsTemp;
             this.tableData = tableDataTemp;
             let mainSection = [];
             mainSection = [...mainSection, this.layoutSections[1]];
             this.sectionsMain = mainSection;
-
-            //create object array to be used for the table data
+    
+            // Create object array to be used for the table data
             let tableDataObjTemp = [];
-            this.tableData.forEach(function(row, i) {
+            this.tableData.forEach(function (row, i) {
                 let rowId = row.rowId;
                 let keys = Object.keys(row);
-                //stop header fields from appearing twice
+    
+                // Stop header fields from appearing twice
                 keys.forEach(key => {
                     let isHeader = columnsMainTemp.get(key);
-                    if(isHeader === null || isHeader === undefined){
+                    if (isHeader === null || isHeader === undefined) {
                         delete row[key];
                     }
                 });
+    
+                // Get values after filtering the keys
                 let values = Object.values(row);
                 let valueMap = [];
-                values.forEach(function(value, i2) {
+                values.forEach(function (value, i2) {
                     const valueItem = {
                         Id: i2,
                         value: value
                     };
                     valueMap.push(valueItem);
                 });
+    
+                // Ensure each row is assigned to a cell properly
                 const item = {
                     Id: rowId,
                     Cells: valueMap
                 }
                 tableDataObjTemp.push(item);
             });
+    
+            // Assign the processed table data to the tableDataObj
             this.tableDataObj = tableDataObjTemp;
-
-            //Prep data for expanded view field values
+    
+            // Prep data for expanded view field values
             let filteredData = this.recordData;
-            if(this.subRecordId){
+            if (this.subRecordId) {
                 filteredData = this.recordData.filter(record => record.Id === this.subRecordId);
             }
-
+    
             this.combinedData = filteredData.map(record => ({
                 id: record.Id,
                 fields: this.columns
@@ -233,8 +299,8 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                         value: record[column.fieldName] || '—'
                     }))
             }));
-
-            //Merge table data with expanded view field values
+    
+            // Merge table data with expanded view field values
             this.tableDataObj.forEach(row => {
                 row['fullData'] = this.combinedData.filter(dataRow => dataRow.id === row.Id);
             });
@@ -247,6 +313,11 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
             console.log('Table Data Object: ', JSON.stringify(this.tableDataObj));
             console.log('Record Data: ', JSON.stringify(this.recordData, this.replacer));
             console.log('Combined Data: ', JSON.stringify(this.combinedData));
+
+            // We want to see how many columns the section has, so we need to read the "columns" attribute
+            this.sectionsMain.forEach(section => {
+                this.columnLayoutStyle = section.columns;
+            });
         } else if (error) {
             this.dispatchEvent(
                 new ShowToastEvent({
@@ -364,11 +435,50 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
     }
 
     onHandleSort(event) {
-        const { fieldName: sortedBy, sortDirection } = event.detail;
+        event.preventDefault();
+    
+        console.log('Sorting by: ' + event.currentTarget.dataset.field);
+    
+        const sortedBy = event.currentTarget.dataset.field;
+        const sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+        const sortMultiplier = sortDirection === 'asc' ? 1 : -1;
+    
         const cloneData = [...this.tableData];
-
-        cloneData.sort(this.sortBy(sortedBy, sortDirection === 'asc' ? 1 : -1));
+        const cloneTableData = [...this.tableDataObj];
+    
+        const sortBy = (field, multiplier) => {
+            return (a, b) => {
+                let aValue = a[field];
+                let bValue = b[field];
+    
+                if (aValue < bValue) {
+                    return -1 * multiplier;
+                }
+                if (aValue > bValue) {
+                    return 1 * multiplier;
+                }
+                return 0;
+            };
+        };
+    
+        const sortByValue = (a, b) => {
+            const aValue = a.Cells[0].value;
+            const bValue = b.Cells[0].value;
+    
+            if (aValue < bValue) {
+                return -1 * sortMultiplier;
+            }
+            if (aValue > bValue) {
+                return 1 * sortMultiplier;
+            }
+            return 0;
+        };
+    
+        cloneData.sort(sortBy(sortedBy, sortMultiplier));
+        cloneTableData.sort(sortByValue);
+    
         this.tableData = cloneData;
+        this.tableDataObj = cloneTableData;
         this.sortDirection = sortDirection;
         this.sortedBy = sortedBy;
     }
@@ -431,15 +541,88 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
         }
     }
 
+    get modalHeading() {
+        // Determine heading based on the section index
+        if (this.layoutSections.length > 3) {
+            return this.layoutSections[3].heading;
+        }
+        return 'Add a record';
+    }
+
+    get editModalHeading() {
+        // Determine heading based on the section index
+        if (this.layoutSections.length > 4) {
+            if (!this.isBVCase && !this.subRecordId) {
+                return this.layoutSections[3].heading;
+            } else {
+                return this.layoutSections[4].heading;
+            }
+        }
+        return 'Edit this record';
+    }
+
+    get deleteModalHeading() {
+        // Determine heading based on the section index
+        if (this.layoutSections.length > 5) {
+            return this.layoutSections[5].heading;
+        }
+        return 'Delete this record';
+    }
+
     get hasData() {
-        // Check if tableData is defined and not empty
-        return Array.isArray(this.tableData) && this.tableData.length > 0 && 
-            this.columns.length > 0 && 
-            this.tableData[0] !== undefined && 
-            Object.keys(this.tableData[0]).length > 0;
+        // Ensure recordData is an array and has at least one element
+        const recordData = Array.isArray(this.recordData) ? this.recordData : [];
+        
+        // Ensure columns is an array and has at least one element
+        const columns = Array.isArray(this.columns) ? this.columns : [];
+        
+        // Define a function to check if a row contains only default keys
+        const isDefaultRow = (row) => {
+            const defaultKeys = ['Name', 'Stage__c', 'Id', 'BV_Case__c'];
+            const rowKeys = Object.keys(row);
+    
+            // Check if row keys are a subset of default keys
+            return rowKeys.every(key => defaultKeys.includes(key));
+        };
+        
+        // Perform the checks
+        if (recordData.length === 0) {
+            console.log('recordData is empty');
+            return false;
+        }
+        
+        if (columns.length === 0) {
+            console.log('columns is empty');
+            return false;
+        }
+        
+        // Check if there is at least one row that is not a default row
+        let hasValidData = false;
+        for (let row of recordData) {
+            if (typeof row === 'object' && row !== null && Object.keys(row).length > 0) {
+                if (!isDefaultRow(row)) {
+                    hasValidData = true;
+                    break;
+                }
+            } else {
+                console.log('Invalid row in recordData:', row);
+                return false;
+            }
+        }
+    
+        if (!hasValidData) {
+            console.log('No valid data found in recordData');
+        }
+    
+        return hasValidData;
     }
 
     get isBVCase() {
         return this.objectApiName === 'BV_Case__c';
+    }
+
+    // External record that has data, but doesn't allow multiple records
+    get isEdgeCase() {
+        return !this.isBVCase && this.hasData && !this.multipleRecords;
     }
 }
