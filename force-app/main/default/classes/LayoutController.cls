@@ -165,178 +165,180 @@ public with sharing class LayoutController {
         return null; // Return null if no matching record type is found
     }
 
-    @AuraEnabled
-    public static void updateRecord(String recordId, String objectName, Map<String, Object> updatedFields) {
-        try {
-            // Query to check if the record exists and get the current values
-            SObject obj = Database.query('SELECT Id FROM ' + objectName + ' WHERE Id = :recordId LIMIT 1');
+    // @AuraEnabled
+    // public static void updateRecord(String recordId, String objectName, Map<String, Object> updatedFields, String recordTypeId) {
+    //     try {
+    //         // Query to check if the record exists and get the current values
+    //         SObject obj = Database.query('SELECT Id FROM ' + objectName + ' WHERE Id = :recordId AND RecordTypeId = :recordTypeId LIMIT 1');
+
+    //         System.debug(obj);
             
-            if (obj == null) {
-                throw new AuraHandledException('Record not found.');
-            }
+    //         if (obj == null) {
+    //             throw new AuraHandledException('Record not found.');
+    //         }
 
-            System.debug('SObject: ' + obj);
-            System.debug('Object name: ' + objectName);
-            System.debug('Fields: ' + updatedFields);
+    //         System.debug('SObject: ' + obj);
+    //         System.debug('Object name: ' + objectName);
+    //         System.debug('Fields: ' + updatedFields);
     
-            // Get the describe result for the object
-            Schema.SObjectType objType = obj.getSObjectType();
-            Map<String, Schema.SObjectField> fieldMap = objType.getDescribe().fields.getMap();
+    //         // Get the describe result for the object
+    //         Schema.SObjectType objType = obj.getSObjectType();
+    //         Map<String, Schema.SObjectField> fieldMap = objType.getDescribe().fields.getMap();
     
-            // Set updated field values
-            for (String fieldName : updatedFields.keySet()) {
-                Schema.DescribeFieldResult fieldDescribe = fieldMap.get(fieldName).getDescribe();
-                Object fieldValue = updatedFields.get(fieldName);
-                obj.put(fieldName, convertFieldValue(fieldDescribe, fieldValue));
-            }
+    //         // Set updated field values
+    //         for (String fieldName : updatedFields.keySet()) {
+    //             Schema.DescribeFieldResult fieldDescribe = fieldMap.get(fieldName).getDescribe();
+    //             Object fieldValue = updatedFields.get(fieldName);
+    //             obj.put(fieldName, convertFieldValue(fieldDescribe, fieldValue));
+    //         }
 
-            System.debug('obj: ' + obj);
+    //         System.debug('obj: ' + obj);
 
-            // Update the record
-            update obj;
+    //         // Update the record
+    //         update obj;
             
-            System.debug('Record updated successfully.');
-        } catch (QueryException qe) {
-            System.debug('Query Exception: ' + qe.getMessage());
-            throw new AuraHandledException('Error querying record: ' + qe.getMessage());
-        } catch (DmlException de) {
-            System.debug('DML Exception: ' + de.getMessage());
-            throw new AuraHandledException('Error updating record: ' + de.getMessage());
-        } catch (Exception e) {
-            System.debug('Exception: ' + e.getMessage());
-            throw new AuraHandledException('An unexpected error occurred: ' + e.getMessage());
-        }
-    }
+    //         System.debug('Record updated successfully.');
+    //     } catch (QueryException qe) {
+    //         System.debug('Query Exception: ' + qe.getMessage());
+    //         throw new AuraHandledException('Error querying record: ' + qe.getMessage());
+    //     } catch (DmlException de) {
+    //         System.debug('DML Exception: ' + de.getMessage());
+    //         throw new AuraHandledException('Error updating record: ' + de.getMessage());
+    //     } catch (Exception e) {
+    //         System.debug('Exception: ' + e.getMessage());
+    //         throw new AuraHandledException('An unexpected error occurred: ' + e.getMessage());
+    //     }
+    // }
 
-    @AuraEnabled
-    public static void createRecord(String objectName, Map<String, Object> fields, String recordTypeId) {
-        try {
-            SObject obj = Schema.getGlobalDescribe().get(objectName).newSObject();
-            Map<String, Schema.SObjectField> fieldMap = Schema.getGlobalDescribe().get(objectName).getDescribe().fields.getMap();
+    // @AuraEnabled
+    // public static void createRecord(String objectName, Map<String, Object> fields, String recordTypeId) {
+    //     try {
+    //         SObject obj = Schema.getGlobalDescribe().get(objectName).newSObject();
+    //         Map<String, Schema.SObjectField> fieldMap = Schema.getGlobalDescribe().get(objectName).getDescribe().fields.getMap();
     
-            // Set RecordTypeId
-            obj.put('RecordTypeId', recordTypeId);
+    //         // Set RecordTypeId
+    //         obj.put('RecordTypeId', recordTypeId);
     
-            // Set field values
-            for (String fieldName : fields.keySet()) {
-                Schema.DescribeFieldResult fieldDescribe = fieldMap.get(fieldName).getDescribe();
-                Object fieldValue = fields.get(fieldName);
-                obj.put(fieldName, convertFieldValue(fieldDescribe, fieldValue));
-            }
+    //         // Set field values
+    //         for (String fieldName : fields.keySet()) {
+    //             Schema.DescribeFieldResult fieldDescribe = fieldMap.get(fieldName).getDescribe();
+    //             Object fieldValue = fields.get(fieldName);
+    //             obj.put(fieldName, convertFieldValue(fieldDescribe, fieldValue));
+    //         }
     
-            // Insert the new record
-            insert obj;
+    //         // Insert the new record
+    //         insert obj;
     
-            System.debug('Record created successfully.');
-        } catch (DmlException de) {
-            System.debug('DML Exception: ' + de.getMessage());
-            throw new AuraHandledException('Error creating record: ' + de.getMessage());
-        } catch (Exception e) {
-            System.debug('Exception: ' + e.getMessage());
-            throw new AuraHandledException('An unexpected error occurred: ' + e.getMessage());
-        }
-    }
+    //         System.debug('Record created successfully.');
+    //     } catch (DmlException de) {
+    //         System.debug('DML Exception: ' + de.getMessage());
+    //         throw new AuraHandledException('Error creating record: ' + de.getMessage());
+    //     } catch (Exception e) {
+    //         System.debug('Exception: ' + e.getMessage());
+    //         throw new AuraHandledException('An unexpected error occurred: ' + e.getMessage());
+    //     }
+    // }
 
-    private static Object convertFieldValue(Schema.DescribeFieldResult fieldDescribe, Object fieldValue) {
-        if (fieldValue == null || (fieldvalue instanceof String && String.isBlank((String)fieldValue))) {
-            return null;
-        }
+    // private static Object convertFieldValue(Schema.DescribeFieldResult fieldDescribe, Object fieldValue) {
+    //     if (fieldValue == null || (fieldvalue instanceof String && String.isBlank((String)fieldValue))) {
+    //         return null;
+    //     }
 
-        try {
-            if (fieldDescribe.getType() == Schema.DisplayType.Date) {
-                if (fieldValue instanceof String) {
-                    return Date.valueOf((String)fieldValue);
-                }
-            } else if (fieldDescribe.getType() == Schema.DisplayType.Datetime) {
-                if (fieldValue instanceof String) {
-                    String dateTimeStr = (String)fieldValue;
-                    if (dateTimeStr.endsWith('Z')) {
-                        dateTimeStr = dateTimeStr.replace('T', ' ').replace('Z', '');
-                        return Datetime.valueOfGmt(dateTimeStr);
-                    } else {
-                        dateTimeStr = dateTimeStr.replace('T', ' ');
-                        return Datetime.valueOf(dateTimeStr);
-                    }
-                }
-            } else if (fieldDescribe.getType() == Schema.DisplayType.Integer) {
-                if (fieldValue instanceof String) {
-                    return Integer.valueOf((String)fieldValue);
-                }
-            } else if (fieldDescribe.getType() == Schema.DisplayType.Double || 
-                    fieldDescribe.getType() == Schema.DisplayType.Percent) {
-                if (fieldValue instanceof String) {
-                    return Double.valueOf((String)fieldValue);
-                }
-            } else if (fieldDescribe.getType() == Schema.DisplayType.Boolean) {
-                return Boolean.valueOf(fieldValue);
-            } else if (fieldDescribe.getType() == Schema.DisplayType.Currency) {
-                if (fieldValue instanceof String) {
-                    return Decimal.valueOf((String)fieldValue);
-                }
-            } else if (fieldDescribe.getType() == Schema.DisplayType.Email || 
-                    fieldDescribe.getType() == Schema.DisplayType.Phone || 
-                    fieldDescribe.getType() == Schema.DisplayType.Url || 
-                    fieldDescribe.getType() == Schema.DisplayType.String ||
-                    fieldDescribe.getType() == Schema.DisplayType.TextArea ||
-                    fieldDescribe.getType() == Schema.DisplayType.EncryptedString) {
-                if (fieldValue instanceof String) {
-                    return (String)fieldValue;
-                }
-            } else if (fieldDescribe.getType() == Schema.DisplayType.Base64) {
-                if (fieldValue instanceof String) {
-                    return EncodingUtil.base64Decode((String)fieldValue);
-                }
-            } else if (fieldDescribe.getType() == Schema.DisplayType.Combobox || 
-                    fieldDescribe.getType() == Schema.DisplayType.Picklist || 
-                    fieldDescribe.getType() == Schema.DisplayType.MultiPicklist) {
-                if (fieldValue instanceof String) {
-                    return (String)fieldValue;
-                }
-            } else if (fieldDescribe.getType() == Schema.DisplayType.ID) {
-                if (fieldValue instanceof String) {
-                    return (String)fieldValue;
-                }
-            } else if (fieldDescribe.getType() == Schema.DisplayType.Address) {
-                if (fieldValue instanceof String) {
-                    return JSON.deserialize((String)fieldValue, Address.class);
-                }
-            } else if (fieldDescribe.getType() == Schema.DisplayType.Location) {
-                if (fieldValue instanceof String) {
-                    List<String> coords = ((String)fieldValue).split(',');
-                    if (coords.size() == 2) {
-                        Double latitude = Double.valueOf(coords[0]);
-                        Double longitude = Double.valueOf(coords[1]);
-                        return Location.newInstance(latitude, longitude);
-                    } else {
-                        throw new IllegalArgumentException('Invalid geolocation value: ' + fieldValue);
-                    }
-                }
-            } else if (fieldDescribe.getType() == Schema.DisplayType.Json) {
-                if (fieldValue instanceof String) {
-                    return JSON.deserializeUntyped((String)fieldValue);
-                }
-            } else if (fieldDescribe.getType() == Schema.DisplayType.Time) {
-                if (fieldValue instanceof String) {
-                    List<String> timeParts = ((String)fieldValue).split(':');
-                    Integer hours = Integer.valueOf(timeParts[0]);
-                    Integer minutes = Integer.valueOf(timeParts[1]);
-                    Integer seconds = Integer.valueOf(timeParts[2].split('\\.')[0]);
-                    Integer milliseconds = timeParts[2].contains('.') ? Integer.valueOf(timeParts[2].split('\\.')[1]) : 0;
-                    return Time.newInstance(hours, minutes, seconds, milliseconds);
-                }
-            } else if (fieldDescribe.getType() == Schema.DisplayType.Reference || 
-                    fieldDescribe.getType() == Schema.DisplayType.SObject) {
-                if (fieldValue instanceof String) {
-                    return (String)fieldValue;
-                }
-            } else {
-                return fieldValue;
-            }
-        } catch (Exception e) {
-            throw new IllegalArgumentException('Error converting field value: ' + fieldValue + ' for field: ' + fieldDescribe.getName() + '. ' + e.getMessage());
-        }
-        return null;
-    }
+    //     try {
+    //         if (fieldDescribe.getType() == Schema.DisplayType.Date) {
+    //             if (fieldValue instanceof String) {
+    //                 return Date.valueOf((String)fieldValue);
+    //             }
+    //         } else if (fieldDescribe.getType() == Schema.DisplayType.Datetime) {
+    //             if (fieldValue instanceof String) {
+    //                 String dateTimeStr = (String)fieldValue;
+    //                 if (dateTimeStr.endsWith('Z')) {
+    //                     dateTimeStr = dateTimeStr.replace('T', ' ').replace('Z', '');
+    //                     return Datetime.valueOfGmt(dateTimeStr);
+    //                 } else {
+    //                     dateTimeStr = dateTimeStr.replace('T', ' ');
+    //                     return Datetime.valueOf(dateTimeStr);
+    //                 }
+    //             }
+    //         } else if (fieldDescribe.getType() == Schema.DisplayType.Integer) {
+    //             if (fieldValue instanceof String) {
+    //                 return Integer.valueOf((String)fieldValue);
+    //             }
+    //         } else if (fieldDescribe.getType() == Schema.DisplayType.Double || 
+    //                 fieldDescribe.getType() == Schema.DisplayType.Percent) {
+    //             if (fieldValue instanceof String) {
+    //                 return Double.valueOf((String)fieldValue);
+    //             }
+    //         } else if (fieldDescribe.getType() == Schema.DisplayType.Boolean) {
+    //             return Boolean.valueOf(fieldValue);
+    //         } else if (fieldDescribe.getType() == Schema.DisplayType.Currency) {
+    //             if (fieldValue instanceof String) {
+    //                 return Decimal.valueOf((String)fieldValue);
+    //             }
+    //         } else if (fieldDescribe.getType() == Schema.DisplayType.Email || 
+    //                 fieldDescribe.getType() == Schema.DisplayType.Phone || 
+    //                 fieldDescribe.getType() == Schema.DisplayType.Url || 
+    //                 fieldDescribe.getType() == Schema.DisplayType.String ||
+    //                 fieldDescribe.getType() == Schema.DisplayType.TextArea ||
+    //                 fieldDescribe.getType() == Schema.DisplayType.EncryptedString) {
+    //             if (fieldValue instanceof String) {
+    //                 return (String)fieldValue;
+    //             }
+    //         } else if (fieldDescribe.getType() == Schema.DisplayType.Base64) {
+    //             if (fieldValue instanceof String) {
+    //                 return EncodingUtil.base64Decode((String)fieldValue);
+    //             }
+    //         } else if (fieldDescribe.getType() == Schema.DisplayType.Combobox || 
+    //                 fieldDescribe.getType() == Schema.DisplayType.Picklist || 
+    //                 fieldDescribe.getType() == Schema.DisplayType.MultiPicklist) {
+    //             if (fieldValue instanceof String) {
+    //                 return (String)fieldValue;
+    //             }
+    //         } else if (fieldDescribe.getType() == Schema.DisplayType.ID) {
+    //             if (fieldValue instanceof String) {
+    //                 return (String)fieldValue;
+    //             }
+    //         } else if (fieldDescribe.getType() == Schema.DisplayType.Address) {
+    //             if (fieldValue instanceof String) {
+    //                 return JSON.deserialize((String)fieldValue, Address.class);
+    //             }
+    //         } else if (fieldDescribe.getType() == Schema.DisplayType.Location) {
+    //             if (fieldValue instanceof String) {
+    //                 List<String> coords = ((String)fieldValue).split(',');
+    //                 if (coords.size() == 2) {
+    //                     Double latitude = Double.valueOf(coords[0]);
+    //                     Double longitude = Double.valueOf(coords[1]);
+    //                     return Location.newInstance(latitude, longitude);
+    //                 } else {
+    //                     throw new IllegalArgumentException('Invalid geolocation value: ' + fieldValue);
+    //                 }
+    //             }
+    //         } else if (fieldDescribe.getType() == Schema.DisplayType.Json) {
+    //             if (fieldValue instanceof String) {
+    //                 return JSON.deserializeUntyped((String)fieldValue);
+    //             }
+    //         } else if (fieldDescribe.getType() == Schema.DisplayType.Time) {
+    //             if (fieldValue instanceof String) {
+    //                 List<String> timeParts = ((String)fieldValue).split(':');
+    //                 Integer hours = Integer.valueOf(timeParts[0]);
+    //                 Integer minutes = Integer.valueOf(timeParts[1]);
+    //                 Integer seconds = Integer.valueOf(timeParts[2].split('\\.')[0]);
+    //                 Integer milliseconds = timeParts[2].contains('.') ? Integer.valueOf(timeParts[2].split('\\.')[1]) : 0;
+    //                 return Time.newInstance(hours, minutes, seconds, milliseconds);
+    //             }
+    //         } else if (fieldDescribe.getType() == Schema.DisplayType.Reference || 
+    //                 fieldDescribe.getType() == Schema.DisplayType.SObject) {
+    //             if (fieldValue instanceof String) {
+    //                 return (String)fieldValue;
+    //             }
+    //         } else {
+    //             return fieldValue;
+    //         }
+    //     } catch (Exception e) {
+    //         throw new IllegalArgumentException('Error converting field value: ' + fieldValue + ' for field: ' + fieldDescribe.getName() + '. ' + e.getMessage());
+    //     }
+    //     return null;
+    // }
 
     @AuraEnabled
     public static void deleteRecord(String recordId, String objectName) {

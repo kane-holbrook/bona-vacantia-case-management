@@ -1,21 +1,21 @@
-import { LightningElement, api, track, wire } from 'lwc';
-import updateRecord from '@salesforce/apex/LayoutController.updateRecord';
-import createRecord from '@salesforce/apex/LayoutController.createRecord';
+import { LightningElement, api, track } from 'lwc';
+import { updateRecord, createRecord } from 'lightning/uiRecordApi';
 import getPicklistValues from '@salesforce/apex/LayoutController.getPicklistValues';
 
 export default class DatabaseStandardRecordModal extends LightningElement {
     @api recordId;
     @api objectApiName;
-    @api recordData = []; // Record data passed from parent component
+    @api recordData = [];
     @api subRecordId;
-    @api columns = []; // Columns configuration passed from parent component
-    @api columnLayoutStyle; // Column layout style passed from parent component
-    @api recordTypeId; // Record Type Id passed from parent component
-    @track combinedData = []; // Combined data to be used in the template
+    @api columns = [];
+    @api columnLayoutStyle;
+    @api recordTypeId;
+    @track combinedData = [];
     @track leftColumnFields = [];
     @track rightColumnFields = [];
+    @track isLoading = true; // Track the loading state
 
-    connectedCallback() {
+    async connectedCallback() {
         // Ensure recordData is an array
         if (!Array.isArray(this.recordData)) {
             this.recordData = [this.recordData];
@@ -34,7 +34,7 @@ export default class DatabaseStandardRecordModal extends LightningElement {
 
         // Combine columns and filtered record data
         this.combinedData = filteredData.map(record => ({
-            id: record.Id,
+            id: record.Id === 'new' ? 'new' : (this.objectApiName === 'BV_Case__c' ? this.recordId : record.Id),
             fields: this.columns
                 .filter(column => column.type !== 'action')
                 .map(column => ({
@@ -50,9 +50,11 @@ export default class DatabaseStandardRecordModal extends LightningElement {
                 }))
         }));
 
+        await this.loadPicklistOptions();
+
         this.splitFieldsByColumns();
 
-        this.loadPicklistOptions();
+        this.isLoading = false; // Set loading state to false after data is loaded
 
         console.log('Combined Data:', JSON.stringify(this.combinedData));
     }
@@ -81,27 +83,28 @@ export default class DatabaseStandardRecordModal extends LightningElement {
     }
 
     splitFieldsByColumns() {
-        this.leftColumnFields = [];
-        this.rightColumnFields = [];
+        const leftFields = [];
+        const rightFields = [];
 
         this.combinedData.forEach(record => {
             record.fields.forEach((field, index) => {
                 if (index % 2 === 0) {
-                    this.leftColumnFields.push(field);
+                    leftFields.push({ ...field, recordId: record.id });
                 } else {
-                    this.rightColumnFields.push(field);
+                    rightFields.push({ ...field, recordId: record.id });
                 }
             });
         });
+
+        this.leftColumnFields = leftFields;
+        this.rightColumnFields = rightFields;
     }
 
-    // Handle changes in input fields
     handleInputChange(event) {
         const recordId = event.target.dataset.recordId;
         const fieldName = event.target.name;
         const updatedValue = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
 
-        // Find the corresponding item in combinedData and update its value
         this.combinedData = this.combinedData.map(record => {
             if (record.id === recordId) {
                 record.fields = record.fields.map(item => {
@@ -117,49 +120,44 @@ export default class DatabaseStandardRecordModal extends LightningElement {
         this.splitFieldsByColumns();
     }
 
-    // Handle save action
     handleSave() {
         this.combinedData.forEach(record => {
-            const updatedFields = {};
+            const fields = {};
             record.fields.forEach(item => {
-                updatedFields[item.fieldName] = item.value;
-
-                // Sometimes a item.type of "number" gets converted to a string, we want to make sure they stay as strings due to BigInt limitations
-                if (item.type === 'number') {
-                    // Convert to String
-                    if (item.value === '') {
-                        updatedFields[item.fieldName] = null;
-                    } else {
-                        updatedFields[item.fieldName] = String(item.value);
-                    }
-                }
+                fields[item.fieldName] = item.value;
             });
 
-            console.log('Updated fields for record:', record.id, updatedFields);
+            console.log('Fields for record:', record.id, fields);
 
             if (record.id === 'new') {
-                // Ensure BV_Case__c field is included
-                updatedFields.BV_Case__c = this.recordId;
+                fields.BV_Case__c = this.recordId;
+                fields.RecordTypeId = this.recordTypeId;
 
-                // Create new record
-                createRecord({ objectName: this.objectApiName, fields: updatedFields, recordTypeId: this.recordTypeId})
-                    .then(() => {
-                        console.log('Record created successfully');
+                const newRecordInput = {
+                    apiName: this.objectApiName,
+                    fields: fields
+                };
 
-                        // Send custom event to parent component to inform that the record has been updated
-                        const recordUpdatedEvent = new CustomEvent('recordupdated', { detail: { recordId: 'new' } });
+                createRecord(newRecordInput)
+                    .then((record) => {
+                        console.log('Record created successfully:', record.id);
+                        const recordUpdatedEvent = new CustomEvent('recordupdated', { detail: { recordId: record.id } });
                         this.dispatchEvent(recordUpdatedEvent);
                     })
                     .catch(error => {
                         console.error('Error creating record:', error);
                     });
             } else {
-                // Update existing record
-                updateRecord({ recordId: record.id, objectName: this.objectApiName, updatedFields: updatedFields })
+                fields.Id = record.id;
+                fields.RecordTypeId = this.recordTypeId;
+
+                const recordInput = {
+                    fields: fields
+                };
+
+                updateRecord(recordInput)
                     .then(() => {
                         console.log('Record updated successfully:', record.id);
-
-                        // Send custom event to parent component to inform that the record has been updated
                         const recordUpdatedEvent = new CustomEvent('recordupdated', { detail: { recordId: record.id } });
                         this.dispatchEvent(recordUpdatedEvent);
                     })
@@ -170,7 +168,6 @@ export default class DatabaseStandardRecordModal extends LightningElement {
         });
     }
 
-    // Handle cancel action
     handleCancel() {
         this.dispatchEvent(new CustomEvent('cancelupdate'));
     }
