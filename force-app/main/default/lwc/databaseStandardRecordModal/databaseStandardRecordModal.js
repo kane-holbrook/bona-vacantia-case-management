@@ -10,6 +10,7 @@ export default class DatabaseStandardRecordModal extends LightningElement {
     @api columns = [];
     @api columnLayoutStyle;
     @api recordTypeId;
+    @api emptySpaceRowIndex;
     @track combinedData = [];
     @track leftColumnFields = [];
     @track rightColumnFields = [];
@@ -57,6 +58,8 @@ export default class DatabaseStandardRecordModal extends LightningElement {
         this.isLoading = false; // Set loading state to false after data is loaded
 
         console.log('Combined Data:', JSON.stringify(this.combinedData));
+
+        console.log('emptyIndexRow', this.emptySpaceRowIndex);
     }
 
     async loadPicklistOptions() {
@@ -98,6 +101,9 @@ export default class DatabaseStandardRecordModal extends LightningElement {
 
         this.leftColumnFields = leftFields;
         this.rightColumnFields = rightFields;
+
+        console.log('left columns', this.leftColumnFields);
+        console.log('right columns', this.rightColumnFields);
     }
 
     handleInputChange(event) {
@@ -174,5 +180,24 @@ export default class DatabaseStandardRecordModal extends LightningElement {
 
     get isTwoColumnLayout() {
         return this.columnLayoutStyle === 2;
+    }
+
+    get leftFieldsWithDividers() {
+        return this.addDividers(this.leftColumnFields);
+    }
+
+    get rightFieldsWithDividers() {
+        return this.addDividers(this.rightColumnFields);
+    }
+
+    addDividers(fields) {
+        const fieldsWithDividers = [];
+        fields.forEach((field, index) => {
+            if (this.emptySpaceRowIndex.includes(index)) {
+                fieldsWithDividers.push({ isDivider: true, key: `divider-${index}` });
+            }
+            fieldsWithDividers.push({ ...field, key: field.fieldName });
+        });
+        return fieldsWithDividers;
     }
 }

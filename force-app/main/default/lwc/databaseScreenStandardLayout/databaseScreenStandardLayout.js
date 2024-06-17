@@ -23,6 +23,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
     @track sortedDirection;
     @track subRecordId;
     @track columnLayoutStyle = 2;
+    @track emptySpaceIndices = [];
     hasDataBeenUpdated = false;
     isModalOpen = false;
     isModalOpenDelete = false;
@@ -117,6 +118,26 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
             let tableDataTemp = []; // Adjusted for multiple records
             let columnsTemp = [];
             let columnsMainTemp = new Map();
+
+            // Process fields into left and right columns
+            this.splitFieldsByColumns();
+
+            // Detect consecutive "EmptySpace" components in left and right columns
+            this.emptySpaceIndices = []; // Reset the emptySpaceIndices array
+
+            for (let i = 0; i < this.leftColumnFields.length; i++) {
+                if (this.leftColumnFields[i].componentType === 'EmptySpace' && this.rightColumnFields[i].componentType === 'EmptySpace') {
+                    this.emptySpaceIndices.push(i);
+                    // Log the labels of the fields before and after the empty spaces
+                    const beforeLabel = i > 0 ? this.getFieldLabelFromColumn(i - 1) : 'No field';
+                    const afterLabel = i < this.leftColumnFields.length - 1 ? this.getFieldLabelFromColumn(i + 1) : 'No field';
+                    console.log(`Empty spaces detected at row ${i}`);
+                    console.log(`Field before empty spaces: ${beforeLabel}`);
+                    console.log(`Field after empty spaces: ${afterLabel}`);
+                }
+            }
+
+            console.log('Empty Space Indices: ', this.emptySpaceIndices);
     
             this.layoutSections.forEach(section => {
                 section.layoutRows.forEach(row => {
@@ -525,6 +546,49 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
             return 'null';
         }
         return value;
+    }
+
+    // Helper method to split fields into left and right columns
+    splitFieldsByColumns() {
+        const leftFields = [];
+        const rightFields = [];
+
+        this.layoutSections.forEach(section => {
+            if (section.heading === 'Fields') {
+                section.layoutRows.forEach((row, rowIndex) => {
+                    row.layoutItems.forEach((item, itemIndex) => {
+                        item.layoutComponents.forEach((component, componentIndex) => {
+                            if (component.componentType === 'Field' || component.componentType === 'EmptySpace') {
+                                if (itemIndex % 2 === 0) {
+                                    leftFields.push({ ...component, rowIndex, itemIndex });
+                                } else {
+                                    rightFields.push({ ...component, rowIndex, itemIndex });
+                                }
+                            }
+                        });
+                    });
+                });
+            }
+        });
+
+        this.leftColumnFields = leftFields;
+        this.rightColumnFields = rightFields;
+
+        console.log('left column layout fields', this.leftColumnFields);
+        console.log('right column layout fields', this.rightColumnFields);
+    }
+
+    // Helper method to check if all items in a row are EmptySpace components
+    isRowAllEmptySpaces(layoutItems) {
+        return layoutItems.every(item => item.layoutComponents.some(component => component.componentType === 'EmptySpace'));
+    }
+
+    // Helper method to get the label of a field from left and right columns at a given position
+    getFieldLabelFromColumn(index) {
+        const leftField = this.leftColumnFields[index];
+        const rightField = this.rightColumnFields[index];
+
+        return `${leftField.label || 'No field'} - ${rightField.label || 'No field'}`;
     }
 
     get cardHeader() {
