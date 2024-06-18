@@ -138,6 +138,9 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
             }
 
             console.log('Empty Space Indices: ', this.emptySpaceIndices);
+
+            // Adjust emptySpaceIndices
+            this.adjustEmptySpaceIndices();
     
             this.layoutSections.forEach(section => {
                 section.layoutRows.forEach(row => {
@@ -576,6 +579,57 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
 
         console.log('left column layout fields', this.leftColumnFields);
         console.log('right column layout fields', this.rightColumnFields);
+    }
+
+    // Method to adjust emptySpaceIndices dynamically
+    adjustEmptySpaceIndices() {
+        // Flatten left and right fields while preserving the order
+        const combinedFields = [];
+        for (let i = 0; i < Math.max(this.leftColumnFields.length, this.rightColumnFields.length); i++) {
+            if (i < this.leftColumnFields.length && this.leftColumnFields[i].componentType !== 'EmptySpace') {
+                combinedFields.push(this.leftColumnFields[i]);
+            }
+            if (i < this.rightColumnFields.length && this.rightColumnFields[i].componentType !== 'EmptySpace') {
+                combinedFields.push(this.rightColumnFields[i]);
+            }
+        }
+
+        // Initialize new emptySpaceIndices
+        const newEmptySpaceIndices = [];
+
+        // Calculate the positions of empty spaces in the merged fields
+        this.emptySpaceIndices.forEach(index => {
+            let leftIndexCount = 0;
+            let rightIndexCount = 0;
+            let combinedIndex = 0;
+            
+            for (let i = 0; i < Math.max(this.leftColumnFields.length, this.rightColumnFields.length); i++) {
+                if (i < this.leftColumnFields.length && this.leftColumnFields[i].componentType !== 'EmptySpace') {
+                    if (leftIndexCount === index) {
+                        break;
+                    }
+                    leftIndexCount++;
+                    combinedIndex++;
+                }
+                if (i < this.rightColumnFields.length && this.rightColumnFields[i].componentType !== 'EmptySpace') {
+                    if (rightIndexCount === index) {
+                        break;
+                    }
+                    rightIndexCount++;
+                    combinedIndex++;
+                }
+            }
+
+            newEmptySpaceIndices.push(combinedIndex);
+        });
+
+        // Sort the new empty space indices
+        newEmptySpaceIndices.sort((a, b) => a - b);
+
+        // Update emptySpaceIndices with the new calculated indices
+        this.emptySpaceIndices = newEmptySpaceIndices;
+
+        console.log('Adjusted Empty Space Indices: ', this.emptySpaceIndices);
     }
 
     // Helper method to check if all items in a row are EmptySpace components
