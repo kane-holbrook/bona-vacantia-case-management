@@ -323,6 +323,9 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                         value: record[column.fieldName] || '—'
                     }))
             }));
+
+            // Mark positions for dividers
+            this.markDividerPositions();
     
             // Merge table data with expanded view field values
             this.tableDataObj.forEach(row => {
@@ -581,9 +584,42 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
         console.log('right column layout fields', this.rightColumnFields);
     }
 
-    // Method to adjust emptySpaceIndices dynamically
     adjustEmptySpaceIndices() {
-        // Flatten left and right fields while preserving the order
+        let newEmptySpaceDetails = [];
+    
+        // Step 1: Find matching EmptySpace indices in both columns and record details
+        for (let i = 0; i < Math.max(this.leftColumnFields.length, this.rightColumnFields.length); i++) {
+            const leftField = i < this.leftColumnFields.length ? this.leftColumnFields[i] : null;
+            const rightField = i < this.rightColumnFields.length ? this.rightColumnFields[i] : null;
+    
+            // Check if both fields are EmptySpace at the same index
+            if (leftField && rightField && leftField.componentType === 'EmptySpace' && rightField.componentType === 'EmptySpace') {
+                // Find the closest non-EmptySpace field's apiName
+                let closestApiName = null;
+                if (i > 0) {
+                    // Check previous index for closest non-EmptySpace field
+                    if (i - 1 < this.leftColumnFields.length && this.leftColumnFields[i - 1].componentType !== 'EmptySpace') {
+                        closestApiName = this.leftColumnFields[i - 1].apiName;
+                    } else if (i - 1 < this.rightColumnFields.length && this.rightColumnFields[i - 1].componentType !== 'EmptySpace') {
+                        closestApiName = this.rightColumnFields[i - 1].apiName;
+                    }
+                }
+                // If no closest field found from previous index, check next index
+                if (!closestApiName && i + 1 < Math.max(this.leftColumnFields.length, this.rightColumnFields.length)) {
+                    if (i + 1 < this.leftColumnFields.length && this.leftColumnFields[i + 1].componentType !== 'EmptySpace') {
+                        closestApiName = this.leftColumnFields[i + 1].apiName;
+                    } else if (i + 1 < this.rightColumnFields.length && this.rightColumnFields[i + 1].componentType !== 'EmptySpace') {
+                        closestApiName = this.rightColumnFields[i + 1].apiName;
+                    }
+                }
+                newEmptySpaceDetails.push({
+                    index: i,
+                    closestApiName: closestApiName
+                });
+            }
+        }
+    
+        // Step 2: Combine the left and right columns while excluding EmptySpaces
         const combinedFields = [];
         for (let i = 0; i < Math.max(this.leftColumnFields.length, this.rightColumnFields.length); i++) {
             if (i < this.leftColumnFields.length && this.leftColumnFields[i].componentType !== 'EmptySpace') {
@@ -593,43 +629,37 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                 combinedFields.push(this.rightColumnFields[i]);
             }
         }
-
-        // Initialize new emptySpaceIndices
-        const newEmptySpaceIndices = [];
-
-        // Calculate the positions of empty spaces in the merged fields
-        this.emptySpaceIndices.forEach(index => {
-            let leftIndexCount = 0;
-            let rightIndexCount = 0;
-            let combinedIndex = 0;
-            
-            for (let i = 0; i < Math.max(this.leftColumnFields.length, this.rightColumnFields.length); i++) {
-                if (i < this.leftColumnFields.length && this.leftColumnFields[i].componentType !== 'EmptySpace') {
-                    if (leftIndexCount === index) {
-                        break;
-                    }
-                    leftIndexCount++;
-                    combinedIndex++;
-                }
-                if (i < this.rightColumnFields.length && this.rightColumnFields[i].componentType !== 'EmptySpace') {
-                    if (rightIndexCount === index) {
-                        break;
-                    }
-                    rightIndexCount++;
-                    combinedIndex++;
-                }
-            }
-
-            newEmptySpaceIndices.push(combinedIndex);
+    
+        // Step 3: Map the EmptySpace details to the combined array
+        let adjustedEmptySpaceIndices = newEmptySpaceDetails.map(detail => {
+            // Find the combined index of the closest non-EmptySpace field
+            let combinedIndex = combinedFields.findIndex(field => field.apiName === detail.closestApiName);
+            return combinedIndex;
         });
-
+    
         // Sort the new empty space indices
-        newEmptySpaceIndices.sort((a, b) => a - b);
+        adjustedEmptySpaceIndices.sort((a, b) => a - b);
 
+        // +1 to each index to account for the missing fields
+        adjustedEmptySpaceIndices = adjustedEmptySpaceIndices.map(index => index + 1);
+    
         // Update emptySpaceIndices with the new calculated indices
-        this.emptySpaceIndices = newEmptySpaceIndices;
-
+        this.emptySpaceIndices = adjustedEmptySpaceIndices;
+    
         console.log('Adjusted Empty Space Indices: ', this.emptySpaceIndices);
+    }
+
+    // Method to mark divider positions in combined data
+    markDividerPositions() {
+        this.combinedData.forEach(record => {
+            record.fieldsWithDividers = [];
+            record.fields.forEach((field, index) => {
+                record.fieldsWithDividers.push({
+                    ...field,
+                    insertDivider: this.emptySpaceIndices.includes(index)
+                });
+            });
+        });
     }
 
     // Helper method to check if all items in a row are EmptySpace components
@@ -742,5 +772,19 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
     // External record that has data, but doesn't allow multiple records
     get isEdgeCase() {
         return !this.isBVCase && this.hasData && !this.multipleRecords;
+    }
+
+    get processedData() {
+        return this.combinedData.map(record => {
+            return {
+                ...record,
+                fieldsWithDividers: record.fields.map((field, index) => {
+                    return {
+                        ...field,
+                        insertDivider: this.emptySpaceIndices.includes(index)
+                    };
+                })
+            };
+        });
     }
 }

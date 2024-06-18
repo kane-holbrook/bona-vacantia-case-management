@@ -21,12 +21,6 @@
                         </div>
                         <div class="slds-media__figure slds-media__figure_reverse">
                             <template if:true={isBVCase}>
-                                <!-- <template if:true={hasData}>
-                                    <button class="slds-button slds-button_brand" onclick={openModal}>
-                                        <lightning-icon icon-name="utility:add" alternative-text="Add" size="x-small" class="slds-m-right_x-small"></lightning-icon>
-                                        Edit
-                                    </button>
-                                </template> -->
                                 <template if:false={hasData}>
                                     <button class="slds-button slds-button_brand" onclick={openModal}>
                                         <lightning-icon icon-name="utility:add" alternative-text="Add" size="x-small" class="slds-m-right_x-small"></lightning-icon>
@@ -42,7 +36,7 @@
                                     </button>
                                 </template>
                             </template>
-                        </div>                        
+                        </div>
                     </header>
                 </div>
                 <div class="slds-card__body">
@@ -102,9 +96,12 @@
                                         </td>
                                     </tr>
                                     <div class="slds-p-around_x-small expanded-section" key={row.Id} data-rowid={row.Id} style="display:none;">
-                                        <template for:each={row.fullData} for:item="dataRow">
-                                            <dl class="slds-dl_horizontal" key={dataRow.Id} style="row-gap: 8px;">
-                                                <template for:each={dataRow.fields} for:item="field">
+                                        <template for:each={processedData} for:item="dataRow">
+                                            <dl class="slds-dl_horizontal" key={dataRow.id} style="row-gap: 8px;">
+                                                <template for:each={dataRow.fieldsWithDividers} for:item="field">
+                                                    <template if:true={field.insertDivider}>
+                                                        <div class="slds-section slds-m-vertical_large" style="border-top: 1px solid #d8dde6;" key={modalKey}></div>
+                                                    </template>
                                                     <dt class="slds-dl_horizontal__label" key={field.fieldName} title={field.label} style="font-weight: bold;">{field.label}</dt>
                                                     <dd class="slds-dl_horizontal__detail" key={field.fieldName} title={field.value}>{field.value}</dd>
                                                 </template>
@@ -114,10 +111,8 @@
                                 </template>
                             </tbody>
                         </table>
-
                     </template>
                     <template if:false={hasData}>
-                        <!-- <p>There are no {section.heading} associated with this case.</p> -->
                         <p>There are no records of this type associated with this case</p>
                     </template>
                 </div>
