@@ -5,3 +5,7 @@
 .expanded-section {
     width: 1000%;
 }
+
+.no-hover:hover {
+    display: none !important;
+}

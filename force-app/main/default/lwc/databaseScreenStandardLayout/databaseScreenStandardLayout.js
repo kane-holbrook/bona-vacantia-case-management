@@ -478,18 +478,17 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
         const cloneData = [...this.tableData];
         const cloneTableData = [...this.tableDataObj];
     
+        const naturalSort = (a, b) => {
+            const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
+            return collator.compare(a, b);
+        };
+    
         const sortBy = (field, multiplier) => {
             return (a, b) => {
                 let aValue = a[field];
                 let bValue = b[field];
     
-                if (aValue < bValue) {
-                    return -1 * multiplier;
-                }
-                if (aValue > bValue) {
-                    return 1 * multiplier;
-                }
-                return 0;
+                return naturalSort(aValue, bValue) * multiplier;
             };
         };
     
@@ -497,13 +496,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
             const aValue = a.Cells[0].value;
             const bValue = b.Cells[0].value;
     
-            if (aValue < bValue) {
-                return -1 * sortMultiplier;
-            }
-            if (aValue > bValue) {
-                return 1 * sortMultiplier;
-            }
-            return 0;
+            return naturalSort(aValue, bValue) * sortMultiplier;
         };
     
         cloneData.sort(sortBy(sortedBy, sortMultiplier));
