@@ -845,4 +845,11 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
     get isUnsorted() {
         return !this.sortedBy;
     }
+
+    get tableDataWithIndex() {
+        return this.tableDataObj.map((item, index) => ({
+            ...item,
+            rowIndex: index + 1
+        }));
+    }
 }

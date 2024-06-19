@@ -68,7 +68,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <template for:each={tableDataObj} for:item="row">
+                                <template for:each={tableDataWithIndex} for:item="row">
                                     <tr aria-selected="false" class="slds-hint-parent" key={row.Id}>
                                         <td class="slds-cell_action-mode" role="gridcell">
                                             <div class="slds-truncate">
@@ -77,9 +77,10 @@
                                                         <lightning-icon icon-name="utility:chevronright" alternative-text="Expand" size="x-small"></lightning-icon>
                                                     </button>
                                                 </template>
+                                                <span>{row.rowIndex}</span>
                                             </div>
                                         </td>
-                                        <template for:each={row.Cells} for:item="cell" for:index="index">
+                                        <template for:each={row.Cells} for:item="cell" for:index="cellIndex">
                                             <td class="slds-cell_action-mode" role="gridcell" key={cell.Id}>
                                                 <div class="slds-truncate" title={cell.value}>{cell.value}</div>
                                             </td>
