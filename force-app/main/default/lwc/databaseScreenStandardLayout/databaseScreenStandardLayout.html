@@ -24,7 +24,7 @@
                                 <template if:false={hasData}>
                                     <button class="slds-button slds-button_brand" onclick={openModal}>
                                         <lightning-icon icon-name="utility:add" alternative-text="Add" size="x-small" class="slds-m-right_x-small plus-icon"></lightning-icon>
-                                        Add
+                                        {modalHeading}
                                     </button>
                                 </template>
                             </template>
@@ -32,7 +32,7 @@
                                 <template if:false={isEdgeCase}>
                                     <button class="slds-button slds-button_brand" onclick={openModal}>
                                         <lightning-icon icon-name="utility:add" alternative-text="Add" size="x-small" class="slds-m-right_x-small plus-icon"></lightning-icon>
-                                        Add
+                                        {modalHeading}
                                     </button>
                                 </template>
                             </template>
@@ -44,7 +44,7 @@
                         <table aria-multiselectable="true" class="slds-table slds-table_bordered slds-table_fixed-layout slds-table_resizable-cols" role="grid" aria-label="Example advanced table of Opportunities in actionable mode">
                             <thead>
                                 <tr class="slds-line-height_reset">
-                                    <th style="width: 3.25rem;"></th>
+                                    <th style="width: 3.25rem;">#</th>
                                     <template for:each={columnsMain} for:item="column">
                                         <th aria-sort="none" class="slds-is-resizable slds-is-sortable slds-cell_action-mode" scope="col" key={column.apiName} onclick={onHandleSort} data-field={column.fieldName}>
                                             <a class="slds-th__action slds-text-link_reset" href="#" role="button" tabindex="0">
