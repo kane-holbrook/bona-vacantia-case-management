@@ -101,9 +101,9 @@ public with sharing class LayoutController {
         if (!fieldApiNames.isEmpty()) {
             String soql;
             if (objectApiName == 'BV_Case__c') {
-                soql = 'SELECT ' + String.join(new List<String>(fieldApiNames), ', ') + ' FROM ' + objectApiName + ' WHERE Id = :recordId AND RecordTypeId = :recordTypeId';
+                soql = 'SELECT ' + String.join(new List<String>(fieldApiNames), ', ') + ' FROM ' + objectApiName + ' WHERE Id = :recordId AND RecordTypeId = :recordTypeId ORDER BY CreatedDate ASC';
             } else {
-                soql = 'SELECT ' + String.join(new List<String>(fieldApiNames), ', ') + ' FROM ' + objectApiName + ' WHERE BV_Case__c = :recordId AND RecordTypeId = :recordTypeId';
+                soql = 'SELECT ' + String.join(new List<String>(fieldApiNames), ', ') + ' FROM ' + objectApiName + ' WHERE BV_Case__c = :recordId AND RecordTypeId = :recordTypeId ORDER BY CreatedDate ASC';
             }
             System.debug('SOQL: ' + soql);
             List<SObject> records = Database.query(soql);
