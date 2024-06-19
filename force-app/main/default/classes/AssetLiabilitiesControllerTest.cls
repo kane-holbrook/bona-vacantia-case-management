@@ -31,7 +31,7 @@ private class AssetLiabilitiesControllerTest {
         System.assertEquals(1, groupedRecords.size());
         System.assertEquals(rt.Name, groupedRecords[0].recordTypeName); // Corrected assertion
         System.assertEquals(1, groupedRecords[0].records.size());
-        System.assertEquals('AL100000', groupedRecords[0].records[0].Title__c);
+        System.assertEquals('AL2146000', groupedRecords[0].records[0].Title__c);
     }
 
     @isTest
@@ -59,6 +59,6 @@ private class AssetLiabilitiesControllerTest {
         Test.stopTest();
 
         // Assert the results
-        System.assertEquals('AL100000', result.Name);
+        System.assertEquals('AL2146000', result.Name);
     }
 }
