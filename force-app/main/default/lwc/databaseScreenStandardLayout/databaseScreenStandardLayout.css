@@ -9,3 +9,15 @@
 .no-hover:hover {
     display: none !important;
 }
+
+.plus-icon {
+    --sds-c-icon-color-foreground-default: white !important;
+}
+
+.no-records {
+    padding: 0.5rem !important;
+}
+
+.no-box-borders {
+    border-radius: 0% !important;
+}

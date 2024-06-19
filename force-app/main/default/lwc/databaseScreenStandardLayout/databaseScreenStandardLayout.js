@@ -342,6 +342,8 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
             this.tableDataObj.forEach(row => {
                 row['fullData'] = this.combinedData.filter(dataRow => dataRow.id === row.Id);
             });
+
+            this.combinedData = this.preprocessKeys(this.combinedData);
     
             console.log('Columns Map: ', columnsMainTemp);
             console.log('Columns Main: ', JSON.stringify(this.columnsMain));
@@ -525,22 +527,22 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
     }
 
     //Handle expanded view dropdown event
-    expandSection(event){
-        var targetRow = event.currentTarget.dataset.targetrow;
-        console.log(targetRow);
-        var queryString = 'div[data-rowid="' + targetRow + '"]';
-        var rowEle = this.template.querySelector(queryString);
-        console.log(rowEle);
-        console.dir(event.target);
-        if(rowEle.style.display === 'none'){
-            rowEle.style.display = 'block';
-        }else{
-            rowEle.style.display = 'none';
+    expandSection(event) {
+        const targetRowId = event.currentTarget.dataset.targetrow;
+        console.log(targetRowId);
+        const queryString = `div[data-rowid="${targetRowId}"]`;
+        const rowElement = this.template.querySelector(queryString);
+        console.log(rowElement);
+        if (rowElement.style.display === 'none') {
+            rowElement.style.display = 'block';
+        } else {
+            rowElement.style.display = 'none';
         }
-        if(event.target.iconName === 'utility:chevronright'){
-            event.target.iconName = 'utility:chevrondown';
-        }else{
-            event.target.iconName = 'utility:chevronright';
+        const icon = event.currentTarget.querySelector('lightning-icon');
+        if (icon.iconName === 'utility:chevronright') {
+            icon.iconName = 'utility:chevrondown';
+        } else {
+            icon.iconName = 'utility:chevronright';
         }
     }
 
@@ -693,6 +695,18 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
         this.multipleRecords = false;
     }
 
+    preprocessKeys(data) {
+        return data.map(record => ({
+            ...record,
+            fieldsWithDividers: record.fields.map(field => ({
+                ...field,
+                labelKey: `${field.fieldName}-label`,
+                valueKey: `${field.fieldName}-value`,
+                dividerKey: `${field.fieldName}-divider`
+            }))
+        }));
+    }
+
     get cardHeader() {
         return this.layoutSections ? this.layoutSections.heading : 'Loading...';
     }
@@ -818,5 +832,17 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                 })
             };
         });
+    }
+
+    get isSortedAsc() {
+        return this.sortedBy && this.sortDirection === 'asc';
+    }
+
+    get isSortedDesc() {
+        return this.sortedBy && this.sortDirection === 'desc';
+    }
+
+    get isUnsorted() {
+        return !this.sortedBy;
     }
 }

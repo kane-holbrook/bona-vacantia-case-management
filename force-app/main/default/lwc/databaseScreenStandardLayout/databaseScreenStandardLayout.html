@@ -1,6 +1,6 @@
 <template>
     <template for:each={sectionsMain} for:item="section">
-        <div class="slds-box" key={section.heading}>
+        <div class="slds-box no-box-borders" key={section.heading}>
             <article class="slds-card database-card">
                 <div class="slds-card__header slds-grid slds-align_absolute-center" style="padding: 1em;">
                     <header class="slds-media slds-media_center slds-has-flexi-truncate">
@@ -23,7 +23,7 @@
                             <template if:true={isBVCase}>
                                 <template if:false={hasData}>
                                     <button class="slds-button slds-button_brand" onclick={openModal}>
-                                        <lightning-icon icon-name="utility:add" alternative-text="Add" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                                        <lightning-icon icon-name="utility:add" alternative-text="Add" size="x-small" class="slds-m-right_x-small plus-icon"></lightning-icon>
                                         Add
                                     </button>
                                 </template>
@@ -31,7 +31,7 @@
                             <template if:false={isBVCase}>
                                 <template if:false={isEdgeCase}>
                                     <button class="slds-button slds-button_brand" onclick={openModal}>
-                                        <lightning-icon icon-name="utility:add" alternative-text="Add" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                                        <lightning-icon icon-name="utility:add" alternative-text="Add" size="x-small" class="slds-m-right_x-small plus-icon"></lightning-icon>
                                         Add
                                     </button>
                                 </template>
@@ -51,11 +51,9 @@
                                                 <span class="slds-assistive-text">Sort by: </span>
                                                 <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
                                                     <span class="slds-truncate" title={column.label}>{column.label}</span>
-                                                    <span class="slds-icon_container slds-icon-utility-arrowdown">
-                                                        <svg class="slds-icon slds-icon-text-default slds-is-sortable__icon " aria-hidden="true">
-                                                            <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#down"></use>
-                                                        </svg>
-                                                    </span>
+                                                    <lightning-icon if:true={isSortedAsc} icon-name="utility:arrowup" alternative-text="Ascending" size="x-small"></lightning-icon>
+                                                    <lightning-icon if:true={isSortedDesc} icon-name="utility:arrowdown" alternative-text="Descending" size="x-small"></lightning-icon>
+                                                    <lightning-icon if:true={isUnsorted} icon-name="utility:arrowup" alternative-text="Unsorted" size="x-small" class="slds-icon--hidden"></lightning-icon>
                                                 </div>
                                             </a>
                                             <div class="slds-resizable">
@@ -96,14 +94,14 @@
                                         </td>
                                     </tr>
                                     <div class="slds-p-around_x-small expanded-section" key={row.Id} data-rowid={row.Id} style="display:none;">
-                                        <template for:each={processedData} for:item="dataRow">
+                                        <template for:each={row.fullData} for:item="dataRow">
                                             <dl class="slds-dl_horizontal" key={dataRow.id} style="row-gap: 8px;">
                                                 <template for:each={dataRow.fieldsWithDividers} for:item="field">
                                                     <template if:true={field.insertDivider}>
-                                                        <div class="slds-section slds-m-vertical_large" style="border-top: 1px solid #d8dde6;" key={modalKey}></div>
+                                                        <div class="slds-section slds-m-vertical_large" style="border-top: 1px solid #d8dde6;" key={field.dividerKey}></div>
                                                     </template>
-                                                    <dt class="slds-dl_horizontal__label" key={field.fieldName} title={field.label} style="font-weight: bold;">{field.label}</dt>
-                                                    <dd class="slds-dl_horizontal__detail" key={field.fieldName} title={field.value}>{field.value}</dd>
+                                                    <dt class="slds-dl_horizontal__label" key={field.labelKey} title={field.label} style="font-weight: bold;">{field.label}</dt>
+                                                    <dd class="slds-dl_horizontal__detail" key={field.valueKey} title={field.value}>{field.value}</dd>
                                                 </template>
                                             </dl>
                                         </template>
@@ -113,7 +111,9 @@
                         </table>
                     </template>
                     <template if:false={hasData}>
-                        <p>There are no records of this type associated with this case</p>
+                        <div class="slds-box slds-theme_default no-box-borders no-records">
+                            <p>There are no records of this type associated with this case</p>
+                        </div>
                     </template>
                 </div>
             </article>
