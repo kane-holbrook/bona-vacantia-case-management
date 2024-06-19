@@ -1,6 +1,5 @@
 import { LightningElement, api, track } from 'lwc';
-import updateRecord from '@salesforce/apex/LayoutController.updateRecord';
-import deleteRecord from '@salesforce/apex/LayoutController.deleteRecord';
+import { deleteRecord, updateRecord } from 'lightning/uiRecordApi';
 
 export default class DatabaseStandardRecordModalDelete extends LightningElement {
     @api recordId;
@@ -11,7 +10,6 @@ export default class DatabaseStandardRecordModalDelete extends LightningElement 
     @track combinedData = []; // Combined data to be used in the template
 
     connectedCallback() {
-
         if (this.recordData) {
             // Ensure recordData is an array
             if (!Array.isArray(this.recordData)) {
@@ -39,15 +37,14 @@ export default class DatabaseStandardRecordModalDelete extends LightningElement 
         }));
 
         console.log('Combined Data:', JSON.stringify(this.combinedData));
-
         console.log('Subrecord' + this.subRecordId);
     }
 
     // Handle delete action
     handleDelete() {
         if (this.subRecordId && this.objectApiName != 'BV_Case__c') {
-            // Call Apex method to delete the sub-record
-            deleteRecord({ recordId: this.subRecordId, objectName: this.objectApiName })
+            // Call deleteRecord from lightning/uiRecordApi to delete the sub-record
+            deleteRecord(this.subRecordId)
                 .then(() => {
                     console.log('Record deleted successfully:', this.subRecordId);
 
@@ -69,8 +66,16 @@ export default class DatabaseStandardRecordModalDelete extends LightningElement 
 
                 console.log('Updated fields for record:', record.id, updatedFields);
 
-                // Call Apex method to update the record
-                updateRecord({ recordId: record.id, objectName: this.objectApiName, updatedFields: updatedFields })
+                // Prepare the record input for update
+                const recordInput = {
+                    fields: {
+                        Id: record.id,
+                        ...updatedFields
+                    }
+                };
+
+                // Call updateRecord from lightning/uiRecordApi to update the record
+                updateRecord(recordInput)
                     .then(() => {
                         console.log('Record updated successfully:', record.id);
 
