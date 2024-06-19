@@ -377,7 +377,13 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
     loadLayout() {
         // Manually refresh the wire adapter when the objectApiName or recordTypeId changes. Or when we update data.
         if (this._objectApiName && this._recordTypeId || this.hasDataBeenUpdated) {
-            refreshApex(this.wiredLayoutResult);
+            refreshApex(this.wiredLayoutResult)
+                .then(() => {
+                    // Reapply the sorting after data is reloaded
+                    if (this.sortedBy && this.sortDirection) {
+                        this.sortData(this.sortedBy, this.sortDirection);
+                    }
+                });
         }
     }
 
@@ -470,11 +476,18 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
 
     onHandleSort(event) {
         event.preventDefault();
-    
+        
         console.log('Sorting by: ' + event.currentTarget.dataset.field);
-    
+        
         const sortedBy = event.currentTarget.dataset.field;
         const sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+        this.sortDirection = sortDirection;
+        this.sortedBy = sortedBy;
+        
+        this.sortData(sortedBy, sortDirection);
+    }
+    
+    sortData(sortedBy, sortDirection) {
         const sortMultiplier = sortDirection === 'asc' ? 1 : -1;
     
         const cloneData = [...this.tableData];
@@ -506,24 +519,6 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
     
         this.tableData = cloneData;
         this.tableDataObj = cloneTableData;
-        this.sortDirection = sortDirection;
-        this.sortedBy = sortedBy;
-    }
-
-    sortBy(field, reverse, primer) {
-        const key = primer
-            ? function(x) {
-                return primer(x[field]);
-            }
-            : function(x) {
-                return x[field];
-            };
-
-        return function(a, b) {
-            a = key(a);
-            b = key(b);
-            return reverse * ((a > b) - (b > a));
-        };
     }
 
     //Handle expanded view dropdown event
