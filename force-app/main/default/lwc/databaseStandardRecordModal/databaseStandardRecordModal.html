@@ -4,8 +4,15 @@
             <div class="slds-col slds-size_1-of-2">
                 <template for:each={leftFieldsWithDividers} for:item="item">
                     <template if:true={item.isDivider}>
-                        <div key={item.key} class="slds-col slds-size_1-of-1">
+                        <div key={item.key} class="slds-col">
                             <div class="slds-section slds-m-vertical_large" style="border-top: 1px solid #d8dde6;"></div>
+                        </div>
+                    </template>
+                    <template if:true={item.isEmptySpace}>
+                        <div key={item.key} class="slds-form-element slds-m-around_medium">
+                            <div class="slds-form-element__control">
+                                <lightning-input label="Input Label" class="custom-input"></lightning-input>
+                            </div>
                         </div>
                     </template>
                     <template if:false={item.isDivider}>
@@ -49,8 +56,15 @@
             <div class="slds-col slds-size_1-of-2">
                 <template for:each={rightFieldsWithDividers} for:item="item">
                     <template if:true={item.isDivider}>
-                        <div key={item.key} class="slds-col slds-size_1-of-1">
+                        <div key={item.key} class="slds-col">
                             <div class="slds-section slds-m-vertical_large" style="border-top: 1px solid #d8dde6;"></div>
+                        </div>
+                    </template>
+                    <template if:true={item.isEmptySpace}>
+                        <div key={item.key} class="slds-form-element slds-m-around_medium">
+                            <div class="slds-form-element__control">
+                                <lightning-input label="Input Label" class="custom-input"></lightning-input>
+                            </div>
                         </div>
                     </template>
                     <template if:false={item.isDivider}>
