@@ -151,6 +151,11 @@
     </template>
 
     <div class="slds-form-element slds-m-around_medium">
+        <template if:true={showErrorMessage}>
+            <div class="slds-text-color_error">
+                At least one field must be filled before saving.
+            </div>
+        </template>
         <button class="slds-button slds-button_brand" onclick={handleSave}>Confirm</button>
         <button class="slds-button" onclick={handleCancel}>Cancel</button>
     </div>

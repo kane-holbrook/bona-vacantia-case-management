@@ -19,6 +19,7 @@ export default class DatabaseStandardRecordModal extends LightningElement {
     @track leftColumnFieldsWithRowIndex = [];
     @track rightColumnFieldsWithRowIndex = [];
     @track isLoading = true; // Track the loading state
+    @track showErrorMessage = false;
 
     async connectedCallback() {
         try {
@@ -178,6 +179,18 @@ export default class DatabaseStandardRecordModal extends LightningElement {
     }
 
     handleSave() {
+        // Check if at least one field is filled
+        const isAtLeastOneFieldFilled = this.combinedData.some(record => {
+            return record.fields.some(field => field.value);
+        });
+
+        if (!isAtLeastOneFieldFilled) {
+            this.showErrorMessage = true;
+            return;
+        }
+
+        this.showErrorMessage = false;
+
         this.combinedData.forEach(record => {
             const fields = {};
             record.fields.forEach(item => {
