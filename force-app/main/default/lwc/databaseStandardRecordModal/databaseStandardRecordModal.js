@@ -203,7 +203,7 @@ export default class DatabaseStandardRecordModal extends LightningElement {
                     });
             } else {
                 fields.Id = record.id;
-                fields.RecordTypeId = this.recordTypeId;
+                fields.RecordTypeId = this.objectApiName === 'BV_Case__c' ? '012KM000000TQr9YAG' : this.recordTypeId; // Hardcoded ID for BV_Case__c, else dynamic ID
 
                 const recordInput = {
                     fields: fields

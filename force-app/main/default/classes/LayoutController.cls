@@ -2,7 +2,7 @@ public with sharing class LayoutController {
     @AuraEnabled(cacheable=true)
     public static Map<String, Object> getLayout(String objectApiName, String recordTypeId, String recordId) {
         System.debug('recordId Name: ' + recordId);
-    
+        
         // Get the layout using UI API
         String layoutUrl = '/services/data/v59.0/ui-api/layout/' + objectApiName + '?recordTypeId=' + recordTypeId;
         HttpRequest req = new HttpRequest();
@@ -90,6 +90,11 @@ public with sharing class LayoutController {
                     }
                 }
             }
+        }
+
+        // Check if the objectApiName is BV_Case__c and update the recordTypeId
+        if (objectApiName == 'BV_Case__c') {
+            recordTypeId = '012KM000000TQr9YAG';
         }
         
         // Perform SOQL query to fetch field values
