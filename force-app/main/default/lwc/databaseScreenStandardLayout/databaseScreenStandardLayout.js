@@ -44,6 +44,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
 
     set objectApiName(value) {
         this._objectApiName = value;
+        this.resetComponent();
         this.loadLayout();
     }
 
@@ -54,6 +55,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
 
     set recordTypeId(value) {
         this._recordTypeId = value;
+        this.resetComponent();
         this.loadLayout();
     }
 
@@ -73,6 +75,15 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
 
     set parentLabel(value) {
         this._parentLabel = value;
+    }
+
+    @api
+    get parentGrandchildLabel() {
+        return this._parentGrandchildLabel;
+    }
+
+    set parentGrandchildLabel(value) {
+        this._parentGrandchildLabel = value;
     }
 
     @api recordId;
@@ -416,15 +427,12 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
         }
     }
 
-    handleRecordUpdated() {
+    handleRecordUpdated(event) {
         this.isModalOpen = false;
-
+        this.subRecordId = null;
         this.hasDataBeenUpdated = true;
-
-        // Refresh the layout
         this.loadLayout();
-
-        // Show success message
+    
         this.dispatchEvent(
             new ShowToastEvent({
                 title: 'Success',
@@ -432,19 +440,16 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                 variant: 'success',
             }),
         );
-
+    
         this.hasDataBeenUpdated = false;
     }
 
-    handleRecordDeleted() {
+    handleRecordDeleted(event) {
         this.isModalOpenDelete = false;
-
+        this.subRecordId = null;
         this.hasDataBeenUpdated = true;
-
-        // Refresh the layout
         this.loadLayout();
-
-        // Show success message
+    
         this.dispatchEvent(
             new ShowToastEvent({
                 title: 'Success',
@@ -452,7 +457,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                 variant: 'success',
             }),
         );
-
+    
         this.hasDataBeenUpdated = false;
     }
 
@@ -675,13 +680,47 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
         return `${leftField.label || 'No field'} - ${rightField.label || 'No field'}`;
     }
 
+    resetComponent() {
+        this.tableDataObj = [];
+        this.layoutSections = [];
+        this.sectionsMain = [];
+        this.recordData = null;
+        this.columns = [];
+        this.columnsMain = [];
+        this.tableData = [];
+        this.combinedData = [];
+        this.sortedBy = null;
+        this.sortedDirection = null;
+        this.subRecordId = null;
+        this.columnLayoutStyle = 2;
+        this.emptySpaceIndices = [];
+        this.isModalOpen = false;
+        this.isModalOpenDelete = false;
+        this.expandedView = true;
+        this.multipleRecords = false;
+    }
+
     get cardHeader() {
         return this.layoutSections ? this.layoutSections.heading : 'Loading...';
     }
 
     get cardSubtitle() {
         if (this._label) {
-            // If label is present, construct the subtitle as "parentLabel > label"
+            console.log('Label: ', this._label);
+            console.log('Parent Label: ', this._parentLabel);
+            console.log('Parent Grandchild Label: ', this._parentGrandchildLabel);
+    
+            // If parentGrandchildLabel is present, construct the subtitle as "parentGrandchildLabel > label"
+            if (this._parentGrandchildLabel) {
+                return `${this._parentGrandchildLabel} > ${this._label}`;
+            }
+            
+            // If label and parentLabel are the same, return only the parentLabel
+            if (this._label === this._parentLabel) {
+                return this._parentLabel;
+            }
+    
+            // If label is present and different from parentLabel, construct the subtitle as "parentLabel > label"
             return `${this._parentLabel} > ${this._label}`;
         } else {
             // If no label, return only the parent label
