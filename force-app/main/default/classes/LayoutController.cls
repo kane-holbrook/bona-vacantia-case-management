@@ -92,9 +92,8 @@ public with sharing class LayoutController {
             }
         }
 
-        // Check if the objectApiName is BV_Case__c and update the recordTypeId
         if (objectApiName == 'BV_Case__c') {
-            recordTypeId = '012KM000000TQr9YAG';
+            recordTypeId = getRecordTypeIdForRecord(recordId);
         }
         
         // Perform SOQL query to fetch field values
@@ -168,6 +167,19 @@ public with sharing class LayoutController {
             System.debug('Error fetching record type ID: ' + e.getMessage());
         }
         return null; // Return null if no matching record type is found
+    }
+
+    private static String getRecordTypeIdForRecord(Id recordId) {
+        try {
+            // Get the SObject type from the record ID prefix
+            String sObjectType = recordId.getSObjectType().getDescribe().getName();
+            // Dynamically query the SObject using the determined type
+            String query = 'SELECT RecordTypeId FROM ' + sObjectType + ' WHERE Id = :recordId LIMIT 1';
+            SObject record = Database.query(query);
+            return (String) record.get('RecordTypeId');
+        } catch (Exception e) {
+            throw new AuraHandledException('Error fetching record type ID: ' + e.getMessage());
+        }
     }
 
     // @AuraEnabled

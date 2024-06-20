@@ -1,6 +1,8 @@
-import { LightningElement, api, track } from 'lwc';
-import { updateRecord, createRecord } from 'lightning/uiRecordApi';
+import { LightningElement, api, track, wire } from 'lwc';
+import { updateRecord, createRecord, getRecord } from 'lightning/uiRecordApi';
 import getPicklistValues from '@salesforce/apex/LayoutController.getPicklistValues';
+
+const FIELDS = ['BV_Case__c.RecordTypeId']; // Adjust this to your object and field
 
 export default class DatabaseStandardRecordModal extends LightningElement {
     @api recordId;
@@ -20,6 +22,13 @@ export default class DatabaseStandardRecordModal extends LightningElement {
     @track rightColumnFieldsWithRowIndex = [];
     @track isLoading = true; // Track the loading state
     @track showErrorMessage = false;
+
+    @wire(getRecord, { recordId: '$recordId', fields: FIELDS })
+    record;
+
+    get actualRecordTypeId() {
+        return this.record.data ? this.record.data.fields.RecordTypeId.value : this.recordTypeId;
+    }
 
     async connectedCallback() {
         try {
@@ -216,7 +225,7 @@ export default class DatabaseStandardRecordModal extends LightningElement {
                     });
             } else {
                 fields.Id = record.id;
-                fields.RecordTypeId = this.objectApiName === 'BV_Case__c' ? '012KM000000TQr9YAG' : this.recordTypeId; // Hardcoded ID for BV_Case__c, else dynamic ID
+                fields.RecordTypeId = this.objectApiName === 'BV_Case__c' ? this.actualRecordTypeId : this.recordTypeId;
 
                 const recordInput = {
                     fields: fields
