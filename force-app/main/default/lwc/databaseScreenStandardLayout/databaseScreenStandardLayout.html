@@ -71,7 +71,7 @@
                                 <template for:each={tableDataWithIndex} for:item="row">
                                     <tr aria-selected="false" class="slds-hint-parent" key={row.Id}>
                                         <td class="slds-cell_action-mode" role="gridcell">
-                                            <div class="slds-truncate">
+                                            <div>
                                                 <template if:true={expandedView}>
                                                     <button class="slds-button slds-button_icon slds-m-right_x-small" aria-hidden="true" tabindex="-1" data-targetrow={row.Id} onclick={expandSection}>
                                                         <lightning-icon icon-name="utility:chevronright" alternative-text="Expand" size="x-small"></lightning-icon>

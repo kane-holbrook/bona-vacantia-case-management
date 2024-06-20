@@ -842,9 +842,12 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
     }
 
     get tableDataWithIndex() {
-        return this.tableDataObj.map((item, index) => ({
-            ...item,
-            rowIndex: index + 1
-        }));
+        return this.tableDataObj.map((item, index) => {
+            const newItem = {
+                ...item,
+                rowIndex: index + 1
+            };
+            return newItem;
+        });
     }
 }
