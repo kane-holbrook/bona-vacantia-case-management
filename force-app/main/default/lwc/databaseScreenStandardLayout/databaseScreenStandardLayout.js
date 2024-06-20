@@ -519,6 +519,21 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
     
         this.tableData = cloneData;
         this.tableDataObj = cloneTableData;
+        this.updateSortIcons();
+    }
+
+    updateSortIcons() {
+        this.columnsMain = this.columnsMain.map(column => ({
+            ...column,
+            isSortedAsc: this.sortedBy === column.fieldName && this.sortDirection === 'asc',
+            isSortedDesc: this.sortedBy === column.fieldName && this.sortDirection === 'desc',
+            isUnsorted: this.sortedBy !== column.fieldName,
+            ariaSort: this.sortedBy === column.fieldName ? this.sortDirection : 'none'
+        }));
+    }
+
+    connectedCallback() {
+        this.updateSortIcons();
     }
 
     //Handle expanded view dropdown event
