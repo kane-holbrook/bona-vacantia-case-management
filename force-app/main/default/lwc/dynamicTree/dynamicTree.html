@@ -2,7 +2,7 @@
     <div class="slds-form-element slds-m-bottom_small">
         <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left">
             <lightning-icon icon-name="utility:search" size="x-small" alternative-text="Search" class="slds-input__icon slds-input__icon_left"></lightning-icon>
-            <input type="text" id="slds-input" placeholder="Search for database screen" class="slds-input" onchange={handleSearch} />
+            <input type="text" id="slds-input" placeholder="Search for database screen" class="slds-input" oninput={handleSearch} />
         </div>
     </div>
     <template if:true={filteredTreeData}>
