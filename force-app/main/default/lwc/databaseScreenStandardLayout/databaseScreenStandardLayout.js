@@ -480,11 +480,12 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
         console.log('Sorting by: ' + event.currentTarget.dataset.field);
         
         const sortedBy = event.currentTarget.dataset.field;
-        const sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+        const sortDirection = this.sortedBy === sortedBy && this.sortDirection === 'asc' ? 'desc' : 'asc';
         this.sortDirection = sortDirection;
         this.sortedBy = sortedBy;
         
         this.sortData(sortedBy, sortDirection);
+        this.updateSortIcons(); // Ensure icons are updated after sorting
     }
     
     sortData(sortedBy, sortDirection) {
@@ -523,13 +524,22 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
     }
 
     updateSortIcons() {
-        this.columnsMain = this.columnsMain.map(column => ({
-            ...column,
-            isSortedAsc: this.sortedBy === column.fieldName && this.sortDirection === 'asc',
-            isSortedDesc: this.sortedBy === column.fieldName && this.sortDirection === 'desc',
-            isUnsorted: this.sortedBy !== column.fieldName,
-            ariaSort: this.sortedBy === column.fieldName ? this.sortDirection : 'none'
-        }));
+        this.columnsMain = this.columnsMain.map(column => {
+            if (this.sortedBy === column.fieldName) {
+                return {
+                    ...column,
+                    isSortedAsc: this.sortDirection === 'asc',
+                    isSortedDesc: this.sortDirection === 'desc',
+                    ariaSort: this.sortDirection
+                };
+            }
+            return {
+                ...column,
+                isSortedAsc: false,
+                isSortedDesc: false,
+                ariaSort: 'none'
+            };
+        });
     }
 
     connectedCallback() {

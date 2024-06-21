@@ -46,14 +46,13 @@
                                 <tr class="slds-line-height_reset">
                                     <th style="width: 3.25rem;"></th>
                                     <template for:each={columnsMain} for:item="column">
-                                        <th aria-sort={column.ariaSort} class="slds-is-resizable slds-is-sortable slds-cell_action-mode" scope="col" key={column.apiName} onclick={onHandleSort} data-field={column.fieldName}>
+                                        <th aria-sort={column.ariaSort} class="slds-is-resizable slds-is-sortable slds-cell_action-mode" scope="col" key={column.fieldName} onclick={onHandleSort} data-field={column.fieldName}>
                                             <a class="slds-th__action slds-text-link_reset" href="#" role="button" tabindex="0">
                                                 <span class="slds-assistive-text">Sort by: </span>
                                                 <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
                                                     <span class="slds-truncate" title={column.label}>{column.label}</span>
                                                     <lightning-icon if:true={column.isSortedAsc} icon-name="utility:arrowup" alternative-text="Ascending" size="x-small"></lightning-icon>
                                                     <lightning-icon if:true={column.isSortedDesc} icon-name="utility:arrowdown" alternative-text="Descending" size="x-small"></lightning-icon>
-                                                    <lightning-icon if:true={column.isUnsorted} icon-name="utility:arrowup" alternative-text="Unsorted" size="x-small" class="slds-icon--hidden"></lightning-icon>
                                                 </div>
                                             </a>
                                             <div class="slds-resizable">
