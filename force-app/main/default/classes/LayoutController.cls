@@ -383,6 +383,30 @@ public with sharing class LayoutController {
         return picklistValues;
     }
 
+    // @AuraEnabled(cacheable=true)
+    // public static Map<String, Object> getContactRecord(String contactId) {
+    //     // Define the fields you want to retrieve from the Contact record
+    //     List<String> fields = new List<String>{
+    //         'FirstName', 'LastName', 'Phone', 'Email', 'MailingStreet', 'MailingCity', 'MailingState', 'MailingPostalCode', 'MailingCountry'
+    //     };
+        
+    //     String soql = 'SELECT ' + String.join(fields, ', ') + ' FROM Contact WHERE Id = :contactId';
+    //     List<Contact> contacts = Database.query(soql);
+        
+    //     if (contacts.isEmpty()) {
+    //         return null;
+    //     }
+        
+    //     // Convert the Contact record to a map of field values
+    //     Map<String, Object> contactData = new Map<String, Object>();
+    //     Contact contact = contacts[0];
+    //     for (String field : fields) {
+    //         contactData.put(field, contact.get(field));
+    //     }
+        
+    //     return contactData;
+    // }
+
     // Method to decode HTML entities
     private static String decodeHtmlEntities(String str) {
         if (str == null) {

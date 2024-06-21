@@ -314,4 +314,31 @@ export default class DatabaseStandardRecordModal extends LightningElement {
     
         return fieldsWithDividers;
     }
+
+    // handleContactSelection(event) {
+    //     const contactId = event.detail.value;
+    //     this.fetchContactData(contactId);
+    // }
+
+    // fetchContactData(contactId) {
+    //     getContactRecord({ contactId: contactId })
+    //         .then(data => {
+    //             this.contactData = data;
+    //             this.populateFieldsWithContactData();
+    //         })
+    //         .catch(error => {
+    //             console.error('Error fetching contact data', error);
+    //         });
+    // }
+
+    // populateFieldsWithContactData() {
+    //     for (const field in this.contactData) {
+    //         if (this.contactData.hasOwnProperty(field)) {
+    //             const inputField = this.template.querySelector(`[data-field="${field}"]`);
+    //             if (inputField) {
+    //                 inputField.value = this.contactData[field];
+    //             }
+    //         }
+    //     }
+    // }
 }
