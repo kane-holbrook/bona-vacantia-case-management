@@ -119,21 +119,20 @@ export default class DynamicTree extends LightningElement {
             }));
         }
     
-        const filterNodes = (nodes, parentExpanded = false) => {
+        const filterNodes = (nodes) => {
             return nodes.reduce((filtered, node) => {
                 const isMatch = node.label.toLowerCase().includes(this.searchTerm);
-                let filteredChildren = [];
-                if (node.children) {
-                    filteredChildren = filterNodes(node.children, isMatch || parentExpanded);
-                }
-    
-                if (isMatch || filteredChildren.length) {
+                if (isMatch && !node.hasChildren) {
                     filtered.push({
                         ...node,
-                        children: filteredChildren,
-                        expandedClass: (isMatch || filteredChildren.length > 0) && this.isSearchActive ? '' : 'slds-is-collapsed',
-                        icon: (isMatch || filteredChildren.length > 0) && this.isSearchActive ? 'utility:chevrondown' : 'utility:chevronright'
+                        expandedClass: '', // Expanded to show the matched node
+                        icon: 'utility:chevronright' // Reset icon for matched nodes without children
                     });
+                } else if (node.children) {
+                    const filteredChildren = filterNodes(node.children);
+                    if (filteredChildren.length) {
+                        filtered.push(...filteredChildren);
+                    }
                 }
                 return filtered;
             }, []);
