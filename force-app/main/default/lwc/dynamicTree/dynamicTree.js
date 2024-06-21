@@ -6,6 +6,7 @@ export default class DynamicTree extends LightningElement {
     @track treeData;
     @track error;
     @track searchTerm = '';
+    @track isSearchActive = false;
 
     @wire(getTreeData)
     wiredTreeData({ error, data }) {
@@ -22,9 +23,11 @@ export default class DynamicTree extends LightningElement {
         const addIcons = (nodes) => {
             return nodes.map(node => {
                 node.icon = 'utility:chevronright';
-                if (node.children) {
+                node.hasChildren = node.children && node.children.length > 0;
+                if (node.hasChildren) {
                     node.children = addIcons(node.children);
                 }
+                node.expandedClass = 'slds-is-collapsed'; // Set default state to collapsed
                 return node;
             });
         };
@@ -54,6 +57,7 @@ export default class DynamicTree extends LightningElement {
             if (ulElement) {
                 ulElement.classList.toggle('slds-is-collapsed');
                 node.icon = ulElement.classList.contains('slds-is-collapsed') ? 'utility:chevronright' : 'utility:chevrondown';
+                node.expandedClass = ulElement.classList.contains('slds-is-collapsed') ? 'slds-is-collapsed' : '';
                 this.treeData = [...this.treeData]; // trigger reactivity
             }
         }
@@ -99,24 +103,43 @@ export default class DynamicTree extends LightningElement {
 
     handleSearch(event) {
         this.searchTerm = event.target.value.toLowerCase();
+        this.isSearchActive = !!this.searchTerm;
     }
 
     get filteredTreeData() {
-        if (!this.treeData || this.searchTerm === '') {
-            return this.treeData;
+        if (!this.treeData) {
+            return [];
+        }
+        if (this.searchTerm === '') {
+            this.isSearchActive = false;
+            return this.treeData.map(node => ({
+                ...node,
+                icon: 'utility:chevronright', // Reset icon to default
+                expandedClass: 'slds-is-collapsed' // Ensure all nodes are collapsed by default
+            }));
         }
     
-        const filteredData = this.treeData.map(node => {
-            if (!node.children) {
-                return node;
-            }
+        const filterNodes = (nodes, parentExpanded = false) => {
+            return nodes.reduce((filtered, node) => {
+                const isMatch = node.label.toLowerCase().includes(this.searchTerm);
+                let filteredChildren = [];
+                if (node.children) {
+                    filteredChildren = filterNodes(node.children, isMatch || parentExpanded);
+                }
     
-            const filteredChildren = node.children.filter(child => {
-                return child.label.toLowerCase().includes(this.searchTerm);
-            });
-            return { ...node, children: filteredChildren };
-        });
+                if (isMatch || filteredChildren.length) {
+                    filtered.push({
+                        ...node,
+                        children: filteredChildren,
+                        expandedClass: (isMatch || filteredChildren.length > 0) && this.isSearchActive ? '' : 'slds-is-collapsed',
+                        icon: (isMatch || filteredChildren.length > 0) && this.isSearchActive ? 'utility:chevrondown' : 'utility:chevronright'
+                    });
+                }
+                return filtered;
+            }, []);
+        };
     
-        return filteredData;
+        const filteredData = filterNodes(this.treeData);
+        return filteredData.sort((a, b) => a.label.localeCompare(b.label));
     }
 }
