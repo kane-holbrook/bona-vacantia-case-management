@@ -50,15 +50,31 @@ export default class DynamicTree extends LightningElement {
             }
             return null;
         };
-
+    
         const node = findNode(this.treeData);
         if (node) {
             const ulElement = event.currentTarget.closest('li').querySelector('ul');
             if (ulElement) {
-                ulElement.classList.toggle('slds-is-collapsed');
-                node.icon = ulElement.classList.contains('slds-is-collapsed') ? 'utility:chevronright' : 'utility:chevrondown';
-                node.expandedClass = ulElement.classList.contains('slds-is-collapsed') ? 'slds-is-collapsed' : '';
-                this.treeData = [...this.treeData]; // trigger reactivity
+                const isCollapsed = ulElement.classList.toggle('slds-is-collapsed');
+                node.icon = isCollapsed ? 'utility:chevronright' : 'utility:chevrondown';
+                node.expandedClass = isCollapsed ? 'slds-is-collapsed' : '';
+                
+                // Directly update the icon element
+                const iconElement = event.currentTarget.querySelector('lightning-icon');
+                if (iconElement) {
+                    iconElement.iconName = node.icon;
+                }
+                
+                // Set the active-label CSS class
+                const previouslyActive = this.template.querySelector('.active-label');
+                if (previouslyActive) {
+                    previouslyActive.classList.remove('active-label');
+                }
+                const clickedLabelDiv = event.currentTarget.closest('.slds-tree__item');
+                clickedLabelDiv.classList.add('active-label');
+                
+                // Re-assign the treeData to trigger reactivity
+                this.treeData = JSON.parse(JSON.stringify(this.treeData));
             }
         }
     }
