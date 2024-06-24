@@ -39,14 +39,34 @@
                                     </lightning-input>
                                 </template>
                                 <template if:true={item.isDefault}>
-                                    <lightning-input 
-                                        type={item.type} 
-                                        data-record-id={item.recordId} 
-                                        name={item.fieldName} 
-                                        label={item.label} 
-                                        value={item.value} 
-                                        onchange={handleInputChange}>
-                                    </lightning-input>
+                                    <template if:true={item.isNumber}>
+                                        <lightning-input 
+                                            type={item.type} 
+                                            data-record-id={item.recordId} 
+                                            name={item.fieldName} 
+                                            label={item.label} 
+                                            value={item.value}
+                                            formatter={item.formatter}
+                                            step={item.step}
+                                            maxlength={item.length.precision} 
+                                            pattern={item.pattern}
+                                            message-when-pattern-mismatch="Too many characters"
+                                            message-when-too-long="Too many characters"
+                                            onchange={handleInputChange}>
+                                        </lightning-input>
+                                    </template>
+                                    <template if:false={item.isNumber}>
+                                        <lightning-input 
+                                            type={item.type} 
+                                            data-record-id={item.recordId} 
+                                            name={item.fieldName} 
+                                            label={item.label} 
+                                            value={item.value} 
+                                            maxlength={item.length}
+                                            message-when-too-long="Too many characters"
+                                            onchange={handleInputChange}>
+                                        </lightning-input>
+                                    </template>
                                 </template>
                             </div>
                         </div>
@@ -91,14 +111,34 @@
                                     </lightning-input>
                                 </template>
                                 <template if:true={item.isDefault}>
-                                    <lightning-input 
-                                        type={item.type} 
-                                        data-record-id={item.recordId} 
-                                        name={item.fieldName} 
-                                        label={item.label} 
-                                        value={item.value} 
-                                        onchange={handleInputChange}>
-                                    </lightning-input>
+                                    <template if:true={item.isNumber}>
+                                        <lightning-input 
+                                            type={item.type} 
+                                            data-record-id={item.recordId} 
+                                            name={item.fieldName} 
+                                            label={item.label} 
+                                            value={item.value} 
+                                            maxlength={item.length.precision} 
+                                            pattern={item.pattern}
+                                            formatter={item.formatter}
+                                            step={item.step}
+                                            message-when-pattern-mismatch="Too many characters"
+                                            message-when-too-long="Too many characters"
+                                            onchange={handleInputChange}>
+                                        </lightning-input>
+                                    </template>
+                                    <template if:false={item.isNumber}>
+                                        <lightning-input 
+                                            type={item.type} 
+                                            data-record-id={item.recordId} 
+                                            name={item.fieldName} 
+                                            label={item.label} 
+                                            value={item.value} 
+                                            maxlength={item.length}
+                                            message-when-too-long="Too many characters"
+                                            onchange={handleInputChange}>
+                                        </lightning-input>
+                                    </template>
                                 </template>
                             </div>
                         </div>
@@ -134,14 +174,34 @@
                                 </lightning-input>
                             </template>
                             <template if:true={item.isDefault}>
-                                <lightning-input 
-                                    type={item.type} 
-                                    data-record-id={record.id} 
-                                    name={item.fieldName} 
-                                    label={item.label} 
-                                    value={item.value} 
-                                    onchange={handleInputChange}>
-                                </lightning-input>
+                                <template if:true={item.isNumber}>
+                                    <lightning-input 
+                                        type={item.type} 
+                                        data-record-id={record.id} 
+                                        name={item.fieldName} 
+                                        label={item.label} 
+                                        value={item.value}
+                                        formatter={item.formatter}
+                                        step={item.step}
+                                        maxlength={item.length.precision} 
+                                        pattern={item.pattern}
+                                        message-when-pattern-mismatch="Too many characters"
+                                        message-when-too-long="Too many characters"
+                                        onchange={handleInputChange}>
+                                    </lightning-input>
+                                </template>
+                                <template if:false={item.isNumber}>
+                                    <lightning-input 
+                                        type={item.type} 
+                                        data-record-id={record.id} 
+                                        name={item.fieldName} 
+                                        label={item.label} 
+                                        value={item.value} 
+                                        maxlength={item.length}
+                                        message-when-too-long="Too many characters"
+                                        onchange={handleInputChange}>
+                                    </lightning-input>
+                                </template>
                             </template>
                         </div>
                     </div>

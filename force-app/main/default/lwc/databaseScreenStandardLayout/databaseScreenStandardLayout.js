@@ -161,25 +161,41 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                             .forEach(component => {
                                 // Set column definitions if not already set + filter empty spaces on page layout
                                 if ((!columnsTemp.some(col => col.fieldName === component.apiName)) && (component.apiName !== null && component.apiName !== undefined)) {
-                                    //Section at index 2 contains all fields used on the screen
+                                    // Section at index 2 contains all fields used on the screen
                                     if (section === this.layoutSections[2]) {
                                         const fieldType = fieldDataTypes[component.apiName] || 'text';
                                         let columnType = 'text'; // default type
-    
+                                        let length = null; // variable to store the number in the field type
+
                                         if (fieldType.startsWith('Text') || fieldType === 'String' || fieldType === 'TextArea' || fieldType === 'EncryptedString') {
                                             columnType = 'text';
+                                            // Extract length if present
+                                            const match = fieldType.match(/\((\d+)\)/);
+                                            if (match) {
+                                                length = parseInt(match[1], 10);
+                                            }
                                         } else if (fieldType === 'Picklist') {
                                             columnType = 'picklist';
                                         } else if (fieldType === 'Picklist (Multi-Select)') {
                                             columnType = 'multipicklist';
                                         } else if (fieldType.startsWith('Number') || fieldType === 'Integer' || fieldType === 'Double' || fieldType === 'Percent' || fieldType === 'Long') {
                                             columnType = 'number';
+                                            // Extract precision and scale if present
+                                            const match = fieldType.match(/\((\d+),\s*(\d+)\)/);
+                                            if (match) {
+                                                length = { precision: parseInt(match[1], 10), scale: parseInt(match[2], 10) };
+                                            }
                                         } else if (fieldType === 'Date') {
                                             columnType = 'date';
                                         } else if (fieldType === 'Date/Time') {
                                             columnType = 'datetime';
                                         } else if (fieldType.startsWith('Currency')) {
                                             columnType = 'currency';
+                                            // Extract precision and scale if present
+                                            const match = fieldType.match(/\((\d+),\s*(\d+)\)/);
+                                            if (match) {
+                                                length = { precision: parseInt(match[1], 10), scale: parseInt(match[2], 10) };
+                                            }
                                         } else if (fieldType === 'Email') {
                                             columnType = 'email';
                                         } else if (fieldType === 'Phone') {
@@ -201,13 +217,23 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                                         } else {
                                             columnType = 'text'; // default to text if no match is found
                                         }
-    
-                                        columnsTemp.push({
+
+                                        // Construct the column object
+                                        const column = {
                                             label: component.label,
                                             fieldName: component.apiName,
                                             type: columnType
-                                        });
+                                        };
+
+                                        // Add length if available
+                                        if (length !== null) {
+                                            column.length = length;
+                                        }
+
+                                        columnsTemp.push(column);
                                     }
+
+                                    console.log('sections temp', columnsTemp);
 
                                     console.log(section);
                                     console.log(this.layoutSections[0]);
@@ -331,7 +357,8 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                         label: column.label,
                         fieldName: column.fieldName,
                         type: column.type === 'action' ? 'text' : column.type, // Default to text if action
-                        value: record[column.fieldName] || '—'
+                        value: record[column.fieldName] || '—',
+                        length: column.length || null
                     }))
             }));
 
@@ -340,7 +367,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
     
             // Merge table data with expanded view field values
             this.tableDataObj.forEach(row => {
-                row['fullData'] = this.combinedData.filter(dataRow => dataRow.id === row.Id);
+                row['fullData'] = this.preprocessFullData(this.combinedData.filter(dataRow => dataRow.id === row.Id));
             });
 
             this.combinedData = this.preprocessKeys(this.combinedData);
@@ -725,6 +752,36 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                 dividerKey: `${field.fieldName}-divider`
             }))
         }));
+    }
+
+    // Method to preprocess and format fullData for a row
+    preprocessFullData(fullData) {
+        return fullData.map(dataRow => {
+            return {
+                ...dataRow,
+                fieldsWithDividers: dataRow.fields.map(field => {
+                    let formattedValue = field.value;
+                    if (field.type === 'number' || field.type === 'currency') {
+                        formattedValue = this.formatNumber(field.value);
+                    }
+                    return {
+                        ...field,
+                        formattedValue,
+                        labelKey: `${field.fieldName}-label`,
+                        valueKey: `${field.fieldName}-value`,
+                        dividerKey: `${field.fieldName}-divider`
+                    };
+                })
+            };
+        });
+    }
+
+    // Helper method to format numbers with commas
+    formatNumber(value) {
+        if (typeof value === 'number') {
+            return value.toLocaleString();
+        }
+        return value;
     }
 
     get cardHeader() {

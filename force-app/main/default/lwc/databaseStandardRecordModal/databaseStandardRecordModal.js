@@ -35,33 +35,54 @@ export default class DatabaseStandardRecordModal extends LightningElement {
             if (!Array.isArray(this.recordData)) {
                 this.recordData = [this.recordData];
             }
-
+    
             let filteredData = this.recordData;
             if (this.subRecordId) {
                 filteredData = this.recordData.filter(record => record.Id === this.subRecordId);
             }
-
+    
             if (!this.subRecordId && this.objectApiName !== 'BV_Case__c') {
                 filteredData = [{ Id: 'new', ...this.getEmptyRecordFields() }];
             }
-
+    
             this.combinedData = filteredData.map(record => ({
                 id: record.Id === 'new' ? 'new' : (this.objectApiName === 'BV_Case__c' ? this.recordId : record.Id),
                 fields: this.columns
                     .filter(column => column.type !== 'action')
-                    .map(column => ({
-                        label: column.label,
-                        fieldName: column.fieldName,
-                        type: column.type === 'action' ? 'text' : column.type,
-                        value: record[column.fieldName] || '',
-                        isPicklist: column.type === 'picklist',
-                        isCheckbox: column.type === 'checkbox',
-                        isDefault: column.type !== 'picklist' && column.type !== 'checkbox',
-                        checked: column.type === 'checkbox' ? !!record[column.fieldName] : false,
-                        options: column.type === 'picklist' ? [] : []
-                    }))
+                    .map(column => {
+                        let length = null;
+                        let type = column.type;
+                        let formatter = null;
+                        let step = null;
+                        if (column.length) {
+                            if (typeof column.length === 'object' && column.length.precision !== undefined && column.length.scale !== undefined) {
+                                length = column.length.precision;
+                                if (column.type === 'currency') {
+                                    type = 'number';
+                                    formatter = 'currency';
+                                    step = `.${'0'.repeat(column.length.scale - 1)}1`; // e.g., .01 for scale 2
+                                }
+                            } else {
+                                length = column.length;
+                            }
+                        }
+                        return {
+                            label: column.label,
+                            fieldName: column.fieldName,
+                            type: type,
+                            formatter: formatter,
+                            step: step,
+                            value: record[column.fieldName] || '',
+                            length: length,
+                            isPicklist: column.type === 'picklist',
+                            isCheckbox: column.type === 'checkbox',
+                            isDefault: column.type !== 'picklist' && column.type !== 'checkbox',
+                            checked: column.type === 'checkbox' ? !!record[column.fieldName] : false,
+                            options: column.type === 'picklist' ? [] : []
+                        };
+                    })
             }));
-
+    
             await this.loadPicklistOptions();
             this.splitFieldsByColumns();
         } catch (error) {
@@ -281,14 +302,33 @@ export default class DatabaseStandardRecordModal extends LightningElement {
         return combinedDividerIndices;
     }
 
+    getFieldPattern(length) {
+        if (length && typeof length === 'object' && 'precision' in length && 'scale' in length) {
+            const precision = length.precision;
+            const scale = length.scale;
+            return `^\\d{0,${precision - scale}}(\\.\\d{0,${scale}})?$`;
+        }
+        return '';
+    }
+
+    isNumberType(field) {
+        return field.type === 'number' || field.type === 'currency';
+    }
+
     addDividers(fields) {
         const fieldsWithDividers = [];
         const combinedDividerIndices = this.getDividerIndices();
     
-        console.log('combinedDividerIndices123', combinedDividerIndices);
-    
         fields.forEach((field, index) => {
-            fieldsWithDividers.push({ ...field, key: field.fieldName, isEmptySpace: field.componentType === 'EmptySpace' });
+            const fieldWithAttributes = {
+                ...field,
+                key: field.fieldName,
+                isEmptySpace: field.componentType === 'EmptySpace',
+                isNumber: this.isNumberType(field),
+                pattern: this.getFieldPattern(field.length)
+            };
+    
+            fieldsWithDividers.push(fieldWithAttributes);
     
             if (index < fields.length - 1) {
                 const nextField = fields[index + 1];
@@ -310,35 +350,6 @@ export default class DatabaseStandardRecordModal extends LightningElement {
             }
         });
     
-        console.log('fieldswithdividers', fieldsWithDividers);
-    
         return fieldsWithDividers;
     }
-
-    // handleContactSelection(event) {
-    //     const contactId = event.detail.value;
-    //     this.fetchContactData(contactId);
-    // }
-
-    // fetchContactData(contactId) {
-    //     getContactRecord({ contactId: contactId })
-    //         .then(data => {
-    //             this.contactData = data;
-    //             this.populateFieldsWithContactData();
-    //         })
-    //         .catch(error => {
-    //             console.error('Error fetching contact data', error);
-    //         });
-    // }
-
-    // populateFieldsWithContactData() {
-    //     for (const field in this.contactData) {
-    //         if (this.contactData.hasOwnProperty(field)) {
-    //             const inputField = this.template.querySelector(`[data-field="${field}"]`);
-    //             if (inputField) {
-    //                 inputField.value = this.contactData[field];
-    //             }
-    //         }
-    //     }
-    // }
 }
