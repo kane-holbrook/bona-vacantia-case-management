@@ -1,0 +1,66 @@
+<template>
+    <!-- First Card for Task Header and Actions -->
+    <article class="slds-card slds-m-around_medium task-card">
+        <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__figure">
+                    <lightning-icon icon-name="standard:task" size="small"></lightning-icon>
+                </div>
+                <div class="slds-media__body">
+                    <div class="slds-card__header-subtitle">
+                        <span>Tasks</span>
+                    </div>
+                    <h2 class="slds-card__header-title">
+                        <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" title="Advert authorisation required (AA15)">
+                            <span>Advert authorisation required (AA15)</span>
+                        </a>
+                    </h2>
+                </div>
+                <div class="slds-no-flex">
+                    <div class="button-group slds-text-align_right">
+                        <lightning-button variant="neutral" label="Mark task as complete"></lightning-button>
+                        <lightning-button variant="neutral" label="Edit comments"></lightning-button>
+                        <lightning-button variant="neutral" label="Change due date"></lightning-button>
+                        <lightning-button-menu alternative-text="Show More">
+                            <lightning-menu-item label="Create sub-task"></lightning-menu-item>
+                        </lightning-button-menu>
+                    </div>
+                </div>
+            </header>
+        </div>
+    </article>
+
+    <!-- Second Card for Details and Accordions -->
+    <article class="slds-card slds-m-around_medium details-card">
+        <div class="slds-box no-box-borders">
+            <div class="slds-card__body">
+                <lightning-accordion allow-multiple-sections-open active-section-name="details">
+                    <lightning-accordion-section name="details" label="Details" class="default-open">
+                        <div class="slds-grid slds-wrap">
+                            <div class="slds-col slds-size_1-of-2">
+                                <p><strong>Parent task:</strong> Case created</p>
+                                <p><strong>Assigned to:</strong> James Bond</p>
+                                <p><strong>Due date:</strong> DD/MM/YYYY</p>
+                                <p><strong>Priority:</strong> <lightning-icon icon-name="utility:priority" alternative-text="Priority" size="small"></lightning-icon> Critical</p>
+                            </div>
+                            <div class="slds-col slds-size_1-of-2">
+                                <p><strong>Created by:</strong> Harry Potter</p>
+                                <p><strong>Last modified by:</strong> James Bond</p>
+                                <p><strong>Next task:</strong> 90 days from approval for IEQ to be issued</p>
+                            </div>
+                        </div>
+                    </lightning-accordion-section>
+                    <lightning-accordion-section name="related-documents" label="Related documents">
+                        <!-- Related documents content -->
+                    </lightning-accordion-section>
+                    <lightning-accordion-section name="templates" label="Templates">
+                        <!-- Templates content -->
+                    </lightning-accordion-section>
+                    <lightning-accordion-section name="divisional-standards" label="Divisional standards">
+                        <!-- Divisional standards content -->
+                    </lightning-accordion-section>
+                </lightning-accordion>
+            </div>
+        </div>
+    </article>
+</template>

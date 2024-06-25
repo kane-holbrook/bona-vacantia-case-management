@@ -1,0 +1,11 @@
+.task-card {
+    background-color: #f3f3f3 !important;
+}
+
+.details-card {
+    background-color: #ffffff !important;
+}
+
+.no-box-borders {
+    border-radius: 0% !important;
+}
