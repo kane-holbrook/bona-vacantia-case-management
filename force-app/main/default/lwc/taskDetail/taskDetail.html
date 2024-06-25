@@ -30,12 +30,12 @@
         </div>
     </article>
 
-    <!-- Second Card for Details and Accordions -->
+    <!-- Second Card for Details and Tabs -->
     <article class="slds-card slds-m-around_medium details-card">
         <div class="slds-box no-box-borders">
             <div class="slds-card__body">
-                <lightning-accordion allow-multiple-sections-open active-section-name="details">
-                    <lightning-accordion-section name="details" label="Details" class="default-open">
+                <lightning-tabset>
+                    <lightning-tab label="Details" name="details">
                         <div class="slds-grid slds-wrap">
                             <div class="slds-col slds-size_1-of-2">
                                 <p><strong>Parent task:</strong> Case created</p>
@@ -49,17 +49,17 @@
                                 <p><strong>Next task:</strong> 90 days from approval for IEQ to be issued</p>
                             </div>
                         </div>
-                    </lightning-accordion-section>
-                    <lightning-accordion-section name="related-documents" label="Related documents">
+                    </lightning-tab>
+                    <lightning-tab label="Related documents" name="related-documents">
                         <!-- Related documents content -->
-                    </lightning-accordion-section>
-                    <lightning-accordion-section name="templates" label="Templates">
+                    </lightning-tab>
+                    <lightning-tab label="Templates" name="templates">
                         <!-- Templates content -->
-                    </lightning-accordion-section>
-                    <lightning-accordion-section name="divisional-standards" label="Divisional standards">
+                    </lightning-tab>
+                    <lightning-tab label="Divisional standards" name="divisional-standards">
                         <!-- Divisional standards content -->
-                    </lightning-accordion-section>
-                </lightning-accordion>
+                    </lightning-tab>
+                </lightning-tabset>
             </div>
         </div>
     </article>
