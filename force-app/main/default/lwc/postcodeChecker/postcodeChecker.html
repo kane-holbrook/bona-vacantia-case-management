@@ -1,0 +1,28 @@
+<template>
+    <lightning-card title="Postcode Checker" icon-name="custom:custom63">
+        <div class="slds-m-around_medium">
+            <div class="slds-form-element">
+                <label class="slds-form-element__label" for="postcode-input">Enter Postcode</label>
+                <div class="slds-form-element__control">
+                    <input type="text" id="postcode-input" class="slds-input" value={postcode} onchange={handlePostcodeChange} />
+                </div>
+            </div>
+            <div class="slds-form-element slds-m-top_small">
+                <lightning-button
+                    label="Check Postcode"
+                    onclick={handleCheckPostcode}
+                    class="slds-m-top_small">
+                </lightning-button>
+            </div>
+        </div>
+        <template if:true={result}>
+            <div class="slds-m-around_medium">
+                <div class="slds-form-element">
+                    <div class="slds-form-element__control">
+                        <p class="slds-form-element__static">{result}</p>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </lightning-card>
+</template>
