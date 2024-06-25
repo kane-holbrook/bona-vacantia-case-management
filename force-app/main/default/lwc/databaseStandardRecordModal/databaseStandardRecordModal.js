@@ -76,7 +76,7 @@ export default class DatabaseStandardRecordModal extends LightningElement {
                             length: length,
                             isPicklist: column.type === 'picklist',
                             isCheckbox: column.type === 'checkbox',
-                            isDefault: column.type !== 'picklist' && column.type !== 'checkbox',
+                            isDefault: column.type !== 'picklist' && column.type !== 'checkbox' && column.type !== 'long-text',
                             checked: column.type === 'checkbox' ? !!record[column.fieldName] : false,
                             options: column.type === 'picklist' ? [] : []
                         };
@@ -109,7 +109,7 @@ export default class DatabaseStandardRecordModal extends LightningElement {
         const emptyFields = {};
         this.columns.forEach(column => {
             if (column.fieldName) {
-                emptyFields[column.fieldName] = '';
+                emptyFields[column.fieldName] = column.type === 'checkbox' ? false : '';
             }
         });
         return emptyFields;
@@ -193,6 +193,8 @@ export default class DatabaseStandardRecordModal extends LightningElement {
         const fieldName = event.target.name;
         const updatedValue = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
 
+        console.log(recordId, fieldName, updatedValue);
+
         this.combinedData = this.combinedData.map(record => {
             if (record.id === recordId) {
                 record.fields = record.fields.map(item => {
@@ -209,33 +211,34 @@ export default class DatabaseStandardRecordModal extends LightningElement {
     }
 
     handleSave() {
-        // Check if at least one field is filled
-        const isAtLeastOneFieldFilled = this.combinedData.some(record => {
-            return record.fields.some(field => field.value);
-        });
-
-        if (!isAtLeastOneFieldFilled) {
-            this.showErrorMessage = true;
-            return;
-        }
-
+        // // Check if at least one field is filled
+        // const isAtLeastOneFieldFilled = this.combinedData.some(record => {
+        //     return record.fields.some(field => field.value || field.checked);
+        // });
+    
+        // if (!isAtLeastOneFieldFilled) {
+        //     this.showErrorMessage = true;
+        //     return;
+        // }
+    
         this.showErrorMessage = false;
-
+    
         this.combinedData.forEach(record => {
             const fields = {};
             record.fields.forEach(item => {
-                fields[item.fieldName] = item.value;
+                // Ensure checkbox values are boolean
+                fields[item.fieldName] = item.isCheckbox ? !!item.checked : item.value;
             });
-
+    
             if (record.id === 'new') {
                 fields.BV_Case__c = this.recordId;
                 fields.RecordTypeId = this.recordTypeId;
-
+    
                 const newRecordInput = {
                     apiName: this.objectApiName,
                     fields: fields
                 };
-
+    
                 createRecord(newRecordInput)
                     .then((record) => {
                         const recordUpdatedEvent = new CustomEvent('recordupdated', { detail: { recordId: record.id } });
@@ -247,11 +250,11 @@ export default class DatabaseStandardRecordModal extends LightningElement {
             } else {
                 fields.Id = record.id;
                 fields.RecordTypeId = this.objectApiName === 'BV_Case__c' ? this.actualRecordTypeId : this.recordTypeId;
-
+    
                 const recordInput = {
                     fields: fields
                 };
-
+    
                 updateRecord(recordInput)
                     .then(() => {
                         const recordUpdatedEvent = new CustomEvent('recordupdated', { detail: { recordId: record.id } });
@@ -315,6 +318,10 @@ export default class DatabaseStandardRecordModal extends LightningElement {
         return field.type === 'number' || field.type === 'currency';
     }
 
+    isLongText(field) {
+        return field.type === 'long-text';
+    }
+
     addDividers(fields) {
         const fieldsWithDividers = [];
         const combinedDividerIndices = this.getDividerIndices();
@@ -325,6 +332,7 @@ export default class DatabaseStandardRecordModal extends LightningElement {
                 key: field.fieldName,
                 isEmptySpace: field.componentType === 'EmptySpace',
                 isNumber: this.isNumberType(field),
+                isLongText: this.isLongText(field),
                 pattern: this.getFieldPattern(field.length)
             };
     

@@ -67,6 +67,19 @@
                                             onchange={handleInputChange}>
                                         </lightning-input>
                                     </template>
+                                    <template if:true={item.isLongText}>
+                                        <lightning-textarea 
+                                            data-record-id={item.recordId}
+                                            name={item.fieldName}
+                                            label={item.label}
+                                            value={item.value}
+                                            onchange={handleInputChange}
+                                            rows="4"
+                                            max-length={item.length}
+                                            message-when-too-long="Too many characters"
+                                            class="wide-textarea">
+                                        </lightning-textarea>
+                                    </template>
                                 </template>
                             </div>
                         </div>
@@ -140,6 +153,19 @@
                                         </lightning-input>
                                     </template>
                                 </template>
+                                <template if:true={item.isLongText}>
+                                    <lightning-textarea 
+                                        data-record-id={item.recordId}
+                                        name={item.fieldName}
+                                        label={item.label}
+                                        value={item.value}
+                                        onchange={handleInputChange}
+                                        rows="4"
+                                        max-length={item.length}
+                                        message-when-too-long="Too many characters"
+                                        class="wide-textarea">
+                                    </lightning-textarea>
+                                </template>
                             </div>
                         </div>
                     </template>
@@ -202,6 +228,19 @@
                                         onchange={handleInputChange}>
                                     </lightning-input>
                                 </template>
+                            </template>
+                            <template if:true={item.isLongText}>
+                                <lightning-textarea 
+                                    data-record-id={item.recordId}
+                                    name={item.fieldName}
+                                    label={item.label}
+                                    value={item.value}
+                                    onchange={handleInputChange}
+                                    rows="4"
+                                    max-length={item.length}
+                                    message-when-too-long="Too many characters"
+                                    class="wide-textarea">
+                                </lightning-textarea>
                             </template>
                         </div>
                     </div>

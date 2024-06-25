@@ -167,20 +167,41 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                                         let columnType = 'text'; // default type
                                         let length = null; // variable to store the number in the field type
 
-                                        if (fieldType.startsWith('Text') || fieldType === 'String' || fieldType === 'TextArea' || fieldType === 'EncryptedString') {
-                                            columnType = 'text';
-                                            // Extract length if present
-                                            const match = fieldType.match(/\((\d+)\)/);
+                                        // Check the field type and adjust columnType and length accordingly
+                                        if (fieldType.startsWith('Long Text Area')) {
+                                            columnType = 'long-text';
+                                            const match = fieldType.match(/\((\d+)\)/); // Regex to find length in type definition
                                             if (match) {
                                                 length = parseInt(match[1], 10);
                                             }
+                                        } else if (fieldType.startsWith('Text') || fieldType === 'String') {
+                                            columnType = 'text';
+                                            const match = fieldType.match(/\((\d+)\)/); // Regex to find length in type definition
+                                            if (match) {
+                                                length = parseInt(match[1], 10);
+                                            }
+                                        } else if (fieldType === 'TextArea') {
+                                            columnType = 'textarea';
+                                        } else if (fieldType === 'EncryptedString') {
+                                            columnType = 'encrypted-text';
                                         } else if (fieldType === 'Picklist') {
                                             columnType = 'picklist';
                                         } else if (fieldType === 'Picklist (Multi-Select)') {
                                             columnType = 'multipicklist';
-                                        } else if (fieldType.startsWith('Number') || fieldType === 'Integer' || fieldType === 'Double' || fieldType === 'Percent' || fieldType === 'Long') {
+                                        } else if (fieldType.startsWith('Number') || fieldType === 'Integer' || fieldType === 'Double') {
                                             columnType = 'number';
-                                            // Extract precision and scale if present
+                                            const match = fieldType.match(/\((\d+),\s*(\d+)\)/);
+                                            if (match) {
+                                                length = { precision: parseInt(match[1], 10), scale: parseInt(match[2], 10) };
+                                            }
+                                        } else if (fieldType === 'Percent') {
+                                            columnType = 'percent';
+                                            const match = fieldType.match(/\((\d+),\s*(\d+)\)/);
+                                            if (match) {
+                                                length = { precision: parseInt(match[1], 10), scale: parseInt(match[2], 10) };
+                                            }
+                                        } else if (fieldType === 'Currency') {
+                                            columnType = 'currency';
                                             const match = fieldType.match(/\((\d+),\s*(\d+)\)/);
                                             if (match) {
                                                 length = { precision: parseInt(match[1], 10), scale: parseInt(match[2], 10) };
@@ -189,13 +210,6 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                                             columnType = 'date';
                                         } else if (fieldType === 'Date/Time') {
                                             columnType = 'datetime';
-                                        } else if (fieldType.startsWith('Currency')) {
-                                            columnType = 'currency';
-                                            // Extract precision and scale if present
-                                            const match = fieldType.match(/\((\d+),\s*(\d+)\)/);
-                                            if (match) {
-                                                length = { precision: parseInt(match[1], 10), scale: parseInt(match[2], 10) };
-                                            }
                                         } else if (fieldType === 'Email') {
                                             columnType = 'email';
                                         } else if (fieldType === 'Phone') {
@@ -215,7 +229,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                                         } else if (fieldType === 'Toggle') {
                                             columnType = 'toggle';
                                         } else {
-                                            columnType = 'text'; // default to text if no match is found
+                                            columnType = 'text'; // Default to text if no other type matches
                                         }
 
                                         // Construct the column object
