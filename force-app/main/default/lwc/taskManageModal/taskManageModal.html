@@ -1,13 +1,150 @@
 <template>
-    <div class="slds-grid slds-gutters">
-        <div class="slds-col">
-          <span>1</span>
-        </div>
-        <div class="slds-col">
-          <span>2</span>
-        </div>
-        <div class="slds-col">
-          <span>3</span>
+    <div class="slds-grid slds-wrap slds-p-around_medium">
+      <!-- General -->
+      <h2>General</h2>
+      <div class="slds-col slds-size_1-of-1">
+        <div class="slds-text-align_left slds-m-around_x-small">
+          <label for="sub-task-name">Name of this sub-task</label>
+          <input type="text" id="sub-task-name" class="slds-input"/>
         </div>
       </div>
+      <div class="slds-col slds-size_1-of-1 slds-m-top_medium">
+        <div class="slds-text-align_left slds-m-around_x-small">
+          <label for="description">Description</label>
+          <input type="text" id="description" class="slds-input" placeholder="Add a description" />
+        </div>
+      </div>
+      <div class="slds-col slds-size_4-of-7 slds-m-top_medium">
+        <div class="slds-text-align_left slds-m-around_x-small">
+          <label for="schedule-code">Schedule code (optional)</label>
+          <select id="schedule-code" class="slds-select">
+              <option value="">Find or select schedule code</option>
+          </select>
+        </div>
+      </div>
+      <div class="slds-col slds-size_3-of-7 slds-m-top_medium">
+        <div class="slds-text-align_left slds-m-around_x-small">
+          <label for="case-officer">Case officer</label>
+          <select id="case-officer" class="slds-select">
+              <option value=""></option>
+          </select>
+        </div>
+      </div>
+      <div class="slds-col slds-size_2-of-3 slds-m-top_medium">
+        <div class="slds-text-align_left slds-m-around_x-small">
+          <label for="category">Category (optional)</label>
+          <select id="category" class="slds-select">
+              <option value="">Select</option>
+          </select>
+        </div>
+      </div>
+      <div class="slds-col slds-size_1-of-3 slds-m-top_medium">
+        <div class="slds-text-align_left slds-m-around_x-small">
+          <label for="priority">Priority</label>
+          <select id="priority" class="slds-select">
+              <option value="">Select</option>
+          </select>
+        </div>
+      </div>
+  
+    <hr class="slds-m-top_large slds-m-bottom_large slds-size_1-of-1"/>
+
+    <!-- Waiting Period -->
+    <h2>Waiting period</h2>
+      <div class="slds-col slds-size_2-of-8">
+        <div class="slds-text-align_left slds-m-around_x-small">
+          <input type="number" id="waiting-period-input" class="slds-input"/>
+        </div>
+        
+      </div>
+      <div class="slds-col slds-size_2-of-8">
+        <div class="slds-text-align_left slds-m-around_x-small">
+          <select id="waiting-period-time" class="slds-select">
+            <option></option>
+          </select>
+        </div>
+        
+      </div>
+      <div class="slds-col slds-size_2-of-8">
+        <div class="slds-text-align_left slds-m-around_x-small">
+          <select id="before-after" class="slds-select">
+            <option></option>
+          </select>
+        </div>
+      </div>
+      <div class="slds-col slds-size_2-of-8">
+        <div class="slds-text-align_left slds-m-around_x-small">
+          <select id="date-inserted-select" class="slds-select">
+            <option value="date-inserted">Date inserted</option>
+          </select>
+        </div>
+      </div>
+      <div class="slds-col slds-size_2-of-6">
+        <div class="slds-text-align_left slds-m-around_x-small">
+          <label for="date-inserted">Date inserted</label>
+          <input type="date" id="date-inserted" class="slds-input slds-size_3-of-4"/>
+        </div>
+      </div>
+      <div class="slds-col slds-size_2-of-6">
+        <div class="slds-text-align_left slds-m-around_x-small">
+          <label for="due-date">Due</label>
+          <input type="date" id="due-date" class="slds-input"/>
+        </div>
+      </div>
+
+    <hr class="slds-m-top_large slds-m-bottom_large slds-size_1-of-1"/>
+
+    <!-- Action (Optional) -->
+    <h2>Action (optional)</h2>
+    <div class="slds-col slds-size_1-of-2">
+      <div class="slds-text-align_left slds-m-around_x-small">
+        <label for="document">Document</label>
+        <select id="document" class="slds-select">
+        <option value="">Select a document</option>
+      </select>
+      </div>
+    </div>
+    <div class="slds-col slds-size_1-of-1">
+      <div class="slds-text-align_left slds-m-around_x-small">
+        <label for="post-tray">Post tray</label>
+        <select id="post-tray" class="slds-select">
+          <option value="">Queue name not setup</option>
+        </select>
+        </div>
+      </div>
+
+    <hr class="slds-m-top_large slds-m-bottom_large slds-size_1-of-1"/>
+
+    <!-- Post to (Optional) -->
+      <h2>Post to (optional)</h2>
+      <div class="slds-col slds-size_1-of-3">
+        <div class="slds-text-align_left slds-m-around_x-small">
+          <input type="checkbox" id="group-code"/>
+          <label for="group-code">Group code</label>
+          <input type="text" id="group-code-select" class="slds-input" placeholder="Select group code"/>
+        </div>
+      </div>
+      <div class="slds-col slds-size_1-of-3 slds-m-top_medium">
+        <div class="slds-text-align_left slds-m-around_x-small">
+          <input type="text" id="all-members" class="slds-input" placeholder="All members"/>
+        </div>
+      </div>
+      <div class="slds-col slds-size_1-of-3">
+        <div class="slds-text-align_left slds-m-around_x-small">
+          <input type="checkbox" id="other-party"/>
+          <label for="other-party">Other party</label>
+          <input type="text" id="select-party" class="slds-input" placeholder="Select party"/>
+        </div>
+      </div>
+      <div class="slds-col slds-size_1-of-3 slds-m-top_medium">
+        <div class="slds-text-align_left slds-m-around_x-small">
+          <input type="text" id="lorem-ipsum" class="slds-input" placeholder="Lorem ipsum"/>
+        </div>
+      </div>
+    
+    <div class="slds-col slds-size_1-of-1 slds-m-top_large">
+      <button class="slds-button slds-button_neutral">Confirm</button>
+      <button class="slds-button slds-button_neutral">Cancel</button>
+    </div>
+  </div>
 </template>
