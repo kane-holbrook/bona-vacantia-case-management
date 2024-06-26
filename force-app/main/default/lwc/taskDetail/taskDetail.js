@@ -3,6 +3,7 @@ import { LightningElement, track } from 'lwc';
 export default class TaskDetail extends LightningElement {
     @track editSubTask = false;
     @track deleteTask = false;
+    @track changeDueDateTask = false;
 
     onEditSubTask() {
         this.editSubTask = true;
@@ -18,5 +19,13 @@ export default class TaskDetail extends LightningElement {
 
     onDeleteTaskClose() {
         this.deleteTask = false;
+    }
+
+    onChangeDueDateTask() {
+        this.changeDueDateTask = true;
+    }
+
+    onChangeDueDateTaskClose() {
+        this.changeDueDateTask = false;
     }
 }
