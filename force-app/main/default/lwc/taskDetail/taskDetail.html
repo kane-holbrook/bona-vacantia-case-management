@@ -21,8 +21,10 @@
                         <lightning-button variant="neutral" label="Mark task as complete"></lightning-button>
                         <lightning-button variant="neutral" label="Edit comments"></lightning-button>
                         <lightning-button variant="neutral" label="Change due date"></lightning-button>
+                        <lightning-button variant="neutral" label="Create sub-task" onclick={onEditSubTask}></lightning-button>
                         <lightning-button-menu alternative-text="Show More">
-                            <lightning-menu-item label="Create sub-task"></lightning-menu-item>
+                            <lightning-menu-item label="Re-assign"></lightning-menu-item>
+                            <lightning-menu-item label="Change priority"></lightning-menu-item>
                         </lightning-button-menu>
                     </div>
                 </div>
@@ -38,17 +40,42 @@
                     <lightning-tab label="Details" name="details">
                         <div class="slds-grid slds-wrap">
                             <div class="slds-col slds-size_1-of-2">
-                                <p><strong>Parent task:</strong> Case created</p>
-                                <p><strong>Assigned to:</strong> James Bond</p>
-                                <p><strong>Due date:</strong> DD/MM/YYYY</p>
-                                <p><strong>Priority:</strong> <lightning-icon icon-name="utility:priority" alternative-text="Priority" size="small"></lightning-icon> Critical</p>
+                                <p class="detail-item"><strong>Parent task:</strong> Case created</p>
+                                <p class="detail-item"><strong>Assigned to:</strong> James Bond</p>
+                                <p class="detail-item"><strong>Due date:</strong> DD/MM/YYYY</p>
+                                <p class="detail-item"><strong>Priority:</strong> <lightning-icon icon-name="utility:priority" alternative-text="Priority" size="small"></lightning-icon> Critical</p>
+                                <p class="detail-item"><strong>Comments:</strong> Feugiat bibendum urna a mauris et nunc suscipit nibh quam. Viverra ac elit at id tortor elementum faucibus. Ipsum gravida mauris ut turpis. Viverra duis purus consectetur egestas sodales tortor lectus fermentum. Nullam consequat quam vitae sed sem nullam id blandit lorem. Massa viverra donec fames volutpat pulvinar sit ornare neque. Erat in lobortis nunc orci libero ac tristique. Pellentesque in interdum tempor vulputate suscipit justo ultricies ut nibh. In nisi est non viverra in vitae viverra lacus elementum.</p>
                             </div>
                             <div class="slds-col slds-size_1-of-2">
-                                <p><strong>Created by:</strong> Harry Potter</p>
-                                <p><strong>Last modified by:</strong> James Bond</p>
-                                <p><strong>Next task:</strong> 90 days from approval for IEQ to be issued</p>
+                                <p class="detail-item"><strong>Created by:</strong> Harry Potter</p>
+                                <p class="detail-item"><strong>Last modified by:</strong> James Bond</p>
+                                <p class="detail-item"><strong>Next task:</strong> 90 days from approval for IEQ to be issued</p>
                             </div>
                         </div>
+
+                        <div class="slds-section slds-m-vertical_large" style="border-top: 2px solid #c9c9c9;"></div>
+
+                        <ul class="slds-accordion">
+                            <li class="slds-accordion__list-item">
+                                <section class="slds-accordion__section slds-is-open">
+                                <div class="slds-accordion__summary">
+                                    <h2 class="slds-accordion__summary-heading">
+                                    <button class="slds-button slds-button_reset slds-accordion__summary-action" aria-controls="referenceId-24" aria-expanded="true" title="Accordion summary">
+                                        <lightning-icon icon-name="utility:chevronright" size="x-small" alternative-text="Accordion summary" class="slds-accordion__summary-action-img"></lightning-icon>
+                                        <span class="slds-accordion__summary-content">Accordion summary</span>
+                                    </button>
+                                    </h2>
+                                    <div class="slds-dropdown-trigger slds-dropdown-trigger_click">
+                                    <button class="slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small" aria-haspopup="true" title="Show More">
+                                        <lightning-icon icon-name="utility:down" size="x-small" alternative-text="Show More"></lightning-icon>
+                                        <span class="slds-assistive-text">Show More</span>
+                                    </button>
+                                    </div>
+                                </div>
+                                <div class="slds-accordion__content" id="referenceId-24">Accordion details - A</div>
+                                </section>
+                            </li>
+                        </ul>
                     </lightning-tab>
                     <lightning-tab label="Related documents" name="related-documents">
                         <!-- Related documents content -->
@@ -63,4 +90,23 @@
             </div>
         </div>
     </article>
+
+    <template if:true={editSubTask}>
+        <section role="dialog" tabindex="-1" aria-modal="true" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <!-- Modal Header -->
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={onEditTaskClose}>
+                        <lightning-icon icon-name="utility:close" alternative-text="close" size="small"></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 class="slds-text-heading_medium">Task modal header</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <c-task-manage-modal></c-task-manage-modal>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
 </template>
