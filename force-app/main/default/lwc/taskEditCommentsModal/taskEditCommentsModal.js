@@ -35,10 +35,7 @@ export default class TaskEditCommentsModal extends LightningElement {
         fields[TASK_COMMENTS_FIELD.fieldApiName] = this.comments;
 
         const recordInput = { fields };
-
-        console.log('recordInput: ', recordInput);
-        console.log('this.comments: ', this.comments);
-
+        
         updateRecord(recordInput)
             .then(() => {
                 this.dispatchEvent(

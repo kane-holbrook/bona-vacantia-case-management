@@ -2,12 +2,12 @@
     <div class="slds-form-element slds-m-around_medium">
         <div class="slds-form-element__control">
             <lightning-input type="date" data-id="dueDate" name="dueDate" value={dueDate} onchange={handleDateInput}
-                label="Due Date" placeholder="Enter due date" required="true"></lightning-input>
+                label="Due Date" placeholder="Enter due date"></lightning-input>
         </div>
     </div>
 
     <div class="slds-form-element slds-m-around_medium">
-        <button class="slds-button slds-button_brand" onclick={handleDelete}>Confirm</button>
+        <button class="slds-button slds-button_brand" onclick={handleSave}>Confirm</button>
         <button class="slds-button" onclick={handleCancel}>Cancel</button>
     </div>
 </template>
