@@ -4,6 +4,7 @@ export default class TaskDetail extends LightningElement {
     @track editSubTask = false;
     @track deleteTask = false;
     @track changeDueDateTask = false;
+    @track editCommentsTask = false;
 
     onEditSubTask() {
         this.editSubTask = true;
@@ -27,5 +28,13 @@ export default class TaskDetail extends LightningElement {
 
     onChangeDueDateTaskClose() {
         this.changeDueDateTask = false;
+    }
+
+    onEditCommentsTask() {
+        this.editCommentsTask = true;
+    }
+
+    onEditCommentsTaskClose() {
+        this.editCommentsTask = false;
     }
 }
