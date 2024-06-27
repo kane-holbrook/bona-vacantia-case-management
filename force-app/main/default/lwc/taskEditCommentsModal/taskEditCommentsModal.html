@@ -1,13 +1,13 @@
 <template>
     <div class="slds-form-element slds-m-around_medium">
         <div class="slds-form-element__control">
-            <lightning-textarea data-id="comments" name="comments" value={comments} onchange={handleInputComments}
+            <lightning-textarea data-id="comments" name="comments" value={commentsValue} onchange={handleInputComments}
                 label="Comments" placeholder="Enter comments"></lightning-textarea>
         </div>
     </div>
 
     <div class="slds-form-element slds-m-around_medium">
-        <button class="slds-button slds-button_brand" onclick={handleDelete}>Confirm</button>
-        <button class="slds-button" onclick={handleCancel}>Cancel</button>
+        <lightning-button variant="brand" label="Save" onclick={handleSave}></lightning-button>
+        <lightning-button variant="base" label="Cancel" onclick={handleCancel}></lightning-button>
     </div>
 </template>
