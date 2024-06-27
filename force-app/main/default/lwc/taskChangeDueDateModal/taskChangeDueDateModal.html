@@ -1,8 +1,8 @@
 <template>
     <div class="slds-form-element slds-m-around_medium">
         <div class="slds-form-element__control">
-            <input type="date" data-field="Due Date" name="Due Date" onchange={handleDueDateChange}
-                value={dueDate} />
+            <lightning-input type="date" data-id="dueDate" name="dueDate" value={dueDate} onchange={handleDateInput}
+                label="Due Date" placeholder="Enter due date" required="true"></lightning-input>
         </div>
     </div>
 

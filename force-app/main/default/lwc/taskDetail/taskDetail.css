@@ -15,6 +15,11 @@
     align-items: center;
     margin-top: 10px;
 }
+
 .detail-item strong {
     flex: 0 0 120px; /* adjust this width as needed */
+}
+
+.small-modal {
+    width: 20% !important;
 }
