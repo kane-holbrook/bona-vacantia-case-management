@@ -11,8 +11,8 @@
                         <span>Tasks</span>
                     </div>
                     <h2 class="slds-card__header-title">
-                        <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" title="Advert authorisation required (AA15)">
-                            <span>Advert authorisation required (AA15)</span>
+                        <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" title={taskName}>
+                            <span>{taskName}</span>
                         </a>
                     </h2>
                 </div>
@@ -40,16 +40,16 @@
                     <lightning-tab label="Details" name="details">
                         <div class="slds-grid slds-wrap">
                             <div class="slds-col slds-size_1-of-2">
-                                <p class="detail-item"><strong>Parent task:</strong> Case created</p>
-                                <p class="detail-item"><strong>Assigned to:</strong> James Bond</p>
-                                <p class="detail-item"><strong>Due date:</strong> DD/MM/YYYY</p>
-                                <p class="detail-item"><strong>Priority:</strong> <lightning-icon icon-name="utility:priority" alternative-text="Priority" size="small"></lightning-icon> Critical</p>
-                                <p class="detail-item"><strong>Comments:</strong> Feugiat bibendum urna a mauris et nunc suscipit nibh quam. Viverra ac elit at id tortor elementum faucibus. Ipsum gravida mauris ut turpis. Viverra duis purus consectetur egestas sodales tortor lectus fermentum. Nullam consequat quam vitae sed sem nullam id blandit lorem. Massa viverra donec fames volutpat pulvinar sit ornare neque. Erat in lobortis nunc orci libero ac tristique. Pellentesque in interdum tempor vulputate suscipit justo ultricies ut nibh. In nisi est non viverra in vitae viverra lacus elementum.</p>
+                                <p class="detail-item"><strong>Parent task:</strong> {parentTask}</p>
+                                <p class="detail-item"><strong>Assigned to:</strong> {assignedTo}</p>
+                                <p class="detail-item"><strong>Due date:</strong> {dueDate}</p>
+                                <p class="detail-item"><strong>Priority:</strong> <lightning-icon icon-name="utility:priority" alternative-text="Priority" size="small"></lightning-icon> {priority}</p>
+                                <p class="detail-item"><strong>Comments:</strong> {comments}</p>
                             </div>
                             <div class="slds-col slds-size_1-of-2">
-                                <p class="detail-item"><strong>Created by:</strong> Harry Potter</p>
-                                <p class="detail-item"><strong>Last modified by:</strong> James Bond</p>
-                                <p class="detail-item"><strong>Next task:</strong> 90 days from approval for IEQ to be issued</p>
+                                <p class="detail-item"><strong>Created by:</strong> {createdBy}</p>
+                                <p class="detail-item"><strong>Last modified by:</strong> {lastModifiedBy}</p>
+                                <p class="detail-item"><strong>Next task:</strong> {nextTask}</p>
                             </div>
                         </div>
 

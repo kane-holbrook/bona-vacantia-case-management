@@ -1,10 +1,63 @@
-import { LightningElement, track } from 'lwc';
+import { LightningElement, track, wire } from 'lwc';
+import { getRecord, updateRecord } from 'lightning/uiRecordApi';
+import TASK_OBJECT from '@salesforce/schema/BV_Task__c';
+import TASK_NAME_FIELD from '@salesforce/schema/BV_Task__c.Name';
+import TASK_PARENT_FIELD from '@salesforce/schema/BV_Task__c.Parent_Task__c';
+import TASK_ASSIGNED_TO_FIELD from '@salesforce/schema/BV_Task__c.Assigned_To__c';
+import TASK_DUE_DATE_FIELD from '@salesforce/schema/BV_Task__c.Due_Date__c';
+import TASK_PRIORITY_FIELD from '@salesforce/schema/BV_Task__c.Priority__c';
+import TASK_COMMENTS_FIELD from '@salesforce/schema/BV_Task__c.Comments__c';
+import TASK_CREATED_BY_FIELD from '@salesforce/schema/BV_Task__c.Created_By__c';
+import TASK_LAST_MODIFIED_BY_FIELD from '@salesforce/schema/BV_Task__c.Last_Modified_By__c';
+import TASK_NEXT_TASK_FIELD from '@salesforce/schema/BV_Task__c.Next_Task__c';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 export default class TaskDetail extends LightningElement {
     @track editSubTask = false;
     @track deleteTask = false;
     @track changeDueDateTask = false;
     @track editCommentsTask = false;
+
+    @track recordId = 'a0A8E00000CrJ5HUAV'; // Placeholder for testing
+
+    @wire(getRecord, { recordId: '$recordId', fields: [TASK_NAME_FIELD, TASK_PARENT_FIELD, TASK_ASSIGNED_TO_FIELD, TASK_DUE_DATE_FIELD, TASK_PRIORITY_FIELD, TASK_COMMENTS_FIELD, TASK_CREATED_BY_FIELD, TASK_LAST_MODIFIED_BY_FIELD, TASK_NEXT_TASK_FIELD] })
+    task;
+
+    get taskName() {
+        return this.task.data ? this.task.data.fields.Name.value : '';
+    }
+
+    get parentTask() {
+        return this.task.data ? this.task.data.fields.Parent_Task__c.value : '';
+    }
+
+    get assignedTo() {
+        return this.task.data ? this.task.data.fields.Assigned_To__c.value : '';
+    }
+
+    get dueDate() {
+        return this.task.data ? this.task.data.fields.Due_Date__c.value : '';
+    }
+
+    get priority() {
+        return this.task.data ? this.task.data.fields.Priority__c.value : '';
+    }
+
+    get comments() {
+        return this.task.data ? this.task.data.fields.Comments__c.value : '';
+    }
+
+    get createdBy() {
+        return this.task.data ? this.task.data.fields.Created_By__c.value : '';
+    }
+
+    get lastModifiedBy() {
+        return this.task.data ? this.task.data.fields.Last_Modified_By__c.value : '';
+    }
+
+    get nextTask() {
+        return this.task.data ? this.task.data.fields.Next_Task__c.value : '';
+    }
 
     onEditSubTask() {
         this.editSubTask = true;
@@ -36,5 +89,34 @@ export default class TaskDetail extends LightningElement {
 
     onEditCommentsTaskClose() {
         this.editCommentsTask = false;
+    }
+
+    handleSave() {
+        const fields = {};
+        fields[TASK_OBJECT.fields.Id.fieldApiName] = this.recordId;
+        fields[TASK_NAME_FIELD.fieldApiName] = this.taskName;
+        fields[TASK_COMMENTS_FIELD.fieldApiName] = this.comments;
+
+        const recordInput = { fields };
+
+        updateRecord(recordInput)
+            .then(() => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Success',
+                        message: 'Task updated successfully',
+                        variant: 'success'
+                    })
+                );
+            })
+            .catch(error => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Error updating task',
+                        message: error.body.message,
+                        variant: 'error'
+                    })
+                );
+            });
     }
 }
