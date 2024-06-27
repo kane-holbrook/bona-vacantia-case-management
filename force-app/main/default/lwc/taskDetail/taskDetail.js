@@ -17,6 +17,7 @@ export default class TaskDetail extends LightningElement {
     @track deleteTask = false;
     @track changeDueDateTask = false;
     @track editCommentsTask = false;
+    @track changePriorityTask = false;
 
     @track recordId = 'a0A8E00000CrJ5HUAV'; // Placeholder for testing
 
@@ -89,6 +90,14 @@ export default class TaskDetail extends LightningElement {
 
     onEditCommentsTaskClose() {
         this.editCommentsTask = false;
+    }
+
+    onChangePriorityTask() {
+        this.changePriorityTask = true;
+    }
+
+    onChangePriorityTaskClose() {
+        this.changePriorityTask = false;
     }
 
     handleSave() {

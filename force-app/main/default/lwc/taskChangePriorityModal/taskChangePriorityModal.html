@@ -1,0 +1,13 @@
+<template>
+    <div class="slds-form-element slds-m-around_medium">
+        <div class="slds-form-element__control">
+            <lightning-combobox name="priority" label="Priority" value={selectedPriority} options={priorityOptions}
+                onchange={handlePriorityChange}></lightning-combobox>
+        </div>
+    </div>
+
+    <div class="slds-form-element slds-m-around_medium">
+        <button class="slds-button slds-button_brand" onclick={handleSave}>Confirm</button>
+        <button class="slds-button" onclick={handleCancel}>Cancel</button>
+    </div>
+</template>
