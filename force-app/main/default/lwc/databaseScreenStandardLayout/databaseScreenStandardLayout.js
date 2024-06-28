@@ -119,7 +119,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                 this.recordData = [data.recordData[0] || {}]; // Ensure recordData is an array with a single object
             }
     
-            console.log(this.recordData);
+            console.log('Initial Record Data: ', JSON.stringify(this.recordData));
     
             // Extract fieldDataTypes from data
             const fieldDataTypes = data.fieldDataTypes || {};
@@ -128,7 +128,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
             this.layoutSections = JSON.parse(JSON.stringify(data.sections));
             let tableDataTemp = []; // Adjusted for multiple records
             let columnsTemp = [];
-            let columnsMainTemp = new Map();
+            let columnsMainTemp = [];
 
             // Process fields into left and right columns
             this.splitFieldsByColumns();
@@ -251,25 +251,30 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
 
                                     console.log(section);
                                     console.log(this.layoutSections[0]);
-                                    //Section at index 0 contains table headers (filter by section so fields are not repeated in variables)
+
+                                    // Construct the column object
+                                    const column = {
+                                        label: component.label,
+                                        fieldName: component.apiName,
+                                        type: 'text'
+                                    };
+
+                                    //Section at index 0 contains table headers (filter by section so variables are separated)
                                     if (!this.isBVCase) {
                                         if (this.expandedView) {
                                             // Run the 0 index check when not bvCase and expanded view
                                             if (section === this.layoutSections[0]) {
-                                                section.heading = 'headers';
-                                                columnsMainTemp.set(component.apiName, section.heading);
+                                                columnsMainTemp.push(column);
                                             }
                                             console.log('Expanded view and not BV case code ran');
                                         } else {
-                                            section.heading = 'headers';
-                                            columnsMainTemp.set(component.apiName, section.heading);
+                                            columnsMainTemp.push(column);
                                         }
                                     } else {
                                         // Run the else statement code for when bvCase
-                                        // Section at index 0 contains table headers (filter by section so fields are not repeated in variables)
+                                        // Section at index 0 contains table headers (filter by section so variables are separated)
                                         if (section === this.layoutSections[0]) {
-                                            section.heading = 'headers';
-                                            columnsMainTemp.set(component.apiName, section.heading);
+                                            columnsMainTemp.push(column);
                                         }
                                         console.log('BV case code ran');
                                     }
@@ -284,7 +289,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                 let recordTemp = {
                     rowId: record.Id
                 };
-                columnsTemp.forEach(col => {
+                columnsMainTemp.forEach(col => {
                     const fieldValue = this.getFieldValueFromRecord(record, col.fieldName);
                     if (col.fieldName !== null && col.fieldName !== undefined) {
                         recordTemp[col.fieldName] = fieldValue;
@@ -304,17 +309,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                 return { ...col, sortable: true };
             });
     
-            let columnsMainFiltered = [];
-            columnsTemp.forEach(col => {
-                let colSection = columnsMainTemp.get(col.fieldName);
-                if (colSection !== undefined) {
-                    if (col.type !== 'action') {
-                        columnsMainFiltered.push(col);
-                    }
-                }
-            });
-    
-            this.columnsMain = columnsMainFiltered;
+            this.columnsMain = columnsMainTemp;
             this.columns = columnsTemp;
             this.tableData = tableDataTemp;
             let mainSection = [];
@@ -327,10 +322,10 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                 let rowId = row.rowId;
                 let keys = Object.keys(row);
     
-                // Stop header fields from appearing twice
+                // Filter so only data for headers is pulled into the main table
                 keys.forEach(key => {
-                    let isHeader = columnsMainTemp.get(key);
-                    if (isHeader === null || isHeader === undefined) {
+                    let isHeader = columnsMainTemp.some(col => col.fieldName === key);
+                    if (!isHeader) {
                         delete row[key];
                     }
                 });
