@@ -1,0 +1,14 @@
+<template>
+    <div class="slds-grid">
+        <div class="slds-col slds-size_1-of-4">
+            <c-case-creation-progress-bar steps={steps} current-step={currentStep}></c-case-creation-progress-bar>
+        </div>
+        <div class="slds-col slds-size_3-of-4">
+            <lightning-flow
+                flow-api-name="Case_Creation_Flow"
+                onstatuschange={handleStatusChange}
+                onscreenchange={handleScreenChange}
+            ></lightning-flow>
+        </div>
+    </div>
+</template>
