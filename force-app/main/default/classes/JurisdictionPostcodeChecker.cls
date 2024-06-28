@@ -15,14 +15,14 @@ public with sharing class JurisdictionPostcodeChecker {
         if (!postcodeDetails.isEmpty()) {
             Jurisdiction_Postcode__mdt postcodeDetail = postcodeDetails[0];
             if (postcodeDetail.Consult_F_Co__c) {
-                return 'The postcode ' + postcode + ' is not within the jurisdiction of the Duchy of Lancaster. For further assistance, please contact Farrer & Co at email here';
+                return 'The postcode ' + postcode + ' may or may not be within the jurisdiction of the Duchy of Lancaster. For further assistance, please contact Farrer & Co';
             } else if (postcodeDetail.Not_DOL__c) {
-                return 'The postcode ' + postcode + ' is marked as "Not DoL". This means it is not within the jurisdiction of the Duchy of Lancaster. Please consult with the Treasury Solicitor.';
+                return 'The postcode ' + postcode + ' is within jurisdiction of BV.';
             } else {
-                return 'The postcode ' + postcode + ' is within jurisdiction.';
+                return 'The postcode ' + postcode + ' is not within jurisdiction of BV.';
             }
         } else {
-            return 'The postcode ' + postcode + ' is not within jurisdiction.';
+            return 'The postcode ' + postcode + ' is within jurisdiction of BV.';
         }
     }
 }
