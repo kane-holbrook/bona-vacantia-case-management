@@ -1,6 +1,6 @@
 public with sharing class FlowMetadataController {
     @AuraEnabled(cacheable=true)
-    public static List<FlowStepInfo> getFlowMetadata(String flowApiName) {
+    public static List<FlowStepInfo> getFlowMetadata(String flowApiName, String caseType) {
         List<FlowStepInfo> stepInfos = new List<FlowStepInfo>();
 
         String baseUrl = 'callout:Apex_Metadata_API_Named';
@@ -19,18 +19,51 @@ public with sharing class FlowMetadataController {
             Map<String, Object> results = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
             List<Object> records = (List<Object>) results.get('records');
 
+            System.debug('records: ' + records);
+
             for (Object recordObj : records) {
                 Map<String, Object> record = (Map<String, Object>) recordObj;
                 Map<String, Object> metadata = (Map<String, Object>) record.get('Metadata');
                 List<Object> screens = (List<Object>) metadata.get('screens');
+                List<Object> decisions = (List<Object>) metadata.get('decisions');
 
-                // Sort screens by locationY and locationX
-                screens.sort(new ScreenComparator());
-
+                // Create a map of screens for easy lookup
+                Map<String, Map<String, Object>> screenMap = new Map<String, Map<String, Object>>();
                 for (Object screenObj : screens) {
                     Map<String, Object> screen = (Map<String, Object>) screenObj;
-                    String label = (String) screen.get('label');
-                    stepInfos.add(new FlowStepInfo(label));
+                    String name = (String) screen.get('name');
+                    screenMap.put(name, screen);
+                }
+
+                // Create a map of decisions for easy lookup
+                Map<String, Map<String, Object>> decisionMap = new Map<String, Map<String, Object>>();
+                for (Object decisionObj : decisions) {
+                    Map<String, Object> decision = (Map<String, Object>) decisionObj;
+                    String name = (String) decision.get('name');
+                    decisionMap.put(name, decision);
+                }
+
+                // Start with the first screen
+                String currentScreen = 'Disclosure';
+                while (currentScreen != null) {
+                    if (screenMap.containsKey(currentScreen)) {
+                        Map<String, Object> screen = screenMap.get(currentScreen);
+                        String label = (String) screen.get('label');
+                        stepInfos.add(new FlowStepInfo(label));
+
+                        // Determine the next screen
+                        Map<String, Object> connector = (Map<String, Object>) screen.get('connector');
+                        if (connector != null) {
+                            currentScreen = (String) connector.get('targetReference');
+                        } else {
+                            currentScreen = null;
+                        }
+                    } else if (decisionMap.containsKey(currentScreen)) {
+                        Map<String, Object> decision = decisionMap.get(currentScreen);
+                        currentScreen = processDecisions(decision, caseType);
+                    } else {
+                        currentScreen = null;
+                    }
                 }
             }
         } else {
@@ -38,6 +71,37 @@ public with sharing class FlowMetadataController {
         }
 
         return stepInfos;
+    }
+
+    private static String processDecisions(Map<String, Object> decision, String caseType) {
+        List<Object> rules = (List<Object>) decision.get('rules');
+
+        for (Object ruleObj : rules) {
+            Map<String, Object> rule = (Map<String, Object>) ruleObj;
+            List<Object> conditions = (List<Object>) rule.get('conditions');
+
+            for (Object conditionObj : conditions) {
+                Map<String, Object> condition = (Map<String, Object>) conditionObj;
+                Map<String, Object> rightValue = (Map<String, Object>) condition.get('rightValue');
+
+                if (rightValue != null && rightValue.containsKey('elementReference')) {
+                    String elementReference = (String) rightValue.get('elementReference');
+
+                    if (elementReference != null && elementReference.equals(caseType)) {
+                        Map<String, Object> connector = (Map<String, Object>) rule.get('connector');
+                        return (String) connector.get('targetReference');
+                    }
+                }
+            }
+        }
+
+        // Default connector if no rules match
+        Map<String, Object> defaultConnector = (Map<String, Object>) decision.get('defaultConnector');
+        if (defaultConnector != null) {
+            return (String) defaultConnector.get('targetReference');
+        }
+
+        return null;
     }
 
     public class FlowStepInfo {

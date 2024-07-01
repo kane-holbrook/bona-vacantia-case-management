@@ -2,7 +2,7 @@ import { LightningElement, track } from 'lwc';
 import getFlowMetadata from '@salesforce/apex/FlowMetadataController.getFlowMetadata';
 
 export default class CaseCreationContainer extends LightningElement {
-    @track currentStep = 1;
+    @track currentStep = 0; // Start from the first step (index 0)
     @track steps = [];
 
     connectedCallback() {
@@ -10,7 +10,7 @@ export default class CaseCreationContainer extends LightningElement {
     }
 
     fetchFlowMetadata() {
-        getFlowMetadata({ flowApiName: 'Case_Creation_Flow' })
+        getFlowMetadata({ flowApiName: 'Case_Creation_Flow', caseType: 'Estates' })
             .then((result) => {
                 this.steps = result.map((step, index) => ({
                     label: step.label,
@@ -18,6 +18,7 @@ export default class CaseCreationContainer extends LightningElement {
                     isActive: index === 0
                 }));
                 console.log('steps', this.steps);
+                this.updateProgressBar(this.currentStep);
             })
             .catch((error) => {
                 console.error('Error fetching flow metadata:', error);
@@ -39,11 +40,15 @@ export default class CaseCreationContainer extends LightningElement {
 
     updateProgressBar(step) {
         const progressBar = this.template.querySelector('c-case-creation-progress-bar');
-        progressBar.updateStep(step);
+        if (progressBar) {
+            progressBar.setCurrentStep(step); // Update step in progress bar
+
+            console.log('Progress bar detected');
+        }
     }
 
     calculateStepFromFlow(flowDetails) {
         // Logic to determine the step based on flow details
-        return flowDetails.activeStageOrder + 1; // Assuming activeStageOrder is zero-based
+        return flowDetails.activeStageOrder; // Assuming activeStageOrder is zero-based
     }
 }
