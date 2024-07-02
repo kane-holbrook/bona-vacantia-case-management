@@ -1,6 +1,265 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>61.0</apiVersion>
+    <assignments>
+        <name>Assign_Alias_to_List_of_Aliases</name>
+        <label>Assign Alias to List of Aliases</label>
+        <locationX>842</locationX>
+        <locationY>3062</locationY>
+        <assignmentItems>
+            <assignToReference>allAliases_List</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <elementReference>singeAlias</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Get_Aliases</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Assign_occupier_addresses_to_a_List</name>
+        <label>Assign occupier addresses to a List</label>
+        <locationX>842</locationX>
+        <locationY>2030</locationY>
+        <assignmentItems>
+            <assignToReference>allOccupiersAddresses</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <elementReference>singleOccupierAddress</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Get_Occupiers_Addresses</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Assign_other_address_to_a_list</name>
+        <label>Assign other address to a list</label>
+        <locationX>842</locationX>
+        <locationY>2546</locationY>
+        <assignmentItems>
+            <assignToReference>allOtherAddresses</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <elementReference>singleOtherAddress</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Get_other_addresses</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Create_a_other_address</name>
+        <label>Create a other address</label>
+        <locationX>842</locationX>
+        <locationY>2438</locationY>
+        <assignmentItems>
+            <assignToReference>singleOtherAddress.Address_1__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Address</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>singleOtherAddress.Address_2__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Address_line_2</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>singleOtherAddress.Address_3__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Address_line_3</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>singleOtherAddress.Address_4__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Address_line_4</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>singleOtherAddress.Postcode__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Postcode</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>singleOtherAddress.Tenanted__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Unknown_other_addresses_tenanted</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>singleOtherAddress.Tenure__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Unknown_other_addresses_tenanted</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>singleOtherAddress.Title_Number__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Title</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>singleOtherAddress.BV_Case__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Create_BV_Case</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Assign_other_address_to_a_list</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Create_an_alias</name>
+        <label>Create an alias</label>
+        <locationX>842</locationX>
+        <locationY>2954</locationY>
+        <assignmentItems>
+            <assignToReference>singeAlias.Surname__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Get_Aliases.Surname_aliases</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>singeAlias.Forenames__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Get_Aliases.Forenames_aliases</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>singeAlias.BV_Case__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Create_BV_Case</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Assign_Alias_to_List_of_Aliases</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Create_an_occupier_address</name>
+        <label>Create an occupier address</label>
+        <locationX>842</locationX>
+        <locationY>1922</locationY>
+        <assignmentItems>
+            <assignToReference>singleOccupierAddress.Address_Line_1__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Address</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>singleOccupierAddress.Address_2__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Address_line_2</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>singleOccupierAddress.Address_3__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Address_line_3</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>singleOccupierAddress.Address_4__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Address_line_4</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>singleOccupierAddress.Postcode__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Postcode</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>singleOccupierAddress.Owned__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>No_other_addresses_owned</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>singleOccupierAddress.Owned__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Yes_other_addresses_owned</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>singleOccupierAddress.Tenure__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Unknown_other_addresses_tenure</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>singleOccupierAddress.Tenanted__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Unknown_other_addresses_tenanted</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>singleOccupierAddress.Title_No__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Title</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>singleOccupierAddress.BV_Case__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Create_BV_Case</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Assign_occupier_addresses_to_a_List</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Date_Formula</name>
+        <label>Date Assignment</label>
+        <locationX>402</locationX>
+        <locationY>974</locationY>
+        <assignmentItems>
+            <assignToReference>InputDate</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Date_Recieved</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>InputDate</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>WorkingDays</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Front_Cover</targetReference>
+        </connector>
+    </assignments>
     <choices>
         <name>Companies</name>
         <choiceText>Companies</choiceText>
@@ -26,6 +285,62 @@
         </value>
     </choices>
     <choices>
+        <name>FOI_FC_Follow_Up_Question</name>
+        <choiceText>Follow up?</choiceText>
+        <dataType>String</dataType>
+    </choices>
+    <choices>
+        <name>FOI_FC_Individual</name>
+        <choiceText>Individual</choiceText>
+        <dataType>String</dataType>
+    </choices>
+    <choices>
+        <name>FOI_FC_Northern_Ireland_Question</name>
+        <choiceText>Northern Ireland?</choiceText>
+        <dataType>String</dataType>
+    </choices>
+    <choices>
+        <name>FOI_FC_Organisation</name>
+        <choiceText>Organisation</choiceText>
+        <dataType>String</dataType>
+    </choices>
+    <choices>
+        <description>If the FOI Request is NOT being dealt with on behalf of the Crown Solicitor</description>
+        <name>FOINo</name>
+        <choiceText>No</choiceText>
+        <dataType>String</dataType>
+    </choices>
+    <choices>
+        <description>If FOI Request is being dealt with on behalf of the Crown Solicitor</description>
+        <name>FOIYes</name>
+        <choiceText>Yes</choiceText>
+        <dataType>String</dataType>
+    </choices>
+    <choices>
+        <name>Follow_Up</name>
+        <choiceText>Follow Up</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Follow Up</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Freedom_of_Information</name>
+        <choiceText>Freedom of Information</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Freedom of Information</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Internal_Review</name>
+        <choiceText>Internal Review</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Internal Review</stringValue>
+        </value>
+    </choices>
+    <choices>
         <name>Male_M</name>
         <choiceText>Male (M)</choiceText>
         <dataType>String</dataType>
@@ -44,6 +359,14 @@
         <dataType>String</dataType>
         <value>
             <stringValue>New case call</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>New_Request</name>
+        <choiceText>New Request</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>New Request</stringValue>
         </value>
     </choices>
     <choices>
@@ -147,9 +470,172 @@
             <stringValue>Yes</stringValue>
         </value>
     </choices>
+    <decisions>
+        <name>Case_Type_Decision</name>
+        <label>Case Type Decision</label>
+        <locationX>754</locationX>
+        <locationY>242</locationY>
+        <defaultConnector>
+            <targetReference>Informant</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>FOI_Decision</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Case_type_selection</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Freedom_of_Information</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>FOI_Request_Type_Screen</targetReference>
+            </connector>
+            <label>FOI Decision</label>
+        </rules>
+        <rules>
+            <name>Estates_Decision</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Case_type_picklist</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Estates</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Informant</targetReference>
+            </connector>
+            <label>Estates Decision</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>FOI_Request_Type_Decision</name>
+        <label>FOI Request Type Decision</label>
+        <locationX>402</locationX>
+        <locationY>458</locationY>
+        <defaultConnector>
+            <targetReference>Enter_Date_Recieved</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Follow_Up_decision</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>FOI_Request_Type</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Follow_Up</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Follow_Up_Num</targetReference>
+            </connector>
+            <label>Follow Up decision</label>
+        </rules>
+        <rules>
+            <name>New_Request_Decision</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>FOI_Request_Type</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>New_Request</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Enter_Date_Recieved</targetReference>
+            </connector>
+            <label>New Request Decision</label>
+        </rules>
+        <rules>
+            <name>Internal_Review_Decision</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>FOI_Request_Type</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Internal_Review</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Internal_Review_Num</targetReference>
+            </connector>
+            <label>Internal Review Decision</label>
+        </rules>
+    </decisions>
     <environments>Default</environments>
+    <formulas>
+        <description>Add 19 days to the date given by user</description>
+        <name>WorkingDays</name>
+        <dataType>Date</dataType>
+        <expression>CASE(
+  MOD(
+    {!InputDate} - DATE(1985,6,24), 
+    7
+  ), 
+  0, 
+   {!InputDate} + 24, 
+  1, 
+   {!InputDate} + 24, 
+  2, 
+   {!InputDate} + 24, 
+  3, 
+   {!InputDate} + 24, 
+  4, 
+   {!InputDate} + 26, 
+  5, 
+   {!InputDate} + 26, 
+  6, 
+   {!InputDate} + 25, 
+   {!InputDate}
+)</expression>
+    </formulas>
     <interviewLabel>Case Creation Estates {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Case Creation Flow</label>
+    <loops>
+        <name>Get_Aliases</name>
+        <label>Get Aliases</label>
+        <locationX>754</locationX>
+        <locationY>2846</locationY>
+        <collectionReference>Aliases_repeater.AllItems</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>Create_an_alias</targetReference>
+        </nextValueConnector>
+        <noMoreValuesConnector>
+            <targetReference>Case_type</targetReference>
+        </noMoreValuesConnector>
+    </loops>
+    <loops>
+        <name>Get_Occupiers_Addresses</name>
+        <label>Get Occupiers Addresses</label>
+        <locationX>754</locationX>
+        <locationY>1814</locationY>
+        <collectionReference>Occupiers_address_repeater.AllItems</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>Create_an_occupier_address</targetReference>
+        </nextValueConnector>
+        <noMoreValuesConnector>
+            <targetReference>Other_addresses</targetReference>
+        </noMoreValuesConnector>
+    </loops>
+    <loops>
+        <name>Get_other_addresses</name>
+        <label>Get other addresses</label>
+        <locationX>754</locationX>
+        <locationY>2330</locationY>
+        <collectionReference>Other_addresses_repeater.AllItems</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>Create_a_other_address</targetReference>
+        </nextValueConnector>
+        <noMoreValuesConnector>
+            <targetReference>Aliases</targetReference>
+        </noMoreValuesConnector>
+    </loops>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -170,10 +656,20 @@
     </processMetadataValues>
     <processType>Flow</processType>
     <recordCreates>
+        <name>Create_Aliases</name>
+        <label>Create Aliases</label>
+        <locationX>754</locationX>
+        <locationY>3794</locationY>
+        <inputReference>allAliases_List</inputReference>
+    </recordCreates>
+    <recordCreates>
         <name>Create_BV_Case</name>
         <label>Create BV_Case__c</label>
-        <locationX>176</locationX>
-        <locationY>998</locationY>
+        <locationX>754</locationX>
+        <locationY>3470</locationY>
+        <connector>
+            <targetReference>Create_occupiers_addresses</targetReference>
+        </connector>
         <inputAssignments>
             <field>Born_At__c</field>
             <value>
@@ -375,11 +871,31 @@
         <object>BV_Case__c</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordCreates>
+    <recordCreates>
+        <name>Create_occupiers_addresses</name>
+        <label>Create occupiers addresses</label>
+        <locationX>754</locationX>
+        <locationY>3578</locationY>
+        <connector>
+            <targetReference>Create_other_addresses</targetReference>
+        </connector>
+        <inputReference>allOccupiersAddresses</inputReference>
+    </recordCreates>
+    <recordCreates>
+        <name>Create_other_addresses</name>
+        <label>Create other addresses</label>
+        <locationX>754</locationX>
+        <locationY>3686</locationY>
+        <connector>
+            <targetReference>Create_Aliases</targetReference>
+        </connector>
+        <inputReference>allOtherAddresses</inputReference>
+    </recordCreates>
     <screens>
         <name>Add_documents</name>
         <label>Add documents</label>
-        <locationX>176</locationX>
-        <locationY>890</locationY>
+        <locationX>754</locationX>
+        <locationY>3362</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -400,19 +916,27 @@
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
         </fields>
-        <showFooter>true</showFooter>
+        <fields>
+            <name>flow_navigation_component_add_documents</name>
+            <extensionName>c:flowNavigationComponent</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>false</showFooter>
         <showHeader>true</showHeader>
     </screens>
     <screens>
         <name>Aliases</name>
         <label>Aliases</label>
-        <locationX>176</locationX>
-        <locationY>674</locationY>
+        <locationX>754</locationX>
+        <locationY>2738</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Case_type</targetReference>
+            <targetReference>Get_Aliases</targetReference>
         </connector>
         <fields>
             <name>Aliases_repeater</name>
@@ -433,14 +957,88 @@
             </fields>
             <isRequired>false</isRequired>
         </fields>
-        <showFooter>true</showFooter>
+        <fields>
+            <name>flow_navigation_component_aliases</name>
+            <extensionName>c:flowNavigationComponent</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>false</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <description>Shows the applicant&apos;s details screen to be completed</description>
+        <name>Applicant_Details</name>
+        <label>Applicant Details</label>
+        <locationX>402</locationX>
+        <locationY>1190</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>FOI_FC_Name</name>
+            <extensionName>flowruntime:name</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <fields>
+            <name>FOI_FC_Address</name>
+            <extensionName>flowruntime:address</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>addressLabel</name>
+                <value>
+                    <stringValue>Address</stringValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <fields>
+            <name>FOI_AD_Phone</name>
+            <extensionName>flowruntime:phone</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <fields>
+            <name>FOC_AD_Fax_Number</name>
+            <dataType>String</dataType>
+            <fieldText>Fax Number</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <fields>
+            <name>FOI_AD_Type</name>
+            <choiceReferences>FOI_FC_Individual</choiceReferences>
+            <choiceReferences>FOI_FC_Organisation</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Type</fieldText>
+            <fieldType>DropdownBox</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <fields>
+            <name>flow_navigation_component_applicant_details</name>
+            <extensionName>c:flowNavigationComponent</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>false</showFooter>
         <showHeader>true</showHeader>
     </screens>
     <screens>
         <name>Case_type</name>
         <label>Case type</label>
-        <locationX>176</locationX>
-        <locationY>782</locationY>
+        <locationX>754</locationX>
+        <locationY>3254</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -455,24 +1053,33 @@
             <fieldType>DropdownBox</fieldType>
             <isRequired>false</isRequired>
         </fields>
-        <showFooter>true</showFooter>
+        <fields>
+            <name>flow_navigation_component_case_type</name>
+            <extensionName>c:flowNavigationComponent</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>false</showFooter>
         <showHeader>true</showHeader>
     </screens>
     <screens>
         <name>Disclosure</name>
         <label>Disclosure</label>
-        <locationX>176</locationX>
+        <locationX>754</locationX>
         <locationY>134</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Informant</targetReference>
+            <targetReference>Case_Type_Decision</targetReference>
         </connector>
         <fields>
             <name>Case_type_selection</name>
             <choiceReferences>Estates</choiceReferences>
             <choiceReferences>Companies</choiceReferences>
+            <choiceReferences>Freedom_of_Information</choiceReferences>
             <dataType>String</dataType>
             <fieldText>Case type selection</fieldText>
             <fieldType>DropdownBox</fieldType>
@@ -493,14 +1100,355 @@
             <fieldType>DropdownBox</fieldType>
             <isRequired>false</isRequired>
         </fields>
-        <showFooter>true</showFooter>
+        <fields>
+            <name>flow_navigation_component_case_type_selection</name>
+            <extensionName>c:flowNavigationComponent</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>caseType</name>
+                <value>
+                    <elementReference>Case_type_selection</elementReference>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>false</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Enter_Date_Recieved</name>
+        <label>Enter Date Recieved</label>
+        <locationX>402</locationX>
+        <locationY>866</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Date_Formula</targetReference>
+        </connector>
+        <fields>
+            <name>Date_Recieved</name>
+            <dataType>Date</dataType>
+            <fieldText>Date Recieved</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>true</isRequired>
+        </fields>
+        <fields>
+            <name>flow_navigation_component_date_received</name>
+            <extensionName>c:flowNavigationComponent</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>false</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>FOI_Request_Type_Screen</name>
+        <label>FOI Request Type Screen</label>
+        <locationX>402</locationX>
+        <locationY>350</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>FOI_Request_Type_Decision</targetReference>
+        </connector>
+        <fields>
+            <name>FOI_Request_Type</name>
+            <choiceReferences>Follow_Up</choiceReferences>
+            <choiceReferences>Internal_Review</choiceReferences>
+            <choiceReferences>New_Request</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>FOI Request Type</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>true</isRequired>
+        </fields>
+        <fields>
+            <name>FOI_Question</name>
+            <choiceReferences>FOIYes</choiceReferences>
+            <choiceReferences>FOINo</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Is this FOI request being dealt with on behalf of the Crown Solicitor of Northern Ireland?</fieldText>
+            <fieldType>DropdownBox</fieldType>
+            <isRequired>true</isRequired>
+        </fields>
+        <fields>
+            <name>flow_navigation_component_foi_request_type</name>
+            <extensionName>c:flowNavigationComponent</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>false</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Follow_Up_Num</name>
+        <label>Enter FOI Number</label>
+        <locationX>50</locationX>
+        <locationY>566</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Enter_Date_Recieved</targetReference>
+        </connector>
+        <fields>
+            <name>Enter_FOI_no_to_which_this_follow_up_relates</name>
+            <dataType>String</dataType>
+            <fieldText>Enter FOI no. to which this follow-up relates</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>true</isRequired>
+        </fields>
+        <fields>
+            <name>flow_navigation_component_enter_foi_follow_up</name>
+            <extensionName>c:flowNavigationComponent</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>false</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <description>Shows the Front Cover screen for details to be entered</description>
+        <name>Front_Cover</name>
+        <label>Front Cover</label>
+        <locationX>402</locationX>
+        <locationY>1082</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Applicant_Details</targetReference>
+        </connector>
+        <fields>
+            <name>Front_Cover_Section1</name>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>Front_Cover_Section1_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <name>FOI_Number_FC</name>
+                    <dataType>String</dataType>
+                    <fieldText>FOI No.</fieldText>
+                    <fieldType>InputField</fieldType>
+                    <isRequired>false</isRequired>
+                </fields>
+                <fields>
+                    <name>FOI_Applicant_FC</name>
+                    <dataType>String</dataType>
+                    <fieldText>Applicant</fieldText>
+                    <fieldType>InputField</fieldType>
+                    <isRequired>false</isRequired>
+                </fields>
+                <fields>
+                    <name>FOI_Case_Name_FC</name>
+                    <dataType>String</dataType>
+                    <fieldText>Case Name</fieldText>
+                    <fieldType>InputField</fieldType>
+                    <isRequired>false</isRequired>
+                </fields>
+                <fields>
+                    <name>FOI_Case_Number_FC</name>
+                    <dataType>String</dataType>
+                    <fieldText>Case Number</fieldText>
+                    <fieldType>InputField</fieldType>
+                    <isRequired>false</isRequired>
+                </fields>
+                <fields>
+                    <name>FOI_Request_Type_FC</name>
+                    <choiceReferences>Estates</choiceReferences>
+                    <dataType>String</dataType>
+                    <fieldText>Request Type</fieldText>
+                    <fieldType>DropdownBox</fieldType>
+                    <isRequired>false</isRequired>
+                </fields>
+                <fields>
+                    <name>FOI_IR_Officer_FC</name>
+                    <dataType>String</dataType>
+                    <fieldText>Internal Review Officer</fieldText>
+                    <fieldType>InputField</fieldType>
+                    <isRequired>false</isRequired>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>6</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <fields>
+                <name>Front_Cover_Section1_Column2</name>
+                <fieldType>Region</fieldType>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>6</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithoutHeader</regionContainerType>
+        </fields>
+        <fields>
+            <name>Front_Cover_Section2</name>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>Front_Cover_Section2_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <name>FOI_Number_of_Requests_FC</name>
+                    <dataType>String</dataType>
+                    <fieldText>Number of Requests</fieldText>
+                    <fieldType>InputField</fieldType>
+                    <isRequired>false</isRequired>
+                </fields>
+                <fields>
+                    <name>FOI_FC_Date_Recieved</name>
+                    <dataType>Date</dataType>
+                    <defaultValue>
+                        <elementReference>Date_Recieved</elementReference>
+                    </defaultValue>
+                    <fieldText>Date Recieved</fieldText>
+                    <fieldType>InputField</fieldType>
+                    <isDisabled>
+                        <booleanValue>true</booleanValue>
+                    </isDisabled>
+                    <isRequired>false</isRequired>
+                </fields>
+                <fields>
+                    <name>FOI_FC_Reply_Date</name>
+                    <dataType>Date</dataType>
+                    <defaultValue>
+                        <elementReference>InputDate</elementReference>
+                    </defaultValue>
+                    <fieldText>Reply Date</fieldText>
+                    <fieldType>InputField</fieldType>
+                    <isDisabled>
+                        <booleanValue>true</booleanValue>
+                    </isDisabled>
+                    <isRequired>false</isRequired>
+                </fields>
+                <fields>
+                    <name>FOI_FC_Withdrawn</name>
+                    <dataType>Boolean</dataType>
+                    <fieldText>Withdrawn?</fieldText>
+                    <fieldType>InputField</fieldType>
+                    <isRequired>true</isRequired>
+                </fields>
+                <fields>
+                    <name>FOI_FC_Date_Withdrawn</name>
+                    <dataType>Date</dataType>
+                    <fieldText>Date Withdrawn</fieldText>
+                    <fieldType>InputField</fieldType>
+                    <isRequired>false</isRequired>
+                    <visibilityRule>
+                        <conditionLogic>1</conditionLogic>
+                        <conditions>
+                            <leftValueReference>FOI_FC_Withdrawn</leftValueReference>
+                            <operator>EqualTo</operator>
+                            <rightValue>
+                                <booleanValue>true</booleanValue>
+                            </rightValue>
+                        </conditions>
+                    </visibilityRule>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>4</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <fields>
+                <name>Front_Cover_Section2_Column2</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <name>FOI_ILO_FC</name>
+                    <choiceReferences>No</choiceReferences>
+                    <dataType>String</dataType>
+                    <fieldText>ILO</fieldText>
+                    <fieldType>DropdownBox</fieldType>
+                    <isRequired>false</isRequired>
+                </fields>
+                <fields>
+                    <name>FOI_FC_Acknowledged_Date</name>
+                    <dataType>Date</dataType>
+                    <fieldText>Acknowledged Date</fieldText>
+                    <fieldType>InputField</fieldType>
+                    <isRequired>false</isRequired>
+                </fields>
+                <fields>
+                    <name>FOI_FC_Date_Reply_Sent</name>
+                    <dataType>Date</dataType>
+                    <fieldText>Date Reply Sent</fieldText>
+                    <fieldType>InputField</fieldType>
+                    <isRequired>false</isRequired>
+                </fields>
+                <fields>
+                    <name>FOI_FC_Destruction_Date</name>
+                    <dataType>Date</dataType>
+                    <fieldText>Destruction Date</fieldText>
+                    <fieldType>InputField</fieldType>
+                    <isRequired>false</isRequired>
+                </fields>
+                <fields>
+                    <name>FOI_FC_Ireland_Follow_Up</name>
+                    <choiceReferences>FOI_FC_Follow_Up_Question</choiceReferences>
+                    <choiceReferences>FOI_FC_Northern_Ireland_Question</choiceReferences>
+                    <dataType>String</dataType>
+                    <fieldText>Check</fieldText>
+                    <fieldType>MultiSelectCheckboxes</fieldType>
+                    <isRequired>false</isRequired>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>4</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <fields>
+                <name>Front_Cover_Section2_Column3</name>
+                <fieldType>Region</fieldType>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>4</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithoutHeader</regionContainerType>
+        </fields>
+        <fields>
+            <name>flow_navigation_component_front_cover</name>
+            <extensionName>c:flowNavigationComponent</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>false</showFooter>
         <showHeader>true</showHeader>
     </screens>
     <screens>
         <name>Informant</name>
         <label>Informant</label>
-        <locationX>176</locationX>
-        <locationY>242</locationY>
+        <locationX>754</locationX>
+        <locationY>1490</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -637,14 +1585,80 @@
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
         </fields>
-        <showFooter>true</showFooter>
+        <fields>
+            <name>flow_navigation_component_informant</name>
+            <extensionName>c:flowNavigationComponent</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>false</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Internal_Officer_Screen</name>
+        <label>Internal Officer Name</label>
+        <locationX>490</locationX>
+        <locationY>674</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Enter_Date_Recieved</targetReference>
+        </connector>
+        <fields>
+            <name>Internal_Officer_Name</name>
+            <dataType>String</dataType>
+            <fieldText>Enter name of officer handling the Internal Review</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>true</isRequired>
+        </fields>
+        <fields>
+            <name>flow_navigation_component_enter_name_of_officer</name>
+            <extensionName>c:flowNavigationComponent</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>false</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Internal_Review_Num</name>
+        <label>Internal Review Screen</label>
+        <locationX>490</locationX>
+        <locationY>566</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Internal_Officer_Screen</targetReference>
+        </connector>
+        <fields>
+            <name>Enter_FOI_no_to_which_this_internal_review_relates</name>
+            <dataType>String</dataType>
+            <fieldText>Enter FOI no. to which this internal review relates</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>true</isRequired>
+        </fields>
+        <fields>
+            <name>flow_navigation_component_enter_foi_no_internal</name>
+            <extensionName>c:flowNavigationComponent</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>false</showFooter>
         <showHeader>true</showHeader>
     </screens>
     <screens>
         <name>Intestate_details</name>
         <label>Intestate details</label>
-        <locationX>176</locationX>
-        <locationY>350</locationY>
+        <locationX>754</locationX>
+        <locationY>1598</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -821,19 +1835,27 @@
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
         </fields>
-        <showFooter>true</showFooter>
+        <fields>
+            <name>flow_navigation_component_intestate</name>
+            <extensionName>c:flowNavigationComponent</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>false</showFooter>
         <showHeader>true</showHeader>
     </screens>
     <screens>
         <name>Occupiers_address</name>
         <label>Occupiers address</label>
-        <locationX>176</locationX>
-        <locationY>458</locationY>
+        <locationX>754</locationX>
+        <locationY>1706</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Other_addresses</targetReference>
+            <targetReference>Get_Occupiers_Addresses</targetReference>
         </connector>
         <fields>
             <name>Occupiers_address_repeater</name>
@@ -907,19 +1929,27 @@
             </fields>
             <isRequired>false</isRequired>
         </fields>
-        <showFooter>true</showFooter>
+        <fields>
+            <name>flow_navigation_component_occupiers</name>
+            <extensionName>c:flowNavigationComponent</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>false</showFooter>
         <showHeader>true</showHeader>
     </screens>
     <screens>
         <name>Other_addresses</name>
         <label>Other addresses</label>
-        <locationX>176</locationX>
-        <locationY>566</locationY>
+        <locationX>754</locationX>
+        <locationY>2222</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Aliases</targetReference>
+            <targetReference>Get_other_addresses</targetReference>
         </connector>
         <fields>
             <name>Other_addresses_repeater</name>
@@ -993,11 +2023,19 @@
             </fields>
             <isRequired>false</isRequired>
         </fields>
-        <showFooter>true</showFooter>
+        <fields>
+            <name>flow_navigation_component_other_addresses</name>
+            <extensionName>c:flowNavigationComponent</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>false</showFooter>
         <showHeader>true</showHeader>
     </screens>
     <start>
-        <locationX>50</locationX>
+        <locationX>628</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Disclosure</targetReference>
@@ -1005,8 +2043,47 @@
     </start>
     <status>Draft</status>
     <variables>
+        <name>allAliases</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Case_Detail__c</objectType>
+    </variables>
+    <variables>
+        <name>allAliases_List</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Case_Detail__c</objectType>
+    </variables>
+    <variables>
+        <name>allOccupiersAddresses</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Case_Detail__c</objectType>
+    </variables>
+    <variables>
+        <name>allOtherAddresses</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Case_Detail__c</objectType>
+    </variables>
+    <variables>
         <name>Email_informant_field</name>
         <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>InputDate</name>
+        <dataType>Date</dataType>
         <isCollection>false</isCollection>
         <isInput>true</isInput>
         <isOutput>false</isOutput>
@@ -1017,6 +2094,30 @@
         <isCollection>false</isCollection>
         <isInput>true</isInput>
         <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>singeAlias</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Case_Detail__c</objectType>
+    </variables>
+    <variables>
+        <name>singleOccupierAddress</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Case_Detail__c</objectType>
+    </variables>
+    <variables>
+        <name>singleOtherAddress</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Case_Detail__c</objectType>
     </variables>
     <variables>
         <name>Telephone_informant_field</name>
