@@ -26,6 +26,8 @@ public with sharing class FlowMetadataController {
                 Map<String, Object> metadata = (Map<String, Object>) record.get('Metadata');
                 List<Object> screens = (List<Object>) metadata.get('screens');
                 List<Object> decisions = (List<Object>) metadata.get('decisions');
+                List<Object> loopElements = (List<Object>) metadata.get('loops');
+                List<Object> assignments = (List<Object>) metadata.get('assignments');
 
                 // Create a map of screens for easy lookup
                 Map<String, Map<String, Object>> screenMap = new Map<String, Map<String, Object>>();
@@ -41,6 +43,22 @@ public with sharing class FlowMetadataController {
                     Map<String, Object> decision = (Map<String, Object>) decisionObj;
                     String name = (String) decision.get('name');
                     decisionMap.put(name, decision);
+                }
+
+                // Create a map of loops for easy lookup
+                Map<String, Map<String, Object>> loopMap = new Map<String, Map<String, Object>>();
+                for (Object loopObj : loopElements) {
+                    Map<String, Object> loopElement = (Map<String, Object>) loopObj;
+                    String name = (String) loopElement.get('name');
+                    loopMap.put(name, loopElement);
+                }
+
+                // Create a map of assignments for easy lookup
+                Map<String, Map<String, Object>> assignmentMap = new Map<String, Map<String, Object>>();
+                for (Object assignmentObj : assignments) {
+                    Map<String, Object> assignment = (Map<String, Object>) assignmentObj;
+                    String name = (String) assignment.get('name');
+                    assignmentMap.put(name, assignment);
                 }
 
                 // Start with the first screen
@@ -61,6 +79,12 @@ public with sharing class FlowMetadataController {
                     } else if (decisionMap.containsKey(currentScreen)) {
                         Map<String, Object> decision = decisionMap.get(currentScreen);
                         currentScreen = processDecisions(decision, caseType);
+                    } else if (loopMap.containsKey(currentScreen)) {
+                        Map<String, Object> loopElement = loopMap.get(currentScreen);
+                        currentScreen = processLoopElement(loopElement, screenMap, assignmentMap, stepInfos);
+                    } else if (assignmentMap.containsKey(currentScreen)) {
+                        Map<String, Object> assignment = assignmentMap.get(currentScreen);
+                        currentScreen = processAssignment(assignment);
                     } else {
                         currentScreen = null;
                     }
@@ -105,6 +129,62 @@ public with sharing class FlowMetadataController {
             return (String) defaultConnector.get('targetReference');
         }
 
+        return null;
+    }
+
+    private static String processLoopElement(Map<String, Object> loopElement, Map<String, Map<String, Object>> screenMap, Map<String, Map<String, Object>> assignmentMap, List<FlowStepInfo> stepInfos) {
+        // Process next value connector within the loop
+        Map<String, Object> nextValueConnector = (Map<String, Object>) loopElement.get('nextValueConnector');
+        if (nextValueConnector != null) {
+            String loopScreen = (String) nextValueConnector.get('targetReference');
+
+            if (screenMap.containsKey(loopScreen)) {
+                Map<String, Object> screen = screenMap.get(loopScreen);
+                String label = (String) screen.get('label');
+                stepInfos.add(new FlowStepInfo(label));
+
+                // Handle nested connectors within the loop
+                Map<String, Object> connector = (Map<String, Object>) screen.get('connector');
+                if (connector != null) {
+                    processNestedConnector(connector, screenMap, assignmentMap, stepInfos);
+                }
+            } else if (assignmentMap.containsKey(loopScreen)) {
+                Map<String, Object> assignment = assignmentMap.get(loopScreen);
+                processAssignment(assignment);
+            }
+        }
+
+        // Continue after loop
+        Map<String, Object> noMoreValuesConnector = (Map<String, Object>) loopElement.get('noMoreValuesConnector');
+        if (noMoreValuesConnector != null) {
+            return (String) noMoreValuesConnector.get('targetReference');
+        }
+        return null;
+    }
+
+    private static void processNestedConnector(Map<String, Object> connector, Map<String, Map<String, Object>> screenMap, Map<String, Map<String, Object>> assignmentMap, List<FlowStepInfo> stepInfos) {
+        String targetReference = (String) connector.get('targetReference');
+        if (screenMap.containsKey(targetReference)) {
+            Map<String, Object> screen = screenMap.get(targetReference);
+            String label = (String) screen.get('label');
+            stepInfos.add(new FlowStepInfo(label));
+
+            Map<String, Object> nestedConnector = (Map<String, Object>) screen.get('connector');
+            if (nestedConnector != null) {
+                processNestedConnector(nestedConnector, screenMap, assignmentMap, stepInfos);
+            }
+        } else if (assignmentMap.containsKey(targetReference)) {
+            Map<String, Object> assignment = assignmentMap.get(targetReference);
+            processAssignment(assignment);
+        }
+    }
+
+    private static String processAssignment(Map<String, Object> assignment) {
+        // Process the assignment connector
+        Map<String, Object> connector = (Map<String, Object>) assignment.get('connector');
+        if (connector != null) {
+            return (String) connector.get('targetReference');
+        }
         return null;
     }
 
