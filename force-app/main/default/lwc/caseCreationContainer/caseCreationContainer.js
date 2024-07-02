@@ -2,22 +2,37 @@ import { LightningElement, track } from 'lwc';
 import getFlowMetadata from '@salesforce/apex/FlowMetadataController.getFlowMetadata';
 
 export default class CaseCreationContainer extends LightningElement {
-    @track currentStep = 0; // Start from the first step (index 0)
+    @track currentStep = 0;
     @track steps = [];
+    @track progressValue = 0;
+    caseType = 'Estates'; // Default case type
 
     connectedCallback() {
         this.fetchFlowMetadata();
+        this.template.addEventListener('casetypeevent', this.handleCaseTypeEvent.bind(this));
+        this.template.addEventListener('next', this.handleNext.bind(this));
+        this.template.addEventListener('back', this.handleBack.bind(this));
+    }
+
+    handleCaseTypeEvent(event) {
+        const newCaseType = event.detail.caseType;
+        if (newCaseType) {
+            this.caseType = newCaseType;
+            this.fetchFlowMetadata();
+        }
     }
 
     fetchFlowMetadata() {
-        getFlowMetadata({ flowApiName: 'Case_Creation_Flow', caseType: 'Estates' })
+        getFlowMetadata({ flowApiName: 'Case_Creation_Flow', caseType: this.caseType })
             .then((result) => {
                 this.steps = result.map((step, index) => ({
                     label: step.label,
                     isCompleted: false,
-                    isActive: index === 0
+                    isActive: index === 0,
+                    activeStatus: index === 0 ? 'Active' : '',
+                    class: index === 0 ? 'slds-progress__item slds-is-active' : 'slds-progress__item'
                 }));
-                console.log('steps', this.steps);
+                console.log('steps:', this.steps);
                 this.updateProgressBar(this.currentStep);
             })
             .catch((error) => {
@@ -32,23 +47,51 @@ export default class CaseCreationContainer extends LightningElement {
         }
     }
 
-    handleScreenChange(event) {
-        const newStep = this.calculateStepFromFlow(event.detail);
-        this.currentStep = newStep;
-        this.updateProgressBar(newStep);
-    }
-
-    updateProgressBar(step) {
-        const progressBar = this.template.querySelector('c-case-creation-progress-bar');
-        if (progressBar) {
-            progressBar.setCurrentStep(step); // Update step in progress bar
-
-            console.log('Progress bar detected');
+    handleNext() {
+        console.log('handleNext');
+        if (this.currentStep < this.steps.length - 1) {
+            this.currentStep++;
+            this.updateSteps();
         }
     }
 
-    calculateStepFromFlow(flowDetails) {
-        // Logic to determine the step based on flow details
-        return flowDetails.activeStageOrder; // Assuming activeStageOrder is zero-based
+    handleBack() {
+        console.log('handleBack');
+        if (this.currentStep > 0) {
+            this.currentStep--;
+            this.updateSteps();
+        }
+    }
+
+    updateSteps() {
+        this.steps = this.steps.map((step, index) => {
+            if (index < this.currentStep) {
+                return {
+                    ...step,
+                    isCompleted: true,
+                    isActive: false,
+                    class: 'slds-progress__item slds-is-completed'
+                };
+            } else if (index === this.currentStep) {
+                return {
+                    ...step,
+                    isCompleted: false,
+                    isActive: true,
+                    class: 'slds-progress__item slds-is-active'
+                };
+            } else {
+                return {
+                    ...step,
+                    isCompleted: false,
+                    isActive: false,
+                    class: 'slds-progress__item'
+                };
+            }
+        });
+        this.updateProgressBar();
+    }
+
+    updateProgressBar() {
+        this.progressValue = Math.floor((this.currentStep / (this.steps.length - 1)) * 100);
     }
 }

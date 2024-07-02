@@ -76,6 +76,10 @@ public with sharing class FlowMetadataController {
     private static String processDecisions(Map<String, Object> decision, String caseType) {
         List<Object> rules = (List<Object>) decision.get('rules');
 
+        // if the case type has spaces, they need to be replaced with underscores
+        String caseTypeWithSpaces = caseType.replace(' ', '_');
+        String caseTypeWithSpacesAndPercents = caseTypeWithSpaces.replace('%', '_PERCENT_');
+
         for (Object ruleObj : rules) {
             Map<String, Object> rule = (Map<String, Object>) ruleObj;
             List<Object> conditions = (List<Object>) rule.get('conditions');
@@ -87,7 +91,7 @@ public with sharing class FlowMetadataController {
                 if (rightValue != null && rightValue.containsKey('elementReference')) {
                     String elementReference = (String) rightValue.get('elementReference');
 
-                    if (elementReference != null && elementReference.equals(caseType)) {
+                    if (elementReference != null && elementReference.equals(caseTypeWithSpaces)) {
                         Map<String, Object> connector = (Map<String, Object>) rule.get('connector');
                         return (String) connector.get('targetReference');
                     }
