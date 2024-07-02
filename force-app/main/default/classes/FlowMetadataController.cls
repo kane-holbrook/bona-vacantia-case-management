@@ -10,7 +10,6 @@ public with sharing class FlowMetadataController {
         HttpRequest req = new HttpRequest();
         req.setEndpoint(baseUrl + toolingEndpoint + EncodingUtil.urlEncode(query, 'UTF-8'));
         req.setMethod('GET');
-        req.setHeader('Authorization', 'Bearer ' + UserInfo.getSessionId());
 
         Http http = new Http();
         HttpResponse res = http.send(req);
