@@ -34,7 +34,9 @@ export default class TaskDetail extends LightningElement {
                 Assigned_To__c: record.Assigned_To__c,
                 Due_Date__c: record.Due_Date__c,
                 Priority__c: record.Priority__c,
-                Comments__c: record.Comments__c
+                Comments__c: record.Comments__c,
+                isOpen: false,
+                sectionClass: 'slds-accordion__section'
             }));
         } else if (error) {
             this.dispatchEvent(
@@ -149,5 +151,16 @@ export default class TaskDetail extends LightningElement {
                     })
                 );
             });
+    }
+
+    toggleSubTask(event) {
+        const subTaskId = event.currentTarget.dataset.id;
+        this.subTasks = this.subTasks.map(subTask => {
+            if (subTask.Id === subTaskId) {
+                subTask.isOpen = !subTask.isOpen;
+                subTask.sectionClass = subTask.isOpen ? 'slds-accordion__section slds-is-open' : 'slds-accordion__section';
+            }
+            return subTask;
+        });
     }
 }
