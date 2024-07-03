@@ -27,7 +27,7 @@ public with sharing class FlowMetadataController {
                 List<Object> decisions = (List<Object>) metadata.get('decisions');
                 List<Object> loopElements = (List<Object>) metadata.get('loops');
                 List<Object> assignments = (List<Object>) metadata.get('assignments');
-                List<Object> getRecords = (List<Object>) metadata.get('recordLookups'); // This line includes Get Records elements
+                List<Object> getRecords = (List<Object>) metadata.get('recordLookups');
 
                 // Create a map of screens for easy lookup
                 Map<String, Map<String, Object>> screenMap = new Map<String, Map<String, Object>>();

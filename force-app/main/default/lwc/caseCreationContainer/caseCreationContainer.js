@@ -18,12 +18,17 @@ export default class CaseCreationContainer extends LightningElement {
         const newCaseType = event.detail.caseType;
         if (newCaseType) {
             this.caseType = newCaseType;
-            this.fetchFlowMetadata();
+            this.fetchFlowMetadata().then(() => {
+                // Set currentStep to 1 after fetching new metadata
+                this.currentStep = 1;
+                this.updateSteps();
+                this.updateProgressBar();
+            });
         }
     }
 
     fetchFlowMetadata() {
-        getFlowMetadata({ flowApiName: 'Case_Creation_Flow', caseType: this.caseType })
+        return getFlowMetadata({ flowApiName: 'Case_Creation_Flow', caseType: this.caseType })
             .then((result) => {
                 this.steps = result.map((step, index) => ({
                     label: step.label,
@@ -88,7 +93,6 @@ export default class CaseCreationContainer extends LightningElement {
                 };
             }
         });
-        this.updateProgressBar();
     }
 
     updateProgressBar() {
