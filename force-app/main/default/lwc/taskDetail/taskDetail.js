@@ -1,6 +1,6 @@
 import { LightningElement, track, wire } from 'lwc';
-import { getRecord, updateRecord } from 'lightning/uiRecordApi';
-import TASK_OBJECT from '@salesforce/schema/BV_Task__c';
+import { getRecord } from 'lightning/uiRecordApi';
+import getSubTasks from '@salesforce/apex/TaskController.getSubTasks';
 import TASK_NAME_FIELD from '@salesforce/schema/BV_Task__c.Name';
 import TASK_PARENT_FIELD from '@salesforce/schema/BV_Task__c.Parent_Task__c';
 import TASK_ASSIGNED_TO_FIELD from '@salesforce/schema/BV_Task__c.Assigned_To__c';
@@ -20,9 +20,32 @@ export default class TaskDetail extends LightningElement {
     @track changePriorityTask = false;
 
     @track recordId = 'a0A8E00000CrJ5HUAV'; // Placeholder for testing
+    @track subTasks = [];
 
     @wire(getRecord, { recordId: '$recordId', fields: [TASK_NAME_FIELD, TASK_PARENT_FIELD, TASK_ASSIGNED_TO_FIELD, TASK_DUE_DATE_FIELD, TASK_PRIORITY_FIELD, TASK_COMMENTS_FIELD, TASK_CREATED_BY_FIELD, TASK_LAST_MODIFIED_BY_FIELD, TASK_NEXT_TASK_FIELD] })
     task;
+
+    @wire(getSubTasks, { parentTaskId: '$recordId' })
+    wiredSubTasks({ error, data }) {
+        if (data) {
+            this.subTasks = data.map(record => ({
+                Id: record.Id,
+                Name: record.Name,
+                Assigned_To__c: record.Assigned_To__c,
+                Due_Date__c: record.Due_Date__c,
+                Priority__c: record.Priority__c,
+                Comments__c: record.Comments__c
+            }));
+        } else if (error) {
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Error loading subtasks',
+                    message: error.body.message,
+                    variant: 'error'
+                })
+            );
+        }
+    }
 
     get taskName() {
         return this.task.data ? this.task.data.fields.Name.value : '';
@@ -102,7 +125,6 @@ export default class TaskDetail extends LightningElement {
 
     handleSave() {
         const fields = {};
-        fields[TASK_OBJECT.fields.Id.fieldApiName] = this.recordId;
         fields[TASK_NAME_FIELD.fieldApiName] = this.taskName;
         fields[TASK_COMMENTS_FIELD.fieldApiName] = this.comments;
 

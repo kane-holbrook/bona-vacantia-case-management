@@ -4,7 +4,7 @@
         <div class="slds-card__header slds-grid">
             <header class="slds-media slds-media_center slds-has-flexi-truncate">
                 <div class="slds-media__figure">
-                    <lightning-icon icon-name="standard:task" size="small"></lightning-icon>
+                    <lightning-icon icon-name="standard:task" size="medium"></lightning-icon>
                 </div>
                 <div class="slds-media__body">
                     <div class="slds-card__header-subtitle">
@@ -12,7 +12,7 @@
                     </div>
                     <h2 class="slds-card__header-title">
                         <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" title={taskName}>
-                            <span>{taskName}</span>
+                            <span class="slds-text-heading_medium">{taskName}</span>
                         </a>
                     </h2>
                 </div>
@@ -56,25 +56,32 @@
                         <div class="slds-section slds-m-vertical_large" style="border-top: 2px solid #c9c9c9;"></div>
 
                         <ul class="slds-accordion">
-                            <li class="slds-accordion__list-item">
-                                <section class="slds-accordion__section slds-is-open">
-                                <div class="slds-accordion__summary">
-                                    <h2 class="slds-accordion__summary-heading">
-                                    <button class="slds-button slds-button_reset slds-accordion__summary-action" aria-controls="referenceId-24" aria-expanded="true" title="Accordion summary">
-                                        <lightning-icon icon-name="utility:chevronright" size="x-small" alternative-text="Accordion summary" class="slds-accordion__summary-action-img"></lightning-icon>
-                                        <span class="slds-accordion__summary-content">Accordion summary</span>
-                                    </button>
-                                    </h2>
-                                    <div class="slds-dropdown-trigger slds-dropdown-trigger_click">
-                                    <button class="slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small" aria-haspopup="true" title="Show More">
-                                        <lightning-icon icon-name="utility:down" size="x-small" alternative-text="Show More"></lightning-icon>
-                                        <span class="slds-assistive-text">Show More</span>
-                                    </button>
-                                    </div>
-                                </div>
-                                <div class="slds-accordion__content" id="referenceId-24">Accordion details - A</div>
-                                </section>
-                            </li>
+                            <template for:each={subTasks} for:item="subTask">
+                                <li key={subTask.Id} class="slds-accordion__list-item">
+                                    <section class="slds-accordion__section slds-is-open">
+                                        <div class="slds-accordion__summary">
+                                            <h2 class="slds-accordion__summary-heading">
+                                                <button class="slds-button slds-button_reset slds-accordion__summary-action" aria-controls={subTask.Id} aria-expanded="true" title="Accordion summary">
+                                                    <lightning-icon icon-name="utility:chevronright" size="x-small" alternative-text="Accordion summary" class="slds-accordion__summary-action-img"></lightning-icon>
+                                                    <span class="slds-accordion__summary-content">{subTask.Name}</span>
+                                                </button>
+                                            </h2>
+                                            <div class="slds-dropdown-trigger slds-dropdown-trigger_click">
+                                                <button class="slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small" aria-haspopup="true" title="Show More">
+                                                    <lightning-icon icon-name="utility:down" size="x-small" alternative-text="Show More"></lightning-icon>
+                                                    <span class="slds-assistive-text">Show More</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="slds-accordion__content" id={subTask.Id}>
+                                            <p><strong>Assigned to:</strong> {subTask.Assigned_To__c}</p>
+                                            <p><strong>Due date:</strong> {subTask.Due_Date__c}</p>
+                                            <p><strong>Priority:</strong> {subTask.Priority__c}</p>
+                                            <p><strong>Comments:</strong> {subTask.Comments__c}</p>
+                                        </div>
+                                    </section>
+                                </li>
+                            </template>
                         </ul>
                     </lightning-tab>
                     <lightning-tab label="Related documents" name="related-documents">

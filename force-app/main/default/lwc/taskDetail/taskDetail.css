@@ -1,5 +1,7 @@
 .task-card {
     background-color: #f3f3f3 !important;
+    padding: 1em !important;
+    border-radius: 0.5em !important;
 }
 
 .details-card {
