@@ -27,6 +27,7 @@ public with sharing class FlowMetadataController {
                 List<Object> decisions = (List<Object>) metadata.get('decisions');
                 List<Object> loopElements = (List<Object>) metadata.get('loops');
                 List<Object> assignments = (List<Object>) metadata.get('assignments');
+                List<Object> getRecords = (List<Object>) metadata.get('recordLookups'); // This line includes Get Records elements
 
                 // Create a map of screens for easy lookup
                 Map<String, Map<String, Object>> screenMap = new Map<String, Map<String, Object>>();
@@ -60,6 +61,14 @@ public with sharing class FlowMetadataController {
                     assignmentMap.put(name, assignment);
                 }
 
+                // Create a map of getRecords for easy lookup
+                Map<String, Map<String, Object>> getRecordsMap = new Map<String, Map<String, Object>>();
+                for (Object getRecordObj : getRecords) {
+                    Map<String, Object> getRecord = (Map<String, Object>) getRecordObj;
+                    String name = (String) getRecord.get('name');
+                    getRecordsMap.put(name, getRecord);
+                }
+
                 // Start with the first screen
                 String currentScreen = 'Disclosure';
                 while (currentScreen != null) {
@@ -84,6 +93,9 @@ public with sharing class FlowMetadataController {
                     } else if (assignmentMap.containsKey(currentScreen)) {
                         Map<String, Object> assignment = assignmentMap.get(currentScreen);
                         currentScreen = processAssignment(assignment);
+                    } else if (getRecordsMap.containsKey(currentScreen)) {
+                        Map<String, Object> getRecord = getRecordsMap.get(currentScreen);
+                        currentScreen = processGetRecords(getRecord);
                     } else {
                         currentScreen = null;
                     }
@@ -181,6 +193,15 @@ public with sharing class FlowMetadataController {
     private static String processAssignment(Map<String, Object> assignment) {
         // Process the assignment connector
         Map<String, Object> connector = (Map<String, Object>) assignment.get('connector');
+        if (connector != null) {
+            return (String) connector.get('targetReference');
+        }
+        return null;
+    }
+
+    private static String processGetRecords(Map<String, Object> getRecord) {
+        // Process the Get Records connector
+        Map<String, Object> connector = (Map<String, Object>) getRecord.get('connector');
         if (connector != null) {
             return (String) connector.get('targetReference');
         }
