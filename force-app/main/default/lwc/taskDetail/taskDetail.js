@@ -36,7 +36,8 @@ export default class TaskDetail extends LightningElement {
                 Priority__c: record.Priority__c,
                 Comments__c: record.Comments__c,
                 isOpen: false,
-                sectionClass: 'slds-accordion__section'
+                sectionClass: 'slds-accordion__section',
+                iconName: 'utility:chevronright'
             }));
         } else if (error) {
             this.dispatchEvent(
@@ -159,6 +160,7 @@ export default class TaskDetail extends LightningElement {
             if (subTask.Id === subTaskId) {
                 subTask.isOpen = !subTask.isOpen;
                 subTask.sectionClass = subTask.isOpen ? 'slds-accordion__section slds-is-open' : 'slds-accordion__section';
+                subTask.iconName = subTask.isOpen ? 'utility:chevrondown' : 'utility:chevronright';
             }
             return subTask;
         });
