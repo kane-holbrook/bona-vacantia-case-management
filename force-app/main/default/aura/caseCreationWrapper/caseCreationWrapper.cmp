@@ -1,0 +1,3 @@
+<aura:component implements="lightning:actionOverride,force:hasSObjectName,lightning:isUrlAddressable" description="Lightning component override for New button action" access="global">
+    <c:caseCreationContainer></c:caseCreationContainer>
+</aura:component>

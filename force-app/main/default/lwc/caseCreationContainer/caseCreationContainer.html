@@ -24,37 +24,39 @@
         <footer class="slds-card__footer"></footer>
     </article>
 
-    <div class="slds-grid slds-m-top_large">
-        <div class="slds-col slds-size_1-of-6">
-            <div class="slds-progress slds-progress_vertical">
-                <ol class="slds-progress__list">
-                    <template for:each={steps} for:item="step" for:index="index">
-                        <li key={step.label} class={step.class}>
-                            <template if:true={step.isCompleted}>
-                                <span class="slds-icon_container slds-icon-utility-success slds-progress__marker slds-progress__marker_icon slds-progress__marker_icon-success" title="Complete">
-                                    <lightning-icon icon-name="utility:success" size="xx-small" alternative-text="Complete"></lightning-icon>
-                                    <span class="slds-assistive-text">Complete</span>
-                                </span>
-                            </template>
-                            <template if:false={step.isCompleted}>
-                                <div class="slds-progress__marker">
-                                    <span class="slds-assistive-text">{step.activeStatus}</span>
-                                </div>
-                            </template>
-                            <div class="slds-progress__item_content slds-grid slds-grid_align-spread">{step.label}</div>
-                        </li>
-                    </template>
-                </ol>
-                <div aria-valuemin="0" aria-valuemax="100" aria-valuenow={progressValue} role="progressbar">
-                    <span class="slds-assistive-text">Progress: {progressValue}%</span>
+    <div class="container-background">
+        <div class="slds-grid slds-m-top_large">
+            <div class="slds-col slds-size_1-of-6">
+                <div class="slds-progress slds-progress_vertical slds-m-left_medium">
+                    <ol class="slds-progress__list">
+                        <template for:each={steps} for:item="step" for:index="index">
+                            <li key={step.label} class={step.class}>
+                                <template if:true={step.isCompleted}>
+                                    <span class="slds-icon_container slds-icon-utility-success slds-progress__marker slds-progress__marker_icon slds-progress__marker_icon-success" title="Complete">
+                                        <lightning-icon icon-name="utility:success" size="xx-small" alternative-text="Complete"></lightning-icon>
+                                        <span class="slds-assistive-text">Complete</span>
+                                    </span>
+                                </template>
+                                <template if:false={step.isCompleted}>
+                                    <div class="slds-progress__marker">
+                                        <span class="slds-assistive-text">{step.activeStatus}</span>
+                                    </div>
+                                </template>
+                                <div class="slds-progress__item_content slds-grid slds-grid_align-spread">{step.label}</div>
+                            </li>
+                        </template>
+                    </ol>
+                    <div aria-valuemin="0" aria-valuemax="100" aria-valuenow={progressValue} role="progressbar">
+                        <span class="slds-assistive-text">Progress: {progressValue}%</span>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="slds-col slds-size_3-of-4">
-            <lightning-flow
-                flow-api-name="Case_Creation_Flow"
-                onstatuschange={handleStatusChange}
-            ></lightning-flow>
+            <div class="slds-col slds-size_3-of-4">
+                <lightning-flow
+                    flow-api-name="Case_Creation_Flow"
+                    onstatuschange={handleStatusChange}
+                ></lightning-flow>
+            </div>
         </div>
     </div>
 </template>
