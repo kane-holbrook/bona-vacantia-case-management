@@ -4,8 +4,8 @@
     <assignments>
         <name>Assign_Alias_to_List_of_Aliases</name>
         <label>Assign Alias to List of Aliases</label>
-        <locationX>842</locationX>
-        <locationY>3062</locationY>
+        <locationX>886</locationX>
+        <locationY>3170</locationY>
         <assignmentItems>
             <assignToReference>allAliases_List</assignToReference>
             <operator>Add</operator>
@@ -18,10 +18,42 @@
         </connector>
     </assignments>
     <assignments>
+        <name>Assign_new_occupier_address_to_a_List</name>
+        <label>Assign new occupier address to a List</label>
+        <locationX>886</locationX>
+        <locationY>4310</locationY>
+        <assignmentItems>
+            <assignToReference>allOccupiersAddressesListWithId</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <elementReference>Loop_Occupiers_Addresses</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Loop_Occupiers_Addresses</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Assign_new_other_addresses_to_a_List</name>
+        <label>Assign new other addresses to a List</label>
+        <locationX>886</locationX>
+        <locationY>4718</locationY>
+        <assignmentItems>
+            <assignToReference>allOtherAddressListWIthId</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <elementReference>Loop_Other_Addresses</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Loop_Other_Addresses</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
         <name>Assign_occupier_addresses_to_a_List</name>
         <label>Assign occupier addresses to a List</label>
-        <locationX>842</locationX>
-        <locationY>2030</locationY>
+        <locationX>886</locationX>
+        <locationY>2138</locationY>
         <assignmentItems>
             <assignToReference>allOccupiersAddresses</assignToReference>
             <operator>Add</operator>
@@ -36,8 +68,8 @@
     <assignments>
         <name>Assign_other_address_to_a_list</name>
         <label>Assign other address to a list</label>
-        <locationX>842</locationX>
-        <locationY>2546</locationY>
+        <locationX>886</locationX>
+        <locationY>2654</locationY>
         <assignmentItems>
             <assignToReference>allOtherAddresses</assignToReference>
             <operator>Add</operator>
@@ -50,10 +82,26 @@
         </connector>
     </assignments>
     <assignments>
+        <name>Assign_the_new_Alias_to_List_of_Aliases</name>
+        <label>Assign the new Alias to List of Aliases</label>
+        <locationX>886</locationX>
+        <locationY>3902</locationY>
+        <assignmentItems>
+            <assignToReference>allAliasesListWithId</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <elementReference>Loop_Aliases</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Loop_Aliases</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
         <name>Create_a_other_address</name>
         <label>Create a other address</label>
-        <locationX>842</locationX>
-        <locationY>2438</locationY>
+        <locationX>886</locationX>
+        <locationY>2546</locationY>
         <assignmentItems>
             <assignToReference>singleOtherAddress.Address_1__c</assignToReference>
             <operator>Assign</operator>
@@ -111,10 +159,10 @@
             </value>
         </assignmentItems>
         <assignmentItems>
-            <assignToReference>singleOtherAddress.BV_Case__c</assignToReference>
+            <assignToReference>singleOtherAddress.RecordTypeId</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>Create_BV_Case</elementReference>
+                <elementReference>CaseDetailOtherAddressesRecordTypeId</elementReference>
             </value>
         </assignmentItems>
         <connector>
@@ -124,8 +172,8 @@
     <assignments>
         <name>Create_an_alias</name>
         <label>Create an alias</label>
-        <locationX>842</locationX>
-        <locationY>2954</locationY>
+        <locationX>886</locationX>
+        <locationY>3062</locationY>
         <assignmentItems>
             <assignToReference>singeAlias.Surname__c</assignToReference>
             <operator>Assign</operator>
@@ -141,10 +189,10 @@
             </value>
         </assignmentItems>
         <assignmentItems>
-            <assignToReference>singeAlias.BV_Case__c</assignToReference>
+            <assignToReference>singeAlias.RecordTypeId</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>Create_BV_Case</elementReference>
+                <elementReference>CaseDetailAliasesRecordTypeId</elementReference>
             </value>
         </assignmentItems>
         <connector>
@@ -154,8 +202,8 @@
     <assignments>
         <name>Create_an_occupier_address</name>
         <label>Create an occupier address</label>
-        <locationX>842</locationX>
-        <locationY>1922</locationY>
+        <locationX>886</locationX>
+        <locationY>2030</locationY>
         <assignmentItems>
             <assignToReference>singleOccupierAddress.Address_Line_1__c</assignToReference>
             <operator>Assign</operator>
@@ -227,10 +275,10 @@
             </value>
         </assignmentItems>
         <assignmentItems>
-            <assignToReference>singleOccupierAddress.BV_Case__c</assignToReference>
+            <assignToReference>singleOccupierAddress.RecordTypeId</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>Create_BV_Case</elementReference>
+                <elementReference>CaseDetailOccupiersAddressRecordTypeId</elementReference>
             </value>
         </assignmentItems>
         <connector>
@@ -258,6 +306,54 @@
         </assignmentItems>
         <connector>
             <targetReference>Front_Cover</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Set_BV_Case_ID_To_Aliases</name>
+        <label>Set BV Case ID to Aliases</label>
+        <locationX>886</locationX>
+        <locationY>3794</locationY>
+        <assignmentItems>
+            <assignToReference>Loop_Aliases.BV_Case__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Create_BV_Case</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Assign_the_new_Alias_to_List_of_Aliases</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Set_BV_Case_ID_to_Occupiers_Addresses</name>
+        <label>Set BV Case ID to Occupiers Addresses</label>
+        <locationX>886</locationX>
+        <locationY>4202</locationY>
+        <assignmentItems>
+            <assignToReference>Loop_Occupiers_Addresses.BV_Case__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Create_BV_Case</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Assign_new_occupier_address_to_a_List</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Set_BV_Case_ID_to_Other_Addresses</name>
+        <label>Set BV Case ID to Other Addresses</label>
+        <locationX>886</locationX>
+        <locationY>4610</locationY>
+        <assignmentItems>
+            <assignToReference>Loop_Other_Addresses.BV_Case__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Create_BV_Case</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Assign_new_other_addresses_to_a_List</targetReference>
         </connector>
     </assignments>
     <choices>
@@ -473,7 +569,7 @@
     <decisions>
         <name>Case_Type_Decision</name>
         <label>Case Type Decision</label>
-        <locationX>754</locationX>
+        <locationX>798</locationX>
         <locationY>242</locationY>
         <defaultConnector>
             <targetReference>Informant</targetReference>
@@ -498,14 +594,14 @@
             <name>Estates_Decision</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>Case_type_picklist</leftValueReference>
+                <leftValueReference>Case_type_selection</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <elementReference>Estates</elementReference>
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Informant</targetReference>
+                <targetReference>Get_BV_Case_RecordTypeId</targetReference>
             </connector>
             <label>Estates Decision</label>
         </rules>
@@ -597,8 +693,8 @@
     <loops>
         <name>Get_Aliases</name>
         <label>Get Aliases</label>
-        <locationX>754</locationX>
-        <locationY>2846</locationY>
+        <locationX>798</locationX>
+        <locationY>2954</locationY>
         <collectionReference>Aliases_repeater.AllItems</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector>
@@ -611,8 +707,8 @@
     <loops>
         <name>Get_Occupiers_Addresses</name>
         <label>Get Occupiers Addresses</label>
-        <locationX>754</locationX>
-        <locationY>1814</locationY>
+        <locationX>798</locationX>
+        <locationY>1922</locationY>
         <collectionReference>Occupiers_address_repeater.AllItems</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector>
@@ -625,8 +721,8 @@
     <loops>
         <name>Get_other_addresses</name>
         <label>Get other addresses</label>
-        <locationX>754</locationX>
-        <locationY>2330</locationY>
+        <locationX>798</locationX>
+        <locationY>2438</locationY>
         <collectionReference>Other_addresses_repeater.AllItems</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector>
@@ -634,6 +730,48 @@
         </nextValueConnector>
         <noMoreValuesConnector>
             <targetReference>Aliases</targetReference>
+        </noMoreValuesConnector>
+    </loops>
+    <loops>
+        <name>Loop_Aliases</name>
+        <label>Loop Aliases</label>
+        <locationX>798</locationX>
+        <locationY>3686</locationY>
+        <collectionReference>allAliases_List</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>Set_BV_Case_ID_To_Aliases</targetReference>
+        </nextValueConnector>
+        <noMoreValuesConnector>
+            <targetReference>Loop_Occupiers_Addresses</targetReference>
+        </noMoreValuesConnector>
+    </loops>
+    <loops>
+        <name>Loop_Occupiers_Addresses</name>
+        <label>Loop Occupiers Addresses</label>
+        <locationX>798</locationX>
+        <locationY>4094</locationY>
+        <collectionReference>allOccupiersAddresses</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>Set_BV_Case_ID_to_Occupiers_Addresses</targetReference>
+        </nextValueConnector>
+        <noMoreValuesConnector>
+            <targetReference>Loop_Other_Addresses</targetReference>
+        </noMoreValuesConnector>
+    </loops>
+    <loops>
+        <name>Loop_Other_Addresses</name>
+        <label>Loop Other Addresses</label>
+        <locationX>798</locationX>
+        <locationY>4502</locationY>
+        <collectionReference>allOtherAddresses</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>Set_BV_Case_ID_to_Other_Addresses</targetReference>
+        </nextValueConnector>
+        <noMoreValuesConnector>
+            <targetReference>Create_occupiers_addresses</targetReference>
         </noMoreValuesConnector>
     </loops>
     <processMetadataValues>
@@ -658,17 +796,17 @@
     <recordCreates>
         <name>Create_Aliases</name>
         <label>Create Aliases</label>
-        <locationX>754</locationX>
-        <locationY>3794</locationY>
-        <inputReference>allAliases_List</inputReference>
+        <locationX>798</locationX>
+        <locationY>5126</locationY>
+        <inputReference>allAliasesListWithId</inputReference>
     </recordCreates>
     <recordCreates>
         <name>Create_BV_Case</name>
         <label>Create BV_Case__c</label>
-        <locationX>754</locationX>
-        <locationY>3470</locationY>
+        <locationX>798</locationX>
+        <locationY>3578</locationY>
         <connector>
-            <targetReference>Create_occupiers_addresses</targetReference>
+            <targetReference>Loop_Aliases</targetReference>
         </connector>
         <inputAssignments>
             <field>Born_At__c</field>
@@ -839,6 +977,12 @@
             </value>
         </inputAssignments>
         <inputAssignments>
+            <field>RecordTypeId</field>
+            <value>
+                <elementReference>BVCaseRecordTypeId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
             <field>Short_Place__c</field>
             <value>
                 <elementReference>Short_place_name</elementReference>
@@ -872,30 +1016,287 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordCreates>
     <recordCreates>
+        <description>Create an case for FOI</description>
+        <name>Create_FOI_Case</name>
+        <label>Create FOI Case</label>
+        <locationX>402</locationX>
+        <locationY>1298</locationY>
+        <inputAssignments>
+            <field>Acknowledged__c</field>
+            <value>
+                <elementReference>FOI_FC_Acknowledged_Date</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Address_1__c</field>
+            <value>
+                <elementReference>FOI_AD_Address</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Address_2__c</field>
+            <value>
+                <elementReference>FOI_AD_Address_Line_2</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Address_3__c</field>
+            <value>
+                <elementReference>FOI_AD_Address_Line_3</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Address_4__c</field>
+            <value>
+                <elementReference>FOI_AD_Address_Line_4</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Applicant__c</field>
+            <value>
+                <elementReference>FOI_FC_Applicant</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Case_Name__c</field>
+            <value>
+                <elementReference>FOI_FC_Case_Name</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Case_Number__c</field>
+            <value>
+                <elementReference>FOI_FC_Case_Number</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Date_Reply_Sent__c</field>
+            <value>
+                <elementReference>FOI_FC_Date_Reply_Sent</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Date_Withdrawn__c</field>
+            <value>
+                <elementReference>FOI_FC_Date_Withdrawn</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Destruction_Date__c</field>
+            <value>
+                <elementReference>FOI_FC_Destruction_Date</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Fax_Number__c</field>
+            <value>
+                <elementReference>FOI_AD_Fax_Number</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Foi_No__c</field>
+            <value>
+                <elementReference>FOI_FC_Number</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Follow_Up__c</field>
+            <value>
+                <elementReference>FOI_FC_Follow_Up</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Ilo__c</field>
+            <value>
+                <elementReference>FOI_FC_ILO</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Int_Review_Officer__c</field>
+            <value>
+                <elementReference>FOI_FC_IR_Officer</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Name__c</field>
+            <value>
+                <elementReference>FOI_AD_Name</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Northern_Ireland__c</field>
+            <value>
+                <elementReference>FOI_FC_Northern_Ireland</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Number_Of_Requests__c</field>
+            <value>
+                <elementReference>FOI_FC_Number_of_Requests</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Postcode__c</field>
+            <value>
+                <elementReference>FOI_AD_Postcode</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Received__c</field>
+            <value>
+                <elementReference>FOI_FC_Date_Recieved</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Reply_Due__c</field>
+            <value>
+                <elementReference>FOI_FC_Reply_Date</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Request_Type__c</field>
+            <value>
+                <elementReference>FOI_FC_Request_Type</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Telephone__c</field>
+            <value>
+                <elementReference>FOI_AD_Phone</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Type__c</field>
+            <value>
+                <elementReference>FOI_AD_Type</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Withdrawn__c</field>
+            <value>
+                <elementReference>FOI_FC_Withdrawn</elementReference>
+            </value>
+        </inputAssignments>
+        <object>BV_Case__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordCreates>
         <name>Create_occupiers_addresses</name>
         <label>Create occupiers addresses</label>
-        <locationX>754</locationX>
-        <locationY>3578</locationY>
+        <locationX>798</locationX>
+        <locationY>4910</locationY>
         <connector>
             <targetReference>Create_other_addresses</targetReference>
         </connector>
-        <inputReference>allOccupiersAddresses</inputReference>
+        <inputReference>allOccupiersAddressesListWithId</inputReference>
     </recordCreates>
     <recordCreates>
         <name>Create_other_addresses</name>
         <label>Create other addresses</label>
-        <locationX>754</locationX>
-        <locationY>3686</locationY>
+        <locationX>798</locationX>
+        <locationY>5018</locationY>
         <connector>
             <targetReference>Create_Aliases</targetReference>
         </connector>
-        <inputReference>allOtherAddresses</inputReference>
+        <inputReference>allOtherAddressListWIthId</inputReference>
     </recordCreates>
+    <recordLookups>
+        <name>Get_Aliases_RecordTypeId</name>
+        <label>Get Aliases RecordTypeId</label>
+        <locationX>930</locationX>
+        <locationY>674</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Informant</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Record_Type_Dev_Name__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Estates_Aliases</stringValue>
+            </value>
+        </filters>
+        <object>Case_Detail__c</object>
+        <outputAssignments>
+            <assignToReference>CaseDetailAliasesRecordTypeId</assignToReference>
+            <field>RecordTypeId</field>
+        </outputAssignments>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_BV_Case_RecordTypeId</name>
+        <label>Get BV Case RecordTypeId</label>
+        <locationX>930</locationX>
+        <locationY>350</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_Occupiers_Address_RecordTypeId</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Record_Type_Dev_Name__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>ESTA</stringValue>
+            </value>
+        </filters>
+        <object>BV_Case__c</object>
+        <outputAssignments>
+            <assignToReference>BVCaseRecordTypeId</assignToReference>
+            <field>RecordTypeId</field>
+        </outputAssignments>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Occupiers_Address_RecordTypeId</name>
+        <label>Get Occupiers Address RecordTypeId</label>
+        <locationX>930</locationX>
+        <locationY>458</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_Other_Addresses_RecordTypeId</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Record_Type_Dev_Name__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Estates_Occupiers_Address</stringValue>
+            </value>
+        </filters>
+        <object>Case_Detail__c</object>
+        <outputAssignments>
+            <assignToReference>CaseDetailOccupiersAddressRecordTypeId</assignToReference>
+            <field>RecordTypeId</field>
+        </outputAssignments>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Other_Addresses_RecordTypeId</name>
+        <label>Get Other Addresses RecordTypeId</label>
+        <locationX>930</locationX>
+        <locationY>566</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_Aliases_RecordTypeId</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Record_Type_Dev_Name__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Estates_Other_addresses</stringValue>
+            </value>
+        </filters>
+        <object>Case_Detail__c</object>
+        <outputAssignments>
+            <assignToReference>CaseDetailOtherAddressesRecordTypeId</assignToReference>
+            <field>RecordTypeId</field>
+        </outputAssignments>
+    </recordLookups>
     <screens>
         <name>Add_documents</name>
         <label>Add documents</label>
-        <locationX>754</locationX>
-        <locationY>3362</locationY>
+        <locationX>798</locationX>
+        <locationY>3470</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -930,8 +1331,8 @@
     <screens>
         <name>Aliases</name>
         <label>Aliases</label>
-        <locationX>754</locationX>
-        <locationY>2738</locationY>
+        <locationX>798</locationX>
+        <locationY>2846</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -977,42 +1378,65 @@
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Create_FOI_Case</targetReference>
+        </connector>
         <fields>
-            <name>FOI_FC_Name</name>
-            <extensionName>flowruntime:name</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
+            <name>FOI_AD_Name</name>
+            <dataType>String</dataType>
+            <fieldText>Name</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
         </fields>
         <fields>
-            <name>FOI_FC_Address</name>
-            <extensionName>flowruntime:address</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputParameters>
-                <name>addressLabel</name>
-                <value>
-                    <stringValue>Address</stringValue>
-                </value>
-            </inputParameters>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
+            <name>FOI_AD_Address</name>
+            <dataType>String</dataType>
+            <fieldText>Address</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <fields>
+            <name>FOI_AD_Address_Line_2</name>
+            <dataType>String</dataType>
+            <fieldText>Address Line 2</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <fields>
+            <name>FOI_AD_Address_Line_3</name>
+            <dataType>String</dataType>
+            <fieldText>Address Line 3</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <fields>
+            <name>FOI_AD_Address_Line_4</name>
+            <dataType>String</dataType>
+            <fieldText>Address Line 4</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <fields>
+            <name>FOI_AD_Postcode</name>
+            <dataType>String</dataType>
+            <fieldText>Postcode</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
         </fields>
         <fields>
             <name>FOI_AD_Phone</name>
-            <extensionName>flowruntime:phone</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
+            <dataType>String</dataType>
+            <fieldText>Phone</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
         </fields>
         <fields>
-            <name>FOC_AD_Fax_Number</name>
-            <dataType>String</dataType>
+            <name>FOI_AD_Fax_Number</name>
+            <dataType>Number</dataType>
             <fieldText>Fax Number</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
+            <scale>0</scale>
         </fields>
         <fields>
             <name>FOI_AD_Type</name>
@@ -1037,8 +1461,8 @@
     <screens>
         <name>Case_type</name>
         <label>Case type</label>
-        <locationX>754</locationX>
-        <locationY>3254</locationY>
+        <locationX>798</locationX>
+        <locationY>3362</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1067,7 +1491,7 @@
     <screens>
         <name>Disclosure</name>
         <label>Disclosure</label>
-        <locationX>754</locationX>
+        <locationX>798</locationX>
         <locationY>134</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -1235,35 +1659,37 @@
                 <name>Front_Cover_Section1_Column1</name>
                 <fieldType>Region</fieldType>
                 <fields>
-                    <name>FOI_Number_FC</name>
-                    <dataType>String</dataType>
+                    <name>FOI_FC_Number</name>
+                    <dataType>Number</dataType>
                     <fieldText>FOI No.</fieldText>
                     <fieldType>InputField</fieldType>
                     <isRequired>false</isRequired>
+                    <scale>0</scale>
                 </fields>
                 <fields>
-                    <name>FOI_Applicant_FC</name>
+                    <name>FOI_FC_Applicant</name>
                     <dataType>String</dataType>
                     <fieldText>Applicant</fieldText>
                     <fieldType>InputField</fieldType>
                     <isRequired>false</isRequired>
                 </fields>
                 <fields>
-                    <name>FOI_Case_Name_FC</name>
+                    <name>FOI_FC_Case_Name</name>
                     <dataType>String</dataType>
                     <fieldText>Case Name</fieldText>
                     <fieldType>InputField</fieldType>
                     <isRequired>false</isRequired>
                 </fields>
                 <fields>
-                    <name>FOI_Case_Number_FC</name>
-                    <dataType>String</dataType>
+                    <name>FOI_FC_Case_Number</name>
+                    <dataType>Number</dataType>
                     <fieldText>Case Number</fieldText>
                     <fieldType>InputField</fieldType>
                     <isRequired>false</isRequired>
+                    <scale>0</scale>
                 </fields>
                 <fields>
-                    <name>FOI_Request_Type_FC</name>
+                    <name>FOI_FC_Request_Type</name>
                     <choiceReferences>Estates</choiceReferences>
                     <dataType>String</dataType>
                     <fieldText>Request Type</fieldText>
@@ -1271,7 +1697,7 @@
                     <isRequired>false</isRequired>
                 </fields>
                 <fields>
-                    <name>FOI_IR_Officer_FC</name>
+                    <name>FOI_FC_IR_Officer</name>
                     <dataType>String</dataType>
                     <fieldText>Internal Review Officer</fieldText>
                     <fieldType>InputField</fieldType>
@@ -1306,11 +1732,12 @@
                 <name>Front_Cover_Section2_Column1</name>
                 <fieldType>Region</fieldType>
                 <fields>
-                    <name>FOI_Number_of_Requests_FC</name>
-                    <dataType>String</dataType>
+                    <name>FOI_FC_Number_of_Requests</name>
+                    <dataType>Number</dataType>
                     <fieldText>Number of Requests</fieldText>
                     <fieldType>InputField</fieldType>
                     <isRequired>false</isRequired>
+                    <scale>0</scale>
                 </fields>
                 <fields>
                     <name>FOI_FC_Date_Recieved</name>
@@ -1374,7 +1801,7 @@
                 <name>Front_Cover_Section2_Column2</name>
                 <fieldType>Region</fieldType>
                 <fields>
-                    <name>FOI_ILO_FC</name>
+                    <name>FOI_FC_ILO</name>
                     <choiceReferences>No</choiceReferences>
                     <dataType>String</dataType>
                     <fieldText>ILO</fieldText>
@@ -1403,13 +1830,18 @@
                     <isRequired>false</isRequired>
                 </fields>
                 <fields>
-                    <name>FOI_FC_Ireland_Follow_Up</name>
-                    <choiceReferences>FOI_FC_Follow_Up_Question</choiceReferences>
-                    <choiceReferences>FOI_FC_Northern_Ireland_Question</choiceReferences>
-                    <dataType>String</dataType>
-                    <fieldText>Check</fieldText>
-                    <fieldType>MultiSelectCheckboxes</fieldType>
-                    <isRequired>false</isRequired>
+                    <name>FOI_FC_Follow_Up</name>
+                    <dataType>Boolean</dataType>
+                    <fieldText>Follow Up?</fieldText>
+                    <fieldType>InputField</fieldType>
+                    <isRequired>true</isRequired>
+                </fields>
+                <fields>
+                    <name>FOI_FC_Northern_Ireland</name>
+                    <dataType>Boolean</dataType>
+                    <fieldText>Northern Ireland?</fieldText>
+                    <fieldType>InputField</fieldType>
+                    <isRequired>true</isRequired>
                 </fields>
                 <inputParameters>
                     <name>width</name>
@@ -1447,8 +1879,8 @@
     <screens>
         <name>Informant</name>
         <label>Informant</label>
-        <locationX>754</locationX>
-        <locationY>1490</locationY>
+        <locationX>798</locationX>
+        <locationY>1598</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1657,8 +2089,8 @@
     <screens>
         <name>Intestate_details</name>
         <label>Intestate details</label>
-        <locationX>754</locationX>
-        <locationY>1598</locationY>
+        <locationX>798</locationX>
+        <locationY>1706</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1849,8 +2281,8 @@
     <screens>
         <name>Occupiers_address</name>
         <label>Occupiers address</label>
-        <locationX>754</locationX>
-        <locationY>1706</locationY>
+        <locationX>798</locationX>
+        <locationY>1814</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1943,8 +2375,8 @@
     <screens>
         <name>Other_addresses</name>
         <label>Other addresses</label>
-        <locationX>754</locationX>
-        <locationY>2222</locationY>
+        <locationX>798</locationX>
+        <locationY>2330</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -2035,7 +2467,7 @@
         <showHeader>true</showHeader>
     </screens>
     <start>
-        <locationX>628</locationX>
+        <locationX>672</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Disclosure</targetReference>
@@ -2059,7 +2491,23 @@
         <objectType>Case_Detail__c</objectType>
     </variables>
     <variables>
+        <name>allAliasesListWithId</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Case_Detail__c</objectType>
+    </variables>
+    <variables>
         <name>allOccupiersAddresses</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Case_Detail__c</objectType>
+    </variables>
+    <variables>
+        <name>allOccupiersAddressesListWithId</name>
         <dataType>SObject</dataType>
         <isCollection>true</isCollection>
         <isInput>false</isInput>
@@ -2073,6 +2521,42 @@
         <isInput>false</isInput>
         <isOutput>false</isOutput>
         <objectType>Case_Detail__c</objectType>
+    </variables>
+    <variables>
+        <name>allOtherAddressListWIthId</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Case_Detail__c</objectType>
+    </variables>
+    <variables>
+        <name>BVCaseRecordTypeId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>CaseDetailAliasesRecordTypeId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>CaseDetailOccupiersAddressRecordTypeId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>CaseDetailOtherAddressesRecordTypeId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
     </variables>
     <variables>
         <name>Email_informant_field</name>
