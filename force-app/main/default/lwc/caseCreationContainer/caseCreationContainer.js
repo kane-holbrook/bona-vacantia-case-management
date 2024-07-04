@@ -48,7 +48,7 @@ export default class CaseCreationContainer extends LightningElement {
     handleStatusChange(event) {
         const status = event.detail.status;
         if (status === 'FINISHED') {
-            // Handle flow finish status
+            window.location.href = 'https://governmentlegaldepartment--sandbox.sandbox.lightning.force.com/lightning/o/BV_Case__c/list?filterName=My_Cases';
         }
     }
 
