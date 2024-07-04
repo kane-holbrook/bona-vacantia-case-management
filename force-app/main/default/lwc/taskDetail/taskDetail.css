@@ -25,3 +25,7 @@
 .small-modal {
     width: 20% !important;
 }
+
+.accordion-content-margin {
+    margin-left: 4.3em;
+}

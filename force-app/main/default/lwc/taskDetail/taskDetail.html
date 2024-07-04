@@ -63,6 +63,7 @@
                                             <h2 class="slds-accordion__summary-heading">
                                                 <button class="slds-button slds-button_reset slds-accordion__summary-action" aria-controls={subTask.Id} aria-expanded={subTask.isOpen} title="Accordion summary" data-id={subTask.Id} onclick={toggleSubTask}>
                                                     <lightning-icon icon-name={subTask.iconName} size="x-small" alternative-text="Accordion summary" class="slds-accordion__summary-action-img"></lightning-icon>
+                                                    <lightning-icon icon-name="standard:task" size="x-small" alternative-text="Task icon" class="slds-accordion__summary-action-img slds-m-around_small"></lightning-icon>
                                                     <span class="slds-accordion__summary-content">{subTask.Name}</span>
                                                 </button>
                                             </h2>
@@ -73,7 +74,7 @@
                                                 </button>
                                             </div>
                                         </div>
-                                        <div class="slds-accordion__content" id={subTask.Id}>
+                                        <div class="slds-accordion__content accordion-content-margin" id={subTask.Id}>
                                             <p><strong>Assigned to:</strong> {subTask.Assigned_To__c}</p>
                                             <p><strong>Due date:</strong> {subTask.Due_Date__c}</p>
                                             <p><strong>Priority:</strong> {subTask.Priority__c}</p>
