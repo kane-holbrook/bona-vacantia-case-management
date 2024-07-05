@@ -98,4 +98,10 @@ export default class CaseCreationContainer extends LightningElement {
     updateProgressBar() {
         this.progressValue = Math.floor((this.currentStep / (this.steps.length - 1)) * 100);
     }
+
+    get stageName() {
+        if (this.currentStep < this.steps.length) {
+            return this.steps[this.currentStep].label;
+        }
+    }
 }
