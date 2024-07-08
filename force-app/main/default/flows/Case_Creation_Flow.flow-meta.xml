@@ -1289,6 +1289,12 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             </value>
         </inputAssignments>
         <inputAssignments>
+            <field>RecordTypeId</field>
+            <value>
+                <elementReference>BVCaseRecordTypeId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
             <field>Reply_Due__c</field>
             <value>
                 <elementReference>FOI_FC_Reply_Date</elementReference>
@@ -1408,7 +1414,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             <field>Record_Type_Dev_Name__c</field>
             <operator>EqualTo</operator>
             <value>
-                <stringValue>ESTA</stringValue>
+                <stringValue>FOIR</stringValue>
             </value>
         </filters>
         <object>BV_Case__c</object>
