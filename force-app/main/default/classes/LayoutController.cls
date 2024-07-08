@@ -130,11 +130,12 @@ public with sharing class LayoutController {
     }
 
     @AuraEnabled(cacheable=true)
-    public static List<Object> getTreeData() {
+    public static List<Object> getTreeData(String recordTypeDeveloperName) {
         // Query the custom metadata to fetch the JSON data
         DatabaseLayoutMetadata__mdt metadataRecord = [
             SELECT LayoutJSON__c 
             FROM DatabaseLayoutMetadata__mdt 
+            WHERE RecordTypeDeveloperName__c = :recordTypeDeveloperName 
             LIMIT 1
         ];
 
@@ -169,7 +170,8 @@ public with sharing class LayoutController {
         return null; // Return null if no matching record type is found
     }
 
-    private static String getRecordTypeIdForRecord(Id recordId) {
+    @AuraEnabled(cacheable=true)
+    public static String getRecordTypeIdForRecord(Id recordId) {
         try {
             // Get the SObject type from the record ID prefix
             String sObjectType = recordId.getSObjectType().getDescribe().getName();
@@ -179,6 +181,17 @@ public with sharing class LayoutController {
             return (String) record.get('RecordTypeId');
         } catch (Exception e) {
             throw new AuraHandledException('Error fetching record type ID: ' + e.getMessage());
+        }
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static String getRecordTypeDeveloperName(Id recordTypeId) {
+        try {
+            // Query to get the DeveloperName of the RecordType
+            RecordType recordType = [SELECT DeveloperName FROM RecordType WHERE Id = :recordTypeId LIMIT 1];
+            return recordType.DeveloperName;
+        } catch (Exception e) {
+            throw new AuraHandledException('Error fetching record type DeveloperName: ' + e.getMessage());
         }
     }
 

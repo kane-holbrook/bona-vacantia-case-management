@@ -1,7 +1,7 @@
 <template>
     <c-three-slot-layout>
         <div slot="left">
-            <c-dynamic-tree onnavigate={handleNavigation}></c-dynamic-tree>
+            <c-dynamic-tree record-id={recordId} onnavigate={handleNavigation}></c-dynamic-tree>
         </div>
         <div slot="main">
             <c-database-screen-standard-layout record-id={recordId} object-api-name={objectApiName} record-type-id={recordTypeId} label={label} parent-label={parentLabel} parent-grandchild-label={parentGrandchildLabel}></c-database-screen-standard-layout>

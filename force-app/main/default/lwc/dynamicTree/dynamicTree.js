@@ -1,34 +1,58 @@
-import { LightningElement, wire, track } from 'lwc';
+import { LightningElement, api, track } from 'lwc';
 import getTreeData from '@salesforce/apex/LayoutController.getTreeData';
 import getRecordTypeId from '@salesforce/apex/LayoutController.getRecordTypeId';
+import getRecordTypeIdForRecord from '@salesforce/apex/LayoutController.getRecordTypeIdForRecord';
+import getRecordTypeDeveloperName from '@salesforce/apex/LayoutController.getRecordTypeDeveloperName';
 
 export default class DynamicTree extends LightningElement {
+    @api recordId;
     @track treeData;
     @track error;
     @track searchTerm = '';
     @track isSearchActive = false;
+    @track recordTypeDeveloperName;
 
-    @wire(getTreeData)
-    wiredTreeData({ error, data }) {
-        if (data) {
-            this.treeData = this.formatTreeData(JSON.parse(JSON.stringify(data)));
-            this.error = undefined;
-        } else if (error) {
+    connectedCallback() {
+        this.retrieveRecordTypeDeveloperName();
+    }
+    
+    async retrieveRecordTypeDeveloperName() {
+        try {
+            const recordTypeId = await getRecordTypeIdForRecord({ recordId: this.recordId });
+            const recordTypeDeveloperName = await getRecordTypeDeveloperName({ recordTypeId: recordTypeId });
+            this.recordTypeDeveloperName = recordTypeDeveloperName;
+
+            console.log('RecordtypeDevname', this.recordTypeDeveloperName);
+            this.loadTreeData();
+        } catch (error) {
             this.error = error;
             this.treeData = undefined;
         }
     }
 
+    loadTreeData() {
+        getTreeData({ recordTypeDeveloperName: this.recordTypeDeveloperName })
+            .then(data => {
+                this.treeData = this.formatTreeData(data);
+                this.error = undefined;
+            })
+            .catch(error => {
+                this.error = error;
+                this.treeData = undefined;
+            });
+    }
+
     formatTreeData(data) {
         const addIcons = (nodes) => {
             return nodes.map(node => {
-                node.icon = 'utility:chevronright';
-                node.hasChildren = node.children && node.children.length > 0;
-                if (node.hasChildren) {
-                    node.children = addIcons(node.children);
+                let newNode = { ...node }; // Clone the node to avoid mutating the original object
+                newNode.icon = 'utility:chevronright';
+                newNode.hasChildren = newNode.children && newNode.children.length > 0;
+                if (newNode.hasChildren) {
+                    newNode.children = addIcons(newNode.children);
                 }
-                node.expandedClass = 'slds-is-collapsed'; // Set default state to collapsed
-                return node;
+                newNode.expandedClass = 'slds-is-collapsed'; // Set default state to collapsed
+                return newNode;
             });
         };
         return addIcons(data);
@@ -50,7 +74,7 @@ export default class DynamicTree extends LightningElement {
             }
             return null;
         };
-    
+
         const node = findNode(this.treeData);
         if (node) {
             const ulElement = event.currentTarget.closest('li').querySelector('ul');
@@ -58,13 +82,13 @@ export default class DynamicTree extends LightningElement {
                 const isCollapsed = ulElement.classList.toggle('slds-is-collapsed');
                 node.icon = isCollapsed ? 'utility:chevronright' : 'utility:chevrondown';
                 node.expandedClass = isCollapsed ? 'slds-is-collapsed' : '';
-                
+
                 // Directly update the icon element
                 const iconElement = event.currentTarget.querySelector('lightning-icon');
                 if (iconElement) {
                     iconElement.iconName = node.icon;
                 }
-                
+
                 // Set the active-label CSS class
                 const previouslyActive = this.template.querySelector('.active-label');
                 if (previouslyActive) {
@@ -72,7 +96,7 @@ export default class DynamicTree extends LightningElement {
                 }
                 const clickedLabelDiv = event.currentTarget.closest('.slds-tree__item');
                 clickedLabelDiv.classList.add('active-label');
-                
+
                 // Re-assign the treeData to trigger reactivity
                 this.treeData = JSON.parse(JSON.stringify(this.treeData));
             }
@@ -134,7 +158,7 @@ export default class DynamicTree extends LightningElement {
                 expandedClass: 'slds-is-collapsed' // Ensure all nodes are collapsed by default
             }));
         }
-    
+
         const filterNodes = (nodes) => {
             return nodes.reduce((filtered, node) => {
                 const isMatch = node.label.toLowerCase().includes(this.searchTerm);
@@ -147,13 +171,18 @@ export default class DynamicTree extends LightningElement {
                 } else if (node.children) {
                     const filteredChildren = filterNodes(node.children);
                     if (filteredChildren.length) {
-                        filtered.push(...filteredChildren);
+                        filtered.push({
+                            ...node,
+                            children: filteredChildren,
+                            expandedClass: '',
+                            icon: 'utility:chevronright'
+                        });
                     }
                 }
                 return filtered;
             }, []);
         };
-    
+
         const filteredData = filterNodes(this.treeData);
         return filteredData.sort((a, b) => a.label.localeCompare(b.label));
     }
