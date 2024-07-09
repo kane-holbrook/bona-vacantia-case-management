@@ -14,6 +14,9 @@ export default class HistoryEditModal extends LightningElement {
     @track description;
     @track details;
     @track flagImportant = false;
+    @track fileData;
+    @track fileName;
+    @track isSubModalOpen = false;
 
     @wire(getRecord, { recordId: '$recordId', fields: [DATE_INSERTED_FIELD, ACTION_FIELD, DETAILS_FIELD, FLAG_IMPORTANT_FIELD] })
     wiredRecord({ error, data }) {
@@ -40,12 +43,32 @@ export default class HistoryEditModal extends LightningElement {
         }
     }
 
+    handleImport() {
+        this.isSubModalOpen = true;
+    }
+
+    closeSubModal() {
+        this.isSubModalOpen = false;
+    }
+
+    handleDocumentSave(event) {
+        this.fileData = event.detail.fileData;
+        this.fileName = event.detail.fileName;
+        this.isSubModalOpen = false;
+    }
+
+    handleRemoveFile() {
+        this.fileData = null;
+        this.fileName = null;
+    }
+
     handleSave() {
         const fields = {};
         fields[DATE_INSERTED_FIELD.fieldApiName] = this.dateInserted;
         fields[ACTION_FIELD.fieldApiName] = this.description;
         fields[DETAILS_FIELD.fieldApiName] = this.details;
         fields[FLAG_IMPORTANT_FIELD.fieldApiName] = this.flagImportant;
+        fields['Document__c'] = this.fileData;
 
         if (this.recordId) {
             fields[ID_FIELD.fieldApiName] = this.recordId;
