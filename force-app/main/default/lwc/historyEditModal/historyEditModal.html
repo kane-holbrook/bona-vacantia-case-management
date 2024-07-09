@@ -18,13 +18,25 @@
         </div>
     </div>
     <div class="slds-form-element slds-m-around_medium">
-        <button class="slds-button slds-button_neutral" onclick={handleImport}>Import</button>
-    </div>
-    <div class="slds-form-element slds-m-around_medium">
         <label class="slds-form-element__label" for="flag-important">Flag as important</label>
         <div class="slds-form-element__control">
             <lightning-input type="checkbox" name="flag-important" checked={flagImportant} onchange={handleInputChange}></lightning-input>
         </div>
+    </div>
+    <div class="slds-form-element slds-m-around_medium">
+        <button class="slds-button slds-button_neutral" onclick={handleImport}>Import</button>
+    </div>
+
+    <!-- Versions Section -->
+    <div class="slds-form-element slds-m-around_medium">
+        <h3>Versions</h3>
+        <template for:each={versions} for:item="version">
+            <div key={version.id} class={version.class}>
+                <p>Version {version.versionNumber} - Last edited by: {version.lastModifiedByName} on {version.lastModifiedDate}</p>
+                <p>Action: {version.action}</p>
+                <button class="slds-button slds-button_neutral" data-id={version.versionNumber} onclick={handleRestore}>Restore</button>
+            </div>
+        </template>
     </div>
 
     <template if:true={isSubModalOpen}>
