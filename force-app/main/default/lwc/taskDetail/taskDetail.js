@@ -18,6 +18,7 @@ export default class TaskDetail extends LightningElement {
     @track changeDueDateTask = false;
     @track editCommentsTask = false;
     @track changePriorityTask = false;
+    @track reassignTask = false;
 
     @track recordId = 'a0A8E00000CrJ5HUAV'; // Placeholder for testing
     @track subTasks = [];
@@ -124,6 +125,14 @@ export default class TaskDetail extends LightningElement {
 
     onChangePriorityTaskClose() {
         this.changePriorityTask = false;
+    }
+
+    onReassignTaskOpen() {
+        this.reassignTask = true;
+    }
+
+    onReassignTaskClose() {
+        this.reassignTask = false;
     }
 
     handleSave() {
