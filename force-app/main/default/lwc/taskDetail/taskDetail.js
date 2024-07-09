@@ -19,6 +19,7 @@ export default class TaskDetail extends LightningElement {
     @track editCommentsTask = false;
     @track changePriorityTask = false;
     @track reassignTask = false;
+    @track completeTask = false;
 
     @track recordId = 'a0A8E00000CrJ5HUAV'; // Placeholder for testing
     @track subTasks = [];
@@ -133,6 +134,14 @@ export default class TaskDetail extends LightningElement {
 
     onReassignTaskClose() {
         this.reassignTask = false;
+    }
+
+    onCompleteTask() {
+        this.completeTask = true;
+    }
+
+    onCompleteTaskClose() {
+        this.completeTask = false;
     }
 
     handleSave() {
