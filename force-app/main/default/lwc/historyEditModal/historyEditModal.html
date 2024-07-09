@@ -1,0 +1,26 @@
+<template>
+    <div class="slds-form-element slds-m-around_medium">
+        <label class="slds-form-element__label" for="date-inserted">Date Inserted</label>
+        <div class="slds-form-element__control">
+            <lightning-input type="date" name="date-inserted" value={dateInserted} onchange={handleInputChange}></lightning-input>
+        </div>
+    </div>
+    <div class="slds-form-element slds-m-around_medium">
+        <label class="slds-form-element__label" for="description">Description</label>
+        <div class="slds-form-element__control">
+            <lightning-input type="text" name="description" value={description} onchange={handleInputChange}></lightning-input>
+        </div>
+    </div>
+    <div class="slds-form-element slds-m-around_medium">
+        <label class="slds-form-element__label" for="details">Details</label>
+        <div class="slds-form-element__control">
+            <lightning-textarea name="details" value={details} onchange={handleInputChange}></lightning-textarea>
+        </div>
+    </div>
+    <div class="slds-form-element slds-m-around_medium">
+        <label class="slds-form-element__label" for="flag-important">Flag as important</label>
+        <div class="slds-form-element__control">
+            <lightning-input type="checkbox" name="flag-important" checked={flagImportant} onchange={handleInputChange}></lightning-input>
+        </div>
+    </div>
+</template>

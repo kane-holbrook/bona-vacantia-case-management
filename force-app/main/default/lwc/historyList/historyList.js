@@ -4,6 +4,8 @@ import getHistoryVersions from '@salesforce/apex/HistoryController.getHistoryVer
 
 export default class HistoryList extends LightningElement {
     @track historyItems;
+    @track isModalOpen = false;
+    @track currentRecordId;
 
     @wire(getHistoryItems)
     wiredHistoryItems({ error, data }) {
@@ -51,21 +53,20 @@ export default class HistoryList extends LightningElement {
     }
 
     handleAdd() {
-        // Handle add action
+        this.currentRecordId = null;
+        this.isModalOpen = true;
     }
 
     handleViewEdit(event) {
-        const itemId = event.currentTarget.dataset.id;
-        // Handle view/edit action
+        this.currentRecordId = event.currentTarget.dataset.id;
+        this.isModalOpen = true;
     }
 
-    handleForward(event) {
-        const itemId = event.currentTarget.dataset.id;
-        // Handle forward to mail recipient action
+    closeModal() {
+        this.isModalOpen = false;
     }
 
-    handleDelete(event) {
-        const itemId = event.currentTarget.dataset.id;
-        // Handle delete action
+    handleSave() {
+        // Handle save action if needed, this can be handled in the modal component
     }
 }
