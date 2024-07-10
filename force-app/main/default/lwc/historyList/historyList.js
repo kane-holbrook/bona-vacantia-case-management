@@ -6,6 +6,7 @@ export default class HistoryList extends LightningElement {
     @track historyItems;
     @track isModalOpen = false;
     @track currentRecordId;
+    @track showVersions = true;
 
     @wire(getHistoryItems)
     wiredHistoryItems({ error, data }) {
@@ -68,5 +69,12 @@ export default class HistoryList extends LightningElement {
 
     handleSave() {
         // Handle save action if needed, this can be handled in the modal component
+    }
+
+    toggleShowVersions(event) {
+        this.showVersions = event.target.checked;
+        if (!this.showVersions) {
+            this.historyItems = this.historyItems.map(item => ({ ...item, isExpanded: false }));
+        }
     }
 }
