@@ -5,7 +5,16 @@ import TASK_ID from '@salesforce/schema/BV_Task__c.Id';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 export default class TaskMarkAsCompleteModal extends LightningElement {
-    @api recordId; // Record ID passed from parent component
+    @api recordId;
+    @api taskName;
+    @api parentTask;
+    @api assignedTo;
+    @api dueDate;
+    @api priority;
+    @api comments;
+    @api createdBy;
+    @api lastModifiedBy;
+    @api nextTask;
 
     markComplete() {
         const fields = {};
