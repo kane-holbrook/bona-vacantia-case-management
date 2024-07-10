@@ -133,7 +133,22 @@ export default class DynamicTree extends LightningElement {
         }
     
         if (object) {
-            const recordTypeId = await getRecordTypeId({ objectName: object, recordTypeName: label });
+            let updatedLabel = label;
+            if (this.recordTypeDeveloperName == 'ESTA') {
+                updatedLabel = 'Estates - ' +label;
+            } else if (this.recordTypeDeveloperName == 'COMP') {
+                updatedLabel = 'Companies - ' +label;
+            } else if (this.recordTypeDeveloperName == 'CONV') {
+                updatedLabel = 'Conveyancing - ' +label;
+            } else if (this.recordTypeDeveloperName == 'FOIR') {
+                updatedLabel = 'FOIR - ' +label;
+            } else if (this.recordTypeDeveloperName == 'GENE') {
+                updatedLabel = 'General - ' +label;
+            } else {
+                updatedLabel = label;
+            }
+
+            const recordTypeId = await getRecordTypeId({ objectName: object, recordTypeName: updatedLabel });
             const navigationEvent = new CustomEvent('navigate', {
                 detail: { recordTypeId, object, label, parentLabel, grandChildLabel }
             });

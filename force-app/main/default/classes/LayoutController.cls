@@ -161,6 +161,7 @@ public with sharing class LayoutController {
             // Iterate through available record types to find a similar name
             for (String availableName : recordTypes.keySet()) {
                 if (availableName.toLowerCase().contains(recordTypeName)) { // Check if the recordTypeName is a substring of availableName
+                    System.debug('Matching record type found: ' + availableName);
                     return recordTypes.get(availableName).getRecordTypeId();
                 }
             }
