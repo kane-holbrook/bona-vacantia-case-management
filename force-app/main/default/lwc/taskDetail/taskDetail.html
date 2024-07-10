@@ -68,10 +68,10 @@
                                                 </button>
                                             </h2>
                                             <div class="slds-dropdown-trigger slds-dropdown-trigger_click">
-                                                <button class="slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small" aria-haspopup="true" title="Show More">
-                                                    <lightning-icon icon-name="utility:down" size="x-small" alternative-text="Show More"></lightning-icon>
-                                                    <span class="slds-assistive-text">Show More</span>
-                                                </button>
+                                                <lightning-button-menu alternative-text="Show More" menu-alignment="right">
+                                                    <lightning-menu-item label="Manage" data-id={subTask.Id} onclick={onEditSubTask}></lightning-menu-item>
+                                                    <lightning-menu-item label="Delete" data-id={subTask.Id} onclick={onDeleteTask}></lightning-menu-item>
+                                                </lightning-button-menu>
                                             </div>
                                         </div>
                                         <div class="slds-accordion__content accordion-content-margin" id={subTask.Id}>

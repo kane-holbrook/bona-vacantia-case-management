@@ -90,6 +90,7 @@ export default class TaskDetail extends LightningElement {
 
     onEditSubTask() {
         this.editSubTask = true;
+        this.currentSubTaskId = event.currentTarget.dataset.id;
     }
 
     onEditTaskClose() {
@@ -98,6 +99,7 @@ export default class TaskDetail extends LightningElement {
 
     onDeleteTask() {
         this.deleteTask = true;
+        this.currentSubTaskId = event.currentTarget.dataset.id;
     }
 
     onDeleteTaskClose() {
