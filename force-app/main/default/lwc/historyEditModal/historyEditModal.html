@@ -30,13 +30,13 @@
     <!-- Versions Section -->
     <div class="slds-form-element slds-m-around_medium">
         <h3>Versions</h3>
-        <template for:each={versions} for:item="version">
-            <div key={version.id} class={version.class}>
-                <p>Version {version.versionNumber} - Last edited by: {version.lastModifiedByName} on {version.lastModifiedDate}</p>
-                <p>Action: {version.action}</p>
-                <button class="slds-button slds-button_neutral" data-id={version.versionNumber} onclick={handleRestore}>Restore</button>
-            </div>
-        </template>
+        <lightning-datatable
+            key-field="id"
+            data={versions}
+            columns={versionColumns}
+            hide-checkbox-column="true"
+            onrowaction={handleRowAction}>
+        </lightning-datatable>
     </div>
 
     <template if:true={isSubModalOpen}>

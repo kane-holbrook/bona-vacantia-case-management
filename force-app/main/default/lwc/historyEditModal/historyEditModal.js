@@ -20,6 +20,13 @@ export default class HistoryEditModal extends LightningElement {
     @track isSubModalOpen = false;
     @track versions = [];
 
+    versionColumns = [
+        { label: 'Version', fieldName: 'versionNumber', type: 'number' },
+        { label: 'Last Edited by', fieldName: 'lastModifiedByName', type: 'text' },
+        { label: 'On', fieldName: 'lastModifiedDate', type: 'date' },
+        { label: 'Action', type: 'button', typeAttributes: { label: 'Restore', name: 'restore', variant: 'base' } },
+    ];
+
     @wire(getRecord, { recordId: '$recordId', fields: [DATE_INSERTED_FIELD, ACTION_FIELD, DETAILS_FIELD, FLAG_IMPORTANT_FIELD, PARENT_HISTORY_RECORD_FIELD] })
     wiredRecord({ error, data }) {
         if (data) {
@@ -150,8 +157,16 @@ export default class HistoryEditModal extends LightningElement {
         this.versions = [version, ...this.versions.map(v => ({ ...v, class: '' }))];
     }
 
-    handleRestore(event) {
-        const versionIndex = event.target.dataset.id - 1;
+    handleRowAction(event) {
+        const actionName = event.detail.action.name;
+        const row = event.detail.row;
+        if (actionName === 'restore') {
+            this.handleRestore(row.versionNumber);
+        }
+    }
+
+    handleRestore(versionNumber) {
+        const versionIndex = versionNumber - 1;
         const versionToRestore = this.versions[versionIndex];
 
         this.dateInserted = versionToRestore.dateInserted;
