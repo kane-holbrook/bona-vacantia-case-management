@@ -3,10 +3,11 @@ import getHistoryItems from '@salesforce/apex/HistoryController.getHistoryItems'
 import getHistoryVersions from '@salesforce/apex/HistoryController.getHistoryVersions';
 
 export default class HistoryList extends LightningElement {
-    @track historyItems;
+    @track historyItems = [];
     @track isModalOpen = false;
     @track currentRecordId;
     @track showVersions = true;
+    @track lastUpdated = 0;
 
     @wire(getHistoryItems)
     wiredHistoryItems({ error, data }) {
@@ -18,8 +19,22 @@ export default class HistoryList extends LightningElement {
                 hasVersions: false,
                 iconName: this.getIconName(false)
             }));
+            this.updateLastUpdated();
         } else if (error) {
             // Handle error
+        }
+    }
+
+    updateLastUpdated() {
+        if (this.historyItems.length > 0) {
+            const latestItem = this.historyItems.reduce((latest, item) => {
+                const itemDate = new Date(item.Date__c);
+                return itemDate > new Date(latest.Date__c) ? item : latest;
+            }, this.historyItems[0]);
+            const now = new Date();
+            const lastUpdateTime = new Date(latestItem.Date__c);
+            const diffInMinutes = Math.floor((now - lastUpdateTime) / 60000);
+            this.lastUpdated = diffInMinutes;
         }
     }
 
