@@ -8,7 +8,7 @@ export default class CaseCreationContainer extends LightningElement {
     caseType = 'Estates'; // Default case type
 
     connectedCallback() {
-        this.fetchFlowMetadata();
+        // this.fetchFlowMetadata();
         this.template.addEventListener('casetypeevent', this.handleCaseTypeEvent.bind(this));
         this.template.addEventListener('next', this.handleNext.bind(this));
         this.template.addEventListener('back', this.handleBack.bind(this));
