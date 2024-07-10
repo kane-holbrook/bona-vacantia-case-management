@@ -183,4 +183,33 @@ export default class TaskDetail extends LightningElement {
             return subTask;
         });
     }
+
+    confirmCompleteTask() {
+        const fields = {};
+        fields.Id = this.recordId;
+        fields[TASK_COMPLETE_FIELD.fieldApiName] = true;
+
+        const recordInput = { fields };
+
+        updateRecord(recordInput)
+            .then(() => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Success',
+                        message: 'Task marked as complete',
+                        variant: 'success'
+                    })
+                );
+                this.completeTask = false;
+            })
+            .catch(error => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Error marking task complete',
+                        message: error.body.message,
+                        variant: 'error'
+                    })
+                );
+            });
+    }
 }

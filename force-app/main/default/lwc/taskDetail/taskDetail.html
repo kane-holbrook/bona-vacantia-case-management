@@ -187,7 +187,7 @@
                     <h2 class="slds-text-heading_medium">Are you sure you want to mark this task complete?</h2>
                 </header>
                 <div class="slds-modal__content slds-p-around_medium">
-                    <c-task-mark-as-complete-modal></c-task-mark-as-complete-modal>
+                    <c-task-mark-as-complete-modal record-id={recordId} onclose={onCompleteTaskClose}></c-task-mark-as-complete-modal>
                 </div>
             </div>
         </section>
