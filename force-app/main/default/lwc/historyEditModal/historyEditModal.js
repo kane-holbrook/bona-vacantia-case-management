@@ -107,7 +107,7 @@ export default class HistoryEditModal extends LightningElement {
         this.saveCurrentState();
 
         const fields = {};
-        fields[DATE_INSERTED_FIELD.fieldApiName] = this.dateInserted;
+        fields[DATE_INSERTED_FIELD.fieldApiName] = this.formatDate(this.dateInserted);
         fields[ACTION_FIELD.fieldApiName] = this.description;
         fields[DETAILS_FIELD.fieldApiName] = this.details;
         fields[FLAG_IMPORTANT_FIELD.fieldApiName] = this.flagImportant;
@@ -192,5 +192,12 @@ export default class HistoryEditModal extends LightningElement {
             variant: variant,
         });
         this.dispatchEvent(evt);
+    }
+
+    formatDate(dateStr) {
+        // Assuming dateStr is in the format 'DD/MM/YYYY'
+        const [day, month, year] = dateStr.split('/');
+        const date = new Date(`${year}-${month}-${day}`);
+        return date.toISOString(); // Converts to 'YYYY-MM-DDTHH:MM:SS.sssZ' format
     }
 }
