@@ -32,6 +32,9 @@
                 <thead>
                     <tr class="slds-line-height_reset">
                         <th scope="col">
+                            <div class="slds-truncate" title="Expand"></div>
+                        </th>
+                        <th scope="col">
                             <div class="slds-truncate" title="Date">Date</div>
                         </th>
                         <th scope="col">
@@ -57,6 +60,13 @@
                 <tbody>
                     <template for:each={historyItems} for:item="item">
                         <tr key={item.Id} class="slds-hint-parent">
+                            <td data-label="Expand">
+                                <template if:true={item.hasVersions}>
+                                    <button class="slds-button slds-button_icon slds-m-right_x-small" aria-expanded={item.isExpanded} onclick={toggleRow} data-id={item.Id}>
+                                        <lightning-icon icon-name={item.iconName} alternative-text="Expand"></lightning-icon>
+                                    </button>
+                                </template>
+                            </td>
                             <td data-label="Date">
                                 <div class="slds-grid slds-align_absolute-center">
                                     <template if:true={item.Flag_as_important__c}>
@@ -64,11 +74,6 @@
                                     </template>
                                     <template if:false={item.Flag_as_important__c}>
                                         <lightning-icon icon-name="utility:priority" alternative-text="Important" class="slds-icon-text-default slds-m-right_x-small"></lightning-icon>
-                                    </template>
-                                    <template if:true={item.hasVersions}>
-                                        <button class="slds-button slds-button_icon slds-m-right_x-small" aria-expanded={item.isExpanded} onclick={toggleRow} data-id={item.Id}>
-                                            <lightning-icon icon-name={item.iconName} alternative-text="Expand"></lightning-icon>
-                                        </button>
                                     </template>
                                     {item.Date_Inserted__c}
                                 </div>
@@ -88,13 +93,15 @@
                         </tr>
                         <template if:true={item.isExpanded}>
                             <template for:each={item.Case_History__r} for:item="version">
-                                <tr key={version.Id} class="slds-hint-parent" style="margin-left: 20px;">
+                                <tr key={version.Id} class="slds-hint-parent">
+                                    <td data-label="Expand">
+                                        <lightning-icon icon-name="utility:level_down" alternative-text="Sub-item" class="slds-icon-text-default slds-m-right_x-small"></lightning-icon>
+                                    </td>
                                     <td data-label="Date">
                                         <div class="slds-grid slds-align_absolute-center">
                                             <template if:true={version.Flag_as_important__c}>
                                                 <lightning-icon icon-name="utility:flag" alternative-text="Important" class="slds-icon-text-error slds-m-right_x-small"></lightning-icon>
                                             </template>
-                                            <lightning-icon icon-name="utility:forward" alternative-text="Sub-item"></lightning-icon>
                                             {version.Date_Inserted__c}
                                         </div>
                                     </td>
