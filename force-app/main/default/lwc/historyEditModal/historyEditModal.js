@@ -27,7 +27,7 @@ export default class HistoryEditModal extends LightningElement {
         { label: 'Version', fieldName: 'versionNumber', type: 'number' },
         { label: 'Last Edited by', fieldName: 'lastModifiedByName', type: 'text' },
         { label: 'On', fieldName: 'lastModifiedDate', type: 'date' },
-        { label: 'Action', type: 'button', typeAttributes: { label: 'Restore', name: 'restore', variant: 'base' } },
+        { label: 'Action', fieldName: 'action', type: 'text' },
     ];
 
     connectedCallback() {
@@ -36,13 +36,27 @@ export default class HistoryEditModal extends LightningElement {
         this.details = this.record.Details__c || '';
         this.flagImportant = this.record.Flag_as_important__c || false;
         this.bvCaseId = this.record.BV_Case__c || '';
-        this.initialiseVersions();
     }
 
     @wire(getHistoryVersions, { historyItemId: '$record.Id' })
     wiredVersions({ error, data }) {
         if (data) {
-            this.versions = data.map((version, index) => ({
+            this.versions = [{
+                id: 'initial',
+                dateInserted: this.dateInserted,
+                description: 'Initial version',
+                details: this.details,
+                flagImportant: this.flagImportant,
+                fileData: this.fileData,
+                fileName: this.fileName,
+                bvCaseId: this.bvCaseId,
+                lastModifiedByName: 'Initial User', // Replace with actual user data if available
+                lastModifiedDate: this.dateInserted, // Replace with the actual created date if available
+                action: 'History item created',
+                versionNumber: 1,
+                class: 'slds-theme_shade'
+            },
+            ...data.map((version, index) => ({
                 id: version.Id,
                 dateInserted: version.Date_Inserted__c,
                 description: version.Action__c,
@@ -53,33 +67,14 @@ export default class HistoryEditModal extends LightningElement {
                 bvCaseId: version.BV_Case__c,
                 lastModifiedByName: 'User', // Replace with actual user data if available
                 lastModifiedDate: version.Date_Inserted__c, // Replace with the actual modified date if available
-                action: 'History item created', // Update as needed
-                versionNumber: index + 1,
+                action: version.Action__c, // Use description as action
+                versionNumber: index + 2,
                 class: 'slds-theme_shade'
-            }));
+            }))];
         } else if (error) {
             console.log('Error fetching versions:', error);
             this.showToast('Error', 'Error fetching versions', 'error');
         }
-    }
-
-    initialiseVersions() {
-        // Load versions from the server
-        this.versions = [{
-            id: Date.now(),
-            dateInserted: this.dateInserted,
-            description: this.description,
-            details: this.details,
-            flagImportant: this.flagImportant,
-            fileData: this.fileData,
-            fileName: this.fileName,
-            bvCaseId: this.bvCaseId,
-            lastModifiedByName: 'Current User', // Replace with the actual user later
-            lastModifiedDate: new Date().toLocaleDateString(),
-            action: 'History item created',
-            versionNumber: 1,
-            class: 'slds-theme_shade'
-        }];
     }
 
     handleInputChange(event) {
@@ -172,9 +167,9 @@ export default class HistoryEditModal extends LightningElement {
             [FLAG_IMPORTANT_FIELD.fieldApiName]: this.flagImportant,
             [BV_CASE_FIELD.fieldApiName]: bvCaseId
         };
-    
+
         console.log(versionFields);
-    
+
         const recordInput = { apiName: CASE_HISTORY_OBJECT.objectApiName, fields: versionFields };
         createRecord(recordInput)
             .then(() => {
@@ -199,7 +194,7 @@ export default class HistoryEditModal extends LightningElement {
             bvCaseId: this.bvCaseId,
             lastModifiedByName: 'Current User', // Replace with the actual user later
             lastModifiedDate: new Date().toLocaleDateString(),
-            action: 'History item created',
+            action: this.description, // Use description as action
             versionNumber: currentVersionNumber,
             class: 'slds-theme_shade'
         };
