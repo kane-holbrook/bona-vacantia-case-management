@@ -1,4 +1,5 @@
 import { LightningElement, track, api } from 'lwc';
+import { setRecordId } from 'c/sharedService';
 
 export default class DatabaseScreen extends LightningElement {
     @api recordId;
@@ -7,6 +8,20 @@ export default class DatabaseScreen extends LightningElement {
     @track label;
     @track parentLabel;
     @track parentGrandchildLabel;
+
+    connectedCallback() {
+        this.dispatchRecordIdEvent();
+        setRecordId(this.recordId); // Set the recordId in the shared service
+    }
+
+    dispatchRecordIdEvent() {
+        const event = new CustomEvent('recordidavailable', {
+            detail: { recordId: this.recordId },
+            bubbles: true, // Allow the event to bubble up
+            composed: true // Allow the event to cross the shadow DOM boundary
+        });
+        this.dispatchEvent(event);
+    }
 
     handleNavigation(event) {
         this.resetVariables();

@@ -7,7 +7,7 @@ import DATE_INSERTED_FIELD from '@salesforce/schema/Case_History__c.Date_Inserte
 import ACTION_FIELD from '@salesforce/schema/Case_History__c.Action__c';
 import DETAILS_FIELD from '@salesforce/schema/Case_History__c.Details__c';
 import FLAG_IMPORTANT_FIELD from '@salesforce/schema/Case_History__c.Flag_as_important__c';
-import PARENT_HISTORY_RECORD_FIELD from '@salesforce/schema/Case_History__c.Parent_History_Record__c';
+import BV_CASE_FIELD from '@salesforce/schema/Case_History__c.BV_Case__c';
 
 export default class HistoryEditModal extends LightningElement {
     @api record;
@@ -98,8 +98,8 @@ export default class HistoryEditModal extends LightningElement {
     }
 
     @api
-    saveRecord() {
-        const fields = {
+    saveRecord(parentRecordId) {
+        let fields = {
             [DATE_INSERTED_FIELD.fieldApiName]: this.dateInserted,
             [ACTION_FIELD.fieldApiName]: this.description,
             [DETAILS_FIELD.fieldApiName]: this.details,
@@ -117,12 +117,16 @@ export default class HistoryEditModal extends LightningElement {
                     this.showToast('Error updating record', error.body.message, 'error');
                 });
         } else {
+            fields[BV_CASE_FIELD.fieldApiName] = parentRecordId;
+
+            console.log('parent id', parentRecordId);
             const recordInput = { apiName: CASE_HISTORY_OBJECT.objectApiName, fields };
             createRecord(recordInput)
                 .then(() => {
                     this.dispatchEvent(new CustomEvent('save'));
                 })
                 .catch(error => {
+                    console.log('error', error);
                     this.showToast('Error creating record', error.body.message, 'error');
                 });
         }

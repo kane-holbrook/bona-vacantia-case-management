@@ -1,10 +1,12 @@
-import { LightningElement, wire, track } from 'lwc';
+import { LightningElement, wire, track, api } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
 import getHistoryItems from '@salesforce/apex/HistoryController.getHistoryItems';
 import getHistoryVersions from '@salesforce/apex/HistoryController.getHistoryVersions';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import { getRecordId } from 'c/sharedService';
 
 export default class HistoryList extends LightningElement {
+    @api recordId;
     @track historyItems = [];
     @track isModalOpen = false;
     @track currentRecordId;
@@ -13,7 +15,12 @@ export default class HistoryList extends LightningElement {
     @track currentRecord = {};
     wiredHistoryItemsResult;
 
-    @wire(getHistoryItems)
+    connectedCallback() {
+        this.recordId = getRecordId();
+        refreshApex(this.wiredHistoryItemsResult);
+    }
+
+    @wire(getHistoryItems, { recordId: '$recordId' })
     wiredHistoryItems(result) {
         this.wiredHistoryItemsResult = result;
         if (result.data) {
@@ -91,7 +98,7 @@ export default class HistoryList extends LightningElement {
     }
 
     handleSave() {
-        this.template.querySelector('c-history-edit-modal').saveRecord();
+        this.template.querySelector('c-history-edit-modal').saveRecord(this.recordId);
     }
 
     handleSaveSuccess() {
