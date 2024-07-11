@@ -87,7 +87,7 @@
                                 <lightning-button-menu alternative-text="Actions" icon-name="utility:down" menu-alignment="right">
                                     <lightning-menu-item label="View/Edit" data-id={item.Id} onclick={handleViewEdit}></lightning-menu-item>
                                     <lightning-menu-item label="Forward to Mail Recipient" data-id={item.Id} onclick={handleForward}></lightning-menu-item>
-                                    <lightning-menu-item label="Delete" data-id={item.Id} onclick={handleDelete}></lightning-menu-item>
+                                    <lightning-menu-item label="Delete" data-id={item.Id} onclick={handleDeleteOpen}></lightning-menu-item>
                                 </lightning-button-menu>
                             </td>
                         </tr>
@@ -152,7 +152,7 @@
         <section role="dialog" tabindex="-1" aria-modal="true" class="slds-modal slds-fade-in-open">
             <div class="slds-modal__container small-modal">
                 <header class="slds-modal__header">
-                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeDeleteModal}>
                         <lightning-icon icon-name="utility:close" alternative-text="close" size="small"></lightning-icon>
                         <span class="slds-assistive-text">Close</span>
                     </button>
@@ -163,7 +163,7 @@
                 </div>
                 <footer class="slds-modal__footer">
                     <button class="slds-button slds-button_neutral" onclick={closeModal}>Cancel</button>
-                    <button class="slds-button slds-button_brand" onclick={handleSave}>Confirm</button>
+                    <button class="slds-button slds-button_destructive" onclick={handleDelete}>Yes - delete</button>
                 </footer>
             </div>
         </section>

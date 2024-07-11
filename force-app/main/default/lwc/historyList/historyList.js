@@ -77,11 +77,16 @@ export default class HistoryList extends LightningElement {
         this.isModalOpen = true;
     }
 
-    handleDelete(event) {
+    handleDeleteOpen(event) {
         this.currentRecordId = event.currentTarget.dataset.id;
         const record = this.historyItems.find(item => item.Id === this.currentRecordId);
         this.currentRecord = { ...record };
         this.isDeleteModalOpen = true;
+    }
+
+    handleDelete() {
+        const deleteModal = this.template.querySelector('c-history-delete-modal');
+        deleteModal.deleteRecord();
     }
 
     closeModal() {
@@ -93,7 +98,7 @@ export default class HistoryList extends LightningElement {
     }
 
     handleDeleteSuccess() {
-        this.isModalOpen = false;
+        this.isDeleteModalOpen = false;
         this.showToast('Success', 'Record deleted successfully', 'success');
         return refreshApex(this.wiredHistoryItemsResult);
     }
