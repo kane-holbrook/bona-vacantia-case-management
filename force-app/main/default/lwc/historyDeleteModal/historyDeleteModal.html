@@ -1,0 +1,35 @@
+<template>
+    <div class="slds-form-element slds-m-around_medium">
+        <div class="slds-form-element__control">
+            <p class="slds-grid slds-wrap">
+                <strong class="slds-size_1-of-4">Date:</strong>
+                <span class="slds-size_3-of-4">{date}</span>
+            </p>
+            <p class="slds-grid slds-wrap">
+                <strong class="slds-size_1-of-4">Action:</strong>
+                <span class="slds-size_3-of-4">{action}</span>
+            </p>
+            <p class="slds-grid slds-wrap">
+                <strong class="slds-size_1-of-4">Document type:</strong>
+                <span class="slds-size_3-of-4">{documentType}</span>
+            </p>
+            <p class="slds-grid slds-wrap">
+                <strong class="slds-size_1-of-4">Correspondence:</strong>
+                <span class="slds-size_3-of-4">{correspondence}</span>
+            </p>
+            <p class="slds-grid slds-wrap">
+                <strong class="slds-size_1-of-4">Draft:</strong>
+                <span class="slds-size_3-of-4">{draft}</span>
+            </p>
+            <p class="slds-grid slds-wrap">
+                <strong class="slds-size_1-of-4">User:</strong>
+                <span class="slds-size_3-of-4">{user}</span>
+            </p>
+        </div>
+    </div>
+
+    <div>
+        <span class="slds-assistive-text">Warning</span>
+        <h2><lightning-icon icon-name="utility:warning" alternative-text="Warning" size="small" class="slds-m-right_x-small"></lightning-icon>There are multiple history and/or document versions that will be deleted</h2>
+    </div>
+</template>
