@@ -159,10 +159,10 @@
                     <h2 class="slds-text-heading_medium">Case History</h2>
                 </header>
                 <div class="slds-modal__content slds-p-around_medium">
-                    <c-history-delete-modal record={currentRecord} onclose={closeModal} ondelete={handleDeleteSuccess} ></c-history-delete-modal>
+                    <c-history-delete-modal record={currentRecord} ondelete={handleDeleteSuccess} ></c-history-delete-modal>
                 </div>
                 <footer class="slds-modal__footer">
-                    <button class="slds-button slds-button_neutral" onclick={closeModal}>Cancel</button>
+                    <button class="slds-button slds-button_neutral" onclick={closeDeleteModal}>Cancel</button>
                     <button class="slds-button slds-button_destructive" onclick={handleDelete}>Yes - delete</button>
                 </footer>
             </div>

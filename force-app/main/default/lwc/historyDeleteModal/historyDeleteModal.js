@@ -40,8 +40,4 @@ export default class HistoryDeleteModal extends LightningElement {
         });
         this.dispatchEvent(evt);
     }
-
-    handleClose() {
-        this.dispatchEvent(new CustomEvent('close'));
-    }
 }
