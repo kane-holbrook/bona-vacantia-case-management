@@ -10,7 +10,7 @@ import FLAG_IMPORTANT_FIELD from '@salesforce/schema/Case_History__c.Flag_as_imp
 import PARENT_HISTORY_RECORD_FIELD from '@salesforce/schema/Case_History__c.Parent_History_Record__c';
 
 export default class HistoryEditModal extends LightningElement {
-    @api recordId;
+    @api record;
     @track dateInserted;
     @track description;
     @track details;
@@ -27,17 +27,12 @@ export default class HistoryEditModal extends LightningElement {
         { label: 'Action', type: 'button', typeAttributes: { label: 'Restore', name: 'restore', variant: 'base' } },
     ];
 
-    @wire(getRecord, { recordId: '$recordId', fields: [DATE_INSERTED_FIELD, ACTION_FIELD, DETAILS_FIELD, FLAG_IMPORTANT_FIELD, PARENT_HISTORY_RECORD_FIELD] })
-    wiredRecord({ error, data }) {
-        if (data) {
-            this.dateInserted = data.fields.Date_Inserted__c.value;
-            this.description = data.fields.Action__c.value;
-            this.details = data.fields.Details__c.value;
-            this.flagImportant = data.fields.Flag_as_important__c.value;
-            this.initialiseVersions();
-        } else if (error) {
-            // Handle error
-        }
+    connectedCallback() {
+        this.dateInserted = this.record.Date_Inserted__c || '';
+        this.description = this.record.Action__c || '';
+        this.details = this.record.Details__c || '';
+        this.flagImportant = this.record.Flag_as_important__c || false;
+        this.initialiseVersions();
     }
 
     initialiseVersions() {
@@ -102,25 +97,21 @@ export default class HistoryEditModal extends LightningElement {
         this.fileName = null;
     }
 
-    handleSave() {
-        // Save the current state before updating
-        this.saveCurrentState();
+    @api
+    saveRecord() {
+        const fields = {
+            [DATE_INSERTED_FIELD.fieldApiName]: this.dateInserted,
+            [ACTION_FIELD.fieldApiName]: this.description,
+            [DETAILS_FIELD.fieldApiName]: this.details,
+            [FLAG_IMPORTANT_FIELD.fieldApiName]: this.flagImportant
+        };
 
-        const fields = {};
-        fields[DATE_INSERTED_FIELD.fieldApiName] = this.formatDate(this.dateInserted);
-        fields[ACTION_FIELD.fieldApiName] = this.description;
-        fields[DETAILS_FIELD.fieldApiName] = this.details;
-        fields[FLAG_IMPORTANT_FIELD.fieldApiName] = this.flagImportant;
-        fields['Document__c'] = this.fileData;
-        fields[PARENT_HISTORY_RECORD_FIELD.fieldApiName] = this.recordId;
-
-        if (this.recordId) {
-            fields[ID_FIELD.fieldApiName] = this.recordId;
+        if (this.record.Id) {
+            fields[ID_FIELD.fieldApiName] = this.record.Id;
             const recordInput = { fields };
             updateRecord(recordInput)
                 .then(() => {
-                    this.showToast('Success', 'Record updated successfully', 'success');
-                    this.closeModal();
+                    this.dispatchEvent(new CustomEvent('save'));
                 })
                 .catch(error => {
                     this.showToast('Error updating record', error.body.message, 'error');
@@ -129,8 +120,7 @@ export default class HistoryEditModal extends LightningElement {
             const recordInput = { apiName: CASE_HISTORY_OBJECT.objectApiName, fields };
             createRecord(recordInput)
                 .then(() => {
-                    this.showToast('Success', 'Record created successfully', 'success');
-                    this.closeModal();
+                    this.dispatchEvent(new CustomEvent('save'));
                 })
                 .catch(error => {
                     this.showToast('Error creating record', error.body.message, 'error');

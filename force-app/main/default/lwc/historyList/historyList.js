@@ -1,6 +1,8 @@
 import { LightningElement, wire, track } from 'lwc';
+import { refreshApex } from '@salesforce/apex';
 import getHistoryItems from '@salesforce/apex/HistoryController.getHistoryItems';
 import getHistoryVersions from '@salesforce/apex/HistoryController.getHistoryVersions';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 export default class HistoryList extends LightningElement {
     @track historyItems = [];
@@ -8,19 +10,22 @@ export default class HistoryList extends LightningElement {
     @track currentRecordId;
     @track showVersions = true;
     @track lastUpdated = 0;
+    @track currentRecord = {};
+    wiredHistoryItemsResult;
 
     @wire(getHistoryItems)
-    wiredHistoryItems({ error, data }) {
-        if (data) {
-            this.historyItems = data.map(item => ({ 
-                ...item, 
-                isExpanded: false, 
-                versions: [], 
+    wiredHistoryItems(result) {
+        this.wiredHistoryItemsResult = result;
+        if (result.data) {
+            this.historyItems = result.data.map(item => ({
+                ...item,
+                isExpanded: false,
+                versions: [],
                 hasVersions: false,
                 iconName: this.getIconName(false)
             }));
             this.updateLastUpdated();
-        } else if (error) {
+        } else if (result.error) {
             // Handle error
         }
     }
@@ -28,11 +33,11 @@ export default class HistoryList extends LightningElement {
     updateLastUpdated() {
         if (this.historyItems.length > 0) {
             const latestItem = this.historyItems.reduce((latest, item) => {
-                const itemDate = new Date(item.Date__c);
-                return itemDate > new Date(latest.Date__c) ? item : latest;
+                const itemDate = new Date(item.Date_Inserted__c);
+                return itemDate > new Date(latest.Date_Inserted__c) ? item : latest;
             }, this.historyItems[0]);
             const now = new Date();
-            const lastUpdateTime = new Date(latestItem.Date__c);
+            const lastUpdateTime = new Date(latestItem.Date_Inserted__c);
             const diffInMinutes = Math.floor((now - lastUpdateTime) / 60000);
             this.lastUpdated = diffInMinutes;
         }
@@ -70,11 +75,14 @@ export default class HistoryList extends LightningElement {
 
     handleAdd() {
         this.currentRecordId = null;
+        this.currentRecord = {};
         this.isModalOpen = true;
     }
 
     handleViewEdit(event) {
         this.currentRecordId = event.currentTarget.dataset.id;
+        const record = this.historyItems.find(item => item.Id === this.currentRecordId);
+        this.currentRecord = { ...record };
         this.isModalOpen = true;
     }
 
@@ -83,7 +91,13 @@ export default class HistoryList extends LightningElement {
     }
 
     handleSave() {
-        // Handle save action if needed, this can be handled in the modal component
+        this.template.querySelector('c-history-edit-modal').saveRecord();
+    }
+
+    handleSaveSuccess() {
+        this.isModalOpen = false;
+        this.showToast('Success', 'Record saved successfully', 'success');
+        return refreshApex(this.wiredHistoryItemsResult);
     }
 
     toggleShowVersions(event) {
@@ -91,5 +105,14 @@ export default class HistoryList extends LightningElement {
         if (!this.showVersions) {
             this.historyItems = this.historyItems.map(item => ({ ...item, isExpanded: false }));
         }
+    }
+
+    showToast(title, message, variant) {
+        const evt = new ShowToastEvent({
+            title: title,
+            message: message,
+            variant: variant,
+        });
+        this.dispatchEvent(evt);
     }
 }
