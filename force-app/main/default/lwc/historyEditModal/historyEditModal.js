@@ -8,6 +8,8 @@ import ACTION_FIELD from '@salesforce/schema/Case_History__c.Action__c';
 import DETAILS_FIELD from '@salesforce/schema/Case_History__c.Details__c';
 import FLAG_IMPORTANT_FIELD from '@salesforce/schema/Case_History__c.Flag_as_important__c';
 import BV_CASE_FIELD from '@salesforce/schema/Case_History__c.BV_Case__c';
+import PARENT_HISTORY_RECORD_FIELD from '@salesforce/schema/Case_History__c.Parent_History_Record__c';
+import getHistoryVersions from '@salesforce/apex/HistoryController.getHistoryVersions';
 
 export default class HistoryEditModal extends LightningElement {
     @api record;
@@ -17,6 +19,7 @@ export default class HistoryEditModal extends LightningElement {
     @track flagImportant = false;
     @track fileData;
     @track fileName;
+    @track bvCaseId;
     @track isSubModalOpen = false;
     @track versions = [];
 
@@ -32,7 +35,32 @@ export default class HistoryEditModal extends LightningElement {
         this.description = this.record.Action__c || '';
         this.details = this.record.Details__c || '';
         this.flagImportant = this.record.Flag_as_important__c || false;
+        this.bvCaseId = this.record.BV_Case__c || '';
         this.initialiseVersions();
+    }
+
+    @wire(getHistoryVersions, { historyItemId: '$record.Id' })
+    wiredVersions({ error, data }) {
+        if (data) {
+            this.versions = data.map((version, index) => ({
+                id: version.Id,
+                dateInserted: version.Date_Inserted__c,
+                description: version.Action__c,
+                details: version.Details__c,
+                flagImportant: version.Flag_as_important__c,
+                fileData: this.fileData,
+                fileName: this.fileName,
+                bvCaseId: version.BV_Case__c,
+                lastModifiedByName: 'User', // Replace with actual user data if available
+                lastModifiedDate: version.Date_Inserted__c, // Replace with the actual modified date if available
+                action: 'History item created', // Update as needed
+                versionNumber: index + 1,
+                class: 'slds-theme_shade'
+            }));
+        } else if (error) {
+            console.log('Error fetching versions:', error);
+            this.showToast('Error', 'Error fetching versions', 'error');
+        }
     }
 
     initialiseVersions() {
@@ -45,6 +73,7 @@ export default class HistoryEditModal extends LightningElement {
             flagImportant: this.flagImportant,
             fileData: this.fileData,
             fileName: this.fileName,
+            bvCaseId: this.bvCaseId,
             lastModifiedByName: 'Current User', // Replace with the actual user later
             lastModifiedDate: new Date().toLocaleDateString(),
             action: 'History item created',
@@ -107,6 +136,9 @@ export default class HistoryEditModal extends LightningElement {
         };
 
         if (this.record.Id) {
+            // Create a new version before updating the existing record
+            this.createVersion(this.record.Id, fields, parentRecordId);
+
             fields[ID_FIELD.fieldApiName] = this.record.Id;
             const recordInput = { fields };
             updateRecord(recordInput)
@@ -114,22 +146,44 @@ export default class HistoryEditModal extends LightningElement {
                     this.dispatchEvent(new CustomEvent('save'));
                 })
                 .catch(error => {
+                    console.log('Error updating record', error);
                     this.showToast('Error updating record', error.body.message, 'error');
                 });
         } else {
             fields[BV_CASE_FIELD.fieldApiName] = parentRecordId;
-
-            console.log('parent id', parentRecordId);
             const recordInput = { apiName: CASE_HISTORY_OBJECT.objectApiName, fields };
             createRecord(recordInput)
                 .then(() => {
                     this.dispatchEvent(new CustomEvent('save'));
                 })
                 .catch(error => {
-                    console.log('error', error);
+                    console.log('Error creating record', error);
                     this.showToast('Error creating record', error.body.message, 'error');
                 });
         }
+    }
+
+    createVersion(parentRecordId, fields, bvCaseId) {
+        let versionFields = {
+            [PARENT_HISTORY_RECORD_FIELD.fieldApiName]: parentRecordId,
+            [DATE_INSERTED_FIELD.fieldApiName]: this.dateInserted,
+            [ACTION_FIELD.fieldApiName]: this.description,
+            [DETAILS_FIELD.fieldApiName]: this.details,
+            [FLAG_IMPORTANT_FIELD.fieldApiName]: this.flagImportant,
+            [BV_CASE_FIELD.fieldApiName]: bvCaseId
+        };
+    
+        console.log(versionFields);
+    
+        const recordInput = { apiName: CASE_HISTORY_OBJECT.objectApiName, fields: versionFields };
+        createRecord(recordInput)
+            .then(() => {
+                // Version created successfully
+            })
+            .catch(error => {
+                console.log('Error creating version', error);
+                this.showToast('Error creating version', error.body.message, 'error');
+            });
     }
 
     saveCurrentState() {
@@ -142,6 +196,7 @@ export default class HistoryEditModal extends LightningElement {
             flagImportant: this.flagImportant,
             fileData: this.fileData,
             fileName: this.fileName,
+            bvCaseId: this.bvCaseId,
             lastModifiedByName: 'Current User', // Replace with the actual user later
             lastModifiedDate: new Date().toLocaleDateString(),
             action: 'History item created',
@@ -169,6 +224,7 @@ export default class HistoryEditModal extends LightningElement {
         this.flagImportant = versionToRestore.flagImportant;
         this.fileData = versionToRestore.fileData;
         this.fileName = versionToRestore.fileName;
+        this.bvCaseId = versionToRestore.bvCaseId;
     }
 
     handleCancel() {
