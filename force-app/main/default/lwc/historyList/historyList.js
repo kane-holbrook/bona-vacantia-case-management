@@ -1,7 +1,6 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
 import getHistoryItems from '@salesforce/apex/HistoryController.getHistoryItems';
-import getHistoryVersions from '@salesforce/apex/HistoryController.getHistoryVersions';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { getRecordId } from 'c/sharedService';
 
@@ -27,13 +26,12 @@ export default class HistoryList extends LightningElement {
             this.historyItems = result.data.map(item => ({
                 ...item,
                 isExpanded: false,
-                versions: [],
-                hasVersions: false,
+                hasVersions: item.Case_History__r && item.Case_History__r.length > 0,
                 iconName: this.getIconName(false)
             }));
             this.updateLastUpdated();
         } else if (result.error) {
-            // Handle error
+            this.showToast('Error', 'Error fetching history items', result.error);
         }
     }
 
@@ -60,24 +58,9 @@ export default class HistoryList extends LightningElement {
             if (item.Id === itemId) {
                 item.isExpanded = !item.isExpanded;
                 item.iconName = this.getIconName(item.isExpanded);
-                if (item.isExpanded && item.versions.length === 0) {
-                    this.loadVersions(item);
-                }
             }
             return item;
         });
-    }
-
-    loadVersions(item) {
-        getHistoryVersions({ historyItemId: item.Id })
-            .then(versions => {
-                item.versions = versions;
-                item.hasVersions = versions.length > 0;
-                this.historyItems = [...this.historyItems];
-            })
-            .catch(error => {
-                // Handle error
-            });
     }
 
     handleAdd() {

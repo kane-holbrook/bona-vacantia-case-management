@@ -55,94 +55,63 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <template if:true={showVersions}>
-                        <template for:each={historyItems} for:item="item">
-                            <tr key={item.Id} class="slds-hint-parent">
-                                <td data-label="Date">
-                                    <div class="slds-grid slds-align_absolute-center">
-                                        <template if:true={item.Flag_as_important__c}>
-                                            <lightning-icon icon-name="utility:priority" alternative-text="Important" class="slds-icon-text-error slds-m-right_x-small"></lightning-icon>
-                                        </template>
-                                        <template if:false={item.Flag_as_important__c}>
-                                            <lightning-icon icon-name="utility:priority" alternative-text="Important" class="slds-icon-text-default slds-m-right_x-small"></lightning-icon>
-                                        </template>
-                                        <template if:true={item.hasVersions}>
-                                            <button class="slds-button slds-button_icon slds-m-right_x-small" aria-expanded={item.isExpanded} onclick={toggleRow} data-id={item.Id}>
-                                                <lightning-icon icon-name={item.iconName} alternative-text="Expand"></lightning-icon>
-                                            </button>
-                                        </template>
-                                        {item.Date_Inserted__c}
-                                    </div>
-                                </td>
-                                <td data-label="Action">{item.Action__c}</td>
-                                <td data-label="Document Type">{item.Document_Type__c}</td>
-                                <td data-label="Correspondence With">{item.Correspondence_With__c}</td>
-                                <td data-label="Draft">{item.Draft__c}</td>
-                                <td data-label="Case Officer">{item.Case_Officer__c}</td>
-                                <td data-label="Actions">
-                                    <lightning-button-menu alternative-text="Actions" icon-name="utility:down" menu-alignment="right">
-                                        <lightning-menu-item label="View/Edit" data-id={item.Id} onclick={handleViewEdit}></lightning-menu-item>
-                                        <lightning-menu-item label="Forward to Mail Recipient" data-id={item.Id} onclick={handleForward}></lightning-menu-item>
-                                        <lightning-menu-item label="Delete" data-id={item.Id} onclick={handleDelete}></lightning-menu-item>
-                                    </lightning-button-menu>
-                                </td>
-                            </tr>
-                            <template if:true={item.isExpanded}>
-                                <template for:each={item.versions} for:item="version">
-                                    <tr key={version.Id} class="slds-hint-parent" style="margin-left: 20px;">
-                                        <td data-label="Date">
-                                            <div class="slds-grid slds-align_absolute-center">
-                                                <template if:true={version.Flag_as_important__c}>
-                                                    <lightning-icon icon-name="utility:flag" alternative-text="Important" class="slds-icon-text-error slds-m-right_x-small"></lightning-icon>
-                                                </template>
-                                                <lightning-icon icon-name="utility:forward" alternative-text="Sub-item"></lightning-icon>
-                                                {version.Date_Inserted__c}
-                                            </div>
-                                        </td>
-                                        <td data-label="Action">{version.Action__c}</td>
-                                        <td data-label="Document Type">{version.Document_Type__c}</td>
-                                        <td data-label="Correspondence With">{version.Correspondence_With__c}</td>
-                                        <td data-label="Draft">{version.Draft__c}</td>
-                                        <td data-label="Case Officer">{version.Case_Officer__c}</td>
-                                        <td data-label="Actions">
-                                            <lightning-button-menu alternative-text="Actions" icon-name="utility:down" menu-alignment="right">
-                                                <lightning-menu-item label="View/Edit" data-id={version.Id} onclick={handleViewEdit}></lightning-menu-item>
-                                                <lightning-menu-item label="Forward to Mail Recipient" data-id={version.Id} onclick={handleForward}></lightning-menu-item>
-                                                <lightning-menu-item label="Delete" data-id={version.Id} onclick={handleDelete}></lightning-menu-item>
-                                            </lightning-button-menu>
-                                        </td>
-                                    </tr>
-                                </template>
+                    <template for:each={historyItems} for:item="item">
+                        <tr key={item.Id} class="slds-hint-parent">
+                            <td data-label="Date">
+                                <div class="slds-grid slds-align_absolute-center">
+                                    <template if:true={item.Flag_as_important__c}>
+                                        <lightning-icon icon-name="utility:priority" alternative-text="Important" class="slds-icon-text-error slds-m-right_x-small"></lightning-icon>
+                                    </template>
+                                    <template if:false={item.Flag_as_important__c}>
+                                        <lightning-icon icon-name="utility:priority" alternative-text="Important" class="slds-icon-text-default slds-m-right_x-small"></lightning-icon>
+                                    </template>
+                                    <template if:true={item.hasVersions}>
+                                        <button class="slds-button slds-button_icon slds-m-right_x-small" aria-expanded={item.isExpanded} onclick={toggleRow} data-id={item.Id}>
+                                            <lightning-icon icon-name={item.iconName} alternative-text="Expand"></lightning-icon>
+                                        </button>
+                                    </template>
+                                    {item.Date_Inserted__c}
+                                </div>
+                            </td>
+                            <td data-label="Action">{item.Action__c}</td>
+                            <td data-label="Document Type">{item.Document_Type__c}</td>
+                            <td data-label="Correspondence With">{item.Correspondence_With__c}</td>
+                            <td data-label="Draft">{item.Draft__c}</td>
+                            <td data-label="Case Officer">{item.Case_Officer__c}</td>
+                            <td data-label="Actions">
+                                <lightning-button-menu alternative-text="Actions" icon-name="utility:down" menu-alignment="right">
+                                    <lightning-menu-item label="View/Edit" data-id={item.Id} onclick={handleViewEdit}></lightning-menu-item>
+                                    <lightning-menu-item label="Forward to Mail Recipient" data-id={item.Id} onclick={handleForward}></lightning-menu-item>
+                                    <lightning-menu-item label="Delete" data-id={item.Id} onclick={handleDelete}></lightning-menu-item>
+                                </lightning-button-menu>
+                            </td>
+                        </tr>
+                        <template if:true={item.isExpanded}>
+                            <template for:each={item.Case_History__r} for:item="version">
+                                <tr key={version.Id} class="slds-hint-parent" style="margin-left: 20px;">
+                                    <td data-label="Date">
+                                        <div class="slds-grid slds-align_absolute-center">
+                                            <template if:true={version.Flag_as_important__c}>
+                                                <lightning-icon icon-name="utility:flag" alternative-text="Important" class="slds-icon-text-error slds-m-right_x-small"></lightning-icon>
+                                            </template>
+                                            <lightning-icon icon-name="utility:forward" alternative-text="Sub-item"></lightning-icon>
+                                            {version.Date_Inserted__c}
+                                        </div>
+                                    </td>
+                                    <td data-label="Action">{version.Action__c}</td>
+                                    <td data-label="Document Type">{version.Document_Type__c}</td>
+                                    <td data-label="Correspondence With">{version.Correspondence_With__c}</td>
+                                    <td data-label="Draft">{version.Draft__c}</td>
+                                    <td data-label="Case Officer">{version.Case_Officer__c}</td>
+                                    <td data-label="Actions">
+                                        <lightning-button-menu alternative-text="Actions" icon-name="utility:down" menu-alignment="right">
+                                            <lightning-menu-item label="View/Edit" data-id={version.Id} onclick={handleViewEdit}></lightning-menu-item>
+                                            <lightning-menu-item label="Forward to Mail Recipient" data-id={version.Id} onclick={handleForward}></lightning-menu-item>
+                                            <lightning-menu-item label="Delete" data-id={version.Id} onclick={handleDelete}></lightning-menu-item>
+                                        </lightning-button-menu>
+                                    </td>
+                                </tr>
                             </template>
-                        </template>
-                    </template>
-                    <template if:false={showVersions}>
-                        <template for:each={historyItems} for:item="item">
-                            <tr key={item.Id} class="slds-hint-parent">
-                                <td data-label="Date">
-                                    <div class="slds-grid slds-align_absolute-center">
-                                        <template if:true={item.Flag_as_important__c}>
-                                            <lightning-icon icon-name="utility:priority" alternative-text="Important" class="slds-icon-text-error slds-m-right_x-small"></lightning-icon>
-                                        </template>
-                                        <template if:false={item.Flag_as_important__c}>
-                                            <lightning-icon icon-name="utility:priority" alternative-text="Important" class="slds-icon-text-default slds-m-right_x-small"></lightning-icon>
-                                        </template>
-                                        {item.Date_Inserted__c}
-                                    </div>
-                                </td>
-                                <td data-label="Action">{item.Action__c}</td>
-                                <td data-label="Document Type">{item.Document_Type__c}</td>
-                                <td data-label="Correspondence With">{item.Correspondence_With__c}</td>
-                                <td data-label="Draft">{item.Draft__c}</td>
-                                <td data-label="Case Officer">{item.Case_Officer__c}</td>
-                                <td data-label="Actions">
-                                    <lightning-button-menu alternative-text="Actions" icon-name="utility:down" menu-alignment="right">
-                                        <lightning-menu-item label="View/Edit" data-id={item.Id} onclick={handleViewEdit}></lightning-menu-item>
-                                        <lightning-menu-item label="Forward to Mail Recipient" data-id={item.Id} onclick={handleForward}></lightning-menu-item>
-                                        <lightning-menu-item label="Delete" data-id={item.Id} onclick={handleDelete}></lightning-menu-item>
-                                    </lightning-button-menu>
-                                </td>
-                            </tr>
                         </template>
                     </template>
                 </tbody>
