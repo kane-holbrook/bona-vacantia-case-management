@@ -1,5 +1,6 @@
 import { LightningElement, wire, track } from 'lwc';
-import { getPicklistValues, getObjectInfo } from 'lightning/uiObjectInfoApi';
+import { getObjectInfo } from 'lightning/uiObjectInfoApi';
+import getUsers from '@salesforce/apex/TaskController.getUsers';
 import USER_OBJECT from '@salesforce/schema/User';
 
 export default class TaskReassign extends LightningElement {
@@ -11,14 +12,16 @@ export default class TaskReassign extends LightningElement {
     @wire(getObjectInfo, { objectApiName: USER_OBJECT })
     userMetadata;
 
-    @wire(getPicklistValues, { recordTypeId: '$userMetadata.data.defaultRecordTypeId', fieldApiName: 'Name' })
+    // Fetch users using an Apex method instead of getPicklistValues
+    @wire(getUsers)
     wiredUsers({ error, data }) {
         if (data) {
-            this.caseOfficerOptions = data.values.map(user => {
-                return { label: user.label, value: user.value };
+            console.log('User data:', data);
+            this.caseOfficerOptions = data.map(user => {
+                return { label: user.Name, value: user.Id };
             });
         } else if (error) {
-            console.error(error);
+            console.error('Error fetching users:', error);
         }
     }
 

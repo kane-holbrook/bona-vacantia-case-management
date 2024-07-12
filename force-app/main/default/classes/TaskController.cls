@@ -7,4 +7,9 @@ public with sharing class TaskController {
             WHERE Parent_Task__c = :parentTaskId
         ];
     }
+
+    @AuraEnabled(cacheable=true)
+    public static List<User> getUsers() {
+        return [SELECT Id, Name FROM User];
+    }
 }
