@@ -7,17 +7,21 @@ import { getRecordId } from 'c/sharedService';
 export default class HistoryList extends LightningElement {
     @api recordId;
     @track historyItems = [];
+    @track filteredHistoryItems = [];
     @track isModalOpen = false;
     @track isDeleteModalOpen = false;
     @track currentRecordId;
     @track showVersions = true;
     @track lastUpdated = 0;
     @track currentRecord = {};
+    @track searchKey = '';
+    @track dateFrom = null;
+    @track dateTo = null;
     wiredHistoryItemsResult;
 
     connectedCallback() {
         this.recordId = getRecordId();
-        refreshApex(this.wiredHistoryItemsResult);
+        this.refreshHistoryItems();
     }
 
     @wire(getHistoryItems, { recordId: '$recordId' })
@@ -31,9 +35,14 @@ export default class HistoryList extends LightningElement {
                 iconName: this.getIconName(false)
             }));
             this.updateLastUpdated();
+            this.filterHistoryItems();
         } else if (result.error) {
             this.showToast('Error', 'Error fetching history items', result.error);
         }
+    }
+
+    refreshHistoryItems() {
+        refreshApex(this.wiredHistoryItemsResult);
     }
 
     updateLastUpdated() {
@@ -62,6 +71,7 @@ export default class HistoryList extends LightningElement {
             }
             return item;
         });
+        this.filterHistoryItems();
     }
 
     handleAdd() {
@@ -100,7 +110,7 @@ export default class HistoryList extends LightningElement {
     handleDeleteSuccess() {
         this.isDeleteModalOpen = false;
         this.showToast('Success', 'Record deleted successfully', 'success');
-        return refreshApex(this.wiredHistoryItemsResult);
+        this.refreshHistoryItems();
     }
 
     handleSave() {
@@ -110,7 +120,7 @@ export default class HistoryList extends LightningElement {
     handleSaveSuccess() {
         this.isModalOpen = false;
         this.showToast('Success', 'Record saved successfully', 'success');
-        return refreshApex(this.wiredHistoryItemsResult);
+        this.refreshHistoryItems();
     }
 
     toggleShowVersions(event) {
@@ -118,6 +128,7 @@ export default class HistoryList extends LightningElement {
         if (!this.showVersions) {
             this.historyItems = this.historyItems.map(item => ({ ...item, isExpanded: false }));
         }
+        this.filterHistoryItems();
     }
 
     showToast(title, message, variant) {
@@ -127,5 +138,38 @@ export default class HistoryList extends LightningElement {
             variant: variant,
         });
         this.dispatchEvent(evt);
+    }
+
+    handleSearchInputChange(event) {
+        this.searchKey = event.target.value.toLowerCase();
+        this.filterHistoryItems();
+    }
+
+    handleDateFilterChange(event) {
+        const filterType = event.target.dataset.filter;
+        if (filterType === 'from') {
+            this.dateFrom = event.target.value ? new Date(event.target.value) : null;
+        } else if (filterType === 'to') {
+            this.dateTo = event.target.value ? new Date(event.target.value) : null;
+        }
+        this.filterHistoryItems();
+    }
+
+    filterHistoryItems() {
+        this.filteredHistoryItems = this.historyItems.filter(item => {
+            const searchKeyLower = this.searchKey.toLowerCase();
+            const searchMatch = this.searchKey ? (
+                (item.Action__c?.toLowerCase() ?? '').includes(searchKeyLower) ||
+                (item.Document_Type__c?.toLowerCase() ?? '').includes(searchKeyLower) ||
+                (item.Correspondence_With__c?.toLowerCase() ?? '').includes(searchKeyLower)
+            ) : true;
+
+            const dateMatch = (
+                (!this.dateFrom || new Date(item.Date_Inserted__c) >= this.dateFrom) &&
+                (!this.dateTo || new Date(item.Date_Inserted__c) <= this.dateTo)
+            );
+
+            return searchMatch && dateMatch;
+        });
     }
 }

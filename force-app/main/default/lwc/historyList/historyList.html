@@ -20,12 +20,12 @@
         <div class="slds-card__body slds-p-horizontal_small slds-p-vertical_medium">
             <div class="slds-text-body_small slds-m-bottom_medium slds-grid slds-wrap slds-grid_align-end">
                 <div class="slds-col slds-size_1-of-2">
-                    ({historyItems.length} items - Sorted by Date (descending) - Filtered by all history - Updated {lastUpdated} minutes ago)
+                    ({filteredHistoryItems.length} items - Sorted by Date (descending) - Filtered by all history - Updated {lastUpdated} minutes ago)
                 </div>
                 <div class="slds-col slds-size_1-of-2 slds-grid slds-wrap slds-grid_align-end">
-                    <lightning-input type="text" placeholder="Search history" variant="label-hidden" class="slds-m-bottom_small slds-col slds-size_1-of-3 "></lightning-input>
-                    <lightning-input type="date" placeholder="From" variant="label-hidden" class="slds-m-bottom_small slds-col slds-size_1-of-3"></lightning-input>
-                    <lightning-input type="date" placeholder="To" variant="label-hidden" class="slds-m-bottom_small slds-col slds-size_1-of-3"></lightning-input>
+                    <lightning-input type="text" placeholder="Search history" variant="label-hidden" class="slds-m-bottom_small slds-col slds-size_1-of-3" onchange={handleSearchInputChange}></lightning-input>
+                    <lightning-input type="date" placeholder="From" variant="label-hidden" class="slds-m-bottom_small slds-col slds-size_1-of-3" onchange={handleDateFilterChange} data-filter="from"></lightning-input>
+                    <lightning-input type="date" placeholder="To" variant="label-hidden" class="slds-m-bottom_small slds-col slds-size_1-of-3" onchange={handleDateFilterChange} data-filter="to"></lightning-input>
                 </div>
             </div>
             <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_col-bordered">
@@ -58,7 +58,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <template for:each={historyItems} for:item="item">
+                    <template for:each={filteredHistoryItems} for:item="item">
                         <tr key={item.Id} class="slds-hint-parent">
                             <td data-label="Expand">
                                 <template if:true={showVersions}>
@@ -139,7 +139,7 @@
                     <h2 class="slds-text-heading_medium">History item</h2>
                 </header>
                 <div class="slds-modal__content slds-p-around_medium">
-                    <c-history-edit-modal record={currentRecord}  onclose={closeModal} onsave={handleSaveSuccess} ></c-history-edit-modal>
+                    <c-history-edit-modal record={currentRecord} onclose={closeModal} onsave={handleSaveSuccess}></c-history-edit-modal>
                 </div>
                 <footer class="slds-modal__footer">
                     <button class="slds-button slds-button_neutral" onclick={closeModal}>Cancel</button>
@@ -161,7 +161,7 @@
                     <h2 class="slds-text-heading_medium">Are you sure you want to delete this history item?</h2>
                 </header>
                 <div class="slds-modal__content slds-p-around_medium">
-                    <c-history-delete-modal record={currentRecord} ondelete={handleDeleteSuccess} ></c-history-delete-modal>
+                    <c-history-delete-modal record={currentRecord} ondelete={handleDeleteSuccess}></c-history-delete-modal>
                 </div>
                 <footer class="slds-modal__footer">
                     <button class="slds-button slds-button_neutral" onclick={closeDeleteModal}>Cancel</button>
