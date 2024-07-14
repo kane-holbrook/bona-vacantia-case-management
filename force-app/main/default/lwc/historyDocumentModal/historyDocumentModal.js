@@ -34,6 +34,12 @@ export default class HistoryDocumentModal extends LightningElement {
         reader.onload = () => {
             this.fileData = reader.result;
             this.fileName = file.name;
+            this.dispatchEvent(new CustomEvent('filechange', {
+                detail: {
+                    fileData: this.fileData,
+                    fileName: this.fileName
+                }
+            }));
         };
         reader.readAsDataURL(file);
     }
@@ -41,6 +47,7 @@ export default class HistoryDocumentModal extends LightningElement {
     handleRemoveFile() {
         this.fileData = null;
         this.fileName = null;
+        this.dispatchEvent(new CustomEvent('fileremove'));
     }
 
     handlePicklistChange(event) {
@@ -52,22 +59,5 @@ export default class HistoryDocumentModal extends LightningElement {
         } else if (field === 'draft') {
             this.draft = event.target.value;
         }
-    }
-
-    handleSave() {
-        this.dispatchEvent(new CustomEvent('save', {
-            detail: {
-                documentType: this.documentType,
-                correspondenceWith: this.correspondenceWith,
-                draft: this.draft,
-                fileData: this.fileData,
-                fileName: this.fileName
-            }
-        }));
-        this.handleClose();
-    }
-
-    handleClose() {
-        this.dispatchEvent(new CustomEvent('close'));
     }
 }

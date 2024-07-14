@@ -1,6 +1,6 @@
 import { LightningElement, api, track, wire } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import { createRecord, updateRecord, getRecord } from 'lightning/uiRecordApi';
+import { createRecord, updateRecord } from 'lightning/uiRecordApi';
 import CASE_HISTORY_OBJECT from '@salesforce/schema/Case_History__c';
 import ID_FIELD from '@salesforce/schema/Case_History__c.Id';
 import DATE_INSERTED_FIELD from '@salesforce/schema/Case_History__c.Date_Inserted__c';
@@ -9,6 +9,11 @@ import DETAILS_FIELD from '@salesforce/schema/Case_History__c.Details__c';
 import FLAG_IMPORTANT_FIELD from '@salesforce/schema/Case_History__c.Flag_as_important__c';
 import BV_CASE_FIELD from '@salesforce/schema/Case_History__c.BV_Case__c';
 import PARENT_HISTORY_RECORD_FIELD from '@salesforce/schema/Case_History__c.Parent_History_Record__c';
+import CONTENT_VERSION_OBJECT from '@salesforce/schema/ContentVersion';
+import TITLE_FIELD from '@salesforce/schema/ContentVersion.Title';
+import VERSION_DATA_FIELD from '@salesforce/schema/ContentVersion.VersionData';
+import LINKED_ENTITY_ID_FIELD from '@salesforce/schema/ContentVersion.FirstPublishLocationId';
+import PATH_ON_CLIENT_FIELD from '@salesforce/schema/ContentVersion.PathOnClient';
 import getHistoryVersions from '@salesforce/apex/HistoryController.getHistoryVersions';
 
 export default class HistoryEditModal extends LightningElement {
@@ -91,15 +96,13 @@ export default class HistoryEditModal extends LightningElement {
     }
 
     handleFileChange(event) {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = () => {
-                this.fileData = reader.result;
-                this.fileName = file.name;
-            };
-            reader.readAsDataURL(file);
-        }
+        this.fileData = event.detail.fileData;
+        this.fileName = event.detail.fileName;
+    }
+
+    handleFileRemove() {
+        this.fileData = null;
+        this.fileName = null;
     }
 
     handleImport() {
@@ -110,15 +113,8 @@ export default class HistoryEditModal extends LightningElement {
         this.isSubModalOpen = false;
     }
 
-    handleDocumentSave(event) {
-        this.fileData = event.detail.fileData;
-        this.fileName = event.detail.fileName;
-        this.isSubModalOpen = false;
-    }
-
-    handleRemoveFile() {
-        this.fileData = null;
-        this.fileName = null;
+    handleSave() {
+        this.closeSubModal();
     }
 
     @api
@@ -138,7 +134,11 @@ export default class HistoryEditModal extends LightningElement {
             const recordInput = { fields };
             updateRecord(recordInput)
                 .then(() => {
-                    this.dispatchEvent(new CustomEvent('save'));
+                    if (this.fileData) {
+                        this.saveFile(this.record.Id);
+                    } else {
+                        this.dispatchEvent(new CustomEvent('save'));
+                    }
                 })
                 .catch(error => {
                     console.log('Error updating record', error);
@@ -148,14 +148,49 @@ export default class HistoryEditModal extends LightningElement {
             fields[BV_CASE_FIELD.fieldApiName] = parentRecordId;
             const recordInput = { apiName: CASE_HISTORY_OBJECT.objectApiName, fields };
             createRecord(recordInput)
-                .then(() => {
-                    this.dispatchEvent(new CustomEvent('save'));
+                .then(record => {
+                    if (this.fileData) {
+                        this.saveFile(record.id);
+                    } else {
+                        this.dispatchEvent(new CustomEvent('save'));
+                    }
                 })
                 .catch(error => {
                     console.log('Error creating record', error);
                     this.showToast('Error creating record', error.body.message, 'error');
                 });
         }
+    }
+
+    saveFile(historyRecordId) {
+        this.createContentVersion({
+            title: this.fileName,
+            versionData: this.fileData,
+            linkedEntityId: historyRecordId
+        })
+        .then(() => {
+            this.showToast('Success', 'File uploaded successfully', 'success');
+            this.dispatchEvent(new CustomEvent('save'));
+        })
+        .catch(error => {
+            console.log('Error saving file', error);
+            this.showToast('Error', 'Error saving file', 'error');
+        });
+    }
+
+    createContentVersion({ title, versionData, linkedEntityId }) {
+        const base64Data = versionData.split(',')[1];
+        
+        const fields = {};
+        fields[TITLE_FIELD.fieldApiName] = title;
+        fields[VERSION_DATA_FIELD.fieldApiName] = base64Data;
+        fields[LINKED_ENTITY_ID_FIELD.fieldApiName] = linkedEntityId;
+        fields[PATH_ON_CLIENT_FIELD.fieldApiName] = title;
+    
+        const recordInput = { apiName: CONTENT_VERSION_OBJECT.objectApiName, fields };
+
+        console.log(recordInput);
+        return createRecord(recordInput);
     }
 
     createVersion(parentRecordId, fields, bvCaseId) {
@@ -168,8 +203,6 @@ export default class HistoryEditModal extends LightningElement {
             [BV_CASE_FIELD.fieldApiName]: bvCaseId
         };
 
-        console.log(versionFields);
-
         const recordInput = { apiName: CASE_HISTORY_OBJECT.objectApiName, fields: versionFields };
         createRecord(recordInput)
             .then(() => {
@@ -179,26 +212,6 @@ export default class HistoryEditModal extends LightningElement {
                 console.log('Error creating version', error);
                 this.showToast('Error creating version', error.body.message, 'error');
             });
-    }
-
-    saveCurrentState() {
-        const currentVersionNumber = this.versions.length + 1;
-        const version = {
-            id: Date.now(),
-            dateInserted: this.dateInserted,
-            description: this.description,
-            details: this.details,
-            flagImportant: this.flagImportant,
-            fileData: this.fileData,
-            fileName: this.fileName,
-            bvCaseId: this.bvCaseId,
-            lastModifiedByName: 'Current User', // Replace with the actual user later
-            lastModifiedDate: new Date().toLocaleDateString(),
-            action: this.description, // Use description as action
-            versionNumber: currentVersionNumber,
-            class: 'slds-theme_shade'
-        };
-        this.versions = [version, ...this.versions.map(v => ({ ...v, class: '' }))];
     }
 
     handleRowAction(event) {
@@ -222,12 +235,8 @@ export default class HistoryEditModal extends LightningElement {
         this.bvCaseId = versionToRestore.bvCaseId;
     }
 
-    handleCancel() {
-        this.closeModal();
-    }
-
     closeModal() {
-        this.dispatchEvent(new CustomEvent('close'));
+        this.isSubModalOpen = false;
     }
 
     showToast(title, message, variant) {
