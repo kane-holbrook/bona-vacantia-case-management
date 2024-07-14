@@ -1,6 +1,6 @@
 import { LightningElement, api, track, wire } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import { createRecord, updateRecord, getRecord } from 'lightning/uiRecordApi';
+import { createRecord, updateRecord, deleteRecord } from 'lightning/uiRecordApi';
 import CASE_HISTORY_OBJECT from '@salesforce/schema/Case_History__c';
 import ID_FIELD from '@salesforce/schema/Case_History__c.Id';
 import DATE_INSERTED_FIELD from '@salesforce/schema/Case_History__c.Date_Inserted__c';
@@ -22,6 +22,7 @@ import CASE_HISTORY_FIELD from '@salesforce/schema/SHDocument__c.Case_History__c
 import getHistoryVersions from '@salesforce/apex/HistoryController.getHistoryVersions';
 import uploadFileToSharePoint from '@salesforce/apex/FileController.uploadFileToSharePoint';
 import getCaseName from '@salesforce/apex/FileController.getCaseName';
+import deleteSharepointFile from '@salesforce/apex/FileController.deleteSharepointFile';
 
 export default class HistoryEditModal extends LightningElement {
     @api record;
@@ -39,6 +40,7 @@ export default class HistoryEditModal extends LightningElement {
     @track isSubModalOpen = false;
     @track versions = [];
     @track originalRecord = {};
+    @track originalDocumentId; // Added to keep track of the original document ID
 
     versionColumns = [
         { label: 'Version', fieldName: 'versionNumber', type: 'number' },
@@ -61,6 +63,7 @@ export default class HistoryEditModal extends LightningElement {
             this.documentType = this.record.documentType;
             this.correspondenceWith = this.record.correspondenceWith;
             this.draft = this.record.draft;
+            this.originalDocumentId = this.record.documentId; // Keep track of the original document ID
         }
 
         console.log('history record', this.record);
@@ -71,7 +74,6 @@ export default class HistoryEditModal extends LightningElement {
             description: this.description,
             details: this.details,
             flagImportant: this.flagImportant,
-            fileData: this.fileData,
             fileName: this.fileName,
             fileSize: this.fileSize,
             documentType: this.documentType,
@@ -89,8 +91,8 @@ export default class HistoryEditModal extends LightningElement {
                 description: 'Initial version',
                 details: this.details,
                 flagImportant: this.flagImportant,
-                fileData: this.fileData,
                 fileName: this.fileName,
+                fileSize: this.fileSize,
                 bvCaseId: this.bvCaseId,
                 lastModifiedByName: 'Initial User', // Replace with actual user data if available
                 lastModifiedDate: this.dateInserted, // Replace with the actual created date if available
@@ -104,8 +106,8 @@ export default class HistoryEditModal extends LightningElement {
                 description: version.Action__c,
                 details: version.Details__c,
                 flagImportant: version.Flag_as_important__c,
-                fileData: this.fileData,
                 fileName: this.fileName,
+                fileSize: this.fileSize,
                 bvCaseId: version.BV_Case__c,
                 lastModifiedByName: 'User', // Replace with actual user data if available
                 lastModifiedDate: version.Date_Inserted__c, // Replace with the actual modified date if available
@@ -148,12 +150,38 @@ export default class HistoryEditModal extends LightningElement {
     }
 
     handleFileRemove() {
-        this.fileData = null;
-        this.fileName = null;
-        this.fileSize = null;
-        this.documentType = null;
-        this.correspondenceWith = null;
-        this.draft = null;
+        if (this.originalDocumentId) {
+            getCaseName({ caseId: this.bvCaseId })
+                .then((caseName) => {
+                    const folderName = `${caseName}/${this.record.Id}`;
+                    deleteSharepointFile({ caseId: folderName, fileName: this.fileName })
+                        .then(() => {
+                            deleteRecord(this.originalDocumentId)
+                                .then(() => {
+                                    this.showToast('Success', 'File and record deleted successfully', 'success');
+                                    this.fileData = null;
+                                    this.fileName = null;
+                                    this.fileSize = null;
+                                    this.documentType = null;
+                                    this.correspondenceWith = null;
+                                    this.draft = null;
+                                    this.originalDocumentId = null;
+                                })
+                                .catch(error => {
+                                    console.log('Error deleting SHDocument record', error);
+                                    this.showToast('Error', 'Error deleting SHDocument record', 'error');
+                                });
+                        })
+                        .catch(error => {
+                            console.log('Error deleting SharePoint file', error);
+                            this.showToast('Error', 'Error deleting SharePoint file', 'error');
+                        });
+                })
+                .catch(error => {
+                    console.log('Error fetching case name', error);
+                    this.showToast('Error', 'Error fetching case name', 'error');
+                });
+        }
     }
 
     handleImport() {
@@ -191,8 +219,27 @@ export default class HistoryEditModal extends LightningElement {
             const recordInput = { fields };
             updateRecord(recordInput)
                 .then(() => {
-                    if (this.fileData && this.fileData !== this.originalRecord.fileData) {
-                        this.saveFile(this.record.Id, 'Document added');
+                    if (this.fileName !== this.originalRecord.fileName || this.fileSize !== this.originalRecord.fileSize) {
+                        if (this.originalDocumentId) {
+                            getCaseName({ caseId: this.bvCaseId })
+                                .then((caseName) => {
+                                    const folderName = `${caseName}/${this.record.Id}`;
+                                    deleteSharepointFile({ caseId: folderName, fileName: this.fileName })
+                                        .then(() => {
+                                            this.saveFile(this.record.Id, 'Document replaced');
+                                        })
+                                        .catch(error => {
+                                            console.log('Error deleting original SharePoint file', error);
+                                            this.showToast('Error', 'Error deleting original SharePoint file', 'error');
+                                        });
+                                })
+                                .catch(error => {
+                                    console.log('Error fetching case name', error);
+                                    this.showToast('Error', 'Error fetching case name', 'error');
+                                });
+                        } else {
+                            this.saveFile(this.record.Id, 'Document added');
+                        }
                     } else {
                         this.dispatchEvent(new CustomEvent('save'));
                     }
@@ -206,7 +253,7 @@ export default class HistoryEditModal extends LightningElement {
             const recordInput = { apiName: CASE_HISTORY_OBJECT.objectApiName, fields };
             createRecord(recordInput)
                 .then(record => {
-                    if (this.fileData) {
+                    if (this.fileName && this.fileSize) {
                         this.saveFile(record.id, 'Document added');
                     } else {
                         this.dispatchEvent(new CustomEvent('save'));
@@ -264,7 +311,8 @@ export default class HistoryEditModal extends LightningElement {
 
         const recordInput = { apiName: SHDOCUMENT_OBJECT.objectApiName, fields: shDocumentFields };
         createRecord(recordInput)
-            .then(() => {
+            .then((documentRecord) => {
+                this.originalDocumentId = documentRecord.id;
                 this.updateHistoryAction(historyRecordId, action);
             })
             .catch(error => {
@@ -290,7 +338,7 @@ export default class HistoryEditModal extends LightningElement {
             })
             .catch(error => {
                 console.log('Error creating version', error);
-                this.showToast('Error creating version', error.body.message, 'error');
+                this.showToast('Error', 'Error creating version', error.body.message, 'error');
             });
     }
 
@@ -316,7 +364,6 @@ export default class HistoryEditModal extends LightningElement {
                this.description !== this.originalRecord.description ||
                this.details !== this.originalRecord.details ||
                this.flagImportant !== this.originalRecord.flagImportant ||
-               this.fileData !== this.originalRecord.fileData ||
                this.fileName !== this.originalRecord.fileName ||
                this.fileSize !== this.originalRecord.fileSize ||
                this.documentType !== this.originalRecord.documentType ||
@@ -340,8 +387,8 @@ export default class HistoryEditModal extends LightningElement {
         this.description = versionToRestore.description;
         this.details = versionToRestore.details;
         this.flagImportant = versionToRestore.flagImportant;
-        this.fileData = versionToRestore.fileData;
         this.fileName = versionToRestore.fileName;
+        this.fileSize = versionToRestore.fileSize;
         this.bvCaseId = versionToRestore.bvCaseId;
     }
 

@@ -97,6 +97,7 @@ export default class HistoryList extends LightningElement {
                     this.currentRecord.correspondenceWith = shDocument.Correspondence_With__c;
                     this.currentRecord.draft = shDocument.Draft__c;
                     this.currentRecord.serverRelativeURL = shDocument.ServerRelativeURL__c;
+                    this.currentRecord.documentId = shDocument.Id;
                 }
                 this.isModalOpen = true;
             })
