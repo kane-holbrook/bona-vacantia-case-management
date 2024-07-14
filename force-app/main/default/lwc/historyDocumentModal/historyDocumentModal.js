@@ -1,11 +1,11 @@
-import { LightningElement, track } from 'lwc';
+import { LightningElement, track, api } from 'lwc';
 
 export default class HistoryDocumentModal extends LightningElement {
+    @api fileName;
     @track documentType;
     @track correspondenceWith;
     @track draft;
     @track fileData;
-    @track fileName;
     @track fileSize;
 
     documentTypeOptions = [
