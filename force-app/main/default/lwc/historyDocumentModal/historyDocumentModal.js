@@ -66,5 +66,15 @@ export default class HistoryDocumentModal extends LightningElement {
         } else if (field === 'draft') {
             this.draft = event.target.value;
         }
+        this.dispatchEvent(new CustomEvent('fieldchange', {
+            detail: {
+                documentType: this.documentType,
+                correspondenceWith: this.correspondenceWith,
+                draft: this.draft,
+                fileData: this.fileData,
+                fileName: this.fileName,
+                fileSize: this.fileSize
+            }
+        }));
     }
 }

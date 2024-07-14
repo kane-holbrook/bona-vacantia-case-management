@@ -1,7 +1,7 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
 import getHistoryItems from '@salesforce/apex/HistoryController.getHistoryItems';
-import getContentVersions from '@salesforce/apex/HistoryController.getContentVersions';
+import getSHDocuments from '@salesforce/apex/HistoryController.getSHDocuments';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { getRecordId } from 'c/sharedService';
 
@@ -86,19 +86,22 @@ export default class HistoryList extends LightningElement {
         const record = this.historyItems.find(item => item.Id === this.currentRecordId);
         this.currentRecord = { ...record };
 
-        getContentVersions({ parentId: this.currentRecordId })
+        getSHDocuments({ parentId: this.currentRecordId })
             .then(result => {
                 if (result.length > 0) {
-                    const contentVersion = result[0];
-                    this.currentRecord.fileName = contentVersion.Title;
-                    this.currentRecord.fileSize = contentVersion.ContentSize;
-                    this.currentRecord.fileData = contentVersion.VersionData;
-                    this.currentRecord.contentDocumentId = contentVersion.ContentDocumentId;
+                    const shDocument = result[0];
+                    this.currentRecord.fileName = shDocument.Name;
+                    this.currentRecord.fileSize = shDocument.FileSize__c ? shDocument.FileSize__c : 0;
+                    this.currentRecord.fileData = shDocument.FileContent__c;
+                    this.currentRecord.documentType = shDocument.DocumentType__c;
+                    this.currentRecord.correspondenceWith = shDocument.Correspondence_With__c;
+                    this.currentRecord.draft = shDocument.Draft__c;
+                    this.currentRecord.serverRelativeURL = shDocument.ServerRelativeURL__c;
                 }
                 this.isModalOpen = true;
             })
             .catch(error => {
-                this.showToast('Error', 'Error fetching content versions', 'error');
+                this.showToast('Error', 'Error fetching documents', 'error');
             });
     }
 
@@ -175,7 +178,7 @@ export default class HistoryList extends LightningElement {
             const searchKeyLower = this.searchKey.toLowerCase();
             const searchMatch = this.searchKey ? (
                 (item.Action__c?.toLowerCase() ?? '').includes(searchKeyLower) ||
-                (item.Document_Type__c?.toLowerCase() ?? '').includes(searchKeyLower) ||
+                (item.DocumentType__c?.toLowerCase() ?? '').includes(searchKeyLower) ||
                 (item.Correspondence_With__c?.toLowerCase() ?? '').includes(searchKeyLower)
             ) : true;
 

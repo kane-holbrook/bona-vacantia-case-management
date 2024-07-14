@@ -9,12 +9,19 @@ import DETAILS_FIELD from '@salesforce/schema/Case_History__c.Details__c';
 import FLAG_IMPORTANT_FIELD from '@salesforce/schema/Case_History__c.Flag_as_important__c';
 import BV_CASE_FIELD from '@salesforce/schema/Case_History__c.BV_Case__c';
 import PARENT_HISTORY_RECORD_FIELD from '@salesforce/schema/Case_History__c.Parent_History_Record__c';
-import CONTENT_VERSION_OBJECT from '@salesforce/schema/ContentVersion';
-import TITLE_FIELD from '@salesforce/schema/ContentVersion.Title';
-import VERSION_DATA_FIELD from '@salesforce/schema/ContentVersion.VersionData';
-import LINKED_ENTITY_ID_FIELD from '@salesforce/schema/ContentVersion.FirstPublishLocationId';
-import PATH_ON_CLIENT_FIELD from '@salesforce/schema/ContentVersion.PathOnClient';
+import SHDOCUMENT_OBJECT from '@salesforce/schema/SHDocument__c';
+import SHDOCUMENT_NAME_FIELD from '@salesforce/schema/SHDocument__c.Name';
+import DOCUMENT_EXTENSION_FIELD from '@salesforce/schema/SHDocument__c.DocumentExtension__c';
+import DOCUMENT_ID_FIELD from '@salesforce/schema/SHDocument__c.DocumentID__c';
+import DOCUMENT_TYPE_FIELD from '@salesforce/schema/SHDocument__c.DocumentType__c';
+import DOCUMENT_CORRESPONDENCE_WITH_FIELD from '@salesforce/schema/SHDocument__c.Correspondence_With__c';
+import DOCUMENT_DRAFT_FIELD from '@salesforce/schema/SHDocument__c.Draft__c';
+import SERVER_RELATIVE_URL_FIELD from '@salesforce/schema/SHDocument__c.ServerRelativeURL__c';
+import DOCUMENT_FILE_SIZE_FIELD from '@salesforce/schema/SHDocument__c.FileSize__c';
+import CASE_HISTORY_FIELD from '@salesforce/schema/SHDocument__c.Case_History__c';
 import getHistoryVersions from '@salesforce/apex/HistoryController.getHistoryVersions';
+import uploadFileToSharePoint from '@salesforce/apex/FileController.uploadFileToSharePoint';
+import getCaseName from '@salesforce/apex/FileController.getCaseName';
 
 export default class HistoryEditModal extends LightningElement {
     @api record;
@@ -55,6 +62,8 @@ export default class HistoryEditModal extends LightningElement {
             this.correspondenceWith = this.record.correspondenceWith;
             this.draft = this.record.draft;
         }
+
+        console.log('history record', this.record);
 
         // Store the original state for comparison
         this.originalRecord = {
@@ -127,6 +136,12 @@ export default class HistoryEditModal extends LightningElement {
         this.fileData = event.detail.fileData;
         this.fileName = event.detail.fileName;
         this.fileSize = event.detail.fileSize;
+        this.documentType = event.detail.documentType;
+        this.correspondenceWith = event.detail.correspondenceWith;
+        this.draft = event.detail.draft;
+    }
+
+    handleFieldChange(event) {
         this.documentType = event.detail.documentType;
         this.correspondenceWith = event.detail.correspondenceWith;
         this.draft = event.detail.draft;
@@ -205,34 +220,57 @@ export default class HistoryEditModal extends LightningElement {
     }
 
     saveFile(historyRecordId, action) {
-        this.createContentVersion({
-            title: this.fileName,
-            versionData: this.fileData,
-            linkedEntityId: historyRecordId
-        })
-        .then(() => {
-            this.showToast('Success', 'File uploaded successfully', 'success');
-            this.updateHistoryAction(historyRecordId, action);
-        })
-        .catch(error => {
-            console.log('Error saving file', error);
-            this.showToast('Error', 'Error saving file', 'error');
-        });
+        const base64Data = this.fileData.split(',')[1];
+
+        // Fetch the case name
+        getCaseName({ caseId: this.bvCaseId })
+            .then((caseName) => {
+                const folderName = `${caseName}/${historyRecordId}`;
+
+                console.log('documentType', this.documentType);
+                uploadFileToSharePoint({
+                    folderName: '/'+ folderName,
+                    fileName: this.fileName,
+                    base64Data: base64Data,
+                    documentType: this.documentType
+                })
+                    .then((serverRelativeUrl) => {
+                        this.showToast('Success', 'File uploaded successfully', 'success');
+                        this.createSHDocumentRecord(historyRecordId, serverRelativeUrl, action);
+                    })
+                    .catch(error => {
+                        console.log('Error saving file', error);
+                        this.showToast('Error', 'Error saving file', 'error');
+                    });
+            })
+            .catch(error => {
+                console.log('Error fetching case name', error);
+                this.showToast('Error', 'Error fetching case name', 'error');
+            });
     }
 
-    createContentVersion({ title, versionData, linkedEntityId }) {
-        const base64Data = versionData.split(',')[1];
-        
-        const fields = {};
-        fields[TITLE_FIELD.fieldApiName] = title;
-        fields[VERSION_DATA_FIELD.fieldApiName] = base64Data;
-        fields[LINKED_ENTITY_ID_FIELD.fieldApiName] = linkedEntityId;
-        fields[PATH_ON_CLIENT_FIELD.fieldApiName] = title;
-    
-        const recordInput = { apiName: CONTENT_VERSION_OBJECT.objectApiName, fields };
+    createSHDocumentRecord(historyRecordId, serverRelativeUrl, action) {
+        const shDocumentFields = {
+            [SHDOCUMENT_NAME_FIELD.fieldApiName]: this.fileName,
+            [DOCUMENT_EXTENSION_FIELD.fieldApiName]: this.fileName.split('.').pop(),
+            [DOCUMENT_ID_FIELD.fieldApiName]: historyRecordId,
+            [DOCUMENT_TYPE_FIELD.fieldApiName]: this.documentType,
+            [DOCUMENT_FILE_SIZE_FIELD.fieldApiName]: this.fileSize,
+            [DOCUMENT_CORRESPONDENCE_WITH_FIELD.fieldApiName]: this.correspondenceWith,
+            [DOCUMENT_DRAFT_FIELD.fieldApiName]: this.draft,
+            [SERVER_RELATIVE_URL_FIELD.fieldApiName]: serverRelativeUrl,
+            [CASE_HISTORY_FIELD.fieldApiName]: historyRecordId
+        };
 
-        console.log(recordInput);
-        return createRecord(recordInput);
+        const recordInput = { apiName: SHDOCUMENT_OBJECT.objectApiName, fields: shDocumentFields };
+        createRecord(recordInput)
+            .then(() => {
+                this.updateHistoryAction(historyRecordId, action);
+            })
+            .catch(error => {
+                console.log('Error creating SHDocument record', error);
+                this.showToast('Error', 'Error creating SHDocument record', 'error');
+            });
     }
 
     createVersion(parentRecordId, fields, bvCaseId) {

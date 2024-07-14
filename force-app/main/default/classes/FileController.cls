@@ -646,6 +646,17 @@ public with sharing class FileController {
                     .replace('\'', '%27');
     }
 
+    @AuraEnabled(cacheable=true)
+    public static String getCaseName(Id caseId) {
+        BV_Case__c bvCase = [
+            SELECT Name 
+            FROM BV_Case__c 
+            WHERE Id = :caseId 
+            LIMIT 1
+        ];
+        return bvCase.Name;
+    }
+
     public void veryTemporaryTest(){
         integer i = 0;
         i = i + 1;
