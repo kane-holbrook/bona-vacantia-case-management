@@ -6,6 +6,7 @@ export default class HistoryDocumentModal extends LightningElement {
     @track draft;
     @track fileData;
     @track fileName;
+    @track fileSize;
 
     documentTypeOptions = [
         { label: 'Letter', value: 'Letter' },
@@ -34,10 +35,15 @@ export default class HistoryDocumentModal extends LightningElement {
         reader.onload = () => {
             this.fileData = reader.result;
             this.fileName = file.name;
+            this.fileSize = file.size;
             this.dispatchEvent(new CustomEvent('filechange', {
                 detail: {
                     fileData: this.fileData,
-                    fileName: this.fileName
+                    fileName: this.fileName,
+                    fileSize: this.fileSize,
+                    documentType: this.documentType,
+                    correspondenceWith: this.correspondenceWith,
+                    draft: this.draft
                 }
             }));
         };
@@ -47,6 +53,7 @@ export default class HistoryDocumentModal extends LightningElement {
     handleRemoveFile() {
         this.fileData = null;
         this.fileName = null;
+        this.fileSize = null;
         this.dispatchEvent(new CustomEvent('fileremove'));
     }
 

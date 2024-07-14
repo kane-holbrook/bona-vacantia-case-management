@@ -23,9 +23,23 @@
             <lightning-input type="checkbox" name="flag-important" checked={flagImportant} onchange={handleInputChange}></lightning-input>
         </div>
     </div>
-    <div class="slds-form-element slds-m-around_medium">
-        <button class="slds-button slds-button_neutral" onclick={handleImport}>Import</button>
-    </div>
+
+    <!-- Display file details if a file was uploaded -->
+    <template if:true={fileName}>
+        <div class="slds-form-element slds-m-around_medium">
+            <p>Uploaded Document: {fileName}</p>
+            <p>Document Size: {fileSize}</p>
+            <p>Document Type: {documentType}</p>
+            <p>Correspondence With: {correspondenceWith}</p>
+            <p>Draft: {draft}</p>
+            <button class="slds-button slds-button_neutral" onclick={handleViewEdit}>View/Edit</button>
+        </div>
+    </template>
+    <template if:false={fileName}>
+        <div class="slds-form-element slds-m-around_medium">
+            <button class="slds-button slds-button_neutral" onclick={handleImport}>Import</button>
+        </div>
+    </template>
 
     <!-- Versions Section -->
     <div class="slds-form-element slds-m-around_medium">

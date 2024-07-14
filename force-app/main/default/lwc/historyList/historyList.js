@@ -1,6 +1,7 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
 import getHistoryItems from '@salesforce/apex/HistoryController.getHistoryItems';
+import getContentVersions from '@salesforce/apex/HistoryController.getContentVersions';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { getRecordId } from 'c/sharedService';
 
@@ -37,7 +38,7 @@ export default class HistoryList extends LightningElement {
             this.updateLastUpdated();
             this.filterHistoryItems();
         } else if (result.error) {
-            this.showToast('Error', 'Error fetching history items', result.error);
+            this.showToast('Error', 'Error fetching history items', 'error');
         }
     }
 
@@ -84,7 +85,21 @@ export default class HistoryList extends LightningElement {
         this.currentRecordId = event.currentTarget.dataset.id;
         const record = this.historyItems.find(item => item.Id === this.currentRecordId);
         this.currentRecord = { ...record };
-        this.isModalOpen = true;
+
+        getContentVersions({ parentId: this.currentRecordId })
+            .then(result => {
+                if (result.length > 0) {
+                    const contentVersion = result[0];
+                    this.currentRecord.fileName = contentVersion.Title;
+                    this.currentRecord.fileSize = contentVersion.ContentSize;
+                    this.currentRecord.fileData = contentVersion.VersionData;
+                    this.currentRecord.contentDocumentId = contentVersion.ContentDocumentId;
+                }
+                this.isModalOpen = true;
+            })
+            .catch(error => {
+                this.showToast('Error', 'Error fetching content versions', 'error');
+            });
     }
 
     handleDeleteOpen(event) {

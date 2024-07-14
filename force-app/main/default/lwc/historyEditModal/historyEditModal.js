@@ -24,6 +24,10 @@ export default class HistoryEditModal extends LightningElement {
     @track flagImportant = false;
     @track fileData;
     @track fileName;
+    @track fileSize;
+    @track documentType;
+    @track correspondenceWith;
+    @track draft;
     @track bvCaseId;
     @track isSubModalOpen = false;
     @track versions = [];
@@ -41,6 +45,15 @@ export default class HistoryEditModal extends LightningElement {
         this.details = this.record.Details__c || '';
         this.flagImportant = this.record.Flag_as_important__c || false;
         this.bvCaseId = this.record.BV_Case__c || '';
+
+        if (this.record.fileName) {
+            this.fileName = this.record.fileName;
+            this.fileSize = this.record.fileSize;
+            this.fileData = this.record.fileData;
+            this.documentType = this.record.documentType;
+            this.correspondenceWith = this.record.correspondenceWith;
+            this.draft = this.record.draft;
+        }
     }
 
     @wire(getHistoryVersions, { historyItemId: '$record.Id' })
@@ -98,14 +111,26 @@ export default class HistoryEditModal extends LightningElement {
     handleFileChange(event) {
         this.fileData = event.detail.fileData;
         this.fileName = event.detail.fileName;
+        this.fileSize = event.detail.fileSize;
+        this.documentType = event.detail.documentType;
+        this.correspondenceWith = event.detail.correspondenceWith;
+        this.draft = event.detail.draft;
     }
 
     handleFileRemove() {
         this.fileData = null;
         this.fileName = null;
+        this.fileSize = null;
+        this.documentType = null;
+        this.correspondenceWith = null;
+        this.draft = null;
     }
 
     handleImport() {
+        this.isSubModalOpen = true;
+    }
+
+    handleViewEdit() {
         this.isSubModalOpen = true;
     }
 

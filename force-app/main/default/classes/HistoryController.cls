@@ -15,4 +15,11 @@ public with sharing class HistoryController {
                 FROM Case_History__c 
                 WHERE Parent_History_Record__c = :historyItemId];
     }
+
+    @AuraEnabled(cacheable=true)
+    public static List<ContentVersion> getContentVersions(Id parentId) {
+        return [SELECT Id, Title, VersionData, ContentDocumentId, PathOnClient, FirstPublishLocationId, ContentSize
+                FROM ContentVersion
+                WHERE FirstPublishLocationId = :parentId];
+    }
 }
