@@ -1,18 +1,22 @@
-import { LightningElement, wire, track } from 'lwc';
+import { LightningElement, wire, track, api } from 'lwc';
 import { getObjectInfo } from 'lightning/uiObjectInfoApi';
 import getUsers from '@salesforce/apex/TaskController.getUsers';
-import USER_OBJECT from '@salesforce/schema/User';
+import { updateRecord } from 'lightning/uiRecordApi';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import BV_TASK_OBJECT from '@salesforce/schema/BV_Task__c';
+import ASSIGNED_TO_FIELD from '@salesforce/schema/BV_Task__c.Assigned_To__c';
+import DUE_DATE_FIELD from '@salesforce/schema/BV_Task__c.Due_Date__c';
 
 export default class TaskReassign extends LightningElement {
+    @api recordId;
     @track selectedCaseOfficer;
     @track selectedDate;
     @track caseOfficerOptions = [];
     @track isOpen = false;
 
-    @wire(getObjectInfo, { objectApiName: USER_OBJECT })
-    userMetadata;
+    @wire(getObjectInfo, { objectApiName: BV_TASK_OBJECT })
+    taskMetadata;
 
-    // Fetch users using an Apex method instead of getPicklistValues
     @wire(getUsers)
     wiredUsers({ error, data }) {
         if (data) {
@@ -34,14 +38,25 @@ export default class TaskReassign extends LightningElement {
     }
 
     handleSave() {
-        // Logic to save the changes
-        console.log('Selected Officer:', this.selectedCaseOfficer);
-        console.log('Selected Date:', this.selectedDate);
-        this.closeModal();
+        const fields = {};
+        fields[ASSIGNED_TO_FIELD.fieldApiName] = this.selectedCaseOfficer;
+        fields[DUE_DATE_FIELD.fieldApiName] = this.selectedDate;
+        fields['Id'] = this.recordId;
+
+        const recordInput = { fields };
+
+        updateRecord(recordInput)
+            .then(() => {
+                this.showToast('Success', 'Task reassigned successfully', 'success');
+                this.closeModal();
+            })
+            .catch(error => {
+                console.error('Error reassigning task:', error);
+                this.showToast('Error', 'Error reassigning task', 'error');
+            });
     }
 
     handleCancel() {
-        // Logic to cancel the changes
         this.selectedCaseOfficer = null;
         this.selectedDate = null;
         this.closeModal();
@@ -53,5 +68,14 @@ export default class TaskReassign extends LightningElement {
 
     closeModal() {
         this.isOpen = false;
+    }
+
+    showToast(title, message, variant) {
+        const evt = new ShowToastEvent({
+            title: title,
+            message: message,
+            variant: variant,
+        });
+        this.dispatchEvent(evt);
     }
 }
