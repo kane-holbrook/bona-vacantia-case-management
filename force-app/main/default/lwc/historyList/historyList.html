@@ -20,7 +20,7 @@
         <div class="slds-card__body slds-p-horizontal_small slds-p-vertical_medium">
             <div class="slds-text-body_small slds-m-bottom_medium slds-grid slds-wrap slds-grid_align-end">
                 <div class="slds-col slds-size_1-of-2">
-                    ({filteredHistoryItems.length} items - Sorted by Date (descending) - Filtered by all history - Updated {lastUpdated} minutes ago)
+                    ({filteredHistoryItems.length} items - {sortedByText} - Updated {lastUpdated} minutes ago)
                 </div>
                 <div class="slds-col slds-size_1-of-2 slds-grid slds-wrap slds-grid_align-end">
                     <lightning-input type="text" placeholder="Search history" variant="label-hidden" class="slds-m-bottom_small slds-col slds-size_1-of-3" onchange={handleSearchInputChange}></lightning-input>
@@ -35,7 +35,10 @@
                             <div class="slds-truncate" title="Expand"></div>
                         </th>
                         <th scope="col">
-                            <div class="slds-truncate" title="Date">Date</div>
+                            <button class="slds-button slds-button_reset slds-truncate" title="Date" onclick={handleSortByDate}>
+                                Date
+                                <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
+                            </button>
                         </th>
                         <th scope="col">
                             <div class="slds-truncate" title="Action">Action</div>

@@ -18,6 +18,8 @@ export default class HistoryList extends LightningElement {
     @track searchKey = '';
     @track dateFrom = null;
     @track dateTo = null;
+    @track sortOrder = 'desc';
+    @track sortOrderIcon = 'utility:arrowdown';
     wiredHistoryItemsResult;
 
     connectedCallback() {
@@ -174,6 +176,29 @@ export default class HistoryList extends LightningElement {
         this.filterHistoryItems();
     }
 
+    handleSortByDate() {
+        this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+        this.sortOrderIcon = this.sortOrder === 'asc' ? 'utility:arrowup' : 'utility:arrowdown';
+        this.sortHistoryItems();
+    }
+
+    sortHistoryItems() {
+        this.historyItems.sort((a, b) => {
+            const dateA = a.Date_Inserted__c ? new Date(a.Date_Inserted__c) : null;
+            const dateB = b.Date_Inserted__c ? new Date(b.Date_Inserted__c) : null;
+
+            if (dateA === null) return 1;
+            if (dateB === null) return -1;
+
+            if (this.sortOrder === 'asc') {
+                return dateA - dateB;
+            } else {
+                return dateB - dateA;
+            }
+        });
+        this.filterHistoryItems();
+    }
+
     filterHistoryItems() {
         this.filteredHistoryItems = this.historyItems.filter(item => {
             const searchKeyLower = this.searchKey.toLowerCase();
@@ -190,5 +215,9 @@ export default class HistoryList extends LightningElement {
 
             return searchMatch && dateMatch;
         });
+    }
+
+    get sortedByText() {
+        return `Sorted by date ${this.sortOrder} - Filtered by all history`;
     }
 }
