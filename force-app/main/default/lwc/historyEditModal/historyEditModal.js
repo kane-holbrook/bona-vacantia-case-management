@@ -1,6 +1,6 @@
 import { LightningElement, api, track, wire } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import { createRecord, updateRecord } from 'lightning/uiRecordApi';
+import { createRecord, updateRecord, getRecord } from 'lightning/uiRecordApi';
 import CASE_HISTORY_OBJECT from '@salesforce/schema/Case_History__c';
 import ID_FIELD from '@salesforce/schema/Case_History__c.Id';
 import DATE_INSERTED_FIELD from '@salesforce/schema/Case_History__c.Date_Inserted__c';
@@ -31,6 +31,7 @@ export default class HistoryEditModal extends LightningElement {
     @track bvCaseId;
     @track isSubModalOpen = false;
     @track versions = [];
+    @track originalRecord = {};
 
     versionColumns = [
         { label: 'Version', fieldName: 'versionNumber', type: 'number' },
@@ -54,6 +55,20 @@ export default class HistoryEditModal extends LightningElement {
             this.correspondenceWith = this.record.correspondenceWith;
             this.draft = this.record.draft;
         }
+
+        // Store the original state for comparison
+        this.originalRecord = {
+            dateInserted: this.dateInserted,
+            description: this.description,
+            details: this.details,
+            flagImportant: this.flagImportant,
+            fileData: this.fileData,
+            fileName: this.fileName,
+            fileSize: this.fileSize,
+            documentType: this.documentType,
+            correspondenceWith: this.correspondenceWith,
+            draft: this.draft
+        };
     }
 
     @wire(getHistoryVersions, { historyItemId: '$record.Id' })
@@ -152,15 +167,17 @@ export default class HistoryEditModal extends LightningElement {
         };
 
         if (this.record.Id) {
-            // Create a new version before updating the existing record
-            this.createVersion(this.record.Id, fields, parentRecordId);
+            // Check for changes before creating a new version
+            if (this.hasChanges()) {
+                this.createVersion(this.record.Id, fields, parentRecordId);
+            }
 
             fields[ID_FIELD.fieldApiName] = this.record.Id;
             const recordInput = { fields };
             updateRecord(recordInput)
                 .then(() => {
-                    if (this.fileData) {
-                        this.saveFile(this.record.Id);
+                    if (this.fileData && this.fileData !== this.originalRecord.fileData) {
+                        this.saveFile(this.record.Id, 'Document added');
                     } else {
                         this.dispatchEvent(new CustomEvent('save'));
                     }
@@ -175,7 +192,7 @@ export default class HistoryEditModal extends LightningElement {
             createRecord(recordInput)
                 .then(record => {
                     if (this.fileData) {
-                        this.saveFile(record.id);
+                        this.saveFile(record.id, 'Document added');
                     } else {
                         this.dispatchEvent(new CustomEvent('save'));
                     }
@@ -187,7 +204,7 @@ export default class HistoryEditModal extends LightningElement {
         }
     }
 
-    saveFile(historyRecordId) {
+    saveFile(historyRecordId, action) {
         this.createContentVersion({
             title: this.fileName,
             versionData: this.fileData,
@@ -195,7 +212,7 @@ export default class HistoryEditModal extends LightningElement {
         })
         .then(() => {
             this.showToast('Success', 'File uploaded successfully', 'success');
-            this.dispatchEvent(new CustomEvent('save'));
+            this.updateHistoryAction(historyRecordId, action);
         })
         .catch(error => {
             console.log('Error saving file', error);
@@ -237,6 +254,36 @@ export default class HistoryEditModal extends LightningElement {
                 console.log('Error creating version', error);
                 this.showToast('Error creating version', error.body.message, 'error');
             });
+    }
+
+    updateHistoryAction(historyRecordId, action) {
+        const fields = {
+            [ID_FIELD.fieldApiName]: historyRecordId,
+            [ACTION_FIELD.fieldApiName]: action
+        };
+
+        const recordInput = { fields };
+        updateRecord(recordInput)
+            .then(() => {
+                this.dispatchEvent(new CustomEvent('save'));
+            })
+            .catch(error => {
+                console.log('Error updating history action', error);
+                this.showToast('Error', 'Error updating history action', 'error');
+            });
+    }
+
+    hasChanges() {
+        return this.dateInserted !== this.originalRecord.dateInserted ||
+               this.description !== this.originalRecord.description ||
+               this.details !== this.originalRecord.details ||
+               this.flagImportant !== this.originalRecord.flagImportant ||
+               this.fileData !== this.originalRecord.fileData ||
+               this.fileName !== this.originalRecord.fileName ||
+               this.fileSize !== this.originalRecord.fileSize ||
+               this.documentType !== this.originalRecord.documentType ||
+               this.correspondenceWith !== this.originalRecord.correspondenceWith ||
+               this.draft !== this.originalRecord.draft;
     }
 
     handleRowAction(event) {
