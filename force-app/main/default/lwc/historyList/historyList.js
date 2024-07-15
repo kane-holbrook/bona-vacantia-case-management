@@ -35,7 +35,9 @@ export default class HistoryList extends LightningElement {
                 ...item,
                 isExpanded: false,
                 hasVersions: item.Case_History__r && item.Case_History__r.length > 0,
-                iconName: this.getIconName(false)
+                iconName: this.getIconName(false),
+                rowClass: item.Flag_as_important__c ? 'highlighted-row' : '',
+                flagIconClass: item.Flag_as_important__c ? 'icon-important' : 'icon-default'
             }));
             this.updateLastUpdated();
             this.filterHistoryItems();

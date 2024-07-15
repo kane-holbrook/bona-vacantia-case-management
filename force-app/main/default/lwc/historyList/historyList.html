@@ -62,7 +62,7 @@
                 </thead>
                 <tbody>
                     <template for:each={filteredHistoryItems} for:item="item">
-                        <tr key={item.Id} class="slds-hint-parent">
+                        <tr key={item.Id} class={item.rowClass}>
                             <td data-label="Expand">
                                 <template if:true={showVersions}>
                                     <template if:true={item.hasVersions}>
@@ -74,12 +74,7 @@
                             </td>
                             <td data-label="Date">
                                 <div class="slds-grid slds-align_absolute-center">
-                                    <template if:true={item.Flag_as_important__c}>
-                                        <lightning-icon icon-name="utility:priority" alternative-text="Important" class="slds-icon-text-error slds-m-right_x-small"></lightning-icon>
-                                    </template>
-                                    <template if:false={item.Flag_as_important__c}>
-                                        <lightning-icon icon-name="utility:priority" alternative-text="Important" class="slds-icon-text-default slds-m-right_x-small"></lightning-icon>
-                                    </template>
+                                    <lightning-icon icon-name="utility:priority" alternative-text="Important" class={item.flagIconClass}></lightning-icon>
                                     {item.Date_Inserted__c}
                                 </div>
                             </td>
@@ -98,15 +93,13 @@
                         </tr>
                         <template if:true={item.isExpanded}>
                             <template for:each={item.Case_History__r} for:item="version">
-                                <tr key={version.Id} class="slds-hint-parent">
+                                <tr key={version.Id} class={version.rowClass}>
                                     <td data-label="Expand">
                                         <lightning-icon icon-name="utility:level_down" alternative-text="Sub-item" class="slds-icon-text-default version-expand-icon"></lightning-icon>
                                     </td>
                                     <td data-label="Date">
                                         <div class="slds-grid slds-align_absolute-center">
-                                            <template if:true={version.Flag_as_important__c}>
-                                                <lightning-icon icon-name="utility:flag" alternative-text="Important" class="slds-icon-text-error slds-m-right_x-small"></lightning-icon>
-                                            </template>
+                                            <lightning-icon icon-name="utility:flag" alternative-text="Important" class={version.flagIconClass}></lightning-icon>
                                             {version.Date_Inserted__c}
                                         </div>
                                     </td>

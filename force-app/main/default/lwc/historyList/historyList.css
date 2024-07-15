@@ -7,3 +7,15 @@
 .version-expand-icon {
     margin-left: 5em;
 }
+
+.highlighted-row {
+    background-color: #fedfd0;
+}
+
+.icon-important {
+    --slds-c-icon-color-foreground-default: #5f3e02;
+}
+
+.icon-default {
+    --slds-c-icon-color-foreground-default: #c9c9c9;
+}
