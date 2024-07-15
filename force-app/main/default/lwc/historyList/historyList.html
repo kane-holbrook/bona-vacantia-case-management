@@ -8,7 +8,13 @@
                 <div class="slds-media__body">
                     <div class="slds-card__header-subtitle">History</div>
                     <h2 class="slds-card__header-title">
-                        <span>All history</span>
+                        <lightning-combobox 
+                            name="historyType" 
+                            label="Select History Type" 
+                            value={selectedHistoryType} 
+                            options={historyTypeOptions} 
+                            onchange={handleHistoryTypeChange}>
+                        </lightning-combobox>
                     </h2>
                 </div>
             </header>

@@ -35,4 +35,9 @@ public with sharing class HistoryController {
         }
         return userNames;
     }
+
+    @AuraEnabled(cacheable=true)
+    public static Id getCurrentUserId() {
+        return UserInfo.getUserId();
+    }
 }

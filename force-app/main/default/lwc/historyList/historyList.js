@@ -2,6 +2,7 @@ import { LightningElement, wire, track, api } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
 import getHistoryItems from '@salesforce/apex/HistoryController.getHistoryItems';
 import getUserNames from '@salesforce/apex/HistoryController.getUserNames';
+import getCurrentUserId from '@salesforce/apex/HistoryController.getCurrentUserId';
 import getSHDocuments from '@salesforce/apex/HistoryController.getSHDocuments';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { getRecordId } from 'c/sharedService';
@@ -21,12 +22,31 @@ export default class HistoryList extends LightningElement {
     @track dateTo = null;
     @track sortOrder = 'desc';
     @track sortOrderIcon = 'utility:arrowdown';
+    @track selectedHistoryType = 'allHistory';  // Default selection
+    @track currentUserId;  // To store the current user's ID
     wiredHistoryItemsResult;
     userNames = {};
 
+    historyTypeOptions = [
+        { label: 'All history', value: 'allHistory' },
+        { label: 'My history', value: 'myHistory' }
+    ];
+
     connectedCallback() {
         this.recordId = getRecordId();
+        this.fetchCurrentUserId();
         this.refreshHistoryItems();
+    }
+
+    fetchCurrentUserId() {
+        getCurrentUserId()
+            .then(result => {
+                this.currentUserId = result;
+                this.filterHistoryItems();
+            })
+            .catch(error => {
+                this.showToast('Error', 'Error fetching current user ID', 'error');
+            });
     }
 
     @wire(getHistoryItems, { recordId: '$recordId' })
@@ -242,11 +262,18 @@ export default class HistoryList extends LightningElement {
                 (!this.dateTo || new Date(item.Date_Inserted__c) <= this.dateTo)
             );
 
-            return searchMatch && dateMatch;
+            const historyTypeMatch = this.selectedHistoryType === 'allHistory' || (this.selectedHistoryType === 'myHistory' && item.Case_Officer__c === this.currentUserId);
+
+            return searchMatch && dateMatch && historyTypeMatch;
         });
     }
 
+    handleHistoryTypeChange(event) {
+        this.selectedHistoryType = event.detail.value;
+        this.filterHistoryItems();
+    }
+
     get sortedByText() {
-        return `Sorted by date ${this.sortOrder} - Filtered by all history`;
+        return `Sorted by date ${this.sortOrder} - Filtered by ${this.selectedHistoryType === 'allHistory' ? 'all history' : 'my history'}`;
     }
 }
