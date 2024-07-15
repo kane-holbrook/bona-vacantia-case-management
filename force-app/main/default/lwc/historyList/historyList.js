@@ -37,7 +37,10 @@ export default class HistoryList extends LightningElement {
                 hasVersions: item.Case_History__r && item.Case_History__r.length > 0,
                 iconName: this.getIconName(false),
                 rowClass: item.Flag_as_important__c ? 'highlighted-row' : '',
-                flagIconClass: item.Flag_as_important__c ? 'icon-important' : 'icon-default'
+                flagIconClass: item.Flag_as_important__c ? 'icon-important' : 'icon-default',
+                documentType: item.SHDocuments__r && item.SHDocuments__r.length > 0 ? item.SHDocuments__r[0].DocumentType__c : '',
+                correspondenceWith: item.SHDocuments__r && item.SHDocuments__r.length > 0 ? item.SHDocuments__r[0].Correspondence_With__c : '',
+                draft: item.SHDocuments__r && item.SHDocuments__r.length > 0 ? item.SHDocuments__r[0].Draft__c : ''
             }));
             this.updateLastUpdated();
             this.filterHistoryItems();
@@ -206,8 +209,8 @@ export default class HistoryList extends LightningElement {
             const searchKeyLower = this.searchKey.toLowerCase();
             const searchMatch = this.searchKey ? (
                 (item.Action__c?.toLowerCase() ?? '').includes(searchKeyLower) ||
-                (item.DocumentType__c?.toLowerCase() ?? '').includes(searchKeyLower) ||
-                (item.Correspondence_With__c?.toLowerCase() ?? '').includes(searchKeyLower)
+                (item.documentType?.toLowerCase() ?? '').includes(searchKeyLower) ||
+                (item.correspondenceWith?.toLowerCase() ?? '').includes(searchKeyLower)
             ) : true;
 
             const dateMatch = (
