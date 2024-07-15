@@ -9,6 +9,7 @@ import DETAILS_FIELD from '@salesforce/schema/Case_History__c.Details__c';
 import FLAG_IMPORTANT_FIELD from '@salesforce/schema/Case_History__c.Flag_as_important__c';
 import BV_CASE_FIELD from '@salesforce/schema/Case_History__c.BV_Case__c';
 import PARENT_HISTORY_RECORD_FIELD from '@salesforce/schema/Case_History__c.Parent_History_Record__c';
+import CASE_OFFICER_FIELD from '@salesforce/schema/Case_History__c.Case_Officer__c';
 import SHDOCUMENT_OBJECT from '@salesforce/schema/SHDocument__c';
 import SHDOCUMENT_NAME_FIELD from '@salesforce/schema/SHDocument__c.Name';
 import DOCUMENT_EXTENSION_FIELD from '@salesforce/schema/SHDocument__c.DocumentExtension__c';
@@ -19,6 +20,7 @@ import DOCUMENT_DRAFT_FIELD from '@salesforce/schema/SHDocument__c.Draft__c';
 import SERVER_RELATIVE_URL_FIELD from '@salesforce/schema/SHDocument__c.ServerRelativeURL__c';
 import DOCUMENT_FILE_SIZE_FIELD from '@salesforce/schema/SHDocument__c.FileSize__c';
 import CASE_HISTORY_FIELD from '@salesforce/schema/SHDocument__c.Case_History__c';
+import USER_ID from '@salesforce/user/Id';
 import getHistoryVersions from '@salesforce/apex/HistoryController.getHistoryVersions';
 import uploadFileToSharePoint from '@salesforce/apex/FileController.uploadFileToSharePoint';
 import getCaseName from '@salesforce/apex/FileController.getCaseName';
@@ -41,6 +43,8 @@ export default class HistoryEditModal extends LightningElement {
     @track versions = [];
     @track originalRecord = {};
     @track originalDocumentId; // Added to keep track of the original document ID
+
+    userId = USER_ID; // Get the current user ID
 
     versionColumns = [
         { label: 'Version', fieldName: 'versionNumber', type: 'number' },
@@ -206,7 +210,8 @@ export default class HistoryEditModal extends LightningElement {
             [DATE_INSERTED_FIELD.fieldApiName]: this.dateInserted,
             [ACTION_FIELD.fieldApiName]: this.description,
             [DETAILS_FIELD.fieldApiName]: this.details,
-            [FLAG_IMPORTANT_FIELD.fieldApiName]: this.flagImportant
+            [FLAG_IMPORTANT_FIELD.fieldApiName]: this.flagImportant,
+            [CASE_OFFICER_FIELD.fieldApiName]: this.userId // Set the current user's ID
         };
 
         if (this.record.Id) {
