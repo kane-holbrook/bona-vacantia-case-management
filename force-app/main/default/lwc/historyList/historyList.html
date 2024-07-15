@@ -82,7 +82,7 @@
                             <td data-label="Document Type">{item.documentType}</td>
                             <td data-label="Correspondence With">{item.correspondenceWith}</td>
                             <td data-label="Draft">{item.draft}</td>
-                            <td data-label="Case Officer">{item.Case_Officer__c}</td>
+                            <td data-label="Case Officer">{item.Case_Officer_Name}</td>
                             <td data-label="Actions">
                                 <lightning-button-menu alternative-text="Actions" icon-name="utility:down" menu-alignment="right">
                                     <lightning-menu-item label="View/Edit" data-id={item.Id} onclick={handleViewEdit}></lightning-menu-item>
@@ -107,7 +107,7 @@
                                     <td data-label="Document Type">{version.Document_Type__c}</td>
                                     <td data-label="Correspondence With">{version.Correspondence_With__c}</td>
                                     <td data-label="Draft">{version.Draft__c}</td>
-                                    <td data-label="Case Officer">{version.Case_Officer__c}</td>
+                                    <td data-label="Case Officer">{version.Case_Officer_Name}</td>
                                     <td data-label="Actions">
                                         <lightning-button-menu alternative-text="Actions" icon-name="utility:down" menu-alignment="right">
                                             <lightning-menu-item label="View/Edit" data-id={version.Id} onclick={handleViewEdit}></lightning-menu-item>

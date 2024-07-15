@@ -1,6 +1,7 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
 import getHistoryItems from '@salesforce/apex/HistoryController.getHistoryItems';
+import getUserNames from '@salesforce/apex/HistoryController.getUserNames';
 import getSHDocuments from '@salesforce/apex/HistoryController.getSHDocuments';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { getRecordId } from 'c/sharedService';
@@ -21,6 +22,7 @@ export default class HistoryList extends LightningElement {
     @track sortOrder = 'desc';
     @track sortOrderIcon = 'utility:arrowdown';
     wiredHistoryItemsResult;
+    userNames = {};
 
     connectedCallback() {
         this.recordId = getRecordId();
@@ -42,11 +44,28 @@ export default class HistoryList extends LightningElement {
                 correspondenceWith: item.SHDocuments__r && item.SHDocuments__r.length > 0 ? item.SHDocuments__r[0].Correspondence_With__c : '',
                 draft: item.SHDocuments__r && item.SHDocuments__r.length > 0 ? item.SHDocuments__r[0].Draft__c : ''
             }));
+            const userIds = this.historyItems.map(item => item.Case_Officer__c);
+            this.fetchUserNames(userIds);
             this.updateLastUpdated();
             this.filterHistoryItems();
         } else if (result.error) {
             this.showToast('Error', 'Error fetching history items', 'error');
         }
+    }
+
+    fetchUserNames(userIds) {
+        getUserNames({ userIds })
+            .then(result => {
+                this.userNames = result;
+                this.historyItems = this.historyItems.map(item => ({
+                    ...item,
+                    Case_Officer_Name: this.userNames[item.Case_Officer__c] || item.Case_Officer__c
+                }));
+                this.filterHistoryItems();
+            })
+            .catch(error => {
+                this.showToast('Error', 'Error fetching user names', 'error');
+            });
     }
 
     refreshHistoryItems() {
@@ -210,7 +229,8 @@ export default class HistoryList extends LightningElement {
             const searchMatch = this.searchKey ? (
                 (item.Action__c?.toLowerCase() ?? '').includes(searchKeyLower) ||
                 (item.documentType?.toLowerCase() ?? '').includes(searchKeyLower) ||
-                (item.correspondenceWith?.toLowerCase() ?? '').includes(searchKeyLower)
+                (item.correspondenceWith?.toLowerCase() ?? '').includes(searchKeyLower) ||
+                (item.Case_Officer_Name?.toLowerCase() ?? '').includes(searchKeyLower)
             ) : true;
 
             const dateMatch = (
