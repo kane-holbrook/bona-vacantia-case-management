@@ -171,7 +171,11 @@ export default class HistoryList extends LightningElement {
     toggleShowVersions(event) {
         this.showVersions = event.target.checked;
         if (!this.showVersions) {
-            this.historyItems = this.historyItems.map(item => ({ ...item, isExpanded: false }));
+            this.historyItems = this.historyItems.map(item => ({ 
+                ...item, 
+                isExpanded: false,
+                iconName: this.getIconName(false)
+            }));
         }
         this.filterHistoryItems();
     }
