@@ -22,6 +22,7 @@ export default class HistoryList extends LightningElement {
     @track dateTo = null;
     @track sortOrder = 'desc';
     @track sortOrderIcon = 'utility:arrowdown';
+    @track sortedBy = 'Date_Inserted__c';
     @track selectedHistoryType = 'allHistory';  // Default selection
     @track currentUserId;  // To store the current user's ID
     @track selectedRecordDetails = 'There are no history notes for this case.';  // New track property to store Details__c value
@@ -225,25 +226,28 @@ export default class HistoryList extends LightningElement {
         this.filterHistoryItems();
     }
 
-    handleSortByDate() {
-        this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+    handleSort(event) {
+        const column = event.currentTarget.dataset.column;
+        this.sortOrder = (this.sortedBy === column && this.sortOrder === 'asc') ? 'desc' : 'asc';
         this.sortOrderIcon = this.sortOrder === 'asc' ? 'utility:arrowup' : 'utility:arrowdown';
+        this.sortedBy = column;
         this.sortHistoryItems();
     }
 
     sortHistoryItems() {
         this.historyItems.sort((a, b) => {
-            const dateA = a.Date_Inserted__c ? new Date(a.Date_Inserted__c) : null;
-            const dateB = b.Date_Inserted__c ? new Date(b.Date_Inserted__c) : null;
+            const valA = a[this.sortedBy] ? a[this.sortedBy].toLowerCase() : '';
+            const valB = b[this.sortedBy] ? b[this.sortedBy].toLowerCase() : '';
 
-            if (dateA === null) return 1;
-            if (dateB === null) return -1;
+            if (valA === '' || valA === null || valA === undefined) return 1;
+            if (valB === '' || valB === null || valB === undefined) return -1;
 
-            if (this.sortOrder === 'asc') {
-                return dateA - dateB;
-            } else {
-                return dateB - dateA;
+            if (valA < valB) {
+                return this.sortOrder === 'asc' ? -1 : 1;
+            } else if (valA > valB) {
+                return this.sortOrder === 'asc' ? 1 : -1;
             }
+            return 0;
         });
         this.filterHistoryItems();
     }
@@ -281,6 +285,30 @@ export default class HistoryList extends LightningElement {
     }
 
     get sortedByText() {
-        return `Sorted by date ${this.sortOrder} - Filtered by ${this.selectedHistoryType === 'allHistory' ? 'all history' : 'my history'}`;
+        return `Sorted by ${this.sortedBy} ${this.sortOrder} - Filtered by ${this.selectedHistoryType === 'allHistory' ? 'all history' : 'my history'}`;
+    }
+
+    get isSortedByDate() {
+        return this.sortedBy === 'Date_Inserted__c';
+    }
+
+    get isSortedByAction() {
+        return this.sortedBy === 'Action__c';
+    }
+
+    get isSortedByDocumentType() {
+        return this.sortedBy === 'DocumentType';
+    }
+
+    get isSortedByCorrespondenceWith() {
+        return this.sortedBy === 'CorrespondenceWith';
+    }
+
+    get isSortedByDraft() {
+        return this.sortedBy === 'Draft';
+    }
+
+    get isSortedByCaseOfficer() {
+        return this.sortedBy === 'Case_Officer_Name';
     }
 }
