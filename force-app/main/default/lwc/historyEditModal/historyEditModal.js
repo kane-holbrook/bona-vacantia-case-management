@@ -62,7 +62,7 @@ export default class HistoryEditModal extends LightningElement {
 
         if (this.record.fileName) {
             this.fileName = this.record.fileName;
-            this.fileSize = this.record.fileSize;
+            this.fileSize = this.formatFileSize(this.record.fileSize);
             this.fileData = this.record.fileData;
             this.documentType = this.record.documentType;
             this.correspondenceWith = this.record.correspondenceWith;
@@ -410,10 +410,15 @@ export default class HistoryEditModal extends LightningElement {
         this.dispatchEvent(evt);
     }
 
-    formatDate(dateStr) {
-        // Assuming dateStr is in the format 'DD/MM/YYYY'
-        const [day, month, year] = dateStr.split('/');
-        const date = new Date(`${year}-${month}-${day}`);
-        return date.toISOString(); // Converts to 'YYYY-MM-DDTHH:MM:SS.sssZ' format
+    formatFileSize(size) {
+        if (size < 1024) {
+            return size + ' B';
+        } else if (size < 1024 * 1024) {
+            return (size / 1024).toFixed(2) + ' kB';
+        } else if (size < 1024 * 1024 * 1024) {
+            return (size / (1024 * 1024)).toFixed(2) + ' MB';
+        } else {
+            return (size / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
+        }
     }
 }
