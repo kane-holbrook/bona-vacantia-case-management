@@ -24,6 +24,7 @@ export default class HistoryList extends LightningElement {
     @track sortOrderIcon = 'utility:arrowdown';
     @track selectedHistoryType = 'allHistory';  // Default selection
     @track currentUserId;  // To store the current user's ID
+    @track selectedRecordDetails = 'There are no history notes for this case.';  // New track property to store Details__c value
     wiredHistoryItemsResult;
     userNames = {};
 
@@ -271,6 +272,12 @@ export default class HistoryList extends LightningElement {
     handleHistoryTypeChange(event) {
         this.selectedHistoryType = event.detail.value;
         this.filterHistoryItems();
+    }
+
+    handleRowClick(event) {
+        const itemId = event.currentTarget.dataset.id;
+        const record = this.historyItems.find(item => item.Id === itemId);
+        this.selectedRecordDetails = record ? record.Details__c : 'There are no history notes for this case.';
     }
 
     get sortedByText() {
