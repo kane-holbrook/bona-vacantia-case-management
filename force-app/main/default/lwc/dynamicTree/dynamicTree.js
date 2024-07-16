@@ -119,6 +119,7 @@ export default class DynamicTree extends LightningElement {
         const object = event.currentTarget.dataset.object;
         const parentLabel = event.currentTarget.dataset.parentLabel;
         const grandChildLabel = event.currentTarget.dataset.parentGrandchildLabel;
+        const greatGrandChildLabel = event.currentTarget.dataset.parentGreatgrandchildLabel;
     
         // Toggle submenu visibility
         const submenu = event.currentTarget.closest('li').querySelector('ul');
@@ -150,7 +151,7 @@ export default class DynamicTree extends LightningElement {
 
             const recordTypeId = await getRecordTypeId({ objectName: object, recordTypeName: updatedLabel });
             const navigationEvent = new CustomEvent('navigate', {
-                detail: { recordTypeId, object, label, parentLabel, grandChildLabel }
+                detail: { recordTypeId, object, label, parentLabel, grandChildLabel, greatGrandChildLabel }
             });
             this.dispatchEvent(navigationEvent);
         }

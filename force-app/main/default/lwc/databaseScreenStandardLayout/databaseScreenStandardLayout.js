@@ -86,6 +86,15 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
         this._parentGrandchildLabel = value;
     }
 
+    @api
+    get parentGreatGrandchildLabel() {
+        return this._parentGreatGrandchildLabel;
+    }
+
+    set parentGreatGrandchildLabel(value) {
+        this._parentGreatGrandchildLabel = value;
+    }
+
     @api recordId;
 
     @wire(getLayout, { objectApiName: '$objectApiName', recordTypeId: '$recordTypeId', recordId: '$recordId' })
@@ -802,10 +811,16 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
             console.log('Label: ', this._label);
             console.log('Parent Label: ', this._parentLabel);
             console.log('Parent Grandchild Label: ', this._parentGrandchildLabel);
+            console.log('Parent Great Grandchild Label: ', this._parentGreatGrandchildLabel);
     
             // If parentGrandchildLabel is present, construct the subtitle as "parentGrandchildLabel > label"
             if (this._parentGrandchildLabel) {
                 return `${this._parentGrandchildLabel} > ${this._label}`;
+            }
+
+            // if parentGreatGrandchildLabel is present, construct the subtitle as "parentGreatGrandchildLabel > parentGrandchildLabel > label"
+            if (this._parentGreatGrandchildLabel) {
+                return `${this._parentGreatGrandchildLabel} > ${this._label}`;
             }
             
             // If label and parentLabel are the same, return only the parentLabel

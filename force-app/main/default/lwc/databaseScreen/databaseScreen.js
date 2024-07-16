@@ -8,6 +8,7 @@ export default class DatabaseScreen extends LightningElement {
     @track label;
     @track parentLabel;
     @track parentGrandchildLabel;
+    @track parentGreatGrandchildLabel;
 
     connectedCallback() {
         this.dispatchRecordIdEvent();
@@ -31,6 +32,7 @@ export default class DatabaseScreen extends LightningElement {
         this.label = event.detail.label;
         this.parentLabel = event.detail.parentLabel;
         this.parentGrandchildLabel = event.detail.grandChildLabel;
+        this.parentGreatGrandchildLabel = event.detail.greatGrandChildLabel;
 
         console.log(event.detail);
 
@@ -39,6 +41,7 @@ export default class DatabaseScreen extends LightningElement {
         console.log('Label:', this.label);
         console.log('Parent Label:', this.parentLabel);
         console.log('Parent Grandchild Label:', this.parentGrandchildLabel);
+        console.log('Parent Great Grandchild Label:', this.parentGreatGrandchildLabel);
     }
 
     resetVariables() {
@@ -47,5 +50,6 @@ export default class DatabaseScreen extends LightningElement {
         this.label = null;
         this.parentLabel = null;
         this.parentGrandchildLabel = null;
+        this.parentGreatGrandchildLabel = null;
     }
 }

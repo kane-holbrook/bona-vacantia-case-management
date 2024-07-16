@@ -26,7 +26,7 @@
                         <template if:true={node.hasChildren}>
                             <ul class={node.expandedClass}>
                                 <template for:each={node.children} for:item="child">
-                                    <li key={child.label} aria-level="3">
+                                    <li key={child.label} aria-level="2">
                                         <div class="slds-tree__item">
                                             <template if:true={child.hasChildren}>
                                                 <button class="slds-button slds-button_icon slds-m-right_x-small" aria-hidden="true" tabindex="-1" onclick={handleToggle} data-label={child.label}>
@@ -42,7 +42,7 @@
                                         <template if:true={child.hasChildren}>
                                             <ul class={child.expandedClass}>
                                                 <template for:each={child.children} for:item="grandchild">
-                                                    <li key={grandchild.label} aria-level="4">
+                                                    <li key={grandchild.label} aria-level="3">
                                                         <div class="slds-tree__item">
                                                             <template if:true={grandchild.hasChildren}>
                                                                 <button class="slds-button slds-button_icon slds-m-right_x-small" aria-hidden="true" tabindex="-1" onclick={handleToggle} data-label={grandchild.label}>
@@ -55,6 +55,26 @@
                                                                 </span>
                                                             </span>
                                                         </div>
+                                                        <template if:true={grandchild.hasChildren}>
+                                                            <ul class={grandchild.expandedClass}>
+                                                                <template for:each={grandchild.children} for:item="greatgrandchild">
+                                                                    <li key={greatgrandchild.label} aria-level="4">
+                                                                        <div class="slds-tree__item">
+                                                                            <template if:true={greatgrandchild.hasChildren}>
+                                                                                <button class="slds-button slds-button_icon slds-m-right_x-small" aria-hidden="true" tabindex="-1" onclick={handleToggle} data-label={greatgrandchild.label}>
+                                                                                    <lightning-icon icon-name={greatgrandchild.icon} alternative-text="Expand" size="x-small"></lightning-icon>
+                                                                                </button>
+                                                                            </template>
+                                                                            <span class="slds-has-flexi-truncate">
+                                                                                <span class="slds-tree__item-label slds-truncate" title={greatgrandchild.label} data-label={greatgrandchild.label} data-object={greatgrandchild.object} onclick={handleNavigation} data-parent-greatgrandchild-label={grandchild.label}>
+                                                                                    {greatgrandchild.label}
+                                                                                </span>
+                                                                            </span>
+                                                                        </div>
+                                                                    </li>
+                                                                </template>
+                                                            </ul>
+                                                        </template>
                                                     </li>
                                                 </template>
                                             </ul>
