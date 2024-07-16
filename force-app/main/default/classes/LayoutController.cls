@@ -156,11 +156,14 @@ public with sharing class LayoutController {
             }
             
             Map<String, Schema.RecordTypeInfo> recordTypes = targetType.getDescribe().getRecordTypeInfosByName();
-            recordTypeName = recordTypeName.toLowerCase(); // Convert to lowercase for case-insensitive comparison
+            
+            // Convert the recordTypeName to lower case and replace the Unicode apostrophe with a regular apostrophe
+            recordTypeName = recordTypeName.toLowerCase().replace('\u2019', '\''); 
     
             // Iterate through available record types to find a similar name
             for (String availableName : recordTypes.keySet()) {
-                if (availableName.toLowerCase().contains(recordTypeName)) { // Check if the recordTypeName is a substring of availableName
+                String normalizedAvailableName = availableName.toLowerCase().replace('\u2019', '\'');
+                if (normalizedAvailableName.contains(recordTypeName)) { // Check if the recordTypeName is a substring of availableName
                     System.debug('Matching record type found: ' + availableName);
                     return recordTypes.get(availableName).getRecordTypeId();
                 }
