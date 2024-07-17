@@ -5,3 +5,11 @@
 .high-priority {
     background-color: #ebf7e6;
 }
+
+.critical-icon {
+    --slds-c-icon-color-foreground-default: #8e030f;
+}
+
+.high-icon {
+    --slds-c-icon-color-foreground-default: #194e31;
+}

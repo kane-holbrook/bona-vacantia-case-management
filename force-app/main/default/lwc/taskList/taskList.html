@@ -115,7 +115,15 @@
                             <td data-label="Document Type">{item.Document_Type__c}</td>
                             <td data-label="Correspondence">{item.Correspondence__c}</td>
                             <td data-label="Draft">{item.Draft__c}</td>
-                            <td data-label="Priority">{item.Priority__c}</td>
+                            <td data-label="Priority">
+                                <template if:true={item.isCritical}>
+                                    <lightning-icon icon-name="utility:info" alternative-text="Info" size="small" class="critical-icon slds-m-right_x-small"></lightning-icon>
+                                </template>
+                                <template if:true={item.isHigh}>
+                                    <lightning-icon icon-name="utility:info_alt" alternative-text="Info" size="small" class="high-icon slds-m-right_x-small"></lightning-icon>
+                                </template>
+                                {item.Priority__c}
+                            </td>
                             <td data-label="Case Officer">{item.Case_Officer_Name}</td>
                             <td data-label="Actions">
                                 <lightning-button-menu alternative-text="Actions" icon-name="utility:down" menu-alignment="right">

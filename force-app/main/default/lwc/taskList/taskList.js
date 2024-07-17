@@ -58,7 +58,9 @@ export default class TaskList extends LightningElement {
                 iconName: this.getIconName(false),
                 rowClass: this.getRowClass(item),
                 flagIconClass: item.Flag_as_important__c ? 'icon-important' : 'icon-default',
-                SubTasks: item.SubTasks__r
+                SubTasks: item.SubTasks__r,
+                isCritical: item.Priority__c === 'Critical',
+                isHigh: item.Priority__c === 'High'
             }));
             const userIds = this.taskItems.map(item => item.Assigned_To__c);
             this.fetchUserNames(userIds);
