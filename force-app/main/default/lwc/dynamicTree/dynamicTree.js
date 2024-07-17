@@ -11,6 +11,7 @@ export default class DynamicTree extends LightningElement {
     @track searchTerm = '';
     @track isSearchActive = false;
     @track recordTypeDeveloperName;
+    @track treeName;
 
     connectedCallback() {
         this.retrieveRecordTypeDeveloperName();
@@ -35,6 +36,7 @@ export default class DynamicTree extends LightningElement {
             .then(data => {
                 this.treeData = this.formatTreeData(data);
                 this.error = undefined;
+                this.setTreeName(this.recordTypeDeveloperName);
             })
             .catch(error => {
                 this.error = error;
@@ -160,6 +162,22 @@ export default class DynamicTree extends LightningElement {
     handleSearch(event) {
         this.searchTerm = event.target.value.toLowerCase();
         this.isSearchActive = !!this.searchTerm;
+    }
+
+    setTreeName(recordTypeDeveloperName) {
+        if (recordTypeDeveloperName == 'ESTA') {
+            this.treeName = 'Estates';
+        } else if (recordTypeDeveloperName == 'COMP') {
+            this.treeName = 'Companies';
+        } else if (recordTypeDeveloperName == 'CONV') {
+            this.treeName = 'Conveyancing';
+        } else if (recordTypeDeveloperName == 'FOIR') {
+            this.treeName = 'Freedom of Information';
+        } else if (recordTypeDeveloperName == 'GENE') {
+            this.treeName = 'General Files';
+        } else {
+            this.treeName = '';
+        }
     }
 
     get filteredTreeData() {
