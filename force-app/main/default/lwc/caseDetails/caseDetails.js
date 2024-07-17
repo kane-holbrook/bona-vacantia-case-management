@@ -1,31 +1,59 @@
-import { LightningElement, api, wire } from 'lwc';
+import { LightningElement, api, track, wire } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import { getRecord } from 'lightning/uiRecordApi';
+import { setRecordId } from 'c/sharedService';
+import getRecordTypeIdForRecord from '@salesforce/apex/LayoutController.getRecordTypeIdForRecord';
+import getRecordTypeDeveloperName from '@salesforce/apex/LayoutController.getRecordTypeDeveloperName';
 
 const FIELDS = [
     'BV_Case__c.Name',
     'BV_Case__c.Forenames__c',
     'BV_Case__c.Surname__c',
-    'BV_Case__c.Died__c',
+    'BV_Case__c.Date_Of_Death__c',
 ];
 
 export default class CaseDetails extends NavigationMixin(LightningElement) {
     @api recordId;
+    @track recordTypeDeveloperName;
+    @track caseTypeName;
+    @track caseData = {};
 
     @wire(getRecord, { recordId: '$recordId', fields: FIELDS })
-    case;
+    wiredCase({ error, data }) {
+        if (data) {
+            this.caseData = data.fields;
+        } else if (error) {
+            console.error('Error retrieving record', error);
+        }
+    }
 
     get caseNumber() {
-        return this.case.data ? this.case.data.fields.Name.value : 'No case number specified';
+        return this.caseData.Name ? this.caseData.Name.value : 'No case number specified';
     }
 
     get deceasedName() {
-        return this.case.data ? `${this.case.data.fields.Forenames__c.value} ${this.case.data.fields.Surname__c.value}` : 'No name specified';
+        return this.caseData.Forenames__c && this.caseData.Surname__c ? `${this.caseData.Forenames__c.value} ${this.caseData.Surname__c.value}` : 'No name specified';
     }
 
     get dateOfDeath() {
-        // Return in UK date format
-        return this.case.data ? new Date(this.case.data.fields.Died__c.value).toLocaleDateString('en-GB') : 'No date of death specified';
+        return this.caseData.Date_Of_Death__c ? new Date(this.caseData.Date_Of_Death__c.value).toLocaleDateString('en-GB') : 'No date of death specified';
+    }
+
+    connectedCallback() {
+        this.retrieveRecordTypeDeveloperName();
+        setRecordId(this.recordId);
+    }
+
+    async retrieveRecordTypeDeveloperName() {
+        try {
+            const recordTypeId = await getRecordTypeIdForRecord({ recordId: this.recordId });
+            const recordTypeDeveloperName = await getRecordTypeDeveloperName({ recordTypeId: recordTypeId });
+            this.recordTypeDeveloperName = recordTypeDeveloperName;
+            this.setCaseTypeName(recordTypeDeveloperName);
+        } catch (error) {
+            this.error = error;
+            this.treeData = undefined;
+        }
     }
 
     handleEdit() {
@@ -89,5 +117,21 @@ export default class CaseDetails extends NavigationMixin(LightningElement) {
                 actionName: 'clone'
             }
         });
+    }
+
+    setCaseTypeName(recordTypeDeveloperName) {
+        if (recordTypeDeveloperName == 'ESTA') {
+            this.caseTypeName = 'Estates';
+        } else if (recordTypeDeveloperName == 'COMP') {
+            this.caseTypeName = 'Companies';
+        } else if (recordTypeDeveloperName == 'CONV') {
+            this.caseTypeName = 'Conveyancing';
+        } else if (recordTypeDeveloperName == 'FOIR') {
+            this.caseTypeName = 'Freedom of Information';
+        } else if (recordTypeDeveloperName == 'GENE') {
+            this.caseTypeName = 'General Files';
+        } else {
+            this.caseTypeName = '';
+        }
     }
 }

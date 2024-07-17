@@ -1,5 +1,5 @@
 import { LightningElement, track, api } from 'lwc';
-import { setRecordId } from 'c/sharedService';
+import { getRecordId } from 'c/sharedService';
 
 export default class DatabaseScreen extends LightningElement {
     @api recordId;
@@ -12,7 +12,7 @@ export default class DatabaseScreen extends LightningElement {
 
     connectedCallback() {
         this.dispatchRecordIdEvent();
-        setRecordId(this.recordId); // Set the recordId in the shared service
+        this.recordId = getRecordId();
     }
 
     dispatchRecordIdEvent() {
