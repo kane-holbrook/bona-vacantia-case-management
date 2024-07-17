@@ -1,6 +1,7 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
 import getTasksByCaseId from '@salesforce/apex/TaskController.getTasksByCaseId';
+import getOpenTasksByUser from '@salesforce/apex/TaskController.getOpenTasksByUser';
 import getUserNames from '@salesforce/apex/HistoryController.getUserNames';
 import getCurrentUserId from '@salesforce/apex/HistoryController.getCurrentUserId';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
@@ -32,6 +33,10 @@ export default class TaskList extends LightningElement {
 
     connectedCallback() {
         this.recordId = getRecordId();
+        if (!this.recordId) {
+            this.selectedTaskType = 'myOpenTasks';
+            this.taskTypeOptions = [{ label: 'My open tasks', value: 'myOpenTasks' }];
+        }
         this.fetchCurrentUserId();
         this.refreshTaskItems();
     }
@@ -50,31 +55,44 @@ export default class TaskList extends LightningElement {
     @wire(getTasksByCaseId, { caseId: '$recordId' })
     wiredTaskItems(result) {
         this.wiredTaskItemsResult = result;
-        if (result.data) {
-            this.taskItems = result.data.map(item => ({
-                ...item,
-                isExpanded: false,
-                hasSubTasks: item.BV_Tasks1__r && item.BV_Tasks1__r.length > 0,
-                iconName: this.getIconName(false),
-                rowClass: this.getRowClass(item),
-                flagIconClass: item.Flag_as_important__c ? 'icon-important' : 'icon-default',
-                SubTasks: item.BV_Tasks1__r.map(subTask => ({
-                    ...subTask,
-                    rowClass: this.getRowClass(subTask),
-                    isCritical: subTask.Priority__c === 'Critical',
-                    isHigh: subTask.Priority__c === 'High'
-                })),
-                isCritical: item.Priority__c === 'Critical',
-                isHigh: item.Priority__c === 'High'
-            }));
-            const userIds = this.taskItems.map(item => item.Assigned_To__c);
-            this.fetchUserNames(userIds);
-            this.updateLastUpdated();
-            this.assignNumbers();
-            this.filterTaskItems();
+        if (result.data && this.recordId) {
+            this.processTaskItems(result.data);
         } else if (result.error) {
             this.showToast('Error', 'Error fetching task items', 'error');
         }
+    }
+
+    @wire(getOpenTasksByUser, { userId: '$currentUserId' })
+    wiredOpenTasks(result) {
+        if (this.selectedTaskType === 'myOpenTasks' && result.data) {
+            this.processTaskItems(result.data);
+        } else if (result.error) {
+            this.showToast('Error', 'Error fetching open tasks', 'error');
+        }
+    }
+
+    processTaskItems(data) {
+        this.taskItems = data.map(item => ({
+            ...item,
+            isExpanded: false,
+            hasSubTasks: item.BV_Tasks1__r && item.BV_Tasks1__r.length > 0,
+            iconName: this.getIconName(false),
+            rowClass: this.getRowClass(item),
+            flagIconClass: item.Flag_as_important__c ? 'icon-important' : 'icon-default',
+            SubTasks: item.BV_Tasks1__r.map(subTask => ({
+                ...subTask,
+                rowClass: this.getRowClass(subTask),
+                isCritical: subTask.Priority__c === 'Critical',
+                isHigh: subTask.Priority__c === 'High'
+            })),
+            isCritical: item.Priority__c === 'Critical',
+            isHigh: item.Priority__c === 'High'
+        }));
+        const userIds = this.taskItems.map(item => item.Assigned_To__c);
+        this.fetchUserNames(userIds);
+        this.updateLastUpdated();
+        this.assignNumbers();
+        this.filterTaskItems();
     }
 
     fetchUserNames(userIds) {
@@ -94,7 +112,11 @@ export default class TaskList extends LightningElement {
     }
 
     refreshTaskItems() {
-        refreshApex(this.wiredTaskItemsResult);
+        if (this.selectedTaskType === 'myOpenTasks') {
+            refreshApex(this.wiredOpenTasks);
+        } else {
+            refreshApex(this.wiredTaskItemsResult);
+        }
     }
 
     updateLastUpdated() {
@@ -232,7 +254,9 @@ export default class TaskList extends LightningElement {
                 (item.Case_Officer_Name?.toLowerCase() ?? '').includes(searchKeyLower)
             ) : true;
 
-            const taskTypeMatch = this.selectedTaskType === 'allTasks' || (this.selectedTaskType === 'myTasks' && item.Assigned_To__c === this.currentUserId);
+            const taskTypeMatch = this.selectedTaskType === 'allTasks' || 
+                                  (this.selectedTaskType === 'myTasks' && item.Assigned_To__c === this.currentUserId) ||
+                                  (this.selectedTaskType === 'myOpenTasks' && item.Assigned_To__c === this.currentUserId && !item.Complete__c);
 
             return searchMatch && taskTypeMatch;
         });
@@ -240,7 +264,7 @@ export default class TaskList extends LightningElement {
 
     handleTaskTypeChange(event) {
         this.selectedTaskType = event.detail.value;
-        this.filterTaskItems();
+        this.refreshTaskItems();
     }
 
     handleRowDoubleClick(event) {
@@ -276,7 +300,7 @@ export default class TaskList extends LightningElement {
     }
 
     get sortedByText() {
-        return `Sorted by ${this.sortedBy} ${this.sortOrder} - Filtered by ${this.selectedTaskType === 'allTasks' ? 'all tasks' : 'my tasks'}`;
+        return `Sorted by ${this.sortedBy} ${this.sortOrder} - Filtered by ${this.selectedTaskType === 'allTasks' ? 'all tasks' : this.selectedTaskType === 'myTasks' ? 'my tasks' : 'my open tasks'}`;
     }
 
     get isSortedByDue() {

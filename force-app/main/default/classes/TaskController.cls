@@ -23,4 +23,15 @@ public with sharing class TaskController {
     public static List<User> getUsers() {
         return [SELECT Id, Name FROM User];
     }
+
+    @AuraEnabled(cacheable=true)
+    public static List<BV_Task__c> getOpenTasksByUser(Id userId) {
+        return [
+            SELECT Id, Name, Due__c, Description__c, Priority__c, Assigned_To__c, BV_Case_Lookup__c, Complete__c,
+                   (SELECT Id, Name, Due__c, Description__c, Priority__c, Assigned_To__c, Complete__c
+                    FROM BV_Tasks1__r)
+            FROM BV_Task__c
+            WHERE Assigned_To__c = :userId AND Complete__c = False
+        ];
+    }
 }
