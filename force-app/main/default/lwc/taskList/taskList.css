@@ -1,3 +1,13 @@
+.card-background {
+    background-color: #f3f3f3;
+    border-radius: 0.5rem;
+    padding: 1em !important;
+}
+
+.version-expand-icon {
+    margin-left: 5em;
+}
+
 .critical-priority {
     background-color: #fef1ee;
 }
