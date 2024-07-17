@@ -12,21 +12,21 @@ export default class HistoryDocumentModal extends LightningElement {
         { label: 'Letter', value: 'Letter' },
         { label: 'Email', value: 'Email' },
         { label: 'Pleadings', value: 'Pleadings' },
-        { label: 'FOI request', value: 'FOI_request' },
-        { label: 'Office copy entries', value: 'Office_copy_entries' },
-        { label: 'Changing order', value: 'Changing_order' }
+        { label: 'FOI request', value: 'FOI request' },
+        { label: 'Office copy entries', value: 'Office copy entries' },
+        { label: 'Changing order', value: 'Changing order' }
     ];
 
     correspondenceWithOptions = [
-        { label: 'Asset holder', value: 'Asset_holder' },
-        { label: 'Liability holder', value: 'Liability_holder' },
-        { label: 'Not applicable', value: 'Not_applicable' }
+        { label: 'Asset holder', value: 'Asset holder' },
+        { label: 'Liability holder', value: 'Liability holder' },
+        { label: 'Not applicable', value: 'Not applicable' }
     ];
 
     draftOptions = [
         { label: 'Yes', value: 'Yes' },
         { label: 'No', value: 'No' },
-        { label: 'Not applicable', value: 'Not_applicable' }
+        { label: 'Not applicable', value: 'Not applicable' }
     ];
 
     handleFileChange(event) {
