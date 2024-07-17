@@ -143,7 +143,7 @@
                             </tr>
                             <template if:true={item.isExpanded}>
                                 <template for:each={item.SubTasks} for:item="subTask">
-                                    <tr key={subTask.Id} class={subTask.rowClass}>
+                                    <tr key={subTask.Id} class={subTask.rowClass} ondblclick={handleRowDoubleClick} data-id={subTask.Id}>
                                         <td data-label="Expand">
                                             <lightning-icon icon-name="utility:level_down" alternative-text="Sub-task" class="slds-icon-text-default version-expand-icon"></lightning-icon>
                                             <span class="task-number subtask-number">{subTask.number}</span>
