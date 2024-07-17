@@ -110,7 +110,11 @@
                                     <template if:true={item.hasSubTasks}>
                                         <button class="slds-button slds-button_icon slds-m-right_x-small" aria-expanded={item.isExpanded} onclick={toggleRow} data-id={item.Id}>
                                             <lightning-icon icon-name={item.iconName} alternative-text="Expand"></lightning-icon>
+                                            <span class="task-number">{item.number}</span>
                                         </button>
+                                    </template>
+                                    <template if:false={item.hasSubTasks}>
+                                        <span class="task-number no-subtasks">{item.number}</span>
                                     </template>
                                 </td>
                                 <td data-label="Due">
@@ -142,6 +146,7 @@
                                     <tr key={subTask.Id} class={subTask.rowClass}>
                                         <td data-label="Expand">
                                             <lightning-icon icon-name="utility:level_down" alternative-text="Sub-task" class="slds-icon-text-default version-expand-icon"></lightning-icon>
+                                            <span class="task-number subtask-number">{subTask.number}</span>
                                         </td>
                                         <td data-label="Due">
                                             <lightning-formatted-date-time value={subTask.Due__c} year="numeric" month="2-digit" day="2-digit" day-style="2-digit" month-style="2-digit" timezone="UTC"></lightning-formatted-date-time>

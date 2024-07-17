@@ -65,6 +65,7 @@ export default class TaskList extends LightningElement {
             const userIds = this.taskItems.map(item => item.Assigned_To__c);
             this.fetchUserNames(userIds);
             this.updateLastUpdated();
+            this.assignNumbers();
             this.filterTaskItems();
         } else if (result.error) {
             this.showToast('Error', 'Error fetching task items', 'error');
@@ -79,6 +80,7 @@ export default class TaskList extends LightningElement {
                     ...item,
                     Case_Officer_Name: this.userNames[item.Assigned_To__c] || item.Assigned_To__c
                 }));
+                this.assignNumbers();
                 this.filterTaskItems();
             })
             .catch(error => {
@@ -116,6 +118,7 @@ export default class TaskList extends LightningElement {
             }
             return item;
         });
+        this.assignNumbers();
         this.filterTaskItems();
     }
 
@@ -206,10 +209,12 @@ export default class TaskList extends LightningElement {
             }
             return 0;
         });
+        this.assignNumbers();
         this.filterTaskItems();
     }
 
     filterTaskItems() {
+        this.assignNumbers();
         this.filteredTaskItems = this.taskItems.filter(item => {
             const searchKeyLower = this.searchKey.toLowerCase();
             const searchMatch = this.searchKey ? (
@@ -240,6 +245,24 @@ export default class TaskList extends LightningElement {
 
     handleTaskDetailClose() {
         this.isTaskDetailVisible = false;
+    }
+
+    assignNumbers() {
+        let counter = 1;
+        this.taskItems = this.taskItems.map((item, index) => {
+            const mainTaskNumber = counter;
+            let subCounter = 1;
+            item.number = mainTaskNumber.toString();
+            if (item.hasSubTasks) {
+                item.SubTasks = item.SubTasks.map((subTask) => {
+                    subTask.number = `${mainTaskNumber}.${subCounter}`;
+                    subCounter++;
+                    return subTask;
+                });
+            }
+            counter++;
+            return item;
+        });
     }
 
     get sortedByText() {
