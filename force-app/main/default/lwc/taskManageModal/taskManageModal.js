@@ -38,15 +38,33 @@ export default class TaskManageModal extends LightningElement {
     ];
 
     categoryOptions = [
-        { label: 'Category 1', value: 'Category 1' },
-        { label: 'Category 2', value: 'Category 2' },
-        // Add more categories as needed
+        { label: '(None)', value: '(None)' },
+        { label: 'Adverts', value: 'Adverts' },
+        { label: 'Freedom of Information', value: 'Freedom of Information' },
+        { label: 'New Case', value: 'New case' },
+        { label: 'File Reviews', value: 'File Reviews' },
     ];
 
     priorityOptions = [
         { label: 'Normal', value: 'Normal' },
         { label: 'High', value: 'High' },
         { label: 'Critical', value: 'Critical' },
+    ];
+
+    postTrayOptions = [
+        { label: 'Queue name not setup', value: 'Queue name not setup' },
+        { label: 'Post Tray', value: 'Post Tray' },
+        { label: 'Letters', value: 'Letters' },
+        { label: 'Labels', value: 'Labels' },
+    ];
+
+    scheduleCodeOptions = [
+        { label: 'Acknowledge Request', value: 'ATI' },
+        { label: 'Reply due!', value: 'DRD' },
+        { label: 'New FOI request', value: 'NFR' },
+        { label: 'Response due in 10 working days', value: 'REM' },
+        { label: 'Reply from applicant', value: 'REP' },
+        { label: 'Third party reply?', value: 'TPR' },
     ];
 
     @wire(getRecord, { recordId: '$recordId', fields })
