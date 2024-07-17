@@ -4,7 +4,7 @@
         <h2 class="slds-text-heading_small bold-headers">General</h2>
         <div class="slds-col slds-size_1-of-1">
             <div class="slds-text-align_left slds-m-around_x-small">
-                <lightning-input label="Name of this sub-task" type="text" id="sub-task-name" onchange={handleInputChange} data-field="Name"></lightning-input>
+                <lightning-input label="Name of this sub-task" type="text" id="sub-task-name" onchange={handleInputChange} data-field="Name" placeholder="Add a name of the task"></lightning-input>
             </div>
         </div>
         <div class="slds-col slds-size_1-of-1 slds-s-top_small">
@@ -40,7 +40,7 @@
         <div class="slds-grid slds-wrap">
             <div class="slds-col slds-size_2-of-12 slds-m-top_medium">
                 <div class="slds-text-align_left slds-m-around_x-small">
-                    <lightning-input label=" " type="number" id="waiting-period-input" onchange={calculateDueDate}></lightning-input>
+                    <lightning-input label=" " type="number" id="waiting-period-input" onchange={calculateDueDate} placeholder="5"></lightning-input>
                 </div>
             </div>
             <div class="slds-col slds-size_3-of-12 slds-m-top_medium">
@@ -59,10 +59,10 @@
                 </div>
             </div>
             <div class="slds-col slds-size_1-of-3 slds-m-top_medium">
-                <lightning-input label="Date inserted" type="date" id="date-inserted" onchange={calculateDueDate} data-field="Date_Inserted__c"></lightning-input>
+                <lightning-input label="Date inserted" type="date" id="date-inserted" onchange={calculateDueDate} data-field="Date_Inserted__c" placeholder="DD/MM/YYYY"></lightning-input>
             </div>
             <div class="slds-col slds-size_1-of-4 slds-m-top_medium slds-col_bump-left">
-                <lightning-input label="Due" type="date" id="due-date" onchange={handleInputChange} data-field="Due_Date__c"></lightning-input>
+                <lightning-input label="Due" type="date" id="due-date" onchange={handleInputChange} data-field="Due_Date__c" placeholder="DD/MM/YYYY"></lightning-input>
             </div>            
         </div>
 
