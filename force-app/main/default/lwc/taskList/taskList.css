@@ -23,3 +23,15 @@
 .high-icon {
     --slds-c-icon-color-foreground-default: #194e31;
 }
+
+.task-number {
+    margin-left: 8px;
+}
+
+.no-subtasks {
+    margin-left: 22px;
+}
+
+.subtask-number {
+    margin-left: 20px;
+}
