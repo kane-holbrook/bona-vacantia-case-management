@@ -54,11 +54,11 @@ export default class TaskList extends LightningElement {
             this.taskItems = result.data.map(item => ({
                 ...item,
                 isExpanded: false,
-                hasSubTasks: item.SubTasks__r && item.SubTasks__r.length > 0,
+                hasSubTasks: item.BV_Tasks1__r && item.BV_Tasks1__r.length > 0,
                 iconName: this.getIconName(false),
                 rowClass: this.getRowClass(item),
                 flagIconClass: item.Flag_as_important__c ? 'icon-important' : 'icon-default',
-                SubTasks: item.SubTasks__r,
+                SubTasks: item.BV_Tasks1__r,
                 isCritical: item.Priority__c === 'Critical',
                 isHigh: item.Priority__c === 'High'
             }));
@@ -249,19 +249,24 @@ export default class TaskList extends LightningElement {
 
     assignNumbers() {
         let counter = 1;
-        this.taskItems = this.taskItems.map((item, index) => {
+        this.taskItems = this.taskItems.map((item) => {
+            // Shallow copy of the task item to ensure it's extensible
+            let newItem = { ...item };
             const mainTaskNumber = counter;
             let subCounter = 1;
-            item.number = mainTaskNumber.toString();
-            if (item.hasSubTasks) {
-                item.SubTasks = item.SubTasks.map((subTask) => {
-                    subTask.number = `${mainTaskNumber}.${subCounter}`;
+            newItem.number = mainTaskNumber.toString();
+            
+            if (newItem.hasSubTasks) {
+                // Shallow copy of the sub-tasks to ensure they are extensible
+                newItem.SubTasks = newItem.SubTasks.map((subTask) => {
+                    let newSubTask = { ...subTask };
+                    newSubTask.number = `${mainTaskNumber}.${subCounter}`;
                     subCounter++;
-                    return subTask;
+                    return newSubTask;
                 });
             }
             counter++;
-            return item;
+            return newItem;
         });
     }
 
