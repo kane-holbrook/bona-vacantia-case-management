@@ -1,6 +1,7 @@
-/* Add CSS styles here */
+.critical-priority {
+    background-color: #fef1ee;
+}
 
-.custom-card svg {
-    width: 5rem;
-    height: 5rem;
-    }
+.high-priority {
+    background-color: #ebf7e6;
+}

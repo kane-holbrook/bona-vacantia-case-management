@@ -56,7 +56,7 @@ export default class TaskList extends LightningElement {
                 isExpanded: false,
                 hasSubTasks: item.SubTasks__r && item.SubTasks__r.length > 0,
                 iconName: this.getIconName(false),
-                rowClass: item.Flag_as_important__c ? 'highlighted-row' : '',
+                rowClass: this.getRowClass(item),
                 flagIconClass: item.Flag_as_important__c ? 'icon-important' : 'icon-default',
                 SubTasks: item.SubTasks__r
             }));
@@ -267,5 +267,14 @@ export default class TaskList extends LightningElement {
 
     get isSortedByCaseOfficer() {
         return this.sortedBy === 'Case_Officer_Name__c';
+    }
+
+    getRowClass(item) {
+        if (item.Priority__c === 'Critical') {
+            return 'critical-priority';
+        } else if (item.Priority__c === 'High') {
+            return 'high-priority';
+        }
+        return '';
     }
 }
