@@ -1,7 +1,7 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
 import getTasksByCaseId from '@salesforce/apex/TaskController.getTasksByCaseId';
-import getUsers from '@salesforce/apex/TaskController.getUsers';
+import getUserNames from '@salesforce/apex/HistoryController.getUserNames';
 import getCurrentUserId from '@salesforce/apex/HistoryController.getCurrentUserId';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { getRecordId } from 'c/sharedService';
@@ -72,7 +72,7 @@ export default class TaskList extends LightningElement {
     }
 
     fetchUserNames(userIds) {
-        getUsers({ userIds })
+        getUserNames({ userIds })
             .then(result => {
                 this.userNames = result;
                 this.taskItems = this.taskItems.map(item => ({
