@@ -1,4 +1,4 @@
-import { LightningElement, track, wire } from 'lwc';
+import { LightningElement, api, track, wire } from 'lwc';
 import { getRecord } from 'lightning/uiRecordApi';
 import getSubTasks from '@salesforce/apex/TaskController.getSubTasks';
 import TASK_NAME_FIELD from '@salesforce/schema/BV_Task__c.Name';
@@ -13,6 +13,7 @@ import TASK_NEXT_TASK_FIELD from '@salesforce/schema/BV_Task__c.Next_Task__c';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 export default class TaskDetail extends LightningElement {
+    @api recordId;
     @track editSubTask = false;
     @track deleteTask = false;
     @track changeDueDateTask = false;
@@ -20,8 +21,6 @@ export default class TaskDetail extends LightningElement {
     @track changePriorityTask = false;
     @track reassignTask = false;
     @track completeTask = false;
-
-    @track recordId = 'a0A8E00000CrJ5HUAV'; // Placeholder for testing
     @track subTasks = [];
 
     @wire(getRecord, { recordId: '$recordId', fields: [TASK_NAME_FIELD, TASK_PARENT_FIELD, TASK_ASSIGNED_TO_FIELD, TASK_DUE_DATE_FIELD, TASK_PRIORITY_FIELD, TASK_COMMENTS_FIELD, TASK_CREATED_BY_FIELD, TASK_LAST_MODIFIED_BY_FIELD, TASK_NEXT_TASK_FIELD] })
