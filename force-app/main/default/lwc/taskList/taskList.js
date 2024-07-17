@@ -58,7 +58,12 @@ export default class TaskList extends LightningElement {
                 iconName: this.getIconName(false),
                 rowClass: this.getRowClass(item),
                 flagIconClass: item.Flag_as_important__c ? 'icon-important' : 'icon-default',
-                SubTasks: item.BV_Tasks1__r,
+                SubTasks: item.BV_Tasks1__r.map(subTask => ({
+                    ...subTask,
+                    rowClass: this.getRowClass(subTask),
+                    isCritical: subTask.Priority__c === 'Critical',
+                    isHigh: subTask.Priority__c === 'High'
+                })),
                 isCritical: item.Priority__c === 'Critical',
                 isHigh: item.Priority__c === 'High'
             }));

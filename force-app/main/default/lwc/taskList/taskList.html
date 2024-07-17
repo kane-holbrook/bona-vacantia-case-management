@@ -155,7 +155,15 @@
                                         <td data-label="Document Type">{subTask.Document_Type__c}</td>
                                         <td data-label="Correspondence">{subTask.Correspondence__c}</td>
                                         <td data-label="Draft">{subTask.Draft__c}</td>
-                                        <td data-label="Priority">{subTask.Priority__c}</td>
+                                        <td data-label="Priority">
+                                            <template if:true={subTask.isCritical}>
+                                                <lightning-icon icon-name="utility:info" alternative-text="Info" size="small" class="critical-icon slds-m-right_x-small"></lightning-icon>
+                                            </template>
+                                            <template if:true={subTask.isHigh}>
+                                                <lightning-icon icon-name="utility:info_alt" alternative-text="Info" size="small" class="high-icon slds-m-right_x-small"></lightning-icon>
+                                            </template>
+                                            {subTask.Priority__c}
+                                        </td>
                                         <td data-label="Case Officer">{subTask.Case_Officer_Name}</td>
                                         <td data-label="Actions">
                                             <lightning-button-menu alternative-text="Actions" icon-name="utility:down" menu-alignment="right">
