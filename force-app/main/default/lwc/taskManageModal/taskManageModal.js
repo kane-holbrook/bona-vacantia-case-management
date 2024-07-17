@@ -101,7 +101,7 @@ export default class TaskManageModal extends LightningElement {
 
     handleInputChange(event) {
         const field = event.target.dataset.field;
-        this.task[field] = event.target.value;
+        this.task[field].value = event.target.value;
     }
 
     calculateDueDate() {
@@ -135,7 +135,7 @@ export default class TaskManageModal extends LightningElement {
             date.setDate(date.getDate() + days);
 
             this.template.querySelector('#due-date').value = date.toISOString().split('T')[0];
-            this.task.Due_Date__c = date.toISOString().split('T')[0]; // Update task object
+            this.task.Due_Date__c.value = date.toISOString().split('T')[0]; // Update task object
         } else {
             const evt = new ShowToastEvent({
                 title: 'Error',
@@ -155,7 +155,10 @@ export default class TaskManageModal extends LightningElement {
     }
 
     createTask() {
-        const fields = this.task;
+        const fields = {};
+        for (let key in this.task) {
+            fields[key] = this.task[key].value;
+        }
         const recordInput = { apiName: BV_TASK_OBJECT.objectApiName, fields };
 
         createRecord(recordInput)
@@ -181,7 +184,10 @@ export default class TaskManageModal extends LightningElement {
     }
 
     updateTask() {
-        const fields = this.task;
+        const fields = {};
+        for (let key in this.task) {
+            fields[key] = this.task[key].value;
+        }
         fields.Id = this.recordId;
         const recordInput = { fields };
 
@@ -204,5 +210,29 @@ export default class TaskManageModal extends LightningElement {
                     }),
                 );
             });
+    }
+
+    get nameValue() {
+        return this.task.Name ? this.task.Name.value : '';
+    }
+
+    get descriptionValue() {
+        return this.task.Description__c ? this.task.Description__c.value : '';
+    }
+
+    get dueDateValue() {
+        return this.task.Due_Date__c ? this.task.Due_Date__c.value : '';
+    }
+
+    get dateInsertedValue() {
+        return this.task.Date_Inserted__c ? this.task.Date_Inserted__c.value : '';
+    }
+
+    get priorityValue() {
+        return this.task.Priority__c ? this.task.Priority__c.value : '';
+    }
+
+    get categoryValue() {
+        return this.task.Category__c ? this.task.Category__c.value : '';
     }
 }

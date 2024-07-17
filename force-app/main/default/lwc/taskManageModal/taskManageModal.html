@@ -4,32 +4,77 @@
         <h2 class="slds-text-heading_small bold-headers">General</h2>
         <div class="slds-col slds-size_1-of-1">
             <div class="slds-text-align_left slds-m-around_x-small">
-                <lightning-input label="Name of this sub-task" type="text" id="sub-task-name" onchange={handleInputChange} data-field="Name" placeholder="Add a name of the task"></lightning-input>
+                <lightning-input 
+                    label="Name of this sub-task" 
+                    type="text" 
+                    id="sub-task-name" 
+                    value={nameValue} 
+                    onchange={handleInputChange} 
+                    data-field="Name" 
+                    placeholder="Add a name of the task">
+                </lightning-input>
             </div>
         </div>
         <div class="slds-col slds-size_1-of-1 slds-s-top_small">
             <div class="slds-text-align_left slds-m-around_x-small">
-                <lightning-input label="Description" type="text" id="description" placeholder="Add a description" onchange={handleInputChange} data-field="Description__c"></lightning-input>
+                <lightning-input 
+                    label="Description" 
+                    type="text" 
+                    id="description" 
+                    value={descriptionValue} 
+                    placeholder="Add a description" 
+                    onchange={handleInputChange} 
+                    data-field="Description__c">
+                </lightning-input>
             </div>
         </div>
         <div class="slds-col slds-size_4-of-7 slds-s-top_small">
             <div class="slds-text-align_left slds-m-around_x-small">
-                <lightning-combobox label="Schedule code (optional)" id="schedule-code" placeholder="Find or select schedule code" options={scheduleCodeOptions} onchange={handleInputChange} data-field="Schedule_Code__c"></lightning-combobox>
+                <lightning-combobox 
+                    label="Schedule code (optional)" 
+                    id="schedule-code" 
+                    placeholder="Find or select schedule code" 
+                    options={scheduleCodeOptions} 
+                    onchange={handleInputChange} 
+                    data-field="Schedule_Code__c">
+                </lightning-combobox>
             </div>
         </div>
         <div class="slds-col slds-size_3-of-7 slds-s-top_small">
             <div class="slds-text-align_left slds-m-around_x-small">
-                <lightning-combobox label="Case officer" id="case-officer" options={caseOfficerOptions} onchange={handleInputChange} data-field="Case_Officer__c"></lightning-combobox>
+                <lightning-combobox 
+                    label="Case officer" 
+                    id="case-officer" 
+                    options={caseOfficerOptions} 
+                    onchange={handleInputChange} 
+                    data-field="Case_Officer__c">
+                </lightning-combobox>
             </div>
         </div>
         <div class="slds-col slds-size_2-of-3 slds-s-top_small">
             <div class="slds-text-align_left slds-m-around_x-small">
-                <lightning-combobox label="Category (optional)" id="category" placeholder="Select" options={categoryOptions} onchange={handleInputChange} data-field="Category__c"></lightning-combobox>
+                <lightning-combobox 
+                    label="Category (optional)" 
+                    id="category" 
+                    value={categoryValue} 
+                    placeholder="Select" 
+                    options={categoryOptions} 
+                    onchange={handleInputChange} 
+                    data-field="Category__c">
+                </lightning-combobox>
             </div>
         </div>
         <div class="slds-col slds-size_1-of-3 slds-s-top_small">
             <div class="slds-text-align_left slds-m-around_x-small">
-                <lightning-combobox label="Priority" id="priority" placeholder="Select" options={priorityOptions} onchange={handleInputChange} data-field="Priority__c"></lightning-combobox>
+                <lightning-combobox 
+                    label="Priority" 
+                    id="priority" 
+                    value={priorityValue} 
+                    placeholder="Select" 
+                    options={priorityOptions} 
+                    onchange={handleInputChange} 
+                    data-field="Priority__c">
+                </lightning-combobox>
             </div>
         </div>
 
@@ -40,29 +85,65 @@
         <div class="slds-grid slds-wrap">
             <div class="slds-col slds-size_2-of-12 slds-m-top_medium">
                 <div class="slds-text-align_left slds-m-around_x-small">
-                    <lightning-input label=" " type="number" id="waiting-period-input" onchange={calculateDueDate} placeholder="5"></lightning-input>
+                    <lightning-input 
+                        label=" " 
+                        type="number" 
+                        id="waiting-period-input" 
+                        onchange={calculateDueDate} 
+                        placeholder="5">
+                    </lightning-input>
                 </div>
             </div>
             <div class="slds-col slds-size_3-of-12 slds-m-top_medium">
                 <div class="slds-text-align_left slds-m-around_x-small">
-                    <lightning-combobox label=" " id="waiting-period-time" options={timeOptions} onchange={calculateDueDate}></lightning-combobox>
+                    <lightning-combobox 
+                        label=" " 
+                        id="waiting-period-time" 
+                        options={timeOptions} 
+                        onchange={calculateDueDate}>
+                    </lightning-combobox>
                 </div>
             </div>
             <div class="slds-col slds-size_3-of-12 slds-m-top_medium">
                 <div class="slds-text-align_left slds-m-around_x-small">
-                    <lightning-combobox label=" " id="before-after" options={beforeAfterOptions} onchange={calculateDueDate}></lightning-combobox>
+                    <lightning-combobox 
+                        label=" " 
+                        id="before-after" 
+                        options={beforeAfterOptions} 
+                        onchange={calculateDueDate}>
+                    </lightning-combobox>
                 </div>
             </div>
             <div class="slds-col slds-size_3-of-12 slds-m-top_medium">
                 <div class="slds-text-align_left slds-m-around_x-small">
-                    <lightning-combobox label=" " id="date-inserted-select" options={dateInsertedOptions}></lightning-combobox>
+                    <lightning-combobox 
+                        label=" " 
+                        id="date-inserted-select" 
+                        options={dateInsertedOptions}>
+                    </lightning-combobox>
                 </div>
             </div>
             <div class="slds-col slds-size_1-of-3 slds-m-top_medium">
-                <lightning-input label="Date inserted" type="date" id="date-inserted" onchange={calculateDueDate} data-field="Date_Inserted__c" placeholder="DD/MM/YYYY"></lightning-input>
+                <lightning-input 
+                    label="Date inserted" 
+                    type="date" 
+                    id="date-inserted" 
+                    value={dateInsertedValue} 
+                    onchange={calculateDueDate} 
+                    data-field="Date_Inserted__c" 
+                    placeholder="DD/MM/YYYY">
+                </lightning-input>
             </div>
             <div class="slds-col slds-size_1-of-4 slds-m-top_medium slds-col_bump-left">
-                <lightning-input label="Due" type="date" id="due-date" onchange={handleInputChange} data-field="Due_Date__c" placeholder="DD/MM/YYYY"></lightning-input>
+                <lightning-input 
+                    label="Due" 
+                    type="date" 
+                    id="due-date" 
+                    value={dueDateValue} 
+                    onchange={handleInputChange} 
+                    data-field="Due_Date__c" 
+                    placeholder="DD/MM/YYYY">
+                </lightning-input>
             </div>            
         </div>
 
@@ -72,12 +153,22 @@
         <h2 class="slds-text-heading_small bold-headers">Action (optional)</h2>
         <div class="slds-col slds-size_1-of-1">
             <div class="slds-text-align_left slds-m-around_x-small">
-                <lightning-combobox label="Document" id="document" placeholder="Select a document" options=""></lightning-combobox>
+                <lightning-combobox 
+                    label="Document" 
+                    id="document" 
+                    placeholder="Select a document" 
+                    options="">
+                </lightning-combobox>
             </div>
         </div>
         <div class="slds-col slds-size_1-of-1">
             <div class="slds-text-align_left slds-m-around_x-small">
-                <lightning-combobox label="Post tray" id="post-tray" placeholder="Queue name not setup" options={postTrayOptions}></lightning-combobox>
+                <lightning-combobox 
+                    label="Post tray" 
+                    id="post-tray" 
+                    placeholder="Queue name not setup" 
+                    options={postTrayOptions}>
+                </lightning-combobox>
             </div>
         </div>
 
@@ -88,35 +179,65 @@
         <div class="slds-grid slds-wrap">
             <div class="slds-col slds-size_2-of-12 slds-m-top_medium">
                 <div class="slds-text-align_left slds-m-around_x-small">
-                    <lightning-input label="Group Code" type="checkbox" id="group-code-checkbox"></lightning-input>
+                    <lightning-input 
+                        label="Group Code" 
+                        type="checkbox" 
+                        id="group-code-checkbox">
+                    </lightning-input>
                 </div>
             </div>
             
             <div class="slds-col slds-size_4-of-12 slds-m-top_medium">
                 <div class="slds-text-align_left slds-m-around_x-small">
-                    <lightning-combobox label="" id="group-code-select" placeholder="Select group code" options={groupCodeOptions}></lightning-combobox>
+                    <lightning-combobox 
+                        label="" 
+                        id="group-code-select" 
+                        placeholder="Select group code" 
+                        options={groupCodeOptions}>
+                    </lightning-combobox>
                 </div>
             </div>
             <div class="slds-col slds-size_5-of-12 slds-m-top_medium">
                 <div class="slds-text-align_left slds-m-around_x-small">
-                    <lightning-combobox label="" type="text" id="members-group-code" placeholder="Select members" options={groupCodeMembers}></lightning-combobox>
+                    <lightning-combobox 
+                        label="" 
+                        type="text" 
+                        id="members-group-code" 
+                        placeholder="Select members" 
+                        options={groupCodeMembers}>
+                    </lightning-combobox>
                 </div>
             </div>
         </div>
         <div class="slds-grid slds-wrap">
             <div class="slds-col slds-size_2-of-12 slds-m-top_medium">
                 <div class="slds-text-align_left slds-m-around_x-small">
-                    <lightning-input label="Other party" type="checkbox" id="other-party-checkbox"></lightning-input>
+                    <lightning-input 
+                        label="Other party" 
+                        type="checkbox" 
+                        id="other-party-checkbox">
+                    </lightning-input>
                 </div>
             </div>
             <div class="slds-col slds-size_4-of-12 slds-m-top_medium">
                 <div class="slds-text-align_left slds-m-around_x-small">
-                    <lightning-combobox label="" id="select-party" placeholder="Select party" options={otherPartyOptions}></lightning-combobox>
+                    <lightning-combobox 
+                        label="" 
+                        id="select-party" 
+                        placeholder="Select party" 
+                        options={otherPartyOptions}>
+                    </lightning-combobox>
                 </div>
             </div>
             <div class="slds-col slds-size_5-of-12 slds-m-top_medium" style="margin-left: 10px;">
                 <div class="slds-text-align_left slds-m-around_x-small">
-                    <lightning-combobox label="" type="text" id="members-other-party" placeholder="Select members" options={otherPartyMembers}></lightning-combobox>
+                    <lightning-combobox 
+                        label="" 
+                        type="text" 
+                        id="members-other-party" 
+                        placeholder="Select members" 
+                        options={otherPartyMembers}>
+                    </lightning-combobox>
                 </div>
             </div>
         </div>
