@@ -1,166 +1,172 @@
 <template>
-    <article class="slds-card card-background">
-        <div class="slds-card__header slds-grid slds-grid_align-spread">
-            <header class="slds-media slds-media_center slds-has-flexi-truncate">
-                <div class="slds-media__figure">
-                    <lightning-icon icon-name="standard:task" alternative-text="Task" size="small"></lightning-icon>
-                </div>
-                <div class="slds-media__body">
-                    <div class="slds-card__header-subtitle">Tasks</div>
-                    <h2 class="slds-card__header-title">
-                        <lightning-combobox 
-                            name="taskType" 
-                            label="Select Task Type" 
-                            value={selectedTaskType} 
-                            options={taskTypeOptions} 
-                            onchange={handleTaskTypeChange}>
-                        </lightning-combobox>
-                    </h2>
-                </div>
-            </header>
-            <div class="slds-no-flex slds-grid slds-align-middle">
-                <lightning-button label="Add Task" onclick={handleAddTask} class="slds-button_neutral"></lightning-button>
-            </div>
-        </div>
-        <div class="slds-card__body slds-p-horizontal_small slds-p-vertical_medium">
-            <div class="slds-text-body_small slds-m-bottom_medium slds-grid slds-wrap slds-grid_align-end">
-                <div class="slds-col slds-size_1-of-2">
-                    ({filteredTaskItems.length} tasks - {sortedByText} - Updated {lastUpdated} minutes ago)
-                </div>
-                <div class="slds-col slds-size_1-of-2 slds-grid slds-wrap slds-grid_align-end">
-                    <lightning-input type="text" placeholder="Search tasks" variant="label-hidden" class="slds-m-bottom_small slds-col slds-size_1-of-3" onchange={handleSearchInputChange}></lightning-input>
+    <template if:true={isTaskDetailVisible}>
+        <a onclick={handleTaskDetailClose} class="slds-text-body_small">Return to task list</a>
+        <c-task-detail record-id={currentRecordId} onclose={handleTaskDetailClose}></c-task-detail>
+    </template>
+    <template if:false={isTaskDetailVisible}>
+        <article class="slds-card card-background">
+            <div class="slds-card__header slds-grid slds-grid_align-spread">
+                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                    <div class="slds-media__figure">
+                        <lightning-icon icon-name="standard:task" alternative-text="Task" size="small"></lightning-icon>
+                    </div>
+                    <div class="slds-media__body">
+                        <div class="slds-card__header-subtitle">Tasks</div>
+                        <h2 class="slds-card__header-title">
+                            <lightning-combobox 
+                                name="taskType" 
+                                label="Select Task Type" 
+                                value={selectedTaskType} 
+                                options={taskTypeOptions} 
+                                onchange={handleTaskTypeChange}>
+                            </lightning-combobox>
+                        </h2>
+                    </div>
+                </header>
+                <div class="slds-no-flex slds-grid slds-align-middle">
+                    <lightning-button label="Add Task" onclick={handleAddTask} class="slds-button_neutral"></lightning-button>
                 </div>
             </div>
-            <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_col-bordered">
-                <thead>
-                    <tr class="slds-line-height_reset">
-                        <th scope="col">
-                            <div class="slds-truncate" title="Expand"></div>
-                        </th>
-                        <th scope="col">
-                            <button class="slds-button slds-button_reset slds-truncate" title="Due" onclick={handleSort} data-column="Due__c">
-                                Due
-                                <template if:true={isSortedByDue}>
-                                    <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
-                                </template>
-                            </button>
-                        </th>
-                        <th scope="col">
-                            <button class="slds-button slds-button_reset slds-truncate" title="Description" onclick={handleSort} data-column="Description__c">
-                                Description
-                                <template if:true={isSortedByDescription}>
-                                    <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
-                                </template>
-                            </button>
-                        </th>
-                        <th scope="col">
-                            <button class="slds-button slds-button_reset slds-truncate" title="Document Type" onclick={handleSort} data-column="Document_Type__c">
-                                Document Type
-                                <template if:true={isSortedByDocumentType}>
-                                    <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
-                                </template>
-                            </button>
-                        </th>
-                        <th scope="col">
-                            <button class="slds-button slds-button_reset slds-truncate" title="Correspondence" onclick={handleSort} data-column="Correspondence__c">
-                                Correspondence
-                                <template if:true={isSortedByCorrespondence}>
-                                    <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
-                                </template>
-                            </button>
-                        </th>
-                        <th scope="col">
-                            <button class="slds-button slds-button_reset slds-truncate" title="Draft" onclick={handleSort} data-column="Draft__c">
-                                Draft
-                                <template if:true={isSortedByDraft}>
-                                    <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
-                                </template>
-                            </button>
-                        </th>
-                        <th scope="col">
-                            <button class="slds-button slds-button_reset slds-truncate" title="Priority" onclick={handleSort} data-column="Priority__c">
-                                Priority
-                                <template if:true={isSortedByPriority}>
-                                    <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
-                                </template>
-                            </button>
-                        </th>
-                        <th scope="col">
-                            <button class="slds-button slds-button_reset slds-truncate" title="Case Officer" onclick={handleSort} data-column="Case_Officer_Name__c">
-                                Case Officer
-                                <template if:true={isSortedByCaseOfficer}>
-                                    <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
-                                </template>
-                            </button>
-                        </th>
-                        <th scope="col">
-                            <div class="slds-truncate" title="Actions">Actions</div>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <template for:each={filteredTaskItems} for:item="item">
-                        <tr key={item.Id} class={item.rowClass} onclick={handleRowClick} data-id={item.Id}>
-                            <td data-label="Expand">
-                                <template if:true={item.hasSubTasks}>
-                                    <button class="slds-button slds-button_icon slds-m-right_x-small" aria-expanded={item.isExpanded} onclick={toggleRow} data-id={item.Id}>
-                                        <lightning-icon icon-name={item.iconName} alternative-text="Expand"></lightning-icon>
-                                    </button>
-                                </template>
-                            </td>
-                            <td data-label="Due">
-                                <lightning-formatted-date-time value={item.Due__c} year="numeric" month="2-digit" day="2-digit" day-style="2-digit" month-style="2-digit" timezone="UTC"></lightning-formatted-date-time>
-                            </td>
-                            <td data-label="Description">{item.Description__c}</td>
-                            <td data-label="Document Type">{item.Document_Type__c}</td>
-                            <td data-label="Correspondence">{item.Correspondence__c}</td>
-                            <td data-label="Draft">{item.Draft__c}</td>
-                            <td data-label="Priority">
-                                <template if:true={item.isCritical}>
-                                    <lightning-icon icon-name="utility:info" alternative-text="Info" size="small" class="critical-icon slds-m-right_x-small"></lightning-icon>
-                                </template>
-                                <template if:true={item.isHigh}>
-                                    <lightning-icon icon-name="utility:info_alt" alternative-text="Info" size="small" class="high-icon slds-m-right_x-small"></lightning-icon>
-                                </template>
-                                {item.Priority__c}
-                            </td>
-                            <td data-label="Case Officer">{item.Case_Officer_Name}</td>
-                            <td data-label="Actions">
-                                <lightning-button-menu alternative-text="Actions" icon-name="utility:down" menu-alignment="right">
-                                    <lightning-menu-item label="Manage" data-id={item.Id} onclick={handleViewEdit}></lightning-menu-item>
-                                    <lightning-menu-item label="Delete" data-id={item.Id} onclick={handleDeleteOpen}></lightning-menu-item>
-                                </lightning-button-menu>
-                            </td>
+            <div class="slds-card__body slds-p-horizontal_small slds-p-vertical_medium">
+                <div class="slds-text-body_small slds-m-bottom_medium slds-grid slds-wrap slds-grid_align-end">
+                    <div class="slds-col slds-size_1-of-2">
+                        ({filteredTaskItems.length} tasks - {sortedByText} - Updated {lastUpdated} minutes ago)
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-grid slds-wrap slds-grid_align-end">
+                        <lightning-input type="text" placeholder="Search tasks" variant="label-hidden" class="slds-m-bottom_small slds-col slds-size_1-of-3" onchange={handleSearchInputChange}></lightning-input>
+                    </div>
+                </div>
+                <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_col-bordered">
+                    <thead>
+                        <tr class="slds-line-height_reset">
+                            <th scope="col">
+                                <div class="slds-truncate" title="Expand"></div>
+                            </th>
+                            <th scope="col">
+                                <button class="slds-button slds-button_reset slds-truncate" title="Due" onclick={handleSort} data-column="Due__c">
+                                    Due
+                                    <template if:true={isSortedByDue}>
+                                        <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
+                                    </template>
+                                </button>
+                            </th>
+                            <th scope="col">
+                                <button class="slds-button slds-button_reset slds-truncate" title="Description" onclick={handleSort} data-column="Description__c">
+                                    Description
+                                    <template if:true={isSortedByDescription}>
+                                        <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
+                                    </template>
+                                </button>
+                            </th>
+                            <th scope="col">
+                                <button class="slds-button slds-button_reset slds-truncate" title="Document Type" onclick={handleSort} data-column="Document_Type__c">
+                                    Document Type
+                                    <template if:true={isSortedByDocumentType}>
+                                        <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
+                                    </template>
+                                </button>
+                            </th>
+                            <th scope="col">
+                                <button class="slds-button slds-button_reset slds-truncate" title="Correspondence" onclick={handleSort} data-column="Correspondence__c">
+                                    Correspondence
+                                    <template if:true={isSortedByCorrespondence}>
+                                        <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
+                                    </template>
+                                </button>
+                            </th>
+                            <th scope="col">
+                                <button class="slds-button slds-button_reset slds-truncate" title="Draft" onclick={handleSort} data-column="Draft__c">
+                                    Draft
+                                    <template if:true={isSortedByDraft}>
+                                        <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
+                                    </template>
+                                </button>
+                            </th>
+                            <th scope="col">
+                                <button class="slds-button slds-button_reset slds-truncate" title="Priority" onclick={handleSort} data-column="Priority__c">
+                                    Priority
+                                    <template if:true={isSortedByPriority}>
+                                        <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
+                                    </template>
+                                </button>
+                            </th>
+                            <th scope="col">
+                                <button class="slds-button slds-button_reset slds-truncate" title="Case Officer" onclick={handleSort} data-column="Case_Officer_Name__c">
+                                    Case Officer
+                                    <template if:true={isSortedByCaseOfficer}>
+                                        <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
+                                    </template>
+                                </button>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate" title="Actions">Actions</div>
+                            </th>
                         </tr>
-                        <template if:true={item.isExpanded}>
-                            <template for:each={item.SubTasks} for:item="subTask">
-                                <tr key={subTask.Id} class={subTask.rowClass}>
-                                    <td data-label="Expand">
-                                        <lightning-icon icon-name="utility:level_down" alternative-text="Sub-task" class="slds-icon-text-default version-expand-icon"></lightning-icon>
-                                    </td>
-                                    <td data-label="Due">
-                                        <lightning-formatted-date-time value={subTask.Due__c} year="numeric" month="2-digit" day="2-digit" day-style="2-digit" month-style="2-digit" timezone="UTC"></lightning-formatted-date-time>
-                                    </td>
-                                    <td data-label="Description">{subTask.Description__c}</td>
-                                    <td data-label="Document Type">{subTask.Document_Type__c}</td>
-                                    <td data-label="Correspondence">{subTask.Correspondence__c}</td>
-                                    <td data-label="Draft">{subTask.Draft__c}</td>
-                                    <td data-label="Priority">{subTask.Priority__c}</td>
-                                    <td data-label="Case Officer">{subTask.Case_Officer_Name}</td>
-                                    <td data-label="Actions">
-                                        <lightning-button-menu alternative-text="Actions" icon-name="utility:down" menu-alignment="right">
-                                            <lightning-menu-item label="Manage" data-id={subTask.Id} onclick={handleViewEdit}></lightning-menu-item>
-                                            <lightning-menu-item label="Delete" data-id={subTask.Id} onclick={handleDeleteOpen}></lightning-menu-item>
-                                        </lightning-button-menu>
-                                    </td>
-                                </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={filteredTaskItems} for:item="item">
+                            <tr key={item.Id} class={item.rowClass} ondblclick={handleRowDoubleClick} data-id={item.Id}>
+                                <td data-label="Expand">
+                                    <template if:true={item.hasSubTasks}>
+                                        <button class="slds-button slds-button_icon slds-m-right_x-small" aria-expanded={item.isExpanded} onclick={toggleRow} data-id={item.Id}>
+                                            <lightning-icon icon-name={item.iconName} alternative-text="Expand"></lightning-icon>
+                                        </button>
+                                    </template>
+                                </td>
+                                <td data-label="Due">
+                                    <lightning-formatted-date-time value={item.Due__c} year="numeric" month="2-digit" day="2-digit" day-style="2-digit" month-style="2-digit" timezone="UTC"></lightning-formatted-date-time>
+                                </td>
+                                <td data-label="Description">{item.Description__c}</td>
+                                <td data-label="Document Type">{item.Document_Type__c}</td>
+                                <td data-label="Correspondence">{item.Correspondence__c}</td>
+                                <td data-label="Draft">{item.Draft__c}</td>
+                                <td data-label="Priority">
+                                    <template if:true={item.isCritical}>
+                                        <lightning-icon icon-name="utility:info" alternative-text="Info" size="small" class="critical-icon slds-m-right_x-small"></lightning-icon>
+                                    </template>
+                                    <template if:true={item.isHigh}>
+                                        <lightning-icon icon-name="utility:info_alt" alternative-text="Info" size="small" class="high-icon slds-m-right_x-small"></lightning-icon>
+                                    </template>
+                                    {item.Priority__c}
+                                </td>
+                                <td data-label="Case Officer">{item.Case_Officer_Name}</td>
+                                <td data-label="Actions">
+                                    <lightning-button-menu alternative-text="Actions" icon-name="utility:down" menu-alignment="right">
+                                        <lightning-menu-item label="Manage" data-id={item.Id} onclick={handleViewEdit}></lightning-menu-item>
+                                        <lightning-menu-item label="Delete" data-id={item.Id} onclick={handleDeleteOpen}></lightning-menu-item>
+                                    </lightning-button-menu>
+                                </td>
+                            </tr>
+                            <template if:true={item.isExpanded}>
+                                <template for:each={item.SubTasks} for:item="subTask">
+                                    <tr key={subTask.Id} class={subTask.rowClass}>
+                                        <td data-label="Expand">
+                                            <lightning-icon icon-name="utility:level_down" alternative-text="Sub-task" class="slds-icon-text-default version-expand-icon"></lightning-icon>
+                                        </td>
+                                        <td data-label="Due">
+                                            <lightning-formatted-date-time value={subTask.Due__c} year="numeric" month="2-digit" day="2-digit" day-style="2-digit" month-style="2-digit" timezone="UTC"></lightning-formatted-date-time>
+                                        </td>
+                                        <td data-label="Description">{subTask.Description__c}</td>
+                                        <td data-label="Document Type">{subTask.Document_Type__c}</td>
+                                        <td data-label="Correspondence">{subTask.Correspondence__c}</td>
+                                        <td data-label="Draft">{subTask.Draft__c}</td>
+                                        <td data-label="Priority">{subTask.Priority__c}</td>
+                                        <td data-label="Case Officer">{subTask.Case_Officer_Name}</td>
+                                        <td data-label="Actions">
+                                            <lightning-button-menu alternative-text="Actions" icon-name="utility:down" menu-alignment="right">
+                                                <lightning-menu-item label="Manage" data-id={subTask.Id} onclick={handleViewEdit}></lightning-menu-item>
+                                                <lightning-menu-item label="Delete" data-id={subTask.Id} onclick={handleDeleteOpen}></lightning-menu-item>
+                                            </lightning-button-menu>
+                                        </td>
+                                    </tr>
+                                </template>
                             </template>
                         </template>
-                    </template>
-                </tbody>
-            </table>
-        </div>
-    </article>
+                    </tbody>
+                </table>
+            </div>
+        </article>
+    </template>
 
     <template if:true={isModalOpen}>
         <section role="dialog" tabindex="-1" aria-modal="true" class="slds-modal slds-fade-in-open">

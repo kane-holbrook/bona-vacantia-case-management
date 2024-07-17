@@ -21,7 +21,7 @@ export default class TaskList extends LightningElement {
     @track sortedBy = 'Due__c';
     @track selectedTaskType = 'allTasks';  // Default selection
     @track currentUserId;  // To store the current user's ID
-    @track selectedRecordDetails = 'There are no task notes for this case.';  // New track property to store Details__c value
+    @track isTaskDetailVisible = false;
     wiredTaskItemsResult;
     userNames = {};
 
@@ -233,10 +233,13 @@ export default class TaskList extends LightningElement {
         this.filterTaskItems();
     }
 
-    handleRowClick(event) {
-        const itemId = event.currentTarget.dataset.id;
-        const record = this.taskItems.find(item => item.Id === itemId);
-        this.selectedRecordDetails = record ? record.Comments__c : 'There are no task notes for this case.';
+    handleRowDoubleClick(event) {
+        this.currentRecordId = event.currentTarget.dataset.id;
+        this.isTaskDetailVisible = true;
+    }
+
+    handleTaskDetailClose() {
+        this.isTaskDetailVisible = false;
     }
 
     get sortedByText() {
