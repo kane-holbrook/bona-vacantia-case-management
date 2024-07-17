@@ -67,6 +67,29 @@ export default class TaskManageModal extends LightningElement {
         { label: 'Third party reply?', value: 'TPR' },
     ];
 
+    groupCodeOptions = [
+        { label: 'ADDR Occupiers address', value: 'ADDR Occupiers address' },
+        { label: 'MPLT MP\'s Letters', value: 'MPLT MP\'s Letters' },
+        { label: 'OADD Other Addresses', value: 'OADD Other Addresses' },
+        { label: 'XREF Manual Cross Refs', value: 'XREF Manual Cross Refs' },
+    ];
+
+    groupCodeMembers = [
+        { label: 'All members', value: 'All members' },
+    ];
+
+    otherPartyOptions = [
+        { label: 'Name', value: 'Name' },
+        { label: 'Address', value: 'Address' },
+        { label: 'Trading As', value: 'Trading As' },
+        { label: 'Contact', value: 'Contact' },
+        { label: 'Salutation', value: 'CoSalutationntact' },
+    ];
+
+    otherPartyMembers = [
+        { label: 'All members', value: 'All members' },
+    ];
+
     @wire(getRecord, { recordId: '$recordId', fields })
     wiredRecord({ error, data }) {
         if (data) {

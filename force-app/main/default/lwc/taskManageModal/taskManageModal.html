@@ -88,34 +88,40 @@
         <div class="slds-grid slds-wrap">
             <div class="slds-col slds-size_2-of-12 slds-m-top_medium">
                 <div class="slds-text-align_left slds-m-around_x-small">
-                    <lightning-input label="Group Code" type="checkbox" id="group-code"></lightning-input>
+                    <lightning-input label="Group Code" type="checkbox" id="group-code-checkbox"></lightning-input>
                 </div>
             </div>
             
             <div class="slds-col slds-size_4-of-12 slds-m-top_medium">
                 <div class="slds-text-align_left slds-m-around_x-small">
-                    <lightning-input label=" " type="text" id="group-code-select" placeholder="Select group code"></lightning-input>
+                    <lightning-combobox label="" id="group-code-select" placeholder="Select group code" options={groupCodeOptions}></lightning-combobox>
                 </div>
             </div>
             <div class="slds-col slds-size_5-of-12 slds-m-top_medium">
                 <div class="slds-text-align_left slds-m-around_x-small">
-                    <lightning-input label=" " type="text" id="all-members" placeholder="All members"></lightning-input>
+                    <lightning-combobox label="" type="text" id="members-group-code" placeholder="Select members" options={groupCodeMembers}></lightning-combobox>
                 </div>
             </div>
-            <div class="slds-col slds-size_1-of-12 slds-m-top_medium">
-                <lightning-input label=" " type="checkbox" id="other-party"></lightning-input>
+        </div>
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-size_2-of-12 slds-m-top_medium">
+                <div class="slds-text-align_left slds-m-around_x-small">
+                    <lightning-input label="Other party" type="checkbox" id="other-party-checkbox"></lightning-input>
+                </div>
             </div>
-            <div class="slds-col slds-size_5-of-12 slds-m-top_medium">
-                <lightning-input label=" " type="text" id="select-party" placeholder="Select party"></lightning-input>
+            <div class="slds-col slds-size_4-of-12 slds-m-top_medium">
+                <div class="slds-text-align_left slds-m-around_x-small">
+                    <lightning-combobox label="" id="select-party" placeholder="Select party" options={otherPartyOptions}></lightning-combobox>
+                </div>
             </div>
-            <div class="slds-col slds-size_6-of-12 slds-m-top_medium">
-                <lightning-input label=" " type="text" id="lorem-ipsum" placeholder="Lorem ipsum"></lightning-input>
+            <div class="slds-col slds-size_5-of-12 slds-m-top_medium" style="margin-left: 10px;">
+                <div class="slds-text-align_left slds-m-around_x-small">
+                    <lightning-combobox label="" type="text" id="members-other-party" placeholder="Select members" options={otherPartyMembers}></lightning-combobox>
+                </div>
             </div>
         </div>
 
         <div class="slds-col slds-size_1-of-1 slds-m-top_large">
-            <lightning-button label="Confirm" variant="neutral" onclick={handleSave}></lightning-button>
-            <lightning-button label="Cancel" variant="base"></lightning-button>
         </div>
     </div>
 </template>
