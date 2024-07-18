@@ -7,8 +7,8 @@ import TASK_ASSIGNED_TO_FIELD from '@salesforce/schema/BV_Task__c.Assigned_To__c
 import TASK_DUE_DATE_FIELD from '@salesforce/schema/BV_Task__c.Due_Date__c';
 import TASK_PRIORITY_FIELD from '@salesforce/schema/BV_Task__c.Priority__c';
 import TASK_COMMENTS_FIELD from '@salesforce/schema/BV_Task__c.Comments__c';
-import TASK_CREATED_BY_FIELD from '@salesforce/schema/BV_Task__c.Created_By__c';
-import TASK_LAST_MODIFIED_BY_FIELD from '@salesforce/schema/BV_Task__c.Last_Modified_By__c';
+import TASK_CREATED_BY_FIELD from '@salesforce/schema/BV_Task__c.CreatedById';
+import TASK_LAST_MODIFIED_BY_FIELD from '@salesforce/schema/BV_Task__c.LastModifiedById';
 import TASK_NEXT_TASK_FIELD from '@salesforce/schema/BV_Task__c.Next_Task__c';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
@@ -76,11 +76,11 @@ export default class TaskDetail extends LightningElement {
     }
 
     get createdBy() {
-        return this.task.data ? this.task.data.fields.Created_By__c.value : '';
+        return this.task.data ? this.task.data.fields.CreatedById.value : '';
     }
 
     get lastModifiedBy() {
-        return this.task.data ? this.task.data.fields.Last_Modified_By__c.value : '';
+        return this.task.data ? this.task.data.fields.LastModifiedById.value : '';
     }
 
     get nextTask() {
