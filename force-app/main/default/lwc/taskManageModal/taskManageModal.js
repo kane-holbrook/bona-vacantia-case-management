@@ -106,10 +106,17 @@ export default class TaskManageModal extends LightningElement {
         { label: 'All members', value: 'All members' },
     ];
 
+    @track waitingPeriodInputValue = '';
+    @track waitingPeriodTimeValue = '';
+    @track beforeAfterValue = '';
+
     @wire(getRecord, { recordId: '$recordId', fields })
     wiredRecord({ error, data }) {
         if (data) {
             this.task = JSON.parse(JSON.stringify(data.fields));
+            this.waitingPeriodInputValue = this.task.Waiting_Period__c ? this.task.Waiting_Period__c.value : '';
+            this.waitingPeriodTimeValue = this.task.Waiting_Period_Time__c ? this.task.Waiting_Period_Time__c.value : '';
+            this.beforeAfterValue = this.task.Before_After__c ? this.task.Before_After__c.value : '';
         } else if (error) {
             this.error = error;
         }
@@ -129,51 +136,6 @@ export default class TaskManageModal extends LightningElement {
             this.task[field] = { value: false };
         }
         this.task[field].value = event.target.checked;
-    }
-
-    calculateDueDate() {
-        const waitingPeriodInput = this.template.querySelector('#waiting-period-input').value;
-        const waitingPeriodTime = this.template.querySelector('#waiting-period-time').value;
-        const beforeAfter = this.template.querySelector('#before-after').value;
-        const dateInserted = this.template.querySelector('#date-inserted').value;
-
-        if (waitingPeriodInput && waitingPeriodTime && beforeAfter && dateInserted) {
-            const date = new Date(dateInserted);
-            let days = 0;
-
-            switch (waitingPeriodTime) {
-                case 'Days':
-                    days = parseInt(waitingPeriodInput);
-                    break;
-                case 'Weeks':
-                    days = parseInt(waitingPeriodInput) * 7;
-                    break;
-                case 'Months':
-                    days = parseInt(waitingPeriodInput) * 30; // Approximation
-                    break;
-                default:
-                    break;
-            }
-
-            if (beforeAfter === 'Before') {
-                days = -days;
-            }
-
-            date.setDate(date.getDate() + days);
-
-            this.template.querySelector('#due-date').value = date.toISOString().split('T')[0];
-            if (!this.task.Due_Date__c) {
-                this.task.Due_Date__c = { value: '' };
-            }
-            this.task.Due_Date__c.value = date.toISOString().split('T')[0]; // Update task object
-        } else {
-            const evt = new ShowToastEvent({
-                title: 'Error',
-                message: 'Please fill all the fields in the Waiting period section.',
-                variant: 'error',
-            });
-            this.dispatchEvent(evt);
-        }
     }
 
     @api

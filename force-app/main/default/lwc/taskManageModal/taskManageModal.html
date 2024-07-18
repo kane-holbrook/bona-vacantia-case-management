@@ -91,7 +91,7 @@
                         variant="label-hidden"
                         type="number" 
                         id="waiting-period-input" 
-                        onchange={calculateDueDate} 
+                        value={waitingPeriodInputValue}
                         placeholder="5">
                     </lightning-input>
                 </div>
@@ -101,8 +101,8 @@
                     <lightning-combobox 
                         variant="label-hidden"
                         id="waiting-period-time" 
-                        options={timeOptions} 
-                        onchange={calculateDueDate}>
+                        value={waitingPeriodTimeValue}
+                        options={timeOptions}>
                     </lightning-combobox>
                 </div>
             </div>
@@ -111,8 +111,8 @@
                     <lightning-combobox 
                         variant="label-hidden" 
                         id="before-after" 
-                        options={beforeAfterOptions} 
-                        onchange={calculateDueDate}>
+                        value={beforeAfterValue}
+                        options={beforeAfterOptions}>
                     </lightning-combobox>
                 </div>
             </div>
@@ -132,7 +132,7 @@
                         type="date" 
                         id="date-inserted" 
                         value={dateInsertedValue} 
-                        onchange={calculateDueDate} 
+                        onchange={handleInputChange} 
                         data-field="Date_Inserted__c" 
                         placeholder="DD/MM/YYYY">
                     </lightning-input>
