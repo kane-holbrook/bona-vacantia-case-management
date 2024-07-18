@@ -190,7 +190,7 @@ export default class TaskList extends LightningElement {
     }
 
     handleSave() {
-        this.template.querySelector('c-task-manage-modal').saveRecord(this.recordId);
+        this.template.querySelector('c-task-manage-modal').handleSave();
     }
 
     handleSaveSuccess() {

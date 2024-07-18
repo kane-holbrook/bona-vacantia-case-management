@@ -35,6 +35,7 @@
                     id="schedule-code" 
                     placeholder="Find or select schedule code" 
                     options={scheduleCodeOptions} 
+                    value={scheduleCodeValue}
                     onchange={handleInputChange} 
                     data-field="Schedule_Code__c">
                 </lightning-combobox>
@@ -45,7 +46,8 @@
                 <lightning-combobox 
                     label="Case officer" 
                     id="case-officer" 
-                    options={caseOfficerOptions} 
+                    options={caseOfficerOptions}
+                    value={caseOfficerValue}
                     onchange={handleInputChange} 
                     data-field="Case_Officer__c">
                 </lightning-combobox>
@@ -186,7 +188,10 @@
                     <lightning-input 
                         label="Group Code" 
                         type="checkbox" 
-                        id="group-code-checkbox">
+                        id="group-code-checkbox"
+                        checked={groupCodeValue}
+                        onchange={handleCheckboxChange}
+                        data-field="Group_Code__c">
                     </lightning-input>
                 </div>
             </div>
@@ -197,7 +202,10 @@
                         variant="label-hidden" 
                         id="group-code-select" 
                         placeholder="Select group code" 
-                        options={groupCodeOptions}>
+                        options={groupCodeOptions}
+                        value={groupCodePickValue}
+                        onchange={handleInputChange}
+                        data-field="Group_Code_Pick__c">
                     </lightning-combobox>
                 </div>
             </div>
@@ -208,7 +216,10 @@
                         type="text" 
                         id="members-group-code" 
                         placeholder="Select members" 
-                        options={groupCodeMembers}>
+                        options={groupCodeMembers}
+                        value={groupCodeMembersValue}
+                        onchange={handleInputChange}
+                        data-field="Group_Code_Members__c">
                     </lightning-combobox>
                 </div>
             </div>
@@ -219,7 +230,10 @@
                     <lightning-input 
                         label="Other party" 
                         type="checkbox" 
-                        id="other-party-checkbox">
+                        id="other-party-checkbox"
+                        checked={otherPartyValue}
+                        onchange={handleCheckboxChange}
+                        data-field="Other_party__c">
                     </lightning-input>
                 </div>
             </div>
@@ -229,7 +243,10 @@
                         variant="label-hidden" 
                         id="select-party" 
                         placeholder="Select party" 
-                        options={otherPartyOptions}>
+                        options={otherPartyOptions}
+                        value={otherPartySelectValue}
+                        onchange={handleInputChange}
+                        data-field="Other_party_select__c">
                     </lightning-combobox>
                 </div>
             </div>
@@ -240,7 +257,10 @@
                         type="text" 
                         id="members-other-party" 
                         placeholder="Select members" 
-                        options={otherPartyMembers}>
+                        options={otherPartyMembers}
+                        value={otherPartyMembersValue}
+                        onchange={handleInputChange}
+                        data-field="Other_party_members__c">
                     </lightning-combobox>
                 </div>
             </div>
