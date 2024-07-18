@@ -173,6 +173,11 @@ export default class TaskDetail extends LightningElement {
             });
     }
 
+    handleDelete() {
+        const deleteModal = this.template.querySelector('c-task-delete-modal');
+        deleteModal.deleteRecord();
+    }
+
     toggleSubTask(event) {
         const subTaskId = event.currentTarget.dataset.id;
         this.subTasks = this.subTasks.map(subTask => {
