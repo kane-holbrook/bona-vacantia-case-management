@@ -7,11 +7,15 @@ export default class GenerateDocumentFlow extends LightningElement {
     @api recordId;
     @api caseId;
     @track documents;
+    @track documentCategories = [];
+    @track filteredDocuments = [];
     @api selectedDocumentId;
     @api selectedDocumentType;
     @api availableActions = [];
-    
+
     isLoading = false;
+    isCategorySelected = false;
+    selectedCategory = '';
 
     connectedCallback() {
         this.fetchDocuments();
@@ -26,18 +30,50 @@ export default class GenerateDocumentFlow extends LightningElement {
         const parentFolderPath = encodeURIComponent(`123`); // Required for some reason
         fetchTemplates()
             .then(result => {
+                // Construct the SharePoint preview URL
                 this.documents = result.map(doc => {
-                    // Construct the SharePoint preview URL
                     let previewUrl = `${sharePointDomain}/${siteName}/Shared%20Documents/Forms/AllItems.aspx?id=${encodeURIComponent(doc.ServerRelativeURL__c)}&parent=${parentFolderPath}`;
-                    // Return the document with the added previewUrl property
-                    return {...doc, previewUrl};
+                    // Determine the display name
+                    let displayName = doc.Document_Name__c ? doc.Document_Name__c : doc.Name;
+                    return {...doc, previewUrl, displayName};
                 });
+                
+                // Group documents by categories
+                this.groupDocumentsByCategory();
                 this.isLoading = false;
             })
             .catch(error => {
                 this.isLoading = false;
                 console.error('Error:', error);
             });
+    }
+
+    groupDocumentsByCategory() {
+        let categories = {};
+        this.documents.forEach(doc => {
+            let category = doc.Document_Category__c || 'Uncategorized';
+            if (!categories[category]) {
+                categories[category] = {
+                    name: category,
+                    documents: []
+                };
+            }
+            categories[category].documents.push(doc);
+        });
+        this.documentCategories = Object.values(categories);
+    }
+
+    handleCategorySelection(event) {
+        const category = event.target.dataset.category;
+        this.selectedCategory = category;
+        this.filteredDocuments = this.documentCategories.find(cat => cat.name === category).documents;
+        this.isCategorySelected = true;
+    }
+
+    handleBackToCategories() {
+        this.isCategorySelected = false;
+        this.selectedCategory = '';
+        this.filteredDocuments = [];
     }
 
     handleSelectionChange(event) {

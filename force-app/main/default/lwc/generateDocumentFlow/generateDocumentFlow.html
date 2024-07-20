@@ -7,39 +7,59 @@
                 </div>
             </template>
             <template if:false={isLoading}>
-                <table class="slds-table slds-table_cell-buffer slds-table_bordered">
-                    <thead>
-                        <tr class="slds-line-height_reset">
-                            <th class="" scope="col"><div class="slds-truncate" title="Select">Select</div></th>
-                            <th class="" scope="col"><div class="slds-truncate" title="File Name">Document Name</div></th>
-                            <th class="" scope="col"><div class="slds-truncate" title="Document Type">Document Type</div></th>
-                            <th class="" scope="col"><div class="slds-truncate" title="Created">Created</div></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <template for:each={documents} for:item="doc">
-                            <tr key={doc.DocumentID__c}>
-                                <td>
-                                    <lightning-input type="radio" name="documentSelection" data-id={doc.DocumentID__c} onchange={handleSelectionChange}></lightning-input>
-                                </td>
-                                <td>
-                                    <a href={doc.previewUrl} target="_blank">{doc.Name}</a>
-                                </td>
-                                <td>{doc.DocumentType__c}</td>
-                                <td>
-                                    <lightning-formatted-date-time value={doc.Created_Time__c} 
-                                                                    year="numeric" 
-                                                                    month="2-digit" 
-                                                                    day="2-digit">
-                                    </lightning-formatted-date-time>
-                                </td>
-                            </tr>
+                <template if:false={isCategorySelected}>
+                    <ul class="slds-has-dividers_around-space">
+                        <template for:each={documentCategories} for:item="category">
+                            <li key={category.name} class="slds-item">
+                                <a href="javascript:void(0);" data-category={category.name} onclick={handleCategorySelection}>{category.name}</a>
+                            </li>
                         </template>
-                    </tbody>
-                </table>
-                <!-- <div class="slds-align_absolute-center slds-m-top_medium">
-                    <lightning-button variant="brand" label="Next" onclick={handleNextDocumentSelection} class="slds-m-left_x-small"></lightning-button>
-                </div> -->
+                    </ul>
+                </template>
+                <template if:true={isCategorySelected}>
+                    <h2>{selectedCategory}</h2>
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Select">Select</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Document Name">Document Name</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Document Type">Document Type</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Created">Created</div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={filteredDocuments} for:item="doc">
+                                <tr key={doc.DocumentID__c}>
+                                    <td>
+                                        <lightning-input type="radio" name="documentSelection" data-id={doc.DocumentID__c} onchange={handleSelectionChange}></lightning-input>
+                                    </td>
+                                    <td>
+                                        <a href={doc.previewUrl} target="_blank">{doc.displayName}</a>
+                                    </td>
+                                    <td>{doc.DocumentType__c}</td>
+                                    <td>
+                                        <lightning-formatted-date-time value={doc.Created_Time__c} 
+                                                                        year="numeric" 
+                                                                        month="2-digit" 
+                                                                        day="2-digit">
+                                        </lightning-formatted-date-time>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                    <div class="slds-m-top_medium">
+                        <lightning-button variant="neutral" label="Back to Categories" onclick={handleBackToCategories}></lightning-button>
+                    </div>
+                </template>
             </template>
         </div>
     </div>

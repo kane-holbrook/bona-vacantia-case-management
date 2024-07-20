@@ -341,7 +341,7 @@ public with sharing class FileController {
     @AuraEnabled(cacheable=true)
     public static List<SHDocument__c> fetchTemplates() {
         String documentLibraryUrl = '/sites/XansiumUATTestSite/Shared%20Documents/Templates';
-        String queryEndpoint = 'callout:BVSharepointNamed/_api/web/GetFolderByServerRelativeUrl(\'' + documentLibraryUrl + '\')/Files';
+        String queryEndpoint = 'callout:BVSharepointNamed/_api/web/GetFolderByServerRelativeUrl(\'' + documentLibraryUrl + '\')/Files?$expand=ListItemAllFields';
     
         HttpRequest req = new HttpRequest();
         req.setEndpoint(queryEndpoint);
@@ -397,6 +397,8 @@ public with sharing class FileController {
                             // Accessing a custom field
                             doc.Created_Time__c = (String) listItemData.get('Created');
                             doc.DocumentType__c = (String) listItemData.get('DocumentType');
+                            doc.Document_Name__c = (String) listItemData.get('Document_x0020_Name');
+                            doc.Document_Category__c = (String) listItemData.get('Document_x0020_Category');
                             system.debug(JSON.serializePretty(listItemData));
                         } else {
                             System.debug('Error getting list item details: ' + listItemRes.getBody());
@@ -478,6 +480,8 @@ public with sharing class FileController {
                             // Accessing a custom field
                             doc.Created_Time__c = (String) listItemData.get('Created');
                             doc.DocumentType__c = (String) listItemData.get('DocumentType');
+                            doc.Document_Name__c = (String) listItemData.get('DocumentName');
+                            doc.Document_Category__c = (String) listItemData.get('DocumentCategory');
                             system.debug(JSON.serializePretty(listItemData));
                         } else {
                             System.debug('Error getting list item details: ' + listItemRes.getBody());
