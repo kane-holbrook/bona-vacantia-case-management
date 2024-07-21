@@ -10,6 +10,7 @@ import FLAG_IMPORTANT_FIELD from '@salesforce/schema/Case_History__c.Flag_as_imp
 import BV_CASE_FIELD from '@salesforce/schema/Case_History__c.BV_Case__c';
 import PARENT_HISTORY_RECORD_FIELD from '@salesforce/schema/Case_History__c.Parent_History_Record__c';
 import CASE_OFFICER_FIELD from '@salesforce/schema/Case_History__c.Case_Officer__c';
+import LAST_UPDATED_FIELD from '@salesforce/schema/Case_History__c.Last_updated__c';
 import SHDOCUMENT_OBJECT from '@salesforce/schema/SHDocument__c';
 import SHDOCUMENT_NAME_FIELD from '@salesforce/schema/SHDocument__c.Name';
 import DOCUMENT_EXTENSION_FIELD from '@salesforce/schema/SHDocument__c.DocumentExtension__c';
@@ -211,7 +212,8 @@ export default class HistoryEditModal extends LightningElement {
             [ACTION_FIELD.fieldApiName]: this.description,
             [DETAILS_FIELD.fieldApiName]: this.details,
             [FLAG_IMPORTANT_FIELD.fieldApiName]: this.flagImportant,
-            [CASE_OFFICER_FIELD.fieldApiName]: this.userId // Set the current user's ID
+            [CASE_OFFICER_FIELD.fieldApiName]: this.userId, // Set the current user's ID
+            [LAST_UPDATED_FIELD.fieldApiName]: new Date().toISOString() // Set current date and time
         };
 
         if (this.record.Id) {

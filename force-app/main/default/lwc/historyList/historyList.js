@@ -97,11 +97,11 @@ export default class HistoryList extends LightningElement {
     updateLastUpdated() {
         if (this.historyItems.length > 0) {
             const latestItem = this.historyItems.reduce((latest, item) => {
-                const itemDate = new Date(item.Date_Inserted__c);
-                return itemDate > new Date(latest.Date_Inserted__c) ? item : latest;
+                const itemDate = new Date(item.Last_updated__c);
+                return itemDate > new Date(latest.Last_updated__c) ? item : latest;
             }, this.historyItems[0]);
             const now = new Date();
-            const lastUpdateTime = new Date(latestItem.Date_Inserted__c);
+            const lastUpdateTime = new Date(latestItem.Last_updated__c);
             const diffInMinutes = Math.floor((now - lastUpdateTime) / 60000);
             this.lastUpdated = diffInMinutes;
         }
