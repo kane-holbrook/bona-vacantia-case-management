@@ -6,8 +6,9 @@ import getCurrentUserId from '@salesforce/apex/HistoryController.getCurrentUserI
 import getSHDocuments from '@salesforce/apex/HistoryController.getSHDocuments';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { getRecordId } from 'c/sharedService';
+import { NavigationMixin } from 'lightning/navigation';
 
-export default class HistoryList extends LightningElement {
+export default class HistoryList extends NavigationMixin(LightningElement) {
     @api recordId;
     @track historyItems = [];
     @track filteredHistoryItems = [];
@@ -310,5 +311,16 @@ export default class HistoryList extends LightningElement {
 
     get isSortedByCaseOfficer() {
         return this.sortedBy === 'Case_Officer_Name';
+    }
+
+    handleForward(event) {
+        const itemId = event.currentTarget.dataset.id;
+        const record = this.historyItems.find(item => item.Id === itemId);
+
+        const emailQuickActionComponent = this.template.querySelector('c-email-quick-action');
+        emailQuickActionComponent.invoke({
+            HtmlBody: `Please find the details of the record below:<br><br>Date: ${record.Date_Inserted__c}<br>Action: ${record.Action__c}<br>Document Type: ${record.documentType}<br>Correspondence With: ${record.correspondenceWith}<br>Draft: ${record.draft}<br>Case Officer: ${record.Case_Officer_Name}<br><br>Details:<br>${record.Details__c}`,
+            Subject: `Forwarding Record: ${record.Action__c}`
+        });
     }
 }
