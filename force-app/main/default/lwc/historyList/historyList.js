@@ -84,7 +84,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
                     ...item,
                     Case_Officer_Name: this.userNames[item.Case_Officer__c] || item.Case_Officer__c
                 }));
-                this.filterHistoryItems();
+                this.sortHistoryItems();
             })
             .catch(error => {
                 this.showToast('Error', 'Error fetching user names', 'error');
