@@ -2,6 +2,7 @@ import { LightningElement, api, wire, track } from 'lwc';
 import { CurrentPageReference } from 'lightning/navigation';
 import { FlowNavigationNextEvent } from 'lightning/flowSupport';
 import fetchTemplates from '@salesforce/apex/FileController.fetchTemplates';
+import getSharePointSettings from '@salesforce/apex/FileController.getSharePointSettings';
 
 export default class GenerateDocumentFlow extends LightningElement {
     @api recordId;
@@ -12,32 +13,48 @@ export default class GenerateDocumentFlow extends LightningElement {
     @api selectedDocumentId;
     @api selectedDocumentType;
     @api availableActions = [];
+    
+    @track sharePointSiteUrl;
+    @track sharePointDirectoryPath;
 
     isLoading = false;
     isCategorySelected = false;
     selectedCategory = '';
 
     connectedCallback() {
-        this.fetchDocuments();
+        this.fetchSharePointSettings();
     }
 
     @wire(CurrentPageReference) pageRef;
 
-    fetchDocuments() {
+    fetchSharePointSettings() {
         this.isLoading = true;
-        const sharePointDomain = 'https://glduat.sharepoint.com';
-        const siteName = 'sites/XansiumUATTestSite';
-        const parentFolderPath = encodeURIComponent(`123`); // Required for some reason
+        getSharePointSettings()
+            .then(settings => {
+                this.sharePointSiteUrl = settings.SharePoint_Site_URL;
+                this.sharePointDirectoryPath = settings.SharePoint_Directory_Path;
+                this.fetchDocuments();
+            })
+            .catch(error => {
+                this.isLoading = false;
+                console.error('Error fetching SharePoint settings:', error);
+            });
+    }
+
+    fetchDocuments() {
+        if (!this.sharePointSiteUrl || !this.sharePointDirectoryPath) return;
+        const parentFolderPath = encodeURIComponent(this.sharePointDirectoryPath);
+
         fetchTemplates()
             .then(result => {
                 // Construct the SharePoint preview URL
                 this.documents = result.map(doc => {
-                    let previewUrl = `${sharePointDomain}/${siteName}/Shared%20Documents/Forms/AllItems.aspx?id=${encodeURIComponent(doc.ServerRelativeURL__c)}&parent=${parentFolderPath}`;
+                    let previewUrl = `${this.sharePointSiteUrl}/${this.sharePointDirectoryPath}/Shared%20Documents/Forms/AllItems.aspx?id=${encodeURIComponent(doc.ServerRelativeURL__c)}&parent=${parentFolderPath}`;
                     // Determine the display name
                     let displayName = doc.Document_Name__c ? doc.Document_Name__c : doc.Name;
-                    return {...doc, previewUrl, displayName};
+                    return { ...doc, previewUrl, displayName };
                 });
-                
+
                 // Group documents by categories
                 this.groupDocumentsByCategory();
                 this.isLoading = false;
