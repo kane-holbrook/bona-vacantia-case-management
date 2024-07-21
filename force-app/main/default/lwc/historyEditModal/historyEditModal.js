@@ -26,6 +26,7 @@ import getHistoryVersions from '@salesforce/apex/HistoryController.getHistoryVer
 import uploadFileToSharePoint from '@salesforce/apex/FileController.uploadFileToSharePoint';
 import getCaseName from '@salesforce/apex/FileController.getCaseName';
 import deleteSharepointFile from '@salesforce/apex/FileController.deleteSharepointFile';
+import getSharePointSettings from '@salesforce/apex/FileController.getSharePointSettings';
 
 export default class HistoryEditModal extends LightningElement {
     @api record;
@@ -39,11 +40,15 @@ export default class HistoryEditModal extends LightningElement {
     @track documentType;
     @track correspondenceWith;
     @track draft;
+    @track serverRelativeURL;
     @track bvCaseId;
     @track isSubModalOpen = false;
     @track versions = [];
     @track originalRecord = {};
     @track originalDocumentId; // Added to keep track of the original document ID
+    fullURL;
+    sharePointSiteUrl;
+    sharePointDirectoryPath;
 
     userId = USER_ID; // Get the current user ID
 
@@ -68,6 +73,7 @@ export default class HistoryEditModal extends LightningElement {
             this.documentType = this.record.documentType;
             this.correspondenceWith = this.record.correspondenceWith;
             this.draft = this.record.draft;
+            this.serverRelativeURL = this.record.serverRelativeURL;
             this.originalDocumentId = this.record.documentId; // Keep track of the original document ID
         }
 
@@ -83,8 +89,30 @@ export default class HistoryEditModal extends LightningElement {
             fileSize: this.fileSize,
             documentType: this.documentType,
             correspondenceWith: this.correspondenceWith,
-            draft: this.draft
+            draft: this.draft,
+            serverRelativeURL: this.serverRelativeURL
         };
+
+        // Fetch SharePoint settings
+        getSharePointSettings()
+        .then(result => {
+            this.sharePointSiteUrl = result.SharePoint_Site_URL;
+            this.sharePointDirectoryPath = result.SharePoint_Directory_Path;
+            this.constructFullURL();
+        })
+        .catch(error => {
+            console.error('Error fetching SharePoint settings:', error);
+            this.showToast('Error', 'Error fetching SharePoint settings', 'error');
+        });
+    }
+
+    constructFullURL() {
+        if (this.sharePointSiteUrl && this.serverRelativeURL) {
+            const decodedServerRelativeURL = decodeURIComponent(this.serverRelativeURL).replace(/%2F/g, '/');
+            const parentFolderPath = '123'; // Adjust this as needed, no need for encodeURIComponent
+            const previewPageUrl = `${this.sharePointSiteUrl}/${this.sharePointDirectoryPath}/Shared%20Documents/Forms/AllItems.aspx?id=${encodeURIComponent(decodedServerRelativeURL)}&parent=${parentFolderPath}`;
+            this.fullURL = previewPageUrl;
+        }
     }
 
     @wire(getHistoryVersions, { historyItemId: '$record.Id' })
@@ -98,6 +126,7 @@ export default class HistoryEditModal extends LightningElement {
                 flagImportant: this.flagImportant,
                 fileName: this.fileName,
                 fileSize: this.fileSize,
+                serverRelativeURL: this.serverRelativeURL,
                 bvCaseId: this.bvCaseId,
                 lastModifiedByName: 'Initial User', // Replace with actual user data if available
                 lastModifiedDate: this.dateInserted, // Replace with the actual created date if available
@@ -113,6 +142,7 @@ export default class HistoryEditModal extends LightningElement {
                 flagImportant: version.Flag_as_important__c,
                 fileName: this.fileName,
                 fileSize: this.fileSize,
+                serverRelativeURL: this.serverRelativeURL,
                 bvCaseId: version.BV_Case__c,
                 lastModifiedByName: 'User', // Replace with actual user data if available
                 lastModifiedDate: version.Date_Inserted__c, // Replace with the actual modified date if available
@@ -142,6 +172,7 @@ export default class HistoryEditModal extends LightningElement {
     handleFileChange(event) {
         this.fileData = event.detail.fileData;
         this.fileName = event.detail.fileName;
+        this.serverRelativeURL = event.detail.serverRelativeURL;
         this.fileSize = event.detail.fileSize;
         this.documentType = event.detail.documentType;
         this.correspondenceWith = event.detail.correspondenceWith;
@@ -166,6 +197,7 @@ export default class HistoryEditModal extends LightningElement {
                                     this.showToast('Success', 'File and record deleted successfully', 'success');
                                     this.fileData = null;
                                     this.fileName = null;
+                                    this.serverRelativeURL = null;
                                     this.fileSize = null;
                                     this.documentType = null;
                                     this.correspondenceWith = null;
@@ -383,6 +415,7 @@ export default class HistoryEditModal extends LightningElement {
                this.details !== this.originalRecord.details ||
                this.flagImportant !== this.originalRecord.flagImportant ||
                this.fileName !== this.originalRecord.fileName ||
+               this.serverRelativeURL !== this.originalRecord.serverRelativeURL ||
                this.fileSize !== this.originalRecord.fileSize ||
                this.documentType !== this.originalRecord.documentType ||
                this.correspondenceWith !== this.originalRecord.correspondenceWith ||
@@ -406,6 +439,7 @@ export default class HistoryEditModal extends LightningElement {
         this.details = versionToRestore.details;
         this.flagImportant = versionToRestore.flagImportant;
         this.fileName = versionToRestore.fileName;
+        this.serverRelativeURL = versionToRestore.serverRelativeURL;
         this.fileSize = versionToRestore.fileSize;
         this.bvCaseId = versionToRestore.bvCaseId;
     }

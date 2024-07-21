@@ -700,12 +700,12 @@ public with sharing class FileController {
             String listItemID = uploadFileToSharePoint(folderPath, fileNameWithExtension, base64Data, documentType);
 
             if (listItemID != null) {
-                createSHDocumentRecord(caseHistoryId, contentVersion, listItemID);
+                createSHDocumentRecord(caseHistoryId, contentVersion, listItemID, normalizedCaseName);
             }
         }
     }
 
-    public static void createSHDocumentRecord(Id caseHistoryId, ContentVersion contentVersion, String listItemID) {
+    public static void createSHDocumentRecord(Id caseHistoryId, ContentVersion contentVersion, String listItemID, String caseName) {
         SHDocument__c shDocument = new SHDocument__c();
         shDocument.Case_History__c = caseHistoryId;
         shDocument.DocumentID__c = listItemID;
@@ -715,7 +715,7 @@ public with sharing class FileController {
         shDocument.DocumentType__c = 'Email Attachment'; // Adjust as needed
         shDocument.FileSize__c = contentVersion.ContentSize;
         shDocument.DocumentExtension__c = contentVersion.FileExtension;
-        shDocument.ServerRelativeURL__c = '/sites/XansiumUATTestSite/Shared%20Documents/' + caseHistoryId + '/' + contentVersion.Title;
+        shDocument.ServerRelativeURL__c = '/sites/XansiumUATTestSite/Shared%20Documents/' + caseName + '/' + caseHistoryId + '/' + contentVersion.Title + '.' + contentVersion.FileExtension;
         insert shDocument;
     }
 

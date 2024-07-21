@@ -27,7 +27,7 @@
     <!-- Display file details if a file was uploaded -->
     <template if:true={fileName}>
         <div class="slds-form-element slds-m-around_medium">
-            <p>Uploaded Document: {fileName}</p>
+            <p>Uploaded Document: <a href={fullURL} target="_blank">{fileName}</a></p>
             <p>Document Size: {fileSize}</p>
             <p>Document Type: {documentType}</p>
             <p>Correspondence With: {correspondenceWith}</p>
