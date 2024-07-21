@@ -9,12 +9,7 @@
     <targetConfigs>
       <targetConfig targets="lightning__FlowScreen">
           <property name="selectedDocumentId" type="String" label="Selected document ID"/>
-          <property name="Letter_types" type="String" label="Letter Types"/>
-          <property name="Enter_date_of_previous_letter" type="String" label="Enter date of previous letter"/>
-          <property name="Enter_received_letter_date" type="String" label="Enter received letter date"/>
-          <property name="Enter_received_letter_date_else" type="String" label="Enter date of received letter date screen else"/>
-          <property name="Does_the_letter_have_any_enclosures" type="Boolean" label="Does the letter have any enclosures"/>
-          <property name="Reason_for_holding" type="String" label="Reason for holding"/>
+          <property name="flowData" type="String" label="Flow inputs"/>
       </targetConfig>
   </targetConfigs>
 </LightningComponentBundle>
