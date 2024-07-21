@@ -63,7 +63,7 @@ public with sharing class FileController {
     
         // Construct the endpoint with the Named Credential and the path for the file in SharePoint
         // Use the folder name to specify the target folder
-        String endpoint = 'callout:BVSharepointNamed/_api/web/GetFolderByServerRelativeUrl(\'' +
+        String endpoint = 'callout:' + SHAREPOINT_NAMED_CREDENTIAL + '/_api/web/GetFolderByServerRelativeUrl(\'' +
                           'Shared%20Documents/' + encodedFolderName + '\')/Files/Add(url=\'' +
                           processedFileName + '\',overwrite=true)';
     
@@ -123,7 +123,7 @@ public with sharing class FileController {
 
     public static void createSharePointFolder(String folderPath) {
         // Construct the endpoint URL for SharePoint folder creation
-        String sharepointSiteUrl = 'callout:BVSharepointNamed/_api/web/folders';
+        String sharepointSiteUrl = 'callout:' + SHAREPOINT_NAMED_CREDENTIAL + '/_api/web/folders';
 		String folderAbsolutePath = '/sites/XansiumUATTestSite/Shared%20Documents' + folderPath;
 
 
@@ -153,7 +153,7 @@ public with sharing class FileController {
     
     public static Boolean doesFolderExist(String folderPath) {
         String encodedFolderPath = EncodingUtil.urlEncode(folderPath, 'UTF-8');
-        String sharepointSiteUrl = 'callout:BVSharepointNamed/_api/web/GetFolderByServerRelativeUrl(\'' 
+        String sharepointSiteUrl = 'callout:' + SHAREPOINT_NAMED_CREDENTIAL + '/_api/web/GetFolderByServerRelativeUrl(\'' 
                                    + encodedFolderPath + '\')';
 
         HttpRequest req = new HttpRequest();
@@ -177,7 +177,7 @@ public with sharing class FileController {
     }
     
     public static void tagDocument(String documentId, String documentType) {
-    	String updateEndpoint = 'callout:BVSharepointNamed/_api/web/lists/getbytitle(\'Documents\')/items(' + documentId + ')';
+    	String updateEndpoint = 'callout:' + SHAREPOINT_NAMED_CREDENTIAL + '/_api/web/lists/getbytitle(\'Documents\')/items(' + documentId + ')';
 
         // Setup the HTTP request for updating document metadata
         HttpRequest req = new HttpRequest();
@@ -209,7 +209,7 @@ public with sharing class FileController {
     @AuraEnabled(cacheable=true)
     public static List<Document> fetchDocumentsByType(String documentType, String caseId) {
         String documentLibraryUrl = '/sites/XansiumUATTestSite/Shared%20Documents/' + caseId;
-        String queryEndpoint = 'callout:BVSharepointNamed/_api/web/GetFolderByServerRelativeUrl(\'' 
+        String queryEndpoint = 'callout:' + SHAREPOINT_NAMED_CREDENTIAL + '/_api/web/GetFolderByServerRelativeUrl(\'' 
             + documentLibraryUrl 
             + '\')/Files?$filter=ListItemAllFields/DocumentType%20eq%20(\'' + documentType + '\')';
  
@@ -260,7 +260,7 @@ public with sharing class FileController {
     @AuraEnabled(cacheable=true)
     public static List<SHDocument__c> fetchAllDocumentsForCase(String caseId) {
         String documentLibraryUrl = '/sites/XansiumUATTestSite/Shared%20Documents/' + caseId;
-        String queryEndpoint = 'callout:BVSharepointNamed/_api/web/GetFolderByServerRelativeUrl(\'' + documentLibraryUrl + '\')/Files';
+        String queryEndpoint = 'callout:' + SHAREPOINT_NAMED_CREDENTIAL + '/_api/web/GetFolderByServerRelativeUrl(\'' + documentLibraryUrl + '\')/Files';
     
         HttpRequest req = new HttpRequest();
         req.setEndpoint(queryEndpoint);
@@ -300,7 +300,7 @@ public with sharing class FileController {
 
                     if (listItemID != null) {
                         // Make a callout to retrieve list item details including custom fields
-                        String listItemEndpoint = 'callout:BVSharepointNamed/_api/web/lists/GetByTitle(\'Documents\')/items(' + listItemID + ')';
+                        String listItemEndpoint = 'callout:' + SHAREPOINT_NAMED_CREDENTIAL + '/_api/web/lists/GetByTitle(\'Documents\')/items(' + listItemID + ')';
                         HttpRequest listItemReq = new HttpRequest();
                         listItemReq.setEndpoint(listItemEndpoint);
                         listItemReq.setMethod('GET');
@@ -341,7 +341,7 @@ public with sharing class FileController {
     @AuraEnabled(cacheable=true)
     public static List<SHDocument__c> fetchTemplates() {
         String documentLibraryUrl = '/sites/XansiumUATTestSite/Shared%20Documents/Templates';
-        String queryEndpoint = 'callout:BVSharepointNamed/_api/web/GetFolderByServerRelativeUrl(\'' + documentLibraryUrl + '\')/Files?$expand=ListItemAllFields';
+        String queryEndpoint = 'callout:' + SHAREPOINT_NAMED_CREDENTIAL + '/_api/web/GetFolderByServerRelativeUrl(\'' + documentLibraryUrl + '\')/Files?$expand=ListItemAllFields';
     
         HttpRequest req = new HttpRequest();
         req.setEndpoint(queryEndpoint);
@@ -381,7 +381,7 @@ public with sharing class FileController {
 
                     if (listItemID != null) {
                         // Make a callout to retrieve list item details including custom fields
-                        String listItemEndpoint = 'callout:BVSharepointNamed/_api/web/lists/GetByTitle(\'Documents\')/items(' + listItemID + ')';
+                        String listItemEndpoint = 'callout:' + SHAREPOINT_NAMED_CREDENTIAL + '/_api/web/lists/GetByTitle(\'Documents\')/items(' + listItemID + ')';
                         HttpRequest listItemReq = new HttpRequest();
                         listItemReq.setEndpoint(listItemEndpoint);
                         listItemReq.setMethod('GET');
@@ -424,7 +424,7 @@ public with sharing class FileController {
     @InvocableMethod(label='Fetch SharePoint Templates for Flow')
     public static List<List<SHDocument__c>> fetchTemplatesForFlow() {
         String documentLibraryUrl = '/sites/XansiumUATTestSite/Shared%20Documents/Templates';
-        String queryEndpoint = 'callout:BVSharepointNamed/_api/web/GetFolderByServerRelativeUrl(\'' + documentLibraryUrl + '\')/Files';
+        String queryEndpoint = 'callout:' + SHAREPOINT_NAMED_CREDENTIAL + '/_api/web/GetFolderByServerRelativeUrl(\'' + documentLibraryUrl + '\')/Files';
     
         HttpRequest req = new HttpRequest();
         req.setEndpoint(queryEndpoint);
@@ -464,7 +464,7 @@ public with sharing class FileController {
 
                     if (listItemID != null) {
                         // Make a callout to retrieve list item details including custom fields
-                        String listItemEndpoint = 'callout:BVSharepointNamed/_api/web/lists/GetByTitle(\'Documents\')/items(' + listItemID + ')';
+                        String listItemEndpoint = 'callout:' + SHAREPOINT_NAMED_CREDENTIAL + '/_api/web/lists/GetByTitle(\'Documents\')/items(' + listItemID + ')';
                         HttpRequest listItemReq = new HttpRequest();
                         listItemReq.setEndpoint(listItemEndpoint);
                         listItemReq.setMethod('GET');
@@ -507,7 +507,7 @@ public with sharing class FileController {
     public static String getListItemIDByFileUrl(String fileServerRelativeUrl) {
         String encodedUrl = EncodingUtil.urlEncode(fileServerRelativeUrl, 'UTF-8');
         encodedUrl = encodedUrl.replace('+', '%20');
-		String endpoint = 'callout:BVSharepointNamed/_api/web/GetFileByServerRelativeUrl(\'' + encodedUrl + '\')/ListItemAllFields';
+		String endpoint = 'callout:' + SHAREPOINT_NAMED_CREDENTIAL + '/_api/web/GetFileByServerRelativeUrl(\'' + encodedUrl + '\')/ListItemAllFields';
     
         HttpRequest req = new HttpRequest();
         req.setEndpoint(endpoint);
@@ -536,7 +536,7 @@ public with sharing class FileController {
         String fileServerRelativeUrl = '/sites/XansiumUATTestSite/Shared%20Documents/' + caseId + '/' + fileName;
         
         // Define the endpoint using the named credential
-        String endpoint = 'callout:BVSharepointNamed/_api/web/GetFileByServerRelativeUrl(\'' + fileServerRelativeUrl + '\')';
+        String endpoint = 'callout:' + SHAREPOINT_NAMED_CREDENTIAL + '/_api/web/GetFileByServerRelativeUrl(\'' + fileServerRelativeUrl + '\')';
     
         // Create a HTTP request for the DELETE operation
         HttpRequest req = new HttpRequest();
