@@ -709,6 +709,7 @@ public with sharing class FileController {
         SHDocument__c shDocument = new SHDocument__c();
         shDocument.Case_History__c = caseHistoryId;
         shDocument.DocumentID__c = listItemID;
+        shDocument.Name = contentVersion.Title;
         shDocument.Document_Name__c = contentVersion.Title;
         shDocument.FileContent__c = EncodingUtil.base64Encode(contentVersion.VersionData);
         shDocument.DocumentType__c = 'Email Attachment'; // Adjust as needed
