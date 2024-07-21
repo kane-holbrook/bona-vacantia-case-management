@@ -24,154 +24,163 @@
             </div>
         </div>
         <div class="slds-card__body slds-p-horizontal_small slds-p-vertical_medium">
-            <div class="slds-text-body_small slds-m-bottom_medium slds-grid slds-wrap slds-grid_align-end">
-                <div class="slds-col slds-size_1-of-2">
-                    ({filteredHistoryItems.length} items - {sortedByText} - Updated {lastUpdated} minutes ago)
+            <template if:false={filteredHistoryItems.length}>
+                <div class="slds-text-align_center slds-p-vertical_medium">
+                    <lightning-icon icon-name="utility:info" alternative-text="Info" size="large"></lightning-icon>
+                    <p class="slds-text-heading_medium slds-m-top_medium">No history records available</p>
+                    <p class="slds-text-body_regular">There are no history records to display. Please select a different history type or add a new history record.</p>
                 </div>
-                <div class="slds-col slds-size_1-of-2 slds-grid slds-wrap slds-grid_align-end">
-                    <lightning-input type="text" placeholder="Search history" variant="label-hidden" class="slds-m-bottom_small slds-col slds-size_1-of-3" onchange={handleSearchInputChange}></lightning-input>
-                    <lightning-input type="date" placeholder="From" variant="label-hidden" class="slds-m-bottom_small slds-col slds-size_1-of-3" onchange={handleDateFilterChange} data-filter="from"></lightning-input>
-                    <lightning-input type="date" placeholder="To" variant="label-hidden" class="slds-m-bottom_small slds-col slds-size_1-of-3" onchange={handleDateFilterChange} data-filter="to"></lightning-input>
+            </template>
+            <template if:true={filteredHistoryItems.length}>
+                <div class="slds-text-body_small slds-m-bottom_medium slds-grid slds-wrap slds-grid_align-end">
+                    <div class="slds-col slds-size_1-of-2">
+                        ({filteredHistoryItems.length} items - {sortedByText} - Updated {lastUpdated} minutes ago)
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-grid slds-wrap slds-grid_align-end">
+                        <lightning-input type="text" placeholder="Search history" variant="label-hidden" class="slds-m-bottom_small slds-col slds-size_1-of-3" onchange={handleSearchInputChange}></lightning-input>
+                        <lightning-input type="date" placeholder="From" variant="label-hidden" class="slds-m-bottom_small slds-col slds-size_1-of-3" onchange={handleDateFilterChange} data-filter="from"></lightning-input>
+                        <lightning-input type="date" placeholder="To" variant="label-hidden" class="slds-m-bottom_small slds-col slds-size_1-of-3" onchange={handleDateFilterChange} data-filter="to"></lightning-input>
+                    </div>
                 </div>
-            </div>
-            <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_col-bordered">
-                <thead>
-                    <tr class="slds-line-height_reset">
-                        <th scope="col">
-                            <div class="slds-truncate" title="Expand"></div>
-                        </th>
-                        <th scope="col">
-                            <button class="slds-button slds-button_reset slds-truncate" title="Date" onclick={handleSort} data-column="Date_Inserted__c">
-                                Date
-                                <template if:true={isSortedByDate}>
-                                    <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
-                                </template>
-                            </button>
-                        </th>
-                        <th scope="col">
-                            <button class="slds-button slds-button_reset slds-truncate" title="Action" onclick={handleSort} data-column="Action__c">
-                                Action
-                                <template if:true={isSortedByAction}>
-                                    <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
-                                </template>
-                            </button>
-                        </th>
-                        <th scope="col">
-                            <button class="slds-button slds-button_reset slds-truncate" title="Notes" onclick={handleSort} data-column="Notes__c">
-                                Notes
-                                <template if:true={isSortedByNotes}>
-                                    <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
-                                </template>
-                            </button>
-                        </th>
-                        <th scope="col">
-                            <button class="slds-button slds-button_reset slds-truncate" title="Document Type" onclick={handleSort} data-column="Document_Type__c">
-                                Document Type
-                                <template if:true={isSortedByDocumentType}>
-                                    <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
-                                </template>
-                            </button>
-                        </th>
-                        <th scope="col">
-                            <button class="slds-button slds-button_reset slds-truncate" title="File Size" onclick={handleSort} data-column="File_Size__c">
-                                File Size
-                                <template if:true={isSortedByFileSize}>
-                                    <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
-                                </template>
-                            </button>
-                        </th>
-                        <th scope="col">
-                            <button class="slds-button slds-button_reset slds-truncate" title="Draft" onclick={handleSort} data-column="Draft__c">
-                                Draft
-                                <template if:true={isSortedByDraft}>
-                                    <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
-                                </template>
-                            </button>
-                        </th>
-                        <th scope="col">
-                            <button class="slds-button slds-button_reset slds-truncate" title="Case Officer" onclick={handleSort} data-column="Case_Officer_Name">
-                                Case Officer
-                                <template if:true={isSortedByCaseOfficer}>
-                                    <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
-                                </template>
-                            </button>
-                        </th>
-                        <th scope="col">
-                            <div class="slds-truncate" title="Actions">Actions</div>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <template for:each={filteredHistoryItems} for:item="item">
-                        <tr key={item.Id} class={item.rowClass} onclick={handleRowClick} data-id={item.Id}>
-                            <td data-label="Expand">
-                                <template if:true={showVersions}>
-                                    <template if:true={item.hasVersions}>
-                                        <button class="slds-button slds-button_icon slds-m-right_x-small" aria-expanded={item.isExpanded} onclick={toggleRow} data-id={item.Id}>
-                                            <lightning-icon icon-name={item.iconName} alternative-text="Expand"></lightning-icon>
-                                        </button>
+                <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_col-bordered">
+                    <thead>
+                        <tr class="slds-line-height_reset">
+                            <th scope="col">
+                                <div class="slds-truncate" title="Expand"></div>
+                            </th>
+                            <th scope="col">
+                                <button class="slds-button slds-button_reset slds-truncate" title="Date" onclick={handleSort} data-column="Date_Inserted__c">
+                                    Date
+                                    <template if:true={isSortedByDate}>
+                                        <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
                                     </template>
-                                </template>
-                            </td>
-                            <td data-label="Date">
-                                <div class="slds-grid slds-align_absolute-center">
-                                    <lightning-icon icon-name="utility:priority" alternative-text="Important" class={item.flagIconClass}></lightning-icon>
-                                    <lightning-formatted-date-time value={item.Date_Inserted__c} year="numeric" month="2-digit" day="2-digit" day-style="2-digit" month-style="2-digit" timezone="UTC"></lightning-formatted-date-time>
-                                </div>
-                            </td>
-                            <td data-label="Action">{item.Action__c}</td>
-                            <td data-label="Notes">
-                                <template if:true={item.hasDetails}>
-                                    <lightning-icon icon-name="utility:check" alternative-text="Has Details" size="x-small"></lightning-icon>
-                                </template>
-                            </td>
-                            <td data-label="Document Type">{item.documentType}</td>
-                            <td data-label="File Size">{item.fileSize}</td>
-                            <td data-label="Draft">{item.draft}</td>
-                            <td data-label="Case Officer">{item.Case_Officer_Name}</td>
-                            <td data-label="Actions">
-                                <lightning-button-menu alternative-text="Actions" icon-name="utility:down" menu-alignment="right">
-                                    <lightning-menu-item label="View/Edit" data-id={item.Id} onclick={handleViewEdit}></lightning-menu-item>
-                                    <lightning-menu-item label="Forward to Mail Recipient" data-id={item.Id} onclick={handleForward}></lightning-menu-item>
-                                    <lightning-menu-item label="Delete" data-id={item.Id} onclick={handleDeleteOpen}></lightning-menu-item>
-                                </lightning-button-menu>
-                            </td>
+                                </button>
+                            </th>
+                            <th scope="col">
+                                <button class="slds-button slds-button_reset slds-truncate" title="Action" onclick={handleSort} data-column="Action__c">
+                                    Action
+                                    <template if:true={isSortedByAction}>
+                                        <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
+                                    </template>
+                                </button>
+                            </th>
+                            <th scope="col">
+                                <button class="slds-button slds-button_reset slds-truncate" title="Notes" onclick={handleSort} data-column="Notes__c">
+                                    Notes
+                                    <template if:true={isSortedByNotes}>
+                                        <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
+                                    </template>
+                                </button>
+                            </th>
+                            <th scope="col">
+                                <button class="slds-button slds-button_reset slds-truncate" title="Document Type" onclick={handleSort} data-column="Document_Type__c">
+                                    Document Type
+                                    <template if:true={isSortedByDocumentType}>
+                                        <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
+                                    </template>
+                                </button>
+                            </th>
+                            <th scope="col">
+                                <button class="slds-button slds-button_reset slds-truncate" title="File Size" onclick={handleSort} data-column="File_Size__c">
+                                    File Size
+                                    <template if:true={isSortedByFileSize}>
+                                        <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
+                                    </template>
+                                </button>
+                            </th>
+                            <th scope="col">
+                                <button class="slds-button slds-button_reset slds-truncate" title="Draft" onclick={handleSort} data-column="Draft__c">
+                                    Draft
+                                    <template if:true={isSortedByDraft}>
+                                        <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
+                                    </template>
+                                </button>
+                            </th>
+                            <th scope="col">
+                                <button class="slds-button slds-button_reset slds-truncate" title="Case Officer" onclick={handleSort} data-column="Case_Officer_Name">
+                                    Case Officer
+                                    <template if:true={isSortedByCaseOfficer}>
+                                        <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
+                                    </template>
+                                </button>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate" title="Actions">Actions</div>
+                            </th>
                         </tr>
-                        <template if:true={item.isExpanded}>
-                            <template for:each={item.Case_History__r} for:item="version">
-                                <tr key={version.Id} class={version.rowClass}>
-                                    <td data-label="Expand">
-                                        <lightning-icon icon-name="utility:level_down" alternative-text="Sub-item" class="slds-icon-text-default version-expand-icon"></lightning-icon>
-                                    </td>
-                                    <td data-label="Date">
-                                        <div class="slds-grid slds-align_absolute-center">
-                                            <lightning-icon icon-name="utility:flag" alternative-text="Important" class={version.flagIconClass}></lightning-icon>
-                                            <lightning-formatted-date-time value={version.Date_Inserted__c} year="numeric" month="2-digit" day="2-digit" day-style="2-digit" month-style="2-digit" timezone="UTC"></lightning-formatted-date-time>
-                                        </div>
-                                    </td>
-                                    <td data-label="Action">{version.Action__c}</td>
-                                    <td data-label="Notes">
-                                        <template if:true={version.hasDetails}>
-                                            <lightning-icon icon-name="utility:check" alternative-text="Has Details" size="x-small"></lightning-icon>
+                    </thead>
+                    <tbody>
+                        <template for:each={filteredHistoryItems} for:item="item">
+                            <tr key={item.Id} class={item.rowClass} onclick={handleRowClick} data-id={item.Id}>
+                                <td data-label="Expand">
+                                    <template if:true={showVersions}>
+                                        <template if:true={item.hasVersions}>
+                                            <button class="slds-button slds-button_icon slds-m-right_x-small" aria-expanded={item.isExpanded} onclick={toggleRow} data-id={item.Id}>
+                                                <lightning-icon icon-name={item.iconName} alternative-text="Expand"></lightning-icon>
+                                            </button>
                                         </template>
-                                    </td>
-                                    <td data-label="Document Type">{version.Document_Type__c}</td>
-                                    <td data-label="File Size">{version.File_Size__c}</td>
-                                    <td data-label="Draft">{version.Draft__c}</td>
-                                    <td data-label="Case Officer">{version.Case_Officer_Name}</td>
-                                    <td data-label="Actions">
-                                        <lightning-button-menu alternative-text="Actions" icon-name="utility:down" menu-alignment="right">
-                                            <lightning-menu-item label="View/Edit" data-id={version.Id} onclick={handleViewEdit}></lightning-menu-item>
-                                            <lightning-menu-item label="Forward to Mail Recipient" data-id={version.Id} onclick={handleForward}></lightning-menu-item>
-                                            <lightning-menu-item label="Delete" data-id={version.Id} onclick={handleDelete}></lightning-menu-item>
-                                        </lightning-button-menu>
-                                    </td>
-                                </tr>
+                                    </template>
+                                </td>
+                                <td data-label="Date">
+                                    <div class="slds-grid slds-align_absolute-center">
+                                        <lightning-icon icon-name="utility:priority" alternative-text="Important" class={item.flagIconClass}></lightning-icon>
+                                        <lightning-formatted-date-time value={item.Date_Inserted__c} year="numeric" month="2-digit" day="2-digit" day-style="2-digit" month-style="2-digit" timezone="UTC"></lightning-formatted-date-time>
+                                    </div>
+                                </td>
+                                <td data-label="Action">{item.Action__c}</td>
+                                <td data-label="Notes">
+                                    <template if:true={item.hasDetails}>
+                                        <lightning-icon icon-name="utility:check" alternative-text="Has Details" size="x-small"></lightning-icon>
+                                    </template>
+                                </td>
+                                <td data-label="Document Type">{item.documentType}</td>
+                                <td data-label="File Size">{item.fileSize}</td>
+                                <td data-label="Draft">{item.draft}</td>
+                                <td data-label="Case Officer">{item.Case_Officer_Name}</td>
+                                <td data-label="Actions">
+                                    <lightning-button-menu alternative-text="Actions" icon-name="utility:down" menu-alignment="right">
+                                        <lightning-menu-item label="View/Edit" data-id={item.Id} onclick={handleViewEdit}></lightning-menu-item>
+                                        <lightning-menu-item label="Forward to Mail Recipient" data-id={item.Id} onclick={handleForward}></lightning-menu-item>
+                                        <lightning-menu-item label="Delete" data-id={item.Id} onclick={handleDeleteOpen}></lightning-menu-item>
+                                    </lightning-button-menu>
+                                </td>
+                            </tr>
+                            <template if:true={item.isExpanded}>
+                                <template for:each={item.Case_History__r} for:item="version">
+                                    <tr key={version.Id} class={version.rowClass}>
+                                        <td data-label="Expand">
+                                            <lightning-icon icon-name="utility:level_down" alternative-text="Sub-item" class="slds-icon-text-default version-expand-icon"></lightning-icon>
+                                        </td>
+                                        <td data-label="Date">
+                                            <div class="slds-grid slds-align_absolute-center">
+                                                <lightning-icon icon-name="utility:flag" alternative-text="Important" class={version.flagIconClass}></lightning-icon>
+                                                <lightning-formatted-date-time value={version.Date_Inserted__c} year="numeric" month="2-digit" day="2-digit" day-style="2-digit" month-style="2-digit" timezone="UTC"></lightning-formatted-date-time>
+                                            </div>
+                                        </td>
+                                        <td data-label="Action">{version.Action__c}</td>
+                                        <td data-label="Notes">
+                                            <template if:true={version.hasDetails}>
+                                                <lightning-icon icon-name="utility:check" alternative-text="Has Details" size="x-small"></lightning-icon>
+                                            </template>
+                                        </td>
+                                        <td data-label="Document Type">{version.Document_Type__c}</td>
+                                        <td data-label="File Size">{version.File_Size__c}</td>
+                                        <td data-label="Draft">{version.Draft__c}</td>
+                                        <td data-label="Case Officer">{version.Case_Officer_Name}</td>
+                                        <td data-label="Actions">
+                                            <lightning-button-menu alternative-text="Actions" icon-name="utility:down" menu-alignment="right">
+                                                <lightning-menu-item label="View/Edit" data-id={version.Id} onclick={handleViewEdit}></lightning-menu-item>
+                                                <lightning-menu-item label="Forward to Mail Recipient" data-id={version.Id} onclick={handleForward}></lightning-menu-item>
+                                                <lightning-menu-item label="Delete" data-id={version.Id} onclick={handleDelete}></lightning-menu-item>
+                                            </lightning-button-menu>
+                                        </td>
+                                    </tr>
+                                </template>
                             </template>
                         </template>
-                    </template>
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </template>
         </div>
     </article>
 
