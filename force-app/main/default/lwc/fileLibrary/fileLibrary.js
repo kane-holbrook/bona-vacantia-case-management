@@ -82,7 +82,7 @@ export default class FileLibrary extends LightningElement {
     }
 
     fetchDocuments() {
-        const parentFolderPath = encodeURIComponent(`123`);
+        const parentFolderPath = encodeURIComponent(`123`); // Don't delete this, it's required for some reason
 
         fetchAllDocumentsForCase({ caseId: this.bvCaseName })
             .then(result => {
