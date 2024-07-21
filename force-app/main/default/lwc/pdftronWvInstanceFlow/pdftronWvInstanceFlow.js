@@ -14,6 +14,7 @@ import saveDocumentToSharePoint from '@salesforce/apex/PDFTron_ContentVersionCon
 import getFileDataFromIds from '@salesforce/apex/PDFTron_ContentVersionController.getFileDataFromIds';
 import getUser from "@salesforce/apex/PDFTron_ContentVersionController.getUser";
 import getSharePointFileDataById from '@salesforce/apex/PDFTron_ContentVersionController.getSharePointFileDataById';
+import { getRecordId } from 'c/sharedService';
 
 function _base64ToArrayBuffer(base64) {
     var binary_string = window.atob(base64);
@@ -52,6 +53,10 @@ export default class PdftronWvInstanceFlow extends LightningElement {
     record;
 
     connectedCallback() {
+        if (this.recordId === undefined) {
+          this.recordId = getRecordId();
+        }
+
         this.handleSubscribe();
         window.addEventListener('message', this.handleReceiveMessage.bind(this), false);
 
@@ -77,7 +82,33 @@ export default class PdftronWvInstanceFlow extends LightningElement {
                     this.mapping[key.trim()] = value.trim();
                 }
             });
-            console.log('Processed flowData:', this.mapping);
+        }
+
+        // Add default values for specific placeholders
+        this.mapping.currentDate = this.getCurrentDateFormatted();
+        this.mapping.caseReference = this.recordId;
+        this.mapping.caseName = this.bvCaseName;
+
+        console.log('Processed flowData:', this.mapping);
+    }
+
+    getCurrentDateFormatted() {
+        const date = new Date();
+        const day = date.getDate();
+        const month = date.toLocaleString('default', { month: 'long' });
+        const year = date.getFullYear();
+        const daySuffix = this.getDaySuffix(day);
+
+        return `${day}${daySuffix} ${month} ${year}`;
+    }
+
+    getDaySuffix(day) {
+        if (day > 3 && day < 21) return 'th';
+        switch (day % 10) {
+            case 1: return 'st';
+            case 2: return 'nd';
+            case 3: return 'rd';
+            default: return 'th';
         }
     }
 
