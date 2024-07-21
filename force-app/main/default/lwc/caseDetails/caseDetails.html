@@ -11,14 +11,15 @@
         </div>
         <div slot="actions">
             <lightning-button-group>
-                <lightning-button label="Edit" variant="neutral" onclick={handleEdit} title="Edit"></lightning-button>
+                <lightning-button label="Send an Email" variant="neutral" onclick={handleSendAnEmail} title="Send an Email"></lightning-button>
                 <lightning-button-menu icon-name="utility:down" alternative-text="Show More" variant="border-filled" menu-alignment="right">
                     <lightning-menu-item value="changeOwner" label="Change Owner" onclick={handleChangeOwner}></lightning-menu-item>
-                    <lightning-menu-item value="changeRecordType" label="Change Record Type" onclick={handleChangeRecordType}></lightning-menu-item>
+                    <!-- <lightning-menu-item value="changeRecordType" label="Change Record Type" onclick={handleChangeRecordType}></lightning-menu-item> -->
                     <lightning-menu-item value="delete" label="Delete" onclick={handleDelete}></lightning-menu-item>
                     <lightning-menu-item value="clone" label="Clone" onclick={handleClone}></lightning-menu-item>
                 </lightning-button-menu>
             </lightning-button-group>
         </div>
     </lightning-card>
+    <c-email-quick-action record-id={recordId}></c-email-quick-action>
 </template>

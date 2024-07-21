@@ -119,6 +119,12 @@ export default class CaseDetails extends NavigationMixin(LightningElement) {
         });
     }
 
+    handleSendAnEmail() {
+        const emailQuickActionComponent = this.template.querySelector('c-email-quick-action');
+        emailQuickActionComponent.invoke({
+        });
+    }
+
     setCaseTypeName(recordTypeDeveloperName) {
         if (recordTypeDeveloperName == 'ESTA') {
             this.caseTypeName = 'Estates';
