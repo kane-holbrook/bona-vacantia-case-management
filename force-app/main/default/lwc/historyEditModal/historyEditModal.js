@@ -233,7 +233,9 @@ export default class HistoryEditModal extends LightningElement {
                                     const folderName = `${caseName}/${this.record.Id}`;
                                     deleteSharepointFile({ caseId: folderName, fileName: this.fileName })
                                         .then(() => {
-                                            this.saveFile(this.record.Id, 'Document replaced');
+                                            if (this.fileData) {
+                                                this.saveFile(this.record.Id, 'Document replaced');
+                                            }
                                         })
                                         .catch(error => {
                                             console.log('Error deleting original SharePoint file', error);
@@ -245,7 +247,9 @@ export default class HistoryEditModal extends LightningElement {
                                     this.showToast('Error', 'Error fetching case name', 'error');
                                 });
                         } else {
-                            this.saveFile(this.record.Id, 'Document added');
+                            if (this.fileData) {
+                                this.saveFile(this.record.Id, 'Document added');
+                            }
                         }
                     } else {
                         this.dispatchEvent(new CustomEvent('save'));
@@ -261,7 +265,9 @@ export default class HistoryEditModal extends LightningElement {
             createRecord(recordInput)
                 .then(record => {
                     if (this.fileName && this.fileSize) {
-                        this.saveFile(record.id, 'Document added');
+                        if (this.fileData) {
+                            this.saveFile(record.id, 'Document added');
+                        }
                     } else {
                         this.dispatchEvent(new CustomEvent('save'));
                     }
@@ -274,6 +280,11 @@ export default class HistoryEditModal extends LightningElement {
     }
 
     saveFile(historyRecordId, action) {
+        if (!this.fileData) {
+            console.log('No file data available to save.');
+            return;
+        }
+
         const base64Data = this.fileData.split(',')[1];
 
         // Fetch the case name
@@ -283,7 +294,7 @@ export default class HistoryEditModal extends LightningElement {
 
                 console.log('documentType', this.documentType);
                 uploadFileToSharePoint({
-                    folderName: '/'+ folderName,
+                    folderName: '/' + folderName,
                     fileName: this.fileName,
                     base64Data: base64Data,
                     documentType: this.documentType
