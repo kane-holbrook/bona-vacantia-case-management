@@ -12,6 +12,7 @@ import fetchDocumentsByType from '@salesforce/apex/FileController.fetchDocuments
 import getSharePointFileDataById from '@salesforce/apex/PDFTron_ContentVersionController.getSharePointFileDataById';
 import getMappedTemplateData from '@salesforce/apex/PDFTron_ContentVersionController.getMappedTemplateData';
 import processFiles from '@salesforce/apex/FileController.processFiles';
+import getSharePointSettings from '@salesforce/apex/FileController.getSharePointSettings';
 
 export default class FileManager extends NavigationMixin(LightningElement) {
     @api recordId;
@@ -24,6 +25,8 @@ export default class FileManager extends NavigationMixin(LightningElement) {
     @api fileExtensionsWhitelist = ''; // CSV string for valid file extensions, e.g., 'jpg,png,gif'
     @api fileGridSize = '1-of-6'; // Default to 6 columns
     @track files = [];
+    @track sharePointSiteUrl;
+    @track sharePointDirectoryPath;
     fileToDelete = null;
 
     @wire(CurrentPageReference) pageRef;
@@ -32,68 +35,26 @@ export default class FileManager extends NavigationMixin(LightningElement) {
 
     connectedCallback() {
         setTimeout(() => {
-            this.fetchFilesSharepoint();
+            this.fetchSharePointSettings();
         }, 0);
     }
 
-    fetchFiles() {
-        getFiles({ fileType: this.fileType, caseId: this.recordId })
-        .then(result => {
-            this.files = result.map(file => {
-                let fileExtensionType = 'unknown';
-                
-                // Using the FileExtension property to determine the file extension.
-                const extension = file.FileExtension ? file.FileExtension.toLowerCase() : 'unknown';
-    
-                switch (extension) {
-                    case 'pdf':
-                        fileExtensionType = 'pdf';
-                        break;
-                    case 'doc':
-                    case 'docx':
-                        fileExtensionType = 'word';
-                        break;
-                    case 'jpg':
-                    case 'jpeg':
-                    case 'png':
-                    case 'gif':
-                        fileExtensionType = 'image';
-                        break;
-                    case 'xls':
-                    case 'xlsx':
-                    case 'csv':
-                        fileExtensionType = 'excel';
-                        break;
-                    default:
-                        fileExtensionType = 'unknown';
-                        break;
-                }
-                
-                return {
-                    ...file,
-                    fileExtensionType: fileExtensionType,
-                    isPdf: fileExtensionType === 'pdf',
-                    isWord: fileExtensionType === 'word',
-                    isImage: fileExtensionType === 'image',
-                    isExcel: fileExtensionType === 'excel',
-                    isUnknown: fileExtensionType === 'unknown',
-                    previewPath: `/sfc/servlet.shepherd/version/renditionDownload?rendition=THUMB720BY480&versionId=${file.Id}`
-                };
+    fetchSharePointSettings() {
+        getSharePointSettings()
+            .then(settings => {
+                this.sharePointSiteUrl = settings.SharePoint_Site_URL;
+                this.sharePointDirectoryPath = settings.SharePoint_Directory_Path;
+                this.fetchFilesSharepoint();
+            })
+            .catch(error => {
+                console.error('Error fetching SharePoint settings:', error);
             });
-        })
-        .catch(error => {
-            console.error("Error fetching files", error);
-        });
     }
 
     fetchFilesSharepoint() {
         fetchDocumentsByType({ documentType: this.fileType, caseId: this.bvCaseName })
             .then(result => {
-                console.log('result', result)
                 this.files = result.map(document => {
-
-                    console.log('document', document)
-
                     let fileExtensionType = 'unknown';
                     // Extract file extension from document.Name
                     const extension = document.Name.split('.').pop().toLowerCase();
@@ -133,7 +94,7 @@ export default class FileManager extends NavigationMixin(LightningElement) {
                         isImage: fileExtensionType === 'image',
                         isExcel: fileExtensionType === 'excel',
                         isUnknown: fileExtensionType === 'unknown',
-                        previewPath: `https://glduat.sharepoint.com/sites/XansiumUATTestSite/_layouts/15/getpreview.ashx?path=${encodeURIComponent(document.Url)}`
+                        previewPath: `${this.sharePointSiteUrl}/${this.sharePointDirectoryPath}/_layouts/15/getpreview.ashx?path=${encodeURIComponent(document.Url)}`
                     };
                 });
             })
@@ -149,12 +110,8 @@ export default class FileManager extends NavigationMixin(LightningElement) {
         
         switch(actionName) {
             case 'view':
-                const sharePointDomain = 'https://glduat.sharepoint.com';
-                const siteName = 'sites/XansiumUATTestSite';
                 const parentFolderPath = encodeURIComponent(`123`); // Required for some reason
-        
-                const previewPageUrl = `${sharePointDomain}/${siteName}/Shared%20Documents/Forms/AllItems.aspx?id=${encodeURIComponent(doc.ServerRelativeUrl)}&parent=${parentFolderPath}`;
-        
+                const previewPageUrl = `${this.sharePointSiteUrl}/${this.sharePointDirectoryPath}/Shared%20Documents/Forms/AllItems.aspx?id=${encodeURIComponent(doc.ServerRelativeUrl)}&parent=${parentFolderPath}`;
                 window.open(previewPageUrl, '_blank');
                 break;
             case 'delete':
@@ -163,31 +120,22 @@ export default class FileManager extends NavigationMixin(LightningElement) {
             case 'generate':
                 getSharePointFileDataById({ fileId: doc.Id })
                     .then(result => {
-                        console.log('data by id result', result);
                         fireEvent(this.pageRef, 'blobSelected', result);
                     })
                     .catch(error => {
-                        console.log("Error fetching file data", error);
-                    }
-                );
-
-                console.log('doc', doc);
-
+                        console.error("Error fetching file data", error);
+                    });
                 setTimeout(() => {
                     getMappedTemplateData({ templateName: doc.Title, recordId: this.recordId })
                         .then(result => {
-
-                            console.log('template mapping result', result);
                             fireEvent(this.pageRef, 'bulk_mapping', result);
                         })
                         .catch(error => {
-                            console.log("Error fetching template mapping results", error);
-                        }
-                    );
+                            console.error("Error fetching template mapping results", error);
+                        });
                 }, 5000);
                 break;
             default:
-                // Handle or log an unexpected action
                 console.warn(`Unexpected action: ${actionName}`);
                 break;
         }
@@ -198,11 +146,11 @@ export default class FileManager extends NavigationMixin(LightningElement) {
         var len = binary_string.length;
         var bytes = new Uint8Array(len);
         for (var i = 0; i < len; i++) {
-          bytes[i] = binary_string.charCodeAt(i);
+            bytes[i] = binary_string.charCodeAt(i);
         }
         return bytes.buffer;
     }
-    
+
     async handleDeleteFile(fileId) {
         this.fileToDelete = fileId;
         const result = await LightningConfirm.open({
@@ -313,7 +261,7 @@ export default class FileManager extends NavigationMixin(LightningElement) {
                     // Add the SharePoint upload process to the promises array
                     uploadPromises.push(
                         uploadFileToSharePoint({
-                            folderName: '/'+ this.bvCaseName,
+                            folderName: '/' + this.bvCaseName,
                             fileName: fileName,
                             base64Data: base64Data,
                             documentType: this.fileType
@@ -374,11 +322,9 @@ export default class FileManager extends NavigationMixin(LightningElement) {
     handlePreview(event) {
         const fileId = event.target.dataset.id;
         const doc = this.files.find(d => d.Title === fileId);
-        const sharePointDomain = 'https://glduat.sharepoint.com';
-        const siteName = 'sites/XansiumUATTestSite';
         const parentFolderPath = encodeURIComponent(`123`); // Required for some reason
 
-        const previewPageUrl = `${sharePointDomain}/${siteName}/Shared%20Documents/Forms/AllItems.aspx?id=${encodeURIComponent(doc.ServerRelativeUrl)}&parent=${parentFolderPath}`;
+        const previewPageUrl = `${this.sharePointSiteUrl}/${this.sharePointDirectoryPath}/Shared%20Documents/Forms/AllItems.aspx?id=${encodeURIComponent(doc.ServerRelativeUrl)}&parent=${parentFolderPath}`;
 
         window.open(previewPageUrl, '_blank');
     }
