@@ -63,8 +63,10 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
                 iconName: this.getIconName(false),
                 rowClass: item.Flag_as_important__c ? 'highlighted-row' : '',
                 flagIconClass: item.Flag_as_important__c ? 'icon-important' : 'icon-default',
+                notes: item.Details__c ? 'Has details' : '',
+                hasDetails: item.Details__c ? true : false,
                 documentType: item.SHDocuments__r && item.SHDocuments__r.length > 0 ? item.SHDocuments__r[0].DocumentType__c : '',
-                correspondenceWith: item.SHDocuments__r && item.SHDocuments__r.length > 0 ? item.SHDocuments__r[0].Correspondence_With__c : '',
+                fileSize: this.formatFileSize(item.SHDocuments__r && item.SHDocuments__r.length > 0 ? item.SHDocuments__r[0].FileSize__c : ''),
                 draft: item.SHDocuments__r && item.SHDocuments__r.length > 0 ? item.SHDocuments__r[0].Draft__c : ''
             }));
             const userIds = this.historyItems.map(item => item.Case_Officer__c);
@@ -143,7 +145,6 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
                     this.currentRecord.fileSize = shDocument.FileSize__c ? shDocument.FileSize__c : 0;
                     this.currentRecord.fileData = shDocument.FileContent__c;
                     this.currentRecord.documentType = shDocument.DocumentType__c;
-                    this.currentRecord.correspondenceWith = shDocument.Correspondence_With__c;
                     this.currentRecord.draft = shDocument.Draft__c;
                     this.currentRecord.serverRelativeURL = shDocument.ServerRelativeURL__c;
                     this.currentRecord.documentId = shDocument.Id;
@@ -258,8 +259,8 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
             const searchKeyLower = this.searchKey.toLowerCase();
             const searchMatch = this.searchKey ? (
                 (item.Action__c?.toLowerCase() ?? '').includes(searchKeyLower) ||
+                (item.notes?.toLowerCase() ?? '').includes(searchKeyLower) ||
                 (item.documentType?.toLowerCase() ?? '').includes(searchKeyLower) ||
-                (item.correspondenceWith?.toLowerCase() ?? '').includes(searchKeyLower) ||
                 (item.Case_Officer_Name?.toLowerCase() ?? '').includes(searchKeyLower)
             ) : true;
 
@@ -297,16 +298,20 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
         return this.sortedBy === 'Action__c';
     }
 
-    get isSortedByDocumentType() {
-        return this.sortedBy === 'DocumentType';
+    get isSortedByNotes() {
+        return this.sortedBy === 'Notes__c';
     }
 
-    get isSortedByCorrespondenceWith() {
-        return this.sortedBy === 'CorrespondenceWith';
+    get isSortedByDocumentType() {
+        return this.sortedBy === 'Document_Type__c';
+    }
+
+    get isSortedByFileSize() {
+        return this.sortedBy === 'File_Size__c';
     }
 
     get isSortedByDraft() {
-        return this.sortedBy === 'Draft';
+        return this.sortedBy === 'Draft__c';
     }
 
     get isSortedByCaseOfficer() {
@@ -319,8 +324,23 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
 
         const emailQuickActionComponent = this.template.querySelector('c-email-quick-action');
         emailQuickActionComponent.invoke({
-            HtmlBody: `Please find the details of the record below:<br><br>Date: ${record.Date_Inserted__c}<br>Action: ${record.Action__c}<br>Document Type: ${record.documentType}<br>Correspondence With: ${record.correspondenceWith}<br>Draft: ${record.draft}<br>Case Officer: ${record.Case_Officer_Name}<br><br>Details:<br>${record.Details__c}`,
+            HtmlBody: `Please find the details of the record below:<br><br>Date: ${record.Date_Inserted__c}<br>Action: ${record.Action__c}<br>Document Type: ${record.documentType}<br>File Size: ${record.fileSize}<br>Draft: ${record.draft}<br>Case Officer: ${record.Case_Officer_Name}<br><br>Notes:<br>${record.notes}`,
             Subject: `Forwarding Record: ${record.Action__c}`
         });
+    }
+
+    formatFileSize(size) {
+        if (!size) {
+            return '';
+        }
+        if (size < 1024) {
+            return size + ' B';
+        } else if (size < 1024 * 1024) {
+            return (size / 1024).toFixed(2) + ' kB';
+        } else if (size < 1024 * 1024 * 1024) {
+            return (size / (1024 * 1024)).toFixed(2) + ' MB';
+        } else {
+            return (size / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
+        }
     }
 }
