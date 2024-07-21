@@ -126,6 +126,7 @@ public with sharing class FileController {
         String sharepointSiteUrl = 'callout:' + SHAREPOINT_NAMED_CREDENTIAL + '/_api/web/folders';
 		String folderAbsolutePath = '/sites/XansiumUATTestSite/Shared%20Documents' + folderPath;
 
+        System.debug('Creating folder at: ' + folderAbsolutePath);
 
         // Setup the HTTP request
         HttpRequest req = new HttpRequest();
@@ -671,6 +672,50 @@ public with sharing class FileController {
             settingsMap.put('SharePoint_Directory_Path', settings.SharePoint_Directory_Path__c);
         }
         return settingsMap;
+    }
+
+    public static void handleEmailAttachments(Id emailMessageId, Id caseHistoryId, Id caseId) {
+        List<ContentDocumentLink> contentDocumentLinks = [
+            SELECT ContentDocumentId
+            FROM ContentDocumentLink
+            WHERE LinkedEntityId = :emailMessageId
+        ];
+
+        for (ContentDocumentLink contentDocumentLink : contentDocumentLinks) {
+            ContentVersion contentVersion = [
+                SELECT Id, Title, VersionData, FileExtension, ContentSize
+                FROM ContentVersion
+                WHERE ContentDocumentId = :contentDocumentLink.ContentDocumentId AND IsLatest = true
+                LIMIT 1
+            ];
+
+            String normalizedCaseName = getCaseName(caseId);
+            String folderPath = '/' + normalizedCaseName + '/' + caseHistoryId;
+
+            // Include the file extension in the filename
+            String fileNameWithExtension = contentVersion.Title + '.' + contentVersion.FileExtension;
+
+            String base64Data = EncodingUtil.base64Encode(contentVersion.VersionData);
+            String documentType = 'Email Attachment'; // Adjust as needed
+            String listItemID = uploadFileToSharePoint(folderPath, fileNameWithExtension, base64Data, documentType);
+
+            if (listItemID != null) {
+                createSHDocumentRecord(caseHistoryId, contentVersion, listItemID);
+            }
+        }
+    }
+
+    public static void createSHDocumentRecord(Id caseHistoryId, ContentVersion contentVersion, String listItemID) {
+        SHDocument__c shDocument = new SHDocument__c();
+        shDocument.Case_History__c = caseHistoryId;
+        shDocument.DocumentID__c = listItemID;
+        shDocument.Document_Name__c = contentVersion.Title;
+        shDocument.FileContent__c = EncodingUtil.base64Encode(contentVersion.VersionData);
+        shDocument.DocumentType__c = 'Email Attachment'; // Adjust as needed
+        shDocument.FileSize__c = contentVersion.ContentSize;
+        shDocument.DocumentExtension__c = contentVersion.FileExtension;
+        shDocument.ServerRelativeURL__c = '/sites/XansiumUATTestSite/Shared%20Documents/' + caseHistoryId + '/' + contentVersion.Title;
+        insert shDocument;
     }
 
     public void veryTemporaryTest(){
