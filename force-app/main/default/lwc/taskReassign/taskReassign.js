@@ -6,6 +6,7 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import BV_TASK_OBJECT from '@salesforce/schema/BV_Task__c';
 import ASSIGNED_TO_FIELD from '@salesforce/schema/BV_Task__c.Assigned_To__c';
 import DUE_DATE_FIELD from '@salesforce/schema/BV_Task__c.Due_Date__c';
+import LAST_UPDATED_FIELD from '@salesforce/schema/BV_Task__c.Last_updated__c';
 
 export default class TaskReassign extends LightningElement {
     @api recordId;
@@ -41,6 +42,7 @@ export default class TaskReassign extends LightningElement {
         const fields = {};
         fields[ASSIGNED_TO_FIELD.fieldApiName] = this.selectedCaseOfficer;
         fields[DUE_DATE_FIELD.fieldApiName] = this.selectedDate;
+        fields[LAST_UPDATED_FIELD.fieldApiName] = new Date().toISOString(); // Set current date and time
         fields['Id'] = this.recordId;
 
         const recordInput = { fields };

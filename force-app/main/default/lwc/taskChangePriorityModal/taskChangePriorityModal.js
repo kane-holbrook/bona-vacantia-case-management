@@ -2,6 +2,7 @@ import { LightningElement, api, track, wire } from 'lwc';
 import { getRecord, updateRecord } from 'lightning/uiRecordApi';
 import TASK_ID from '@salesforce/schema/BV_Task__c.Id';
 import TASK_PRIORITY_FIELD from '@salesforce/schema/BV_Task__c.Priority__c';
+import LAST_UPDATED_FIELD from '@salesforce/schema/BV_Task__c.Last_updated__c';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 export default class TaskChangePriorityModal extends LightningElement {
@@ -37,6 +38,7 @@ export default class TaskChangePriorityModal extends LightningElement {
         const fields = {};
         fields[TASK_ID.fieldApiName] = this.recordId;
         fields[TASK_PRIORITY_FIELD.fieldApiName] = this.selectedPriority;
+        fields[LAST_UPDATED_FIELD.fieldApiName] = new Date().toISOString(); // Set current date and time
 
         const recordInput = { fields };
 

@@ -2,8 +2,8 @@ public with sharing class TaskController {
     @AuraEnabled(cacheable=true)
     public static List<BV_Task__c> getTasksByCaseId(Id caseId) {
         return [
-            SELECT Id, Name, Assigned_To__c, Due_Date__c, Date_Inserted__c, Description__c, Priority__c,
-                   (SELECT Id, Name, Assigned_To__c, Due_Date__c, Date_Inserted__c, Description__c, Priority__c 
+            SELECT Id, Name, Assigned_To__c, Due_Date__c, Date_Inserted__c, Description__c, Priority__c, Last_updated__c,
+                   (SELECT Id, Name, Assigned_To__c, Due_Date__c, Date_Inserted__c, Description__c, Priority__c, Last_updated__c
                     FROM BV_Tasks1__r)
             FROM BV_Task__c
             WHERE BV_Case_Lookup__c = :caseId
@@ -13,7 +13,7 @@ public with sharing class TaskController {
     @AuraEnabled(cacheable=true)
     public static List<BV_Task__c> getSubTasks(Id parentTaskId) {
         return [
-            SELECT Id, Name, Assigned_To__c, Due_Date__c, Date_Inserted__c, Priority__c, Comments__c
+            SELECT Id, Name, Assigned_To__c, Due_Date__c, Date_Inserted__c, Priority__c, Comments__c, Last_updated__c
             FROM BV_Task__c
             WHERE Parent_Task__c = :parentTaskId
         ];
@@ -27,8 +27,8 @@ public with sharing class TaskController {
     @AuraEnabled(cacheable=true)
     public static List<BV_Task__c> getOpenTasksByUser(Id userId) {
         return [
-            SELECT Id, Name, Due_Date__c, Date_Inserted__c, Description__c, Priority__c, Assigned_To__c, BV_Case_Lookup__c, Complete__c,
-                   (SELECT Id, Name, Due_Date__c, Date_Inserted__c, Description__c, Priority__c, Assigned_To__c, Complete__c
+            SELECT Id, Name, Due_Date__c, Date_Inserted__c, Description__c, Priority__c, Assigned_To__c, BV_Case_Lookup__c, Complete__c, Last_updated__c,
+                   (SELECT Id, Name, Due_Date__c, Date_Inserted__c, Description__c, Priority__c, Assigned_To__c, Complete__c, Last_updated__c
                     FROM BV_Tasks1__r)
             FROM BV_Task__c
             WHERE Assigned_To__c = :userId AND Complete__c = False
@@ -38,8 +38,8 @@ public with sharing class TaskController {
     @AuraEnabled(cacheable=true)
     public static BV_Task__c getTaskById(Id taskId) {
         return [
-            SELECT Id, Name, Assigned_To__c, Due_Date__c, Date_Inserted__c, Description__c, Priority__c, Schedule_Code__c, 
-                   Category__c, Group_Code__c, Other_party__c
+            SELECT Id, Name, Assigned_To__c, Due_Date__c, Date_Inserted__c, Description__c, Priority__c, Schedule_Code__c,
+                   Category__c, Group_Code__c, Other_party__c, Last_updated__c
             FROM BV_Task__c
             WHERE Id = :taskId
         ];

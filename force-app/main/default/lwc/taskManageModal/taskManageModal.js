@@ -16,6 +16,7 @@ import GROUP_CODE_MEMBERS_FIELD from '@salesforce/schema/BV_Task__c.Group_Code_M
 import OTHER_PARTY_FIELD from '@salesforce/schema/BV_Task__c.Other_party__c';
 import OTHER_PARTY_SELECT_FIELD from '@salesforce/schema/BV_Task__c.Other_party_select__c';
 import OTHER_PARTY_MEMBERS_FIELD from '@salesforce/schema/BV_Task__c.Other_party_members__c';
+import LAST_UPDATED_FIELD from '@salesforce/schema/BV_Task__c.Last_updated__c';
 
 const fields = [
     NAME_FIELD,
@@ -31,7 +32,8 @@ const fields = [
     GROUP_CODE_MEMBERS_FIELD,
     OTHER_PARTY_FIELD,
     OTHER_PARTY_SELECT_FIELD,
-    OTHER_PARTY_MEMBERS_FIELD
+    OTHER_PARTY_MEMBERS_FIELD,
+    LAST_UPDATED_FIELD // Include the new field in the fields array
 ];
 
 export default class TaskManageModal extends LightningElement {
@@ -152,6 +154,7 @@ export default class TaskManageModal extends LightningElement {
         for (let key in this.task) {
             fields[key] = this.task[key].value;
         }
+        fields[LAST_UPDATED_FIELD.fieldApiName] = new Date().toISOString(); // Set current date and time
         const recordInput = { apiName: BV_TASK_OBJECT.objectApiName, fields };
 
         createRecord(recordInput)
@@ -182,6 +185,7 @@ export default class TaskManageModal extends LightningElement {
             fields[key] = this.task[key].value;
         }
         fields.Id = this.recordId;
+        fields[LAST_UPDATED_FIELD.fieldApiName] = new Date().toISOString(); // Set current date and time
         const recordInput = { fields };
 
         updateRecord(recordInput)

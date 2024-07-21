@@ -122,11 +122,11 @@ export default class TaskList extends LightningElement {
     updateLastUpdated() {
         if (this.taskItems.length > 0) {
             const latestItem = this.taskItems.reduce((latest, item) => {
-                const itemDate = new Date(item.Due_Date__c);
-                return itemDate > new Date(latest.Due_Date__c) ? item : latest;
+                const itemDate = new Date(item.Last_updated__c);
+                return itemDate > new Date(latest.Last_updated__c) ? item : latest;
             }, this.taskItems[0]);
             const now = new Date();
-            const lastUpdateTime = new Date(latestItem.Due_Date__c);
+            const lastUpdateTime = new Date(latestItem.Last_updated__c);
             const diffInMinutes = Math.floor((now - lastUpdateTime) / 60000);
             this.lastUpdated = diffInMinutes;
         }
