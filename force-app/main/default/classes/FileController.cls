@@ -661,6 +661,18 @@ public with sharing class FileController {
         return bvCase.Name;
     }
 
+    @AuraEnabled(cacheable=true)
+    public static Map<String, String> getSharePointSettings() {
+        List<SharePoint_Settings__mdt> settingsList = [SELECT SharePoint_Site_URL__c, SharePoint_Directory_Path__c FROM SharePoint_Settings__mdt LIMIT 1];
+        Map<String, String> settingsMap = new Map<String, String>();
+        if (!settingsList.isEmpty()) {
+            SharePoint_Settings__mdt settings = settingsList[0];
+            settingsMap.put('SharePoint_Site_URL', settings.SharePoint_Site_URL__c);
+            settingsMap.put('SharePoint_Directory_Path', settings.SharePoint_Directory_Path__c);
+        }
+        return settingsMap;
+    }
+
     public void veryTemporaryTest(){
         integer i = 0;
         i = i + 1;

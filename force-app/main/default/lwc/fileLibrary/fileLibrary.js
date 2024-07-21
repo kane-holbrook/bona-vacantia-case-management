@@ -1,6 +1,7 @@
 import { LightningElement, api, wire, track } from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import fetchAllDocumentsForCase from '@salesforce/apex/FileController.fetchAllDocumentsForCase';
+import getSharePointSettings from '@salesforce/apex/FileController.getSharePointSettings';
 
 const FIELDS = ['BV_Case__c.Name'];
 const PAGE_SIZE = 10; // Number of records per page
@@ -48,6 +49,8 @@ export default class FileLibrary extends LightningElement {
     @track documentExtensionOptions = [];
     @track isFilterSidebarOpen = false;
     isLoading = false;
+    @track sharePointSiteUrl;
+    @track sharePointDirectoryPath;
 
     @wire(getRecord, { recordId: '$recordId', fields: FIELDS })
     record;
@@ -59,22 +62,33 @@ export default class FileLibrary extends LightningElement {
     }
 
     connectedCallback() {
-        setTimeout(() => {
-            this.fetchDocuments();
-        }, 0);
+        this.fetchSharePointSettings();
+    }
+
+    fetchSharePointSettings() {
+        this.isLoading = true;
+        getSharePointSettings()
+            .then(settings => {
+                this.sharePointSiteUrl = settings.SharePoint_Site_URL;
+                this.sharePointDirectoryPath = settings.SharePoint_Directory_Path;
+                setTimeout(() => {
+                    this.fetchDocuments();
+                }, 1000);
+            })
+            .catch(error => {
+                this.isLoading = false;
+                console.error('Error fetching SharePoint settings:', error);
+            });
     }
 
     fetchDocuments() {
-        this.isLoading = true;
-        const sharePointDomain = 'https://glduat.sharepoint.com';
-        const siteName = 'sites/XansiumUATTestSite';
-        const parentFolderPath = encodeURIComponent(`123`); // Required for some reason
-    
+        const parentFolderPath = encodeURIComponent(`123`);
+
         fetchAllDocumentsForCase({ caseId: this.bvCaseName })
             .then(result => {
                 this.documents = result.map(doc => {
                     // Construct the SharePoint preview URL
-                    let previewUrl = `${sharePointDomain}/${siteName}/Shared%20Documents/Forms/AllItems.aspx?id=${encodeURIComponent(doc.ServerRelativeURL__c)}&parent=${parentFolderPath}`;
+                    let previewUrl = `${this.sharePointSiteUrl}/${this.sharePointDirectoryPath}/Shared%20Documents/Forms/AllItems.aspx?id=${encodeURIComponent(doc.ServerRelativeURL__c)}&parent=${parentFolderPath}`;
                     // Return the document with the added previewUrl property
                     return {...doc, previewUrl};
                 });
@@ -98,10 +112,10 @@ export default class FileLibrary extends LightningElement {
     generateFilterOptions() {
         let documentTypes = new Set([]);
         let documentExtensions = new Set([]);
-    
+
         // Define preferred extensions
         const preferredExtensions = ['pdf', 'docx', 'doc', 'xls', 'xlsx', 'ppt', 'pptx'];
-    
+
         this.documents.forEach(doc => {
             if (doc.DocumentType__c) {
                 documentTypes.add(doc.DocumentType__c);
@@ -110,7 +124,7 @@ export default class FileLibrary extends LightningElement {
                 documentExtensions.add(doc.DocumentExtension__c);
             }
         });
-    
+
         // Create options for preferred extensions first
         let extensionOptions = preferredExtensions
             .filter(ext => documentExtensions.has(ext))
@@ -118,7 +132,7 @@ export default class FileLibrary extends LightningElement {
                 label: extensionMapping[ext],
                 value: ext
             }));
-    
+
         // Add other extensions
         extensionOptions.push(...Array.from(documentExtensions)
             .filter(ext => !preferredExtensions.includes(ext))
@@ -126,7 +140,7 @@ export default class FileLibrary extends LightningElement {
                 label: extensionMapping[ext.toLowerCase()] || `${ext.toUpperCase()} File (${ext})`, 
                 value: ext 
             })));
-    
+
         // Add 'All' option at the start
         this.documentTypeOptions = [{ label: 'All', value: '' }, 
                                     ...Array.from(documentTypes).map(type => ({ label: type, value: type }))];
@@ -160,7 +174,7 @@ export default class FileLibrary extends LightningElement {
             startDate.setUTCHours(0, 0, 0, 0); // Set to the start of the day in UTC
             const endDate = new Date(this.endDateFilter);
             endDate.setUTCHours(23, 59, 59, 999); // Set to the end of the day in UTC
-        
+
             filtered = filtered.filter(doc => {
                 const createdDate = new Date(doc.Created_Time__c);
                 return createdDate >= startDate && createdDate <= endDate;
@@ -185,7 +199,7 @@ export default class FileLibrary extends LightningElement {
             this.updatePaginatedDocuments();
         }
     }
-    
+
     handleNextPage() {
         if (this.currentPage < Math.ceil(this.totalRecords / PAGE_SIZE)) {
             this.currentPage += 1;
@@ -197,7 +211,7 @@ export default class FileLibrary extends LightningElement {
         this.documentTypeFilter = event.detail.value;
         this.applyFilters();
     }
-    
+
     handleDocumentExtensionChange(event) {
         this.documentExtensionFilter = event.detail.value;
         this.applyFilters();
@@ -226,7 +240,7 @@ export default class FileLibrary extends LightningElement {
     get isFirstPage() {
         return this.currentPage === 1;
     }
-    
+
     get isLastPage() {
         return this.currentPage >= Math.ceil(this.totalRecords / PAGE_SIZE);
     }
@@ -235,5 +249,5 @@ export default class FileLibrary extends LightningElement {
         const startIndex = (this.currentPage - 1) * PAGE_SIZE + 1;
         const endIndex = Math.min(startIndex + PAGE_SIZE - 1, this.totalRecords);
         return `Page ${this.currentPage} - Showing ${startIndex}-${endIndex} of ${this.totalRecords} results`;
-    }    
+    }
 }
