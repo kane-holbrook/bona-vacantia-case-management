@@ -10,6 +10,12 @@ import TASK_COMMENTS_FIELD from '@salesforce/schema/BV_Task__c.Comments__c';
 import TASK_CREATED_BY_FIELD from '@salesforce/schema/BV_Task__c.CreatedById';
 import TASK_LAST_MODIFIED_BY_FIELD from '@salesforce/schema/BV_Task__c.LastModifiedById';
 import TASK_NEXT_TASK_FIELD from '@salesforce/schema/BV_Task__c.Next_Task__c';
+import TASK_DESCRIPTION_FIELD from '@salesforce/schema/BV_Task__c.Description__c';
+import TASK_SCHEDULE_CODE_FIELD from '@salesforce/schema/BV_Task__c.Schedule_Code__c';
+import TASK_CATEGORY_FIELD from '@salesforce/schema/BV_Task__c.Category__c';
+import TASK_DATE_INSERTED_FIELD from '@salesforce/schema/BV_Task__c.Date_Inserted__c';
+import TASK_GROUP_CODE_FIELD from '@salesforce/schema/BV_Task__c.Group_Code__c';
+import TASK_OTHER_PARTY_FIELD from '@salesforce/schema/BV_Task__c.Other_party__c';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 export default class TaskDetail extends LightningElement {
@@ -23,7 +29,12 @@ export default class TaskDetail extends LightningElement {
     @track completeTask = false;
     @track subTasks = [];
 
-    @wire(getRecord, { recordId: '$recordId', fields: [TASK_NAME_FIELD, TASK_PARENT_FIELD, TASK_ASSIGNED_TO_FIELD, TASK_DUE_DATE_FIELD, TASK_PRIORITY_FIELD, TASK_COMMENTS_FIELD, TASK_CREATED_BY_FIELD, TASK_LAST_MODIFIED_BY_FIELD, TASK_NEXT_TASK_FIELD] })
+    @wire(getRecord, { recordId: '$recordId', fields: [
+        TASK_NAME_FIELD, TASK_PARENT_FIELD, TASK_ASSIGNED_TO_FIELD, TASK_DUE_DATE_FIELD, TASK_PRIORITY_FIELD, 
+        TASK_COMMENTS_FIELD, TASK_CREATED_BY_FIELD, TASK_LAST_MODIFIED_BY_FIELD, TASK_NEXT_TASK_FIELD,
+        TASK_DESCRIPTION_FIELD, TASK_SCHEDULE_CODE_FIELD, TASK_CATEGORY_FIELD,
+        TASK_DATE_INSERTED_FIELD, TASK_GROUP_CODE_FIELD, TASK_OTHER_PARTY_FIELD
+    ] })
     task;
 
     @wire(getSubTasks, { parentTaskId: '$recordId' })
@@ -36,9 +47,17 @@ export default class TaskDetail extends LightningElement {
                 Due_Date__c: record.Due_Date__c,
                 Priority__c: record.Priority__c,
                 Comments__c: record.Comments__c,
+                Description__c: record.Description__c,
+                Schedule_Code__c: record.Schedule_Code__c,
+                Category__c: record.Category__c,
+                Date_Inserted__c: record.Date_Inserted__c,
+                Group_Code__c: record.Group_Code__c,
+                Other_party__c: record.Other_party__c,
                 isOpen: false,
                 sectionClass: 'slds-accordion__section',
-                iconName: 'utility:chevronright'
+                iconName: 'utility:chevronright',
+                formattedDateInserted: this.formatDate(record.Date_Inserted__c),
+                formattedDueDate: this.formatDate(record.Due_Date__c)
             }));
         } else if (error) {
             this.dispatchEvent(
@@ -49,6 +68,17 @@ export default class TaskDetail extends LightningElement {
                 })
             );
         }
+    }
+
+    formatDate(dateString) {
+        if (!dateString) {
+            return '';
+        }
+        const date = new Date(dateString);
+        const day = ('0' + date.getDate()).slice(-2);
+        const month = ('0' + (date.getMonth() + 1)).slice(-2);
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
     }
 
     get taskName() {

@@ -42,7 +42,7 @@
                             <div class="slds-col slds-size_1-of-2">
                                 <p class="detail-item"><strong>Parent task:</strong> {parentTask}</p>
                                 <p class="detail-item"><strong>Assigned to:</strong> {assignedTo}</p>
-                                <p class="detail-item"><strong>Due date:</strong> {dueDate}</p>
+                                <p class="detail-item"><strong>Due date:</strong> <lightning-formatted-date-time value={dueDate} day="numeric" month="numeric" year="numeric"></lightning-formatted-date-time></p>
                                 <p class="detail-item"><strong>Priority:</strong> <lightning-icon icon-name="utility:priority" alternative-text="Priority" size="small"></lightning-icon> {priority}</p>
                                 <p class="detail-item"><strong>Comments:</strong> {comments}</p>
                             </div>
@@ -75,10 +75,35 @@
                                             </div>
                                         </div>
                                         <div class="slds-accordion__content accordion-content-margin" id={subTask.Id}>
-                                            <p><strong>Assigned to:</strong> {subTask.Assigned_To__c}</p>
-                                            <p><strong>Due date:</strong> {subTask.Due_Date__c}</p>
-                                            <p><strong>Priority:</strong> {subTask.Priority__c}</p>
-                                            <p><strong>Comments:</strong> {subTask.Comments__c}</p>
+                                            <!-- General Section -->
+                                            <div class="slds-section">
+                                                <h3 class="slds-section__title">General</h3>
+                                                <p><strong>Name:</strong> {subTask.Name}</p>
+                                                <p><strong>Description:</strong> {subTask.Description__c}</p>
+                                                <p><strong>Schedule code:</strong> {subTask.Schedule_Code__c}</p>
+                                                <p><strong>Case officers:</strong> {subTask.Assigned_To__c}</p>
+                                                <p><strong>Category:</strong> {subTask.Category__c}</p>
+                                                <p><strong>Priority:</strong> {subTask.Priority__c}</p>
+                                            </div>
+                                            <!-- Waiting Period Section -->
+                                            <div class="slds-section">
+                                                <h3 class="slds-section__title">Waiting period</h3>
+                                                <p><strong>Waiting period:</strong> {subTask.Waiting_Period__c}</p>
+                                                <p><strong>Date inserted:</strong> {subTask.formattedDateInserted}</p>
+                                                <p><strong>Due:</strong> {subTask.formattedDueDate}</p>
+                                            </div>
+                                            <!-- Action Section -->
+                                            <div class="slds-section">
+                                                <h3 class="slds-section__title">Action</h3>
+                                                <p><strong>Document:</strong> {subTask.Document__c}</p>
+                                                <p><strong>Post tray:</strong> {subTask.Post_Tray__c}</p>
+                                            </div>
+                                            <!-- Post to Section -->
+                                            <div class="slds-section">
+                                                <h3 class="slds-section__title">Post to</h3>
+                                                <p><strong>Group code:</strong> {subTask.Group_Code__c}</p>
+                                                <p><strong>Other party:</strong> {subTask.Other_party__c}</p>
+                                            </div>
                                         </div>
                                     </section>
                                 </li>
