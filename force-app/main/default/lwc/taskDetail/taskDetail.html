@@ -41,14 +41,14 @@
                         <div class="slds-grid slds-wrap">
                             <div class="slds-col slds-size_1-of-2">
                                 <p class="detail-item"><strong>Parent task:</strong> {parentTask}</p>
-                                <p class="detail-item"><strong>Assigned to:</strong> {assignedTo}</p>
+                                <p class="detail-item"><strong>Assigned to:</strong> {assignedToName}</p>
                                 <p class="detail-item"><strong>Due date:</strong> <lightning-formatted-date-time value={dueDate} day="numeric" month="numeric" year="numeric"></lightning-formatted-date-time></p>
                                 <p class="detail-item"><strong>Priority:</strong> <lightning-icon icon-name="utility:priority" alternative-text="Priority" size="small"></lightning-icon> {priority}</p>
                                 <p class="detail-item"><strong>Comments:</strong> {comments}</p>
                             </div>
                             <div class="slds-col slds-size_1-of-2">
-                                <p class="detail-item"><strong>Created by:</strong> {createdBy}</p>
-                                <p class="detail-item"><strong>Last modified by:</strong> {lastModifiedBy}</p>
+                                <p class="detail-item"><strong>Created by:</strong> {createdByName}</p>
+                                <p class="detail-item"><strong>Last modified by:</strong> {lastModifiedByName}</p>
                                 <p class="detail-item"><strong>Next task:</strong> {nextTask}</p>
                             </div>
                         </div>

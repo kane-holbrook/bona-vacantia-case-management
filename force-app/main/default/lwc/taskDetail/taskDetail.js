@@ -1,5 +1,6 @@
 import { LightningElement, api, track, wire } from 'lwc';
-import { getRecord } from 'lightning/uiRecordApi';
+import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
+import getUserNames from '@salesforce/apex/HistoryController.getUserNames';
 import getSubTasks from '@salesforce/apex/TaskController.getSubTasks';
 import TASK_NAME_FIELD from '@salesforce/schema/BV_Task__c.Name';
 import TASK_PARENT_FIELD from '@salesforce/schema/BV_Task__c.Parent_Task__c';
@@ -28,14 +29,34 @@ export default class TaskDetail extends LightningElement {
     @track reassignTask = false;
     @track completeTask = false;
     @track subTasks = [];
+    @track assignedToName = '';
+    @track createdByName = '';
+    @track lastModifiedByName = '';
 
     @wire(getRecord, { recordId: '$recordId', fields: [
         TASK_NAME_FIELD, TASK_PARENT_FIELD, TASK_ASSIGNED_TO_FIELD, TASK_DUE_DATE_FIELD, TASK_PRIORITY_FIELD, 
-        TASK_COMMENTS_FIELD, TASK_CREATED_BY_FIELD, TASK_LAST_MODIFIED_BY_FIELD, TASK_NEXT_TASK_FIELD,
-        TASK_DESCRIPTION_FIELD, TASK_SCHEDULE_CODE_FIELD, TASK_CATEGORY_FIELD,
-        TASK_DATE_INSERTED_FIELD, TASK_GROUP_CODE_FIELD, TASK_OTHER_PARTY_FIELD
+        TASK_COMMENTS_FIELD, TASK_CREATED_BY_FIELD, TASK_LAST_MODIFIED_BY_FIELD, TASK_NEXT_TASK_FIELD, 
+        TASK_DESCRIPTION_FIELD, TASK_SCHEDULE_CODE_FIELD, TASK_CATEGORY_FIELD, TASK_DATE_INSERTED_FIELD, TASK_GROUP_CODE_FIELD, TASK_OTHER_PARTY_FIELD
     ] })
-    task;
+    wiredTask({ error, data }) {
+        if (data) {
+            this.task = data;
+            const userIds = [
+                getFieldValue(data, TASK_ASSIGNED_TO_FIELD),
+                getFieldValue(data, TASK_CREATED_BY_FIELD),
+                getFieldValue(data, TASK_LAST_MODIFIED_BY_FIELD)
+            ];
+            this.fetchUserNames(userIds);
+        } else if (error) {
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Error loading task',
+                    message: error.body.message,
+                    variant: 'error'
+                })
+            );
+        }
+    }
 
     @wire(getSubTasks, { parentTaskId: '$recordId' })
     wiredSubTasks({ error, data }) {
@@ -70,6 +91,24 @@ export default class TaskDetail extends LightningElement {
         }
     }
 
+    fetchUserNames(userIds) {
+        getUserNames({ userIds })
+            .then(result => {
+                this.assignedToName = result[getFieldValue(this.task, TASK_ASSIGNED_TO_FIELD)];
+                this.createdByName = result[getFieldValue(this.task, TASK_CREATED_BY_FIELD)];
+                this.lastModifiedByName = result[getFieldValue(this.task, TASK_LAST_MODIFIED_BY_FIELD)];
+            })
+            .catch(error => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Error fetching user names',
+                        message: error.body.message,
+                        variant: 'error'
+                    })
+                );
+            });
+    }
+
     formatDate(dateString) {
         if (!dateString) {
             return '';
@@ -82,42 +121,42 @@ export default class TaskDetail extends LightningElement {
     }
 
     get taskName() {
-        return this.task.data ? this.task.data.fields.Name.value : '';
+        return getFieldValue(this.task, TASK_NAME_FIELD);
     }
 
     get parentTask() {
-        return this.task.data ? this.task.data.fields.Parent_Task__c.value : '';
+        return getFieldValue(this.task, TASK_PARENT_FIELD);
     }
 
     get assignedTo() {
-        return this.task.data ? this.task.data.fields.Assigned_To__c.value : '';
+        return getFieldValue(this.task, TASK_ASSIGNED_TO_FIELD);
     }
 
     get dueDate() {
-        return this.task.data ? this.task.data.fields.Due_Date__c.value : '';
+        return getFieldValue(this.task, TASK_DUE_DATE_FIELD);
     }
 
     get priority() {
-        return this.task.data ? this.task.data.fields.Priority__c.value : '';
+        return getFieldValue(this.task, TASK_PRIORITY_FIELD);
     }
 
     get comments() {
-        return this.task.data ? this.task.data.fields.Comments__c.value : '';
+        return getFieldValue(this.task, TASK_COMMENTS_FIELD);
     }
 
     get createdBy() {
-        return this.task.data ? this.task.data.fields.CreatedById.value : '';
+        return getFieldValue(this.task, TASK_CREATED_BY_FIELD);
     }
 
     get lastModifiedBy() {
-        return this.task.data ? this.task.data.fields.LastModifiedById.value : '';
+        return getFieldValue(this.task, TASK_LAST_MODIFIED_BY_FIELD);
     }
 
     get nextTask() {
-        return this.task.data ? this.task.data.fields.Next_Task__c.value : '';
+        return getFieldValue(this.task, TASK_NEXT_TASK_FIELD);
     }
 
-    onEditSubTask() {
+    onEditSubTask(event) {
         this.editSubTask = true;
         this.currentSubTaskId = event.currentTarget.dataset.id;
     }
@@ -126,7 +165,7 @@ export default class TaskDetail extends LightningElement {
         this.editSubTask = false;
     }
 
-    onDeleteTask() {
+    onDeleteTask(event) {
         this.deleteTask = true;
         this.currentSubTaskId = event.currentTarget.dataset.id;
     }
