@@ -121,4 +121,25 @@ public class FileControllerGraph {
             throw new CalloutException('Failed to get list ID: ' + res.getStatus() + ' ' + res.getBody());
         }
     }
+
+    public static void deleteFileFromSharePoint(String filePath, String fileName) {
+        // Fetch the site ID within this method
+        String siteId = getSiteId();
+        
+        String deleteUrl = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/drive/root:/' + filePath + '/' + fileName;
+        
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint(deleteUrl);
+        req.setMethod('DELETE');
+        req.setHeader('Accept', 'application/json');
+        
+        Http http = new Http();
+        HttpResponse res = http.send(req);
+        
+        if (res.getStatusCode() == 204) {
+            System.debug('File deleted successfully.');
+        } else {
+            System.debug('File deletion failed: ' + res.getStatus() + ' ' + res.getBody());
+        }
+    }
 }
