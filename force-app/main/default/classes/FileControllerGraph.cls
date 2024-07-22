@@ -101,7 +101,8 @@ public class FileControllerGraph {
             throw new CalloutException('Failed to get list item information: ' + res.getStatus() + ' ' + res.getBody());
         }
     }
-
+    
+    // Method to get list ID by name
     private static String getListIdByName(String siteId, String listTitle) {
         String endpoint = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/lists/' + listTitle;
         
@@ -122,6 +123,7 @@ public class FileControllerGraph {
         }
     }
 
+    // Method to delete a file from SharePoint
     public static void deleteFileFromSharePoint(String filePath, String fileName) {
         // Fetch the site ID within this method
         String siteId = getSiteId();
@@ -140,6 +142,35 @@ public class FileControllerGraph {
             System.debug('File deleted successfully.');
         } else {
             System.debug('File deletion failed: ' + res.getStatus() + ' ' + res.getBody());
+        }
+    }
+
+    public static List<Map<String, Object>> fetchAllFilesFromFolder(String folderPath) {
+        String siteId = getSiteId();
+        String folderUrl = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/drive/root:/' + folderPath + ':/children';
+        
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint(folderUrl);
+        req.setMethod('GET');
+        req.setHeader('Accept', 'application/json');
+        
+        Http http = new Http();
+        HttpResponse res = http.send(req);
+        
+        if (res.getStatusCode() == 200) {
+            Map<String, Object> result = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
+            if (result.containsKey('value')) {
+                List<Object> rawFiles = (List<Object>) result.get('value');
+                List<Map<String, Object>> files = new List<Map<String, Object>>();
+                for (Object rawFile : rawFiles) {
+                    files.add((Map<String, Object>) rawFile);
+                }
+                return files;
+            } else {
+                throw new CalloutException('Response does not contain expected "value" key.');
+            }
+        } else {
+            throw new CalloutException('Failed to fetch files: ' + res.getStatus() + ' ' + res.getBody());
         }
     }
 }
