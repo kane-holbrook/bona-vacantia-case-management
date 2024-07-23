@@ -90,11 +90,14 @@ export default class FileLibrary extends LightningElement {
                     .filter(doc => doc.file) // Only include documents that are files
                     .map(doc => {
                         const fields = doc.listItem.fields;
+                        const fileName = fields.LinkFilename;
+                        const fileExtension = fileName.split('.').pop().toLowerCase();
                         // Return the document with the added previewUrl property and extracted fields
                         return {
                             ...doc,
-                            Name: fields.LinkFilename,
+                            Name: fileName,
                             DocumentType: fields.DocumentType || 'Not set',
+                            DocumentExtension: fileExtension,
                             Created_Time: fields.Created,
                             previewUrl: doc.webUrl,
                         };
@@ -124,11 +127,11 @@ export default class FileLibrary extends LightningElement {
         const preferredExtensions = ['pdf', 'docx', 'doc', 'xls', 'xlsx', 'ppt', 'pptx'];
 
         this.documents.forEach(doc => {
-            if (doc.DocumentType__c) {
-                documentTypes.add(doc.DocumentType__c);
+            if (doc.DocumentType) {
+                documentTypes.add(doc.DocumentType);
             }
-            if (doc.DocumentExtension__c) {
-                documentExtensions.add(doc.DocumentExtension__c);
+            if (doc.DocumentExtension) {
+                documentExtensions.add(doc.DocumentExtension);
             }
         });
 
@@ -152,7 +155,7 @@ export default class FileLibrary extends LightningElement {
         this.documentTypeOptions = [{ label: 'All', value: '' }, 
                                     ...Array.from(documentTypes).map(type => ({ label: type, value: type }))];
         this.documentExtensionOptions = [{ label: 'All', value: '' }, ...extensionOptions];
-    }    
+    }
 
     applyFilters() {
         // Start with all documents and then apply filters sequentially
@@ -167,12 +170,12 @@ export default class FileLibrary extends LightningElement {
 
         // Filter by document type
         if (this.documentTypeFilter.length > 0 && this.documentTypeFilter[0] !== '') {
-            filtered = filtered.filter(doc => this.documentTypeFilter.includes(doc.DocumentType__c));
+            filtered = filtered.filter(doc => this.documentTypeFilter.includes(doc.DocumentType));
         }
 
         // Filter by document extension
         if (this.documentExtensionFilter.length > 0 && this.documentExtensionFilter[0] !== '') {
-            filtered = filtered.filter(doc => this.documentExtensionFilter.includes(doc.DocumentExtension__c));
+            filtered = filtered.filter(doc => this.documentExtensionFilter.includes(doc.DocumentExtension));
         }
 
         // Filter by date range only if both start and end dates are provided
@@ -183,7 +186,7 @@ export default class FileLibrary extends LightningElement {
             endDate.setUTCHours(23, 59, 59, 999); // Set to the end of the day in UTC
 
             filtered = filtered.filter(doc => {
-                const createdDate = new Date(doc.Created_Time__c);
+                const createdDate = new Date(doc.Created_Time);
                 return createdDate >= startDate && createdDate <= endDate;
             });
         }
