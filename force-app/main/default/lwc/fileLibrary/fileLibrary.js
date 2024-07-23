@@ -1,6 +1,6 @@
 import { LightningElement, api, wire, track } from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
-import fetchAllDocumentsForCase from '@salesforce/apex/FileController.fetchAllDocumentsForCase';
+import fetchAllFilesFromFolder from '@salesforce/apex/FileControllerGraph.fetchAllFilesFromFolder';
 import getSharePointSettings from '@salesforce/apex/FileController.getSharePointSettings';
 
 const FIELDS = ['BV_Case__c.Name'];
@@ -82,16 +82,23 @@ export default class FileLibrary extends LightningElement {
     }
 
     fetchDocuments() {
-        const parentFolderPath = encodeURIComponent(`123`); // Don't delete this, it's required for some reason
+        const caseFolderPath = this.bvCaseName; // only the case folder path
 
-        fetchAllDocumentsForCase({ caseId: this.bvCaseName })
+        fetchAllFilesFromFolder({ folderPath: caseFolderPath })
             .then(result => {
-                this.documents = result.map(doc => {
-                    // Construct the SharePoint preview URL
-                    let previewUrl = `${this.sharePointSiteUrl}/${this.sharePointDirectoryPath}/Shared%20Documents/Forms/AllItems.aspx?id=${encodeURIComponent(doc.ServerRelativeURL__c)}&parent=${parentFolderPath}`;
-                    // Return the document with the added previewUrl property
-                    return {...doc, previewUrl};
-                });
+                this.documents = result
+                    .filter(doc => doc.file) // Only include documents that are files
+                    .map(doc => {
+                        const fields = doc.listItem.fields;
+                        // Return the document with the added previewUrl property and extracted fields
+                        return {
+                            ...doc,
+                            Name: fields.LinkFilename,
+                            DocumentType: fields.DocumentType || 'Not set',
+                            Created_Time: fields.Created,
+                            previewUrl: doc.webUrl,
+                        };
+                    });
                 this.totalRecords = this.documents.length;
                 this.generateFilterOptions(); // Generate the filter options based on the documents
                 this.applyFilters(); // Apply any existing filters and paginate
