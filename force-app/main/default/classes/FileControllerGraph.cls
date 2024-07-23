@@ -124,6 +124,7 @@ public class FileControllerGraph {
         }
     }
 
+    @AuraEnabled(cacheable=false)
     // Method to delete a file from SharePoint
     public static void deleteFileFromSharePoint(String filePath, String fileName) {
         // Fetch the site ID within this method

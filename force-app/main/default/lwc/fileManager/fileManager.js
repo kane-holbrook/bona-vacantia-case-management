@@ -7,6 +7,7 @@ import getSharePointSettings from '@salesforce/apex/FileController.getSharePoint
 import uploadFileToSharePoint from '@salesforce/apex/FileControllerGraph.uploadFileToSharePoint';
 import processFiles from '@salesforce/apex/FileControllerGraph.processFiles';
 import fetchFilesFromSharePoint from '@salesforce/apex/FileControllerGraph.fetchFilesFromSharePoint';
+import deleteSharepointFile from '@salesforce/apex/FileControllerGraph.deleteFileFromSharePoint';
 
 export default class FileManager extends NavigationMixin(LightningElement) {
     @api recordId;
@@ -191,7 +192,7 @@ export default class FileManager extends NavigationMixin(LightningElement) {
 
     confirmSharepointDeleteFile() {
         if (this.fileToDelete) {
-            deleteSharepointFile({ caseId: this.bvCaseName, fileName: this.fileToDelete })
+            deleteSharepointFile({ filePath: this.bvCaseName, fileName: this.fileToDelete })
             .then(() => {
                 window.location.reload();
             })
