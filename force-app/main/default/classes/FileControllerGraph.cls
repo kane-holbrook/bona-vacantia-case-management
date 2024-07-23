@@ -2,9 +2,10 @@ public class FileControllerGraph {
 
     // Method to upload file to SharePoint
     @AuraEnabled(cacheable=false)
-    public static void uploadFileToSharePoint(String filePath, String fileName, String fileContent, String documentType) {
+    public static String uploadFileToSharePoint(String filePath, String fileName, String fileContent, String documentType) {
         String siteId = getSiteId();
-        String uploadUrl = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/drive/root:/' + filePath + '/' + fileName + ':/content';
+        String encodedFileName = encodeFileName(fileName);
+        String uploadUrl = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/drive/root:/' + filePath + '/' + encodedFileName + ':/content';
         
         HttpRequest req = new HttpRequest();
         req.setEndpoint(uploadUrl);
@@ -26,8 +27,10 @@ public class FileControllerGraph {
             String listId = listItemInfo.get('listId');
             String listItemId = listItemInfo.get('listItemId');
             tagDocument(siteId, listId, listItemId, fileName, documentType);
+            return itemId; // Return the document ID
         } else {
             System.debug('File upload failed: ' + res.getStatus() + ' ' + res.getBody());
+            return null;
         }
     }
 
@@ -240,5 +243,77 @@ public class FileControllerGraph {
         }
         
         return results;
+    }
+
+    private static String encodeFileName(String fileName) {
+        // Replace only the necessary characters that might break the URL
+        return fileName.replace(' ', '%20')
+                    .replace('#', '%23')
+                    .replace('&', '%26')
+                    .replace('?', '%3F')
+                    .replace('%', '%25')
+                    .replace('{', '%7B')
+                    .replace('}', '%7D')
+                    .replace('^', '%5E')
+                    .replace('[', '%5B')
+                    .replace(']', '%5D')
+                    .replace('`', '%60')
+                    .replace('\'', '%27');
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static String getCaseName(Id caseId) {
+        BV_Case__c bvCase = [
+            SELECT Name 
+            FROM BV_Case__c 
+            WHERE Id = :caseId 
+            LIMIT 1
+        ];
+        return bvCase.Name;
+    }
+
+    public static void handleEmailAttachments(Id emailMessageId, Id caseHistoryId, Id caseId) {
+        List<ContentDocumentLink> contentDocumentLinks = [
+            SELECT ContentDocumentId
+            FROM ContentDocumentLink
+            WHERE LinkedEntityId = :emailMessageId
+        ];
+
+        for (ContentDocumentLink contentDocumentLink : contentDocumentLinks) {
+            ContentVersion contentVersion = [
+                SELECT Id, Title, VersionData, FileExtension, ContentSize
+                FROM ContentVersion
+                WHERE ContentDocumentId = :contentDocumentLink.ContentDocumentId AND IsLatest = true
+                LIMIT 1
+            ];
+
+            String normalizedCaseName = getCaseName(caseId);
+            String folderPath = normalizedCaseName + '/' + caseHistoryId;
+
+            // Include the file extension in the filename
+            String fileNameWithExtension = contentVersion.Title + '.' + contentVersion.FileExtension;
+
+            String base64Data = EncodingUtil.base64Encode(contentVersion.VersionData);
+            String documentType = 'Email Attachment'; // Adjust as needed
+            String documentId = uploadFileToSharePoint(folderPath, fileNameWithExtension, base64Data, documentType);
+
+            if (documentId != null) {
+                createSHDocumentRecord(caseHistoryId, contentVersion, documentId, normalizedCaseName);
+            }
+        }
+    }
+
+    public static void createSHDocumentRecord(Id caseHistoryId, ContentVersion contentVersion, String documentId, String caseName) {
+        SHDocument__c shDocument = new SHDocument__c();
+        shDocument.Case_History__c = caseHistoryId;
+        shDocument.DocumentID__c = documentId;
+        shDocument.Name = contentVersion.Title;
+        shDocument.Document_Name__c = contentVersion.Title;
+        shDocument.FileContent__c = EncodingUtil.base64Encode(contentVersion.VersionData);
+        shDocument.DocumentType__c = 'Email Attachment'; // Adjust as needed
+        shDocument.FileSize__c = contentVersion.ContentSize;
+        shDocument.DocumentExtension__c = contentVersion.FileExtension;
+        shDocument.ServerRelativeURL__c = '/sites/XansiumUATTestSite/Shared%20Documents/' + caseName + '/' + caseHistoryId + '/' + contentVersion.Title + '.' + contentVersion.FileExtension;
+        insert shDocument;
     }
 }

@@ -10,6 +10,6 @@ public class SharePointUploader implements Queueable, Database.AllowsCallouts {
     }
 
     public void execute(QueueableContext context) {
-        FileController.handleEmailAttachments(emailMessageId, caseHistoryId, caseId);
+        FileControllerGraph.handleEmailAttachments(emailMessageId, caseHistoryId, caseId);
     }
 }
