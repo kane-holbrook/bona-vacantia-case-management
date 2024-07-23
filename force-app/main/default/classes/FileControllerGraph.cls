@@ -60,7 +60,7 @@ public class FileControllerGraph {
     }
 
     // Method to get the site ID from SharePoint
-    private static String getSiteId() {
+    public static String getSiteId() {
         String endpoint = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/glduat.sharepoint.com:/sites/XansiumUATTestSite';
         
         HttpRequest req = new HttpRequest();

@@ -155,6 +155,60 @@ public with sharing class PDFTron_ContentVersionController {
     }
 
     @AuraEnabled
+    public static String saveDocumentToSharePointViaFlow(String jsonpayload, String folderName) {
+        try {
+            PDFTron_ContentVersionPayload pl = new PDFTron_ContentVersionPayload(jsonpayload);
+            // Decode the base64 string to get the binary content of the file
+            Blob fileContent = EncodingUtil.base64Decode(pl.base64Data);
+        
+            // Manually encode the file name to ensure all special characters are properly URL encoded
+            String encodedFolderName = EncodingUtil.urlEncode(folderName, 'UTF-8');
+            
+            String fileName = pl.filename;
+            
+            // Replace problematic characters in the file name
+            fileName = fileName.replace('\'', '_').replace('#', '_');
+            
+            String encodedFileName = EncodingUtil.urlEncode(fileName, 'UTF-8');
+
+            // Get the site ID dynamically
+            String siteId = FileControllerGraph.getSiteId();
+            
+            // Graph API endpoint to upload the file
+            String endpoint = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/drive/root:/' + encodedFolderName + '/' + encodedFileName + ':/content';
+
+            // Prepare the HTTP request
+            HttpRequest req = new HttpRequest();
+            req.setEndpoint(endpoint);
+            req.setMethod('PUT');
+            req.setHeader('Content-Type', 'application/octet-stream');
+            req.setHeader('Accept', 'application/json');
+            req.setBodyAsBlob(fileContent);
+
+            // Send the request
+            Http http = new Http();
+            HttpResponse response = http.send(req);
+
+            // Check the response status and parse if successful
+            if (response.getStatusCode() == 201 || response.getStatusCode() == 200) {
+                // Parse the JSON response
+                Map<String, Object> jsonResponse = (Map<String, Object>)JSON.deserializeUntyped(response.getBody());
+                String documentId = (String)jsonResponse.get('id');
+
+                // Return the SharePoint Document ID
+                return documentId;
+            } else {
+                // Handle the error accordingly
+                System.debug('Error from SharePoint: ' + response.getBody());
+                throw new AuraHandledException('Error saving document to SharePoint: ' + response.getStatus());
+            }
+        } catch (Exception e) {
+            System.debug('Error saving document to SharePoint: ' + e.getMessage());
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
+    @AuraEnabled
     public static String createCMTRecord(String jsonString){
         try {
             Map<String, Object> parsedData = (Map<String, Object>)JSON.deserializeUntyped(jsonString);
@@ -505,7 +559,7 @@ public with sharing class PDFTron_ContentVersionController {
             System.debug('Error getting file content from SharePoint: ' + contentResponse.getBody());
             throw new AuraHandledException('Error retrieving file content from SharePoint: ' + contentResponse.getStatus());
         }
-    }    
+    }
 
     //get multiple files from Ids
     @AuraEnabled(Cacheable=true) 
