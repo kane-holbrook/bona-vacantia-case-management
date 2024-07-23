@@ -13,7 +13,7 @@ import saveDocument from '@salesforce/apex/PDFTron_ContentVersionController.save
 import saveDocumentToSharePoint from '@salesforce/apex/PDFTron_ContentVersionController.saveDocumentToSharePoint';
 import getFileDataFromIds from '@salesforce/apex/PDFTron_ContentVersionController.getFileDataFromIds';
 import getUser from "@salesforce/apex/PDFTron_ContentVersionController.getUser";
-import getSharePointFileDataById from '@salesforce/apex/PDFTron_ContentVersionController.getSharePointFileDataById';
+import getSharePointFileDataById from '@salesforce/apex/FileControllerGraph.getGraphFileDataById';
 import { getRecordId } from 'c/sharedService';
 
 function _base64ToArrayBuffer(base64) {

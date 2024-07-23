@@ -222,6 +222,75 @@ public class FileControllerGraph {
         }
     }
 
+    @AuraEnabled(cacheable=true)
+    public static SHDocument__c getGraphFileDataById(String fileId) {
+        // Get the site ID dynamically
+        String siteId = getSiteId();
+        
+        // Define initial endpoint for Microsoft Graph API (SharePoint)
+        String propertiesEndpoint = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/drive/items/' + fileId;
+        String contentEndpoint = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/drive/items/' + fileId + '/content';
+
+        // Prepare the request to get the file properties
+        HttpRequest propertiesRequest = new HttpRequest();
+        propertiesRequest.setEndpoint(propertiesEndpoint);
+        propertiesRequest.setMethod('GET');
+        propertiesRequest.setHeader('Accept', 'application/json');
+
+        Http http = new Http();
+        HttpResponse propertiesResponse = http.send(propertiesRequest);
+
+        // Handle redirection if status code is 302
+        if (propertiesResponse.getStatusCode() == 302) {
+            String newLocation = propertiesResponse.getHeader('Location');
+            propertiesRequest.setEndpoint(newLocation);
+            propertiesResponse = http.send(propertiesRequest);
+        }
+
+        if (propertiesResponse.getStatusCode() != 200) {
+            System.debug('Error getting file properties from SharePoint: ' + propertiesResponse.getBody());
+            throw new AuraHandledException('Error retrieving file properties from SharePoint: ' + propertiesResponse.getStatus());
+        }
+
+        // Parse the response to get file name and extension
+        Map<String, Object> properties = (Map<String, Object>) JSON.deserializeUntyped(propertiesResponse.getBody());
+        String fileName = (String) properties.get('name');
+        String fileDocId = (String) properties.get('id');
+        String fileExtension = fileName.substringAfterLast('.');
+
+        // Prepare the request to get the file content
+        HttpRequest contentRequest = new HttpRequest();
+        contentRequest.setEndpoint(contentEndpoint);
+        contentRequest.setMethod('GET');
+        contentRequest.setHeader('Accept', 'application/octet-stream');
+
+        HttpResponse contentResponse = http.send(contentRequest);
+
+        // Handle redirection if status code is 302
+        if (contentResponse.getStatusCode() == 302) {
+            String newLocation = contentResponse.getHeader('Location');
+            contentRequest.setEndpoint(newLocation);
+            contentResponse = http.send(contentRequest);
+        }
+
+        if (contentResponse.getStatusCode() == 200) {
+            // Convert binary data to base64 string
+            String base64Content = EncodingUtil.base64Encode(contentResponse.getBodyAsBlob());
+
+            // Create SHDocument__c instance and populate with base64 content, name, and extension
+            SHDocument__c fileData = new SHDocument__c();
+            fileData.FileContent__c = base64Content;
+            fileData.DocumentID__c = fileDocId;
+            fileData.Name = fileName;
+            fileData.DocumentExtension__c = fileExtension;
+
+            return fileData;
+        } else {
+            System.debug('Error getting file content from SharePoint: ' + contentResponse.getBody());
+            throw new AuraHandledException('Error retrieving file content from SharePoint: ' + contentResponse.getStatus());
+        }
+    }
+
     @AuraEnabled
     public static List<String> processFiles(List<Id> documentIds) {
         List<String> results = new List<String>();
