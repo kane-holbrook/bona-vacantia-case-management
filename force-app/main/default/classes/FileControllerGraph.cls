@@ -1,6 +1,7 @@
 public class FileControllerGraph {
 
     // Method to upload file to SharePoint
+    @AuraEnabled(cacheable=false)
     public static void uploadFileToSharePoint(String filePath, String fileName, String fileContent, String documentType) {
         String siteId = getSiteId();
         String uploadUrl = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/drive/root:/' + filePath + '/' + fileName + ':/content';
@@ -173,5 +174,66 @@ public class FileControllerGraph {
         } else {
             throw new CalloutException('Failed to fetch files: ' + res.getStatus() + ' ' + res.getBody());
         }
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static List<Map<String, Object>> fetchFilesFromSharePoint(String folderPath, String documentType) {
+        String siteId = getSiteId();
+        String folderUrl = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/drive/root:/' + folderPath + ':/children?$expand=listItem($expand=fields)';
+        
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint(folderUrl);
+        req.setMethod('GET');
+        req.setHeader('Accept', 'application/json');
+        
+        Http http = new Http();
+        HttpResponse res = http.send(req);
+        
+        if (res.getStatusCode() == 200) {
+            Map<String, Object> result = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
+            if (result.containsKey('value')) {
+                List<Object> rawFiles = (List<Object>) result.get('value');
+                List<Map<String, Object>> files = new List<Map<String, Object>>();
+                for (Object rawFile : rawFiles) {
+                    Map<String, Object> file = (Map<String, Object>) rawFile;
+                    if (file.containsKey('listItem')) {
+                        Map<String, Object> listItem = (Map<String, Object>) file.get('listItem');
+                        Map<String, Object> fields = (Map<String, Object>) listItem.get('fields');
+                        if (fields != null && documentType.equals(fields.get('DocumentType'))) {
+                            files.add(file);
+                            System.debug('File: ' + file);
+                        }
+                    }
+                }
+                return files;
+            } else {
+                throw new CalloutException('Response does not contain expected "value" key.');
+            }
+        } else {
+            throw new CalloutException('Failed to fetch files: ' + res.getStatus() + ' ' + res.getBody());
+        }
+    }
+
+    @AuraEnabled
+    public static List<String> processFiles(List<Id> documentIds) {
+        List<String> results = new List<String>();
+
+        for (Id documentId : documentIds) {
+            // Retrieve the ContentVersion data
+            ContentVersion cv = [
+                SELECT Title, VersionData
+                FROM ContentVersion
+                WHERE ContentDocumentId = :documentId
+                LIMIT 1
+            ];
+            
+            // Convert Blob to Base64 - only if needed to send as Base64
+            String base64Data = EncodingUtil.base64Encode(cv.VersionData);
+
+            // Add the result of each operation to the results list
+            results.add(base64Data);
+        }
+        
+        return results;
     }
 }
