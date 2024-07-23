@@ -90,7 +90,7 @@ export default class FileManager extends NavigationMixin(LightningElement) {
                         isImage: fileExtensionType === 'image',
                         isExcel: fileExtensionType === 'excel',
                         isUnknown: fileExtensionType === 'unknown',
-                        previewPath: document.webUrl,
+                        previewPath: document.thumbnailUrl,
                     };
                 });
             })

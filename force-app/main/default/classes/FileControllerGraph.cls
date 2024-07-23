@@ -179,7 +179,7 @@ public class FileControllerGraph {
     @AuraEnabled(cacheable=true)
     public static List<Map<String, Object>> fetchFilesFromSharePoint(String folderPath, String documentType) {
         String siteId = getSiteId();
-        String folderUrl = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/drive/root:/' + folderPath + ':/children?$expand=listItem($expand=fields)';
+        String folderUrl = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/drive/root:/' + folderPath + ':/children?$expand=thumbnails,listItem($expand=fields)';
         
         HttpRequest req = new HttpRequest();
         req.setEndpoint(folderUrl);
@@ -200,8 +200,12 @@ public class FileControllerGraph {
                         Map<String, Object> listItem = (Map<String, Object>) file.get('listItem');
                         Map<String, Object> fields = (Map<String, Object>) listItem.get('fields');
                         if (fields != null && documentType.equals(fields.get('DocumentType'))) {
+                            if (file.containsKey('thumbnails')) {
+                                Map<String, Object> thumbnails = (Map<String, Object>) ((List<Object>) file.get('thumbnails')).get(0);
+                                String thumbnailUrl = (String) ((Map<String, Object>) thumbnails.get('large')).get('url');
+                                file.put('thumbnailUrl', thumbnailUrl);
+                            }
                             files.add(file);
-                            System.debug('File: ' + file);
                         }
                     }
                 }
