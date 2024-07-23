@@ -202,7 +202,7 @@ public class FileControllerGraph {
                         if (fields != null && documentType.equals(fields.get('DocumentType'))) {
                             if (file.containsKey('thumbnails')) {
                                 Map<String, Object> thumbnails = (Map<String, Object>) ((List<Object>) file.get('thumbnails')).get(0);
-                                String thumbnailUrl = (String) ((Map<String, Object>) thumbnails.get('large')).get('url');
+                                String thumbnailUrl = (String) ((Map<String, Object>) thumbnails.get('medium')).get('url');
                                 file.put('thumbnailUrl', thumbnailUrl);
                             }
                             files.add(file);
