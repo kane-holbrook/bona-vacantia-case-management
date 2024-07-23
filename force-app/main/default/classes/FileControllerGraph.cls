@@ -147,7 +147,7 @@ public class FileControllerGraph {
 
     public static List<Map<String, Object>> fetchAllFilesFromFolder(String folderPath) {
         String siteId = getSiteId();
-        String folderUrl = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/drive/root:/' + folderPath + ':/children';
+        String folderUrl = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/drive/root:/' + folderPath + ':/children?$expand=listItem($expand=fields)';
         
         HttpRequest req = new HttpRequest();
         req.setEndpoint(folderUrl);
