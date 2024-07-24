@@ -32,6 +32,7 @@ export default class TaskDetail extends LightningElement {
     @track createdByName = '';
     @track lastModifiedByName = '';
     currentSubTaskId; // Added this to track current sub-task ID
+    parentTaskId;
     editTaskState; // Added this to track current task ID
 
     @wire(getRecord, { recordId: '$recordId', fields: [
@@ -170,6 +171,11 @@ export default class TaskDetail extends LightningElement {
     onEditSubTask(event) {
         this.editSubTask = true;
         this.currentSubTaskId = event.currentTarget.dataset.id;
+
+        if (!this.currentSubTaskId) {
+            this.parentTaskId = this.recordId;
+            console.log('Parent task ID:', this.parentTaskId);
+        }
     }
 
     onEditTask(event) {

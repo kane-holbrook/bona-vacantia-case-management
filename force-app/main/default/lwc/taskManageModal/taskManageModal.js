@@ -19,6 +19,7 @@ import OTHER_PARTY_SELECT_FIELD from '@salesforce/schema/BV_Task__c.Other_party_
 import OTHER_PARTY_MEMBERS_FIELD from '@salesforce/schema/BV_Task__c.Other_party_members__c';
 import LAST_UPDATED_FIELD from '@salesforce/schema/BV_Task__c.Last_updated__c';
 import BV_CASE_LOOKUP_FIELD from '@salesforce/schema/BV_Task__c.BV_Case_Lookup__c';
+import PARENT_TASK_FIELD from '@salesforce/schema/BV_Task__c.Parent_Task__c';
 
 const fields = [
     NAME_FIELD,
@@ -40,6 +41,7 @@ const fields = [
 
 export default class TaskManageModal extends LightningElement {
     @api recordId;
+    @api parentTaskId;
     @track task = {};
     @track bvCaseId;
 
@@ -126,6 +128,10 @@ export default class TaskManageModal extends LightningElement {
         }
         fields[LAST_UPDATED_FIELD.fieldApiName] = new Date().toISOString(); // Set current date and time
         fields[BV_CASE_LOOKUP_FIELD.fieldApiName] = this.bvCaseId; // Set BV_Case_Lookup__c field
+        if (this.parentTaskId) {
+            fields[PARENT_TASK_FIELD.fieldApiName] = this.parentTaskId; // Set Parent_Task__c field if parentTaskId is present
+            fields[BV_CASE_LOOKUP_FIELD.fieldApiName] = null; // Clear BV_Case_Lookup__c field if parentTaskId is present
+        }
         const recordInput = { apiName: BV_TASK_OBJECT.objectApiName, fields };
 
         createRecord(recordInput)

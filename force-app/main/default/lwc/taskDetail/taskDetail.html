@@ -19,7 +19,7 @@
                 <div class="slds-no-flex">
                     <div class="button-group slds-text-align_right">
                         <lightning-button variant="neutral" label="Mark task as complete" onclick={onCompleteTask} disabled={hasSubTasks}></lightning-button>
-                        <lightning-button variant="neutral" label="Create a sub-task" onclick={onEditSubTask}></lightning-button>
+                        <lightning-button variant="neutral" label="Create a sub-task" data-id={parentTaskId} onclick={onEditSubTask}></lightning-button>
                         <lightning-button-menu alternative-text="Show More">
                             <lightning-menu-item label="Manage" data-id={recordId} onclick={onEditTask}></lightning-menu-item>
                             <lightning-menu-item label="Delete" data-id={recordId} onclick={onDeleteTask}></lightning-menu-item>
@@ -119,7 +119,7 @@
                     <h2 class="slds-text-heading_medium">{modalHeader}</h2>
                 </header>
                 <div class="slds-modal__content slds-p-around_medium">
-                    <c-task-manage-modal record-id={currentSubTaskId}></c-task-manage-modal>
+                    <c-task-manage-modal record-id={currentSubTaskId} parent-task-id={parentTaskId}></c-task-manage-modal>
                 </div>
                 <footer class="slds-modal__footer">
                     <button class="slds-button slds-button_neutral" onclick={onEditTaskClose}>Cancel</button>
