@@ -163,6 +163,10 @@ export default class TaskDetail extends LightningElement {
         }
     }
 
+    get hasSubTasks() {
+        return this.subTasks.length > 0;
+    }
+
     onEditSubTask(event) {
         this.editSubTask = true;
         this.currentSubTaskId = event.currentTarget.dataset.id;

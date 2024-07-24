@@ -18,7 +18,7 @@
                 </div>
                 <div class="slds-no-flex">
                     <div class="button-group slds-text-align_right">
-                        <lightning-button variant="neutral" label="Mark task as complete" onclick={onCompleteTask}></lightning-button>
+                        <lightning-button variant="neutral" label="Mark task as complete" onclick={onCompleteTask} disabled={hasSubTasks}></lightning-button>
                         <lightning-button variant="neutral" label="Create a sub-task" onclick={onEditSubTask}></lightning-button>
                         <lightning-button-menu alternative-text="Show More">
                             <lightning-menu-item label="Manage" data-id={recordId} onclick={onEditTask}></lightning-menu-item>
