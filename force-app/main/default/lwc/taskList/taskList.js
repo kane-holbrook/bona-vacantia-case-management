@@ -137,6 +137,7 @@ export default class TaskList extends LightningElement {
     }
 
     toggleRow(event) {
+        event.stopPropagation();  // Stop the event from propagating to the row click handler
         const itemId = event.currentTarget.dataset.id;
         this.taskItems = this.taskItems.map(item => {
             if (item.Id === itemId) {
@@ -156,6 +157,7 @@ export default class TaskList extends LightningElement {
     }
 
     handleViewEdit(event) {
+        event.stopPropagation();  // Stop the event from propagating to the row click handler
         this.currentRecordId = event.currentTarget.dataset.id;
         const record = this.taskItems.find(item => item.Id === this.currentRecordId);
         this.currentRecord = { ...record };
@@ -164,10 +166,15 @@ export default class TaskList extends LightningElement {
     }
 
     handleDeleteOpen(event) {
+        event.stopPropagation();  // Stop the event from propagating to the row click handler
         this.currentRecordId = event.currentTarget.dataset.id;
         const record = this.taskItems.find(item => item.Id === this.currentRecordId);
         this.currentRecord = { ...record };
         this.isDeleteModalOpen = true;
+    }
+
+    stopPropagation(event) {
+        event.stopPropagation();
     }
 
     handleDelete() {
