@@ -234,31 +234,7 @@ export default class TaskDetail extends LightningElement {
     }
 
     handleSave() {
-        const fields = {};
-        fields[TASK_NAME_FIELD.fieldApiName] = this.taskName;
-        fields[TASK_COMMENTS_FIELD.fieldApiName] = this.comments;
-
-        const recordInput = { fields };
-
-        updateRecord(recordInput)
-            .then(() => {
-                this.dispatchEvent(
-                    new ShowToastEvent({
-                        title: 'Success',
-                        message: 'Task updated successfully',
-                        variant: 'success'
-                    })
-                );
-            })
-            .catch(error => {
-                this.dispatchEvent(
-                    new ShowToastEvent({
-                        title: 'Error updating task',
-                        message: error.body.message,
-                        variant: 'error'
-                    })
-                );
-            });
+        this.template.querySelector('c-task-manage-modal').handleSave();
     }
 
     handleDelete() {

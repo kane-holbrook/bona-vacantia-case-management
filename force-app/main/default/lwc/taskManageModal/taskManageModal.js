@@ -1,6 +1,7 @@
 import { LightningElement, api, track, wire } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { createRecord, updateRecord, getRecord } from 'lightning/uiRecordApi';
+import { getRecordId } from 'c/sharedService';
 import BV_TASK_OBJECT from '@salesforce/schema/BV_Task__c';
 import NAME_FIELD from '@salesforce/schema/BV_Task__c.Name';
 import DESCRIPTION_FIELD from '@salesforce/schema/BV_Task__c.Description__c';
@@ -17,6 +18,7 @@ import OTHER_PARTY_FIELD from '@salesforce/schema/BV_Task__c.Other_party__c';
 import OTHER_PARTY_SELECT_FIELD from '@salesforce/schema/BV_Task__c.Other_party_select__c';
 import OTHER_PARTY_MEMBERS_FIELD from '@salesforce/schema/BV_Task__c.Other_party_members__c';
 import LAST_UPDATED_FIELD from '@salesforce/schema/BV_Task__c.Last_updated__c';
+import BV_CASE_LOOKUP_FIELD from '@salesforce/schema/BV_Task__c.BV_Case_Lookup__c';
 
 const fields = [
     NAME_FIELD,
@@ -39,6 +41,7 @@ const fields = [
 export default class TaskManageModal extends LightningElement {
     @api recordId;
     @track task = {};
+    @track bvCaseId;
 
     timeOptions = [
         { label: 'Days', value: 'Days' },
@@ -72,6 +75,12 @@ export default class TaskManageModal extends LightningElement {
     @track waitingPeriodInputValue = '';
     @track waitingPeriodTimeValue = '';
     @track beforeAfterValue = '';
+
+    connectedCallback() {
+        if (!this.recordId) {
+            this.bvCaseId = getRecordId();
+        }
+    }
 
     @wire(getRecord, { recordId: '$recordId', fields })
     wiredRecord({ error, data }) {
@@ -116,6 +125,7 @@ export default class TaskManageModal extends LightningElement {
             fields[key] = this.task[key].value;
         }
         fields[LAST_UPDATED_FIELD.fieldApiName] = new Date().toISOString(); // Set current date and time
+        fields[BV_CASE_LOOKUP_FIELD.fieldApiName] = this.bvCaseId; // Set BV_Case_Lookup__c field
         const recordInput = { apiName: BV_TASK_OBJECT.objectApiName, fields };
 
         createRecord(recordInput)

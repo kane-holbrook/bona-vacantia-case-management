@@ -121,6 +121,10 @@
                 <div class="slds-modal__content slds-p-around_medium">
                     <c-task-manage-modal record-id={currentSubTaskId}></c-task-manage-modal>
                 </div>
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" onclick={onEditTaskClose}>Cancel</button>
+                    <button class="slds-button slds-button_brand" onclick={handleSave}>Confirm</button>
+                </footer>
             </div>
         </section>
         <div class="slds-backdrop slds-backdrop_open"></div>
