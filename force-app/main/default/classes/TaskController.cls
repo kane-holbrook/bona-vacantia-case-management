@@ -28,12 +28,24 @@ public with sharing class TaskController {
     public static List<BV_Task__c> getOpenTasksByUser(Id userId) {
         return [
             SELECT Id, Name, Due_Date__c, Date_Inserted__c, Description__c, Priority__c, Assigned_To__c, BV_Case_Lookup__c, Complete__c, Last_updated__c,
-                   (SELECT Id, Name, Due_Date__c, Date_Inserted__c, Description__c, Priority__c, Assigned_To__c, Complete__c, Last_updated__c
+                (SELECT Id, Name, Due_Date__c, Date_Inserted__c, Description__c, Priority__c, Assigned_To__c, Complete__c, Last_updated__c
                     FROM BV_Tasks1__r)
             FROM BV_Task__c
             WHERE Assigned_To__c = :userId AND Complete__c = False
         ];
     }
+
+    @AuraEnabled(cacheable=true)
+    public static List<BV_Task__c> getOtherTasksByCaseId(Id caseId, Id userId) {
+        return [
+            SELECT Id, Name, Assigned_To__c, Due_Date__c, Date_Inserted__c, Description__c, Priority__c, Last_updated__c,
+                (SELECT Id, Name, Assigned_To__c, Due_Date__c, Date_Inserted__c, Description__c, Priority__c, Last_updated__c
+                    FROM BV_Tasks1__r)
+            FROM BV_Task__c
+            WHERE BV_Case_Lookup__c = :caseId AND Assigned_To__c != :userId
+        ];
+    }
+
     
     @AuraEnabled(cacheable=true)
     public static BV_Task__c getTaskById(Id taskId) {

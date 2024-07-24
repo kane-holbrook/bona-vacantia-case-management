@@ -2,6 +2,7 @@ import { LightningElement, wire, track, api } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
 import getTasksByCaseId from '@salesforce/apex/TaskController.getTasksByCaseId';
 import getOpenTasksByUser from '@salesforce/apex/TaskController.getOpenTasksByUser';
+import getOtherTasksByCaseId from '@salesforce/apex/TaskController.getOtherTasksByCaseId';
 import getUserNames from '@salesforce/apex/HistoryController.getUserNames';
 import getCurrentUserId from '@salesforce/apex/HistoryController.getCurrentUserId';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
@@ -28,15 +29,12 @@ export default class TaskList extends LightningElement {
 
     taskTypeOptions = [
         { label: 'All tasks', value: 'allTasks' },
-        { label: 'My tasks', value: 'myTasks' }
+        { label: 'My tasks', value: 'myTasks' },
+        { label: 'Others tasks', value: 'othersTasks' }
     ];
 
     connectedCallback() {
         this.recordId = getRecordId();
-        if (!this.recordId) {
-            this.selectedTaskType = 'myOpenTasks';
-            this.taskTypeOptions = [{ label: 'My open tasks', value: 'myOpenTasks' }];
-        }
         this.fetchCurrentUserId();
         this.refreshTaskItems();
     }
@@ -68,6 +66,15 @@ export default class TaskList extends LightningElement {
             this.processTaskItems(result.data);
         } else if (result.error) {
             this.showToast('Error', 'Error fetching open tasks', 'error');
+        }
+    }
+
+    @wire(getOtherTasksByCaseId, { caseId: '$recordId', userId: '$currentUserId' })
+    wiredOtherTasks(result) {
+        if (this.selectedTaskType === 'othersTasks' && result.data) {
+            this.processTaskItems(result.data);
+        } else if (result.error) {
+            this.showToast('Error', 'Error fetching other tasks', 'error');
         }
     }
 
@@ -262,8 +269,9 @@ export default class TaskList extends LightningElement {
             ) : true;
 
             const taskTypeMatch = this.selectedTaskType === 'allTasks' || 
-                                  (this.selectedTaskType === 'myTasks' && item.Assigned_To__c === this.currentUserId) ||
-                                  (this.selectedTaskType === 'myOpenTasks' && item.Assigned_To__c === this.currentUserId && !item.Complete__c);
+                              (this.selectedTaskType === 'myTasks' && item.Assigned_To__c === this.currentUserId) ||
+                              (this.selectedTaskType === 'myOpenTasks' && item.Assigned_To__c === this.currentUserId && !item.Complete__c) ||
+                              (this.selectedTaskType === 'otherTasks' && item.Assigned_To__c !== this.currentUserId);
 
             return searchMatch && taskTypeMatch;
         });
