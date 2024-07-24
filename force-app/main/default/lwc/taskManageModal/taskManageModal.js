@@ -69,15 +69,6 @@ export default class TaskManageModal extends LightningElement {
         { label: 'Critical', value: 'Critical' },
     ];
 
-    scheduleCodeOptions = [
-        { label: 'Acknowledge Request', value: 'ATI' },
-        { label: 'Reply due!', value: 'DRD' },
-        { label: 'New FOI request', value: 'NFR' },
-        { label: 'Response due in 10 working days', value: 'REM' },
-        { label: 'Reply from applicant', value: 'REP' },
-        { label: 'Third party reply?', value: 'TPR' },
-    ];
-
     groupCodeOptions = [
         { label: 'ADDR Occupiers Address', value: 'ADDR Occupiers Address' },
         { label: 'MPLT MP\'s Letters', value: 'MPLT MP\'s Letters' },

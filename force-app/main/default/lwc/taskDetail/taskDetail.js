@@ -12,7 +12,6 @@ import TASK_CREATED_BY_FIELD from '@salesforce/schema/BV_Task__c.CreatedById';
 import TASK_LAST_MODIFIED_BY_FIELD from '@salesforce/schema/BV_Task__c.LastModifiedById';
 import TASK_NEXT_TASK_FIELD from '@salesforce/schema/BV_Task__c.Next_Task__c';
 import TASK_DESCRIPTION_FIELD from '@salesforce/schema/BV_Task__c.Description__c';
-import TASK_SCHEDULE_CODE_FIELD from '@salesforce/schema/BV_Task__c.Schedule_Code__c';
 import TASK_CATEGORY_FIELD from '@salesforce/schema/BV_Task__c.Category__c';
 import TASK_DATE_INSERTED_FIELD from '@salesforce/schema/BV_Task__c.Date_Inserted__c';
 import TASK_GROUP_CODE_FIELD from '@salesforce/schema/BV_Task__c.Group_Code__c';
@@ -36,7 +35,7 @@ export default class TaskDetail extends LightningElement {
     @wire(getRecord, { recordId: '$recordId', fields: [
         TASK_NAME_FIELD, TASK_PARENT_FIELD, TASK_ASSIGNED_TO_FIELD, TASK_DUE_DATE_FIELD, TASK_PRIORITY_FIELD, 
         TASK_COMMENTS_FIELD, TASK_CREATED_BY_FIELD, TASK_LAST_MODIFIED_BY_FIELD, TASK_NEXT_TASK_FIELD, 
-        TASK_DESCRIPTION_FIELD, TASK_SCHEDULE_CODE_FIELD, TASK_CATEGORY_FIELD, TASK_DATE_INSERTED_FIELD, TASK_GROUP_CODE_FIELD, TASK_OTHER_PARTY_FIELD
+        TASK_DESCRIPTION_FIELD, TASK_CATEGORY_FIELD, TASK_DATE_INSERTED_FIELD, TASK_GROUP_CODE_FIELD, TASK_OTHER_PARTY_FIELD
     ] })
     wiredTask({ error, data }) {
         if (data) {
@@ -69,7 +68,6 @@ export default class TaskDetail extends LightningElement {
                 Priority__c: record.Priority__c,
                 Comments__c: record.Comments__c,
                 Description__c: record.Description__c,
-                Schedule_Code__c: record.Schedule_Code__c,
                 Category__c: record.Category__c,
                 Date_Inserted__c: record.Date_Inserted__c,
                 Group_Code__c: record.Group_Code__c,

@@ -6,7 +6,6 @@ export default class TaskDeleteModal extends LightningElement {
     @api recordId;
     @track taskName;
     @track description;
-    @track scheduleCode;
     @track caseOfficers;
     @track category;
     @track priority;
@@ -22,7 +21,6 @@ export default class TaskDeleteModal extends LightningElement {
         if (data) {
             this.taskName = data.Name;
             this.description = data.Description__c;
-            this.scheduleCode = data.Schedule_Code__c;
             this.caseOfficers = data.Assigned_To__c;
             this.category = data.Category__c;
             this.priority = data.Priority__c;
