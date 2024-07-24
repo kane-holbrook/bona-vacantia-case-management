@@ -10,10 +10,10 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import mimeTypes from './mimeTypes';
 import { fireEvent, registerListener, unregisterAllListeners } from 'c/pubsub';
 import saveDocument from '@salesforce/apex/PDFTron_ContentVersionController.saveDocument';
-import saveDocumentToSharePoint from '@salesforce/apex/PDFTron_ContentVersionController.saveDocumentToSharePoint';
+import saveDocumentToSharePoint from '@salesforce/apex/PDFTron_ContentVersionController.saveDocumentToSharePointViaFlow';
 import getFileDataFromIds from '@salesforce/apex/PDFTron_ContentVersionController.getFileDataFromIds';
 import getUser from "@salesforce/apex/PDFTron_ContentVersionController.getUser";
-import getSharePointFileDataById from '@salesforce/apex/PDFTron_ContentVersionController.getSharePointFileDataById';
+import getSharePointFileDataById from '@salesforce/apex/FileControllerGraph.getGraphFileDataById';
 import { getRecordId } from 'c/sharedService';
 
 function _base64ToArrayBuffer(base64) {
@@ -375,7 +375,7 @@ export default class PdftronWvInstanceFlow extends LightningElement {
                         });
                     break;
                 case 'SAVE_SHAREPOINT_DOCUMENT':
-                    const folderName = '/' + this.bvCaseName;
+                    const folderName = this.bvCaseName;
 
                     console.log(event.data.payload);
                     saveDocumentToSharePoint({

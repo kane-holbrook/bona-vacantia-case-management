@@ -1,7 +1,7 @@
 import { LightningElement, api, wire, track } from 'lwc';
 import { CurrentPageReference } from 'lightning/navigation';
 import { FlowNavigationNextEvent } from 'lightning/flowSupport';
-import fetchTemplates from '@salesforce/apex/FileController.fetchTemplates';
+import fetchAllFilesFromFolder from '@salesforce/apex/FileControllerGraph.fetchAllFilesFromFolder';
 import getSharePointSettings from '@salesforce/apex/FileController.getSharePointSettings';
 
 export default class GenerateDocumentFlow extends LightningElement {
@@ -45,14 +45,24 @@ export default class GenerateDocumentFlow extends LightningElement {
         if (!this.sharePointSiteUrl || !this.sharePointDirectoryPath) return;
         const parentFolderPath = encodeURIComponent(this.sharePointDirectoryPath);
 
-        fetchTemplates()
+        fetchAllFilesFromFolder({ folderPath: 'Templates' })
             .then(result => {
+                console.log('Files from sharepoint:', result);
                 // Construct the SharePoint preview URL
                 this.documents = result.map(doc => {
-                    let previewUrl = `${this.sharePointSiteUrl}/${this.sharePointDirectoryPath}/Shared%20Documents/Forms/AllItems.aspx?id=${encodeURIComponent(doc.ServerRelativeURL__c)}&parent=${parentFolderPath}`;
+                    let previewUrl = `${this.sharePointSiteUrl}/${this.sharePointDirectoryPath}/Shared%20Documents/Forms/AllItems.aspx?id=${encodeURIComponent(doc.webUrl)}&parent=${parentFolderPath}`;
                     // Determine the display name
-                    let displayName = doc.Document_Name__c ? doc.Document_Name__c : doc.Name;
-                    return { ...doc, previewUrl, displayName };
+                    let displayName = doc.listItem.fields.Document_x0020_Name ? doc.listItem.fields.Document_x0020_Name : doc.name;
+                    return { 
+                        ...doc, 
+                        id: doc.id,
+                        previewUrl, 
+                        displayName,
+                        DocumentType: doc.listItem.fields.DocumentType,
+                        DocumentCategory: doc.listItem.fields.Document_x0020_Category,
+                        Created_Time: doc.listItem.fields.Created,
+                        ServerRelativeURL__c: doc.webUrl
+                    };
                 });
 
                 // Group documents by categories
@@ -61,14 +71,14 @@ export default class GenerateDocumentFlow extends LightningElement {
             })
             .catch(error => {
                 this.isLoading = false;
-                console.error('Error:', error);
+                console.error('Error fetching documents:', error);
             });
     }
 
     groupDocumentsByCategory() {
         let categories = {};
         this.documents.forEach(doc => {
-            let category = doc.Document_Category__c || 'Uncategorized';
+            let category = doc.DocumentCategory || 'Uncategorized';
             if (!categories[category]) {
                 categories[category] = {
                     name: category,
@@ -95,9 +105,9 @@ export default class GenerateDocumentFlow extends LightningElement {
 
     handleSelectionChange(event) {
         this.selectedDocumentId = event.target.dataset.id;
-        const selectedDocument = this.documents.find(doc => doc.DocumentID__c === this.selectedDocumentId);
+        const selectedDocument = this.documents.find(doc => doc.id === this.selectedDocumentId);
         if (selectedDocument) {
-            this.selectedDocumentType = selectedDocument.DocumentType__c;
+            this.selectedDocumentType = selectedDocument.DocumentType;
         }
     }
 
