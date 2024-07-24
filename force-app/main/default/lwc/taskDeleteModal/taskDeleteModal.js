@@ -14,7 +14,6 @@ export default class TaskDeleteModal extends LightningElement {
     @track dateInserted;
     @track due;
     @track document;
-    @track postTray;
     @track groupCode;
     @track otherParty;
 
@@ -31,7 +30,6 @@ export default class TaskDeleteModal extends LightningElement {
             this.dateInserted = data.Date_Inserted__c;
             this.due = data.Due_Date__c;
             this.document = data.Document__c;
-            this.postTray = data.Post_Tray__c;
             this.groupCode = data.Group_Code__c;
             this.otherParty = data.Other_party__c;
         } else if (error) {

@@ -69,13 +69,6 @@ export default class TaskManageModal extends LightningElement {
         { label: 'Critical', value: 'Critical' },
     ];
 
-    postTrayOptions = [
-        { label: 'Queue name not setup', value: 'Queue name not setup' },
-        { label: 'Post Tray', value: 'Post Tray' },
-        { label: 'Letters', value: 'Letters' },
-        { label: 'Labels', value: 'Labels' },
-    ];
-
     scheduleCodeOptions = [
         { label: 'Acknowledge Request', value: 'ATI' },
         { label: 'Reply due!', value: 'DRD' },
