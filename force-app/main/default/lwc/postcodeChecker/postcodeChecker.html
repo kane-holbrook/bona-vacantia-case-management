@@ -4,7 +4,7 @@
             <div class="slds-form-element">
                 <label class="slds-form-element__label" for="postcode-input">Enter Postcode</label>
                 <div class="slds-form-element__control">
-                    <input type="text" id="postcode-input" class="slds-input" value={postcode} onchange={handlePostcodeChange} />
+                    <input type="text" id="postcode-input" class="slds-input" value={postcode} onchange={handlePostcodeChange} onkeypress={handleKeyPress} />
                 </div>
             </div>
             <div class="slds-form-element slds-m-top_small">
