@@ -107,7 +107,7 @@
                     </thead>
                     <tbody>
                         <template for:each={filteredTaskItems} for:item="item">
-                            <tr key={item.Id} class={item.rowClass} ondblclick={handleRowDoubleClick} data-id={item.Id}>
+                            <tr key={item.Id} class={item.rowClass} onclick={handleRowDoubleClick} data-id={item.Id}>
                                 <td data-label="Expand">
                                     <template if:true={item.hasSubTasks}>
                                         <button class="slds-button slds-button_icon slds-m-right_x-small" aria-expanded={item.isExpanded} onclick={toggleRow} data-id={item.Id}>
