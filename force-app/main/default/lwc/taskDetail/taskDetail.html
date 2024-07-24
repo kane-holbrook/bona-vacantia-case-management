@@ -21,7 +21,7 @@
                         <lightning-button variant="neutral" label="Mark task as complete" onclick={onCompleteTask}></lightning-button>
                         <lightning-button variant="neutral" label="Create a sub-task" onclick={onEditSubTask}></lightning-button>
                         <lightning-button-menu alternative-text="Show More">
-                            <lightning-menu-item label="Manage" data-id={recordId} onclick={onEditSubTask}></lightning-menu-item>
+                            <lightning-menu-item label="Manage" data-id={recordId} onclick={onEditTask}></lightning-menu-item>
                             <lightning-menu-item label="Delete" data-id={recordId} onclick={onDeleteTask}></lightning-menu-item>
                         </lightning-button-menu>
                     </div>
@@ -116,7 +116,7 @@
                         <lightning-icon icon-name="utility:close" alternative-text="close" size="small"></lightning-icon>
                         <span class="slds-assistive-text">Close</span>
                     </button>
-                    <h2 class="slds-text-heading_medium">Task modal header</h2>
+                    <h2 class="slds-text-heading_medium">{modalHeader}</h2>
                 </header>
                 <div class="slds-modal__content slds-p-around_medium">
                     <c-task-manage-modal record-id={currentSubTaskId}></c-task-manage-modal>

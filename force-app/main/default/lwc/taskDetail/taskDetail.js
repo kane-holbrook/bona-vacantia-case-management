@@ -31,6 +31,8 @@ export default class TaskDetail extends LightningElement {
     @track assignedToName = '';
     @track createdByName = '';
     @track lastModifiedByName = '';
+    currentSubTaskId; // Added this to track current sub-task ID
+    editTaskState; // Added this to track current task ID
 
     @wire(getRecord, { recordId: '$recordId', fields: [
         TASK_ID_FIELD, TASK_NAME_FIELD, TASK_PARENT_FIELD, TASK_ASSIGNED_TO_FIELD, TASK_DUE_DATE_FIELD, TASK_PRIORITY_FIELD, 
@@ -151,13 +153,31 @@ export default class TaskDetail extends LightningElement {
         return getFieldValue(this.task, TASK_NEXT_TASK_FIELD);
     }
 
+    get modalHeader() {
+        if (this.currentSubTaskId && !this.editTaskState) {
+            return 'Edit sub-task';
+        } else if (this.editTaskState) {
+            return 'Edit task';
+        } else {
+            return 'Create a sub-task';
+        }
+    }
+
     onEditSubTask(event) {
         this.editSubTask = true;
         this.currentSubTaskId = event.currentTarget.dataset.id;
     }
 
+    onEditTask(event) {
+        this.editSubTask = true;
+        this.editTaskState = true;
+        this.currentSubTaskId = event.currentTarget.dataset.id;
+    }
+
     onEditTaskClose() {
         this.editSubTask = false;
+        this.currentSubTaskId = null;
+        this.editTaskState = false;
     }
 
     onDeleteTask(event) {
