@@ -1,5 +1,6 @@
 import { LightningElement, api, track, wire } from 'lwc';
 import { deleteRecord } from 'lightning/uiRecordApi';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getTaskById from '@salesforce/apex/TaskController.getTaskById';
 
 export default class TaskDeleteModal extends LightningElement {
@@ -35,6 +36,7 @@ export default class TaskDeleteModal extends LightningElement {
         }
     }
 
+    @api
     deleteRecord() {
         deleteRecord(this.recordId)
             .then(() => {
