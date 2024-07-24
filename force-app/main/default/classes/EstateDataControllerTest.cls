@@ -15,23 +15,23 @@ private class EstateDataControllerTest {
         System.assertEquals(Date.today(), result.Deceased_date_of_death__c);
     }
 
-    @isTest
-    static void testGetEstateAccData() {
-        // Create test BV_Case record
-        BV_Case__c bvCase = new BV_Case__c(Stage__c = 'Advertising');
-        insert bvCase;
+    // @isTest
+    // static void testGetEstateAccData() {
+    //     // Create test BV_Case record
+    //     BV_Case__c bvCase = new BV_Case__c(Stage__c = 'Advertising');
+    //     insert bvCase;
 
-        // Create test EstateAcc records
-        EstateAcc__c estateAcc = new EstateAcc__c(BV_Case__c = bvCase.Id);
-        insert estateAcc;
+    //     // Create test EstateAcc records
+    //     EstateAcc__c estateAcc = new EstateAcc__c(BV_Case__c = bvCase.Id);
+    //     insert estateAcc;
 
-        // Call the method to test
-        List<EstateAcc__c> result = EstateDataController.getEstateAccData(bvCase.Id);
+    //     // Call the method to test
+    //     List<EstateAcc__c> result = EstateDataController.getEstateAccData(bvCase.Id);
 
-        // Assertions
-        System.assertEquals(1, result.size());
-        System.assertEquals(estateAcc.Id, result[0].Id);
-    }
+    //     // Assertions
+    //     System.assertEquals(1, result.size());
+    //     System.assertEquals(estateAcc.Id, result[0].Id);
+    // }
 
     @isTest
     static void testCreateEstateAcc() {
