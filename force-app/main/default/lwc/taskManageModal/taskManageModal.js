@@ -69,29 +69,6 @@ export default class TaskManageModal extends LightningElement {
         { label: 'Critical', value: 'Critical' },
     ];
 
-    groupCodeOptions = [
-        { label: 'ADDR Occupiers Address', value: 'ADDR Occupiers Address' },
-        { label: 'MPLT MP\'s Letters', value: 'MPLT MP\'s Letters' },
-        { label: 'OADD Other Addresses', value: 'OADD Other Addresses' },
-        { label: 'XREF Manual Cross Refs', value: 'XREF Manual Cross Refs' },
-    ];
-
-    groupCodeMembers = [
-        { label: 'All members', value: 'All members' },
-    ];
-
-    otherPartyOptions = [
-        { label: 'Name', value: 'Name' },
-        { label: 'Address', value: 'Address' },
-        { label: 'Trading As', value: 'Trading As' },
-        { label: 'Contact', value: 'Contact' },
-        { label: 'Salutation', value: 'Salutation' },
-    ];
-
-    otherPartyMembers = [
-        { label: 'All members', value: 'All members' },
-    ];
-
     @track waitingPeriodInputValue = '';
     @track waitingPeriodTimeValue = '';
     @track beforeAfterValue = '';
@@ -223,29 +200,5 @@ export default class TaskManageModal extends LightningElement {
 
     get categoryValue() {
         return this.task.Category__c ? this.task.Category__c.value : '';
-    }
-
-    get groupCodeValue() {
-        return this.task.Group_Code__c ? this.task.Group_Code__c.value : false;
-    }
-
-    get groupCodePickValue() {
-        return this.task.Group_Code_Pick__c ? this.task.Group_Code_Pick__c.value : '';
-    }
-
-    get groupCodeMembersValue() {
-        return this.task.Group_Code_Members__c ? this.task.Group_Code_Members__c.value : '';
-    }
-
-    get otherPartyValue() {
-        return this.task.Other_party__c ? this.task.Other_party__c.value : false;
-    }
-
-    get otherPartySelectValue() {
-        return this.task.Other_party_select__c ? this.task.Other_party_select__c.value : '';
-    }
-
-    get otherPartyMembersValue() {
-        return this.task.Other_party_members__c ? this.task.Other_party_members__c.value : '';
     }
 }
