@@ -5,6 +5,7 @@ import { getRecordId } from 'c/sharedService';
 import BV_TASK_OBJECT from '@salesforce/schema/BV_Task__c';
 import NAME_FIELD from '@salesforce/schema/BV_Task__c.Name';
 import DESCRIPTION_FIELD from '@salesforce/schema/BV_Task__c.Description__c';
+import COMMENTS_FIELD from '@salesforce/schema/BV_Task__c.Comments__c';
 import SCHEDULE_CODE_FIELD from '@salesforce/schema/BV_Task__c.Schedule_Code__c';
 import CASE_OFFICER_FIELD from '@salesforce/schema/BV_Task__c.Assigned_To__c';
 import CATEGORY_FIELD from '@salesforce/schema/BV_Task__c.Category__c';
@@ -24,6 +25,7 @@ import PARENT_TASK_FIELD from '@salesforce/schema/BV_Task__c.Parent_Task__c';
 const fields = [
     NAME_FIELD,
     DESCRIPTION_FIELD,
+    COMMENTS_FIELD,
     SCHEDULE_CODE_FIELD,
     CASE_OFFICER_FIELD,
     CATEGORY_FIELD,
@@ -192,6 +194,10 @@ export default class TaskManageModal extends LightningElement {
 
     get descriptionValue() {
         return this.task.Description__c ? this.task.Description__c.value : '';
+    }
+
+    get commentsValue() {
+        return this.task.Comments__c ? this.task.Comments__c.value : '';
     }
 
     get dueDateValue() {

@@ -28,6 +28,19 @@
                 </lightning-input>
             </div>
         </div>
+        <div class="slds-col slds-size_1-of-1 slds-s-top_small">
+            <div class="slds-text-align_left slds-m-around_x-small">
+                <lightning-textarea
+                    label="Comments" 
+                    type="text" 
+                    id="comments" 
+                    value={commentsValue} 
+                    placeholder="Add any comments" 
+                    onchange={handleInputChange} 
+                    data-field="Comments__c">
+                </lightning-textarea>
+            </div>
+        </div>
         <div class="slds-col slds-size_3-of-7 slds-s-top_small">
             <div class="slds-text-align_left slds-m-around_x-small">
                 <lightning-combobox 
