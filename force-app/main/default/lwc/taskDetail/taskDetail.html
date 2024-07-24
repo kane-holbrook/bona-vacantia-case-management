@@ -19,12 +19,10 @@
                 <div class="slds-no-flex">
                     <div class="button-group slds-text-align_right">
                         <lightning-button variant="neutral" label="Mark task as complete" onclick={onCompleteTask}></lightning-button>
-                        <lightning-button variant="neutral" label="Edit comments" onclick={onEditCommentsTask}></lightning-button>
-                        <lightning-button variant="neutral" label="Change due date" onclick={onChangeDueDateTask}></lightning-button>
-                        <lightning-button variant="neutral" label="Create sub-task" onclick={onEditSubTask}></lightning-button>
+                        <lightning-button variant="neutral" label="Create a sub-task" onclick={onEditSubTask}></lightning-button>
                         <lightning-button-menu alternative-text="Show More">
-                            <lightning-menu-item label="Re-assign" onclick={onReassignTaskOpen}></lightning-menu-item>
-                            <lightning-menu-item label="Change priority" onclick={onChangePriorityTask}></lightning-menu-item>
+                            <lightning-menu-item label="Manage" data-id={recordId} onclick={onEditSubTask}></lightning-menu-item>
+                            <lightning-menu-item label="Delete" data-id={recordId} onclick={onDeleteTask}></lightning-menu-item>
                         </lightning-button-menu>
                     </div>
                 </div>

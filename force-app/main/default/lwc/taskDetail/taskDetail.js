@@ -2,6 +2,7 @@ import { LightningElement, api, track, wire } from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import getUserNames from '@salesforce/apex/HistoryController.getUserNames';
 import getSubTasks from '@salesforce/apex/TaskController.getSubTasks';
+import TASK_ID_FIELD from '@salesforce/schema/BV_Task__c.Id';
 import TASK_NAME_FIELD from '@salesforce/schema/BV_Task__c.Name';
 import TASK_PARENT_FIELD from '@salesforce/schema/BV_Task__c.Parent_Task__c';
 import TASK_ASSIGNED_TO_FIELD from '@salesforce/schema/BV_Task__c.Assigned_To__c';
@@ -32,7 +33,7 @@ export default class TaskDetail extends LightningElement {
     @track lastModifiedByName = '';
 
     @wire(getRecord, { recordId: '$recordId', fields: [
-        TASK_NAME_FIELD, TASK_PARENT_FIELD, TASK_ASSIGNED_TO_FIELD, TASK_DUE_DATE_FIELD, TASK_PRIORITY_FIELD, 
+        TASK_ID_FIELD, TASK_NAME_FIELD, TASK_PARENT_FIELD, TASK_ASSIGNED_TO_FIELD, TASK_DUE_DATE_FIELD, TASK_PRIORITY_FIELD, 
         TASK_COMMENTS_FIELD, TASK_CREATED_BY_FIELD, TASK_LAST_MODIFIED_BY_FIELD, TASK_NEXT_TASK_FIELD, 
         TASK_DESCRIPTION_FIELD, TASK_DATE_INSERTED_FIELD, TASK_GROUP_CODE_FIELD, TASK_OTHER_PARTY_FIELD
     ] })
