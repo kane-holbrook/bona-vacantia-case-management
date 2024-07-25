@@ -77,7 +77,7 @@ export default class DynamicTree extends LightningElement {
     }
 
     async dispatchNavigationEvent(node) {
-        const updatedLabel = this.prefixLabel(node.label);
+        const updatedLabel = this.getUpdatedLabel(node.label);
         const recordTypeId = await getRecordTypeId({ objectName: node.object, recordTypeName: updatedLabel });
         const navigationEvent = new CustomEvent('navigate', {
             detail: { 
@@ -92,7 +92,7 @@ export default class DynamicTree extends LightningElement {
         this.dispatchEvent(navigationEvent);
     }
 
-    prefixLabel(label) {
+    getUpdatedLabel(label) {
         if (this.recordTypeDeveloperName == 'ESTA') {
             return 'Estates - ' + label;
         } else if (this.recordTypeDeveloperName == 'COMP') {
@@ -184,11 +184,24 @@ export default class DynamicTree extends LightningElement {
         }
     
         if (object) {
-            const updatedLabel = this.prefixLabel(label);
+            let updatedLabel = label;
+            if (this.recordTypeDeveloperName == 'ESTA') {
+                updatedLabel = 'Estates - ' + label;
+            } else if (this.recordTypeDeveloperName == 'COMP') {
+                updatedLabel = 'Companies - ' + label;
+            } else if (this.recordTypeDeveloperName == 'CONV') {
+                updatedLabel = 'Conveyancing - ' + label;
+            } else if (this.recordTypeDeveloperName == 'FOIR') {
+                updatedLabel = 'FOIR - ' + label;
+            } else if (this.recordTypeDeveloperName == 'GENE') {
+                updatedLabel = 'General - ' + label;
+            } else {
+                updatedLabel = label;
+            }
 
             const recordTypeId = await getRecordTypeId({ objectName: object, recordTypeName: updatedLabel });
             const navigationEvent = new CustomEvent('navigate', {
-                detail: { recordTypeId, object, label: updatedLabel, parentLabel, grandChildLabel, greatGrandChildLabel }
+                detail: { recordTypeId, object, label, parentLabel, grandChildLabel, greatGrandChildLabel }
             });
             this.dispatchEvent(navigationEvent);
         }
