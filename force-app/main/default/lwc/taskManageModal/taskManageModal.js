@@ -91,9 +91,6 @@ export default class TaskManageModal extends LightningElement {
     wiredRecord({ error, data }) {
         if (data) {
             this.task = JSON.parse(JSON.stringify(data.fields));
-            this.waitingPeriodInputValue = this.task.Waiting_Period__c ? this.task.Waiting_Period__c.value : '';
-            this.waitingPeriodTimeValue = this.task.Waiting_Period_Time__c ? this.task.Waiting_Period_Time__c.value : '';
-            this.beforeAfterValue = this.task.Before_After__c ? this.task.Before_After__c.value : '';
             this.autoPopulateFields(); // Call the auto-populate function on load
         } else if (error) {
             this.error = error;
@@ -141,9 +138,6 @@ export default class TaskManageModal extends LightningElement {
             }
 
             this.dateInsertedSelected = 'Date Inserted';
-            this.task['Waiting_Period__c'] = { value: this.waitingPeriodInputValue };
-            this.task['Waiting_Period_Time__c'] = { value: this.waitingPeriodTimeValue };
-            this.task['Before_After__c'] = { value: this.beforeAfterValue };
 
             this.updateInputFields();
         }
@@ -154,10 +148,6 @@ export default class TaskManageModal extends LightningElement {
         const waitingPeriodTime = this.template.querySelector('[data-id="waiting-period-time"]');
         const beforeAfter = this.template.querySelector('[data-id="before-after"]');
         const dateInsertedSelect = this.template.querySelector('[data-id="date-inserted-select"]');
-
-        console.log('waitingPeriodInput', waitingPeriodInput);
-        console.log('waitingPeriodTime', waitingPeriodTime);
-        console.log('beforeAfter', beforeAfter);
 
         if (waitingPeriodInput) {
             waitingPeriodInput.value = this.waitingPeriodInputValue;
@@ -176,14 +166,14 @@ export default class TaskManageModal extends LightningElement {
     calculateDueDate() {
         const dateInsertedStr = this.template.querySelector('[data-id="date-inserted"]').value;
         const dateInserted = dateInsertedStr ? new Date(dateInsertedStr) : null;
-    
+
         if (dateInserted) {
             const waitingPeriodInputValue = parseInt(this.template.querySelector('[data-id="waiting-period-input"]').value, 10);
             const waitingPeriodTimeValue = this.template.querySelector('[data-id="waiting-period-time"]').value;
             const beforeAfterValue = this.template.querySelector('[data-id="before-after"]').value;
-    
+
             let dueDate = new Date(dateInserted);
-    
+
             switch (waitingPeriodTimeValue) {
                 case 'Days':
                     dueDate.setDate(beforeAfterValue === 'After' ? dueDate.getDate() + waitingPeriodInputValue : dueDate.getDate() - waitingPeriodInputValue);
@@ -197,7 +187,7 @@ export default class TaskManageModal extends LightningElement {
                 default:
                     break;
             }
-    
+
             this.task.Due_Date__c = { value: dueDate.toISOString().split('T')[0] };
             this.updateDueDateInput();
         }
@@ -207,7 +197,6 @@ export default class TaskManageModal extends LightningElement {
         const dueDateInput = this.template.querySelector('[data-id="due-date"]');
         if (dueDateInput) {
             dueDateInput.value = this.task.Due_Date__c.value;
-            console.log('dueDateInput updated to', dueDateInput.value);
         } else {
             console.error('dueDateInput not found');
         }
@@ -232,8 +221,11 @@ export default class TaskManageModal extends LightningElement {
 
     createTask() {
         const fields = {};
+        // Populate the fields with existing task fields, excluding the ones that shouldn't be saved
         for (let key in this.task) {
-            fields[key] = this.task[key].value;
+            if (key !== 'beforeAfterValue' && key !== 'waitingPeriodInputValue' && key !== 'waitingPeriodTimeValue' && key !== 'dateInsertedSelected') {
+                fields[key] = this.task[key].value;
+            }
         }
         fields[LAST_UPDATED_FIELD.fieldApiName] = new Date().toISOString(); // Set current date and time
         fields[BV_CASE_LOOKUP_FIELD.fieldApiName] = this.bvCaseId; // Set BV_Case_Lookup__c field
@@ -267,8 +259,11 @@ export default class TaskManageModal extends LightningElement {
 
     updateTask() {
         const fields = {};
+        // Populate the fields with existing task fields, excluding the ones that shouldn't be saved
         for (let key in this.task) {
-            fields[key] = this.task[key].value;
+            if (key !== 'beforeAfterValue' && key !== 'waitingPeriodInputValue' && key !== 'waitingPeriodTimeValue' && key !== 'dateInsertedSelected') {
+                fields[key] = this.task[key].value;
+            }
         }
         fields.Id = this.recordId;
         fields[LAST_UPDATED_FIELD.fieldApiName] = new Date().toISOString(); // Set current date and time
