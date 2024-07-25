@@ -79,6 +79,7 @@ export default class TaskManageModal extends LightningElement {
     @track waitingPeriodInputValue = '';
     @track waitingPeriodTimeValue = '';
     @track beforeAfterValue = '';
+    @track dateInsertedSelected = '';
 
     connectedCallback() {
         if (!this.recordId) {
@@ -93,6 +94,7 @@ export default class TaskManageModal extends LightningElement {
             this.waitingPeriodInputValue = this.task.Waiting_Period__c ? this.task.Waiting_Period__c.value : '';
             this.waitingPeriodTimeValue = this.task.Waiting_Period_Time__c ? this.task.Waiting_Period_Time__c.value : '';
             this.beforeAfterValue = this.task.Before_After__c ? this.task.Before_After__c.value : '';
+            this.autoPopulateFields(); // Call the auto-populate function on load
         } else if (error) {
             this.error = error;
         }
@@ -104,6 +106,59 @@ export default class TaskManageModal extends LightningElement {
             this.task[field] = { value: '' };
         }
         this.task[field].value = event.target.value;
+
+        // Check if date-inserted and due-date are populated to auto-populate other fields
+        if (field === 'Date_Inserted__c' || field === 'Due_Date__c') {
+            this.autoPopulateFields();
+        }
+    }
+
+    autoPopulateFields() {
+        const dateInserted = this.task.Date_Inserted__c ? new Date(this.task.Date_Inserted__c.value) : null;
+        const dueDate = this.task.Due_Date__c ? new Date(this.task.Due_Date__c.value) : null;
+
+        if (dateInserted && dueDate) {
+            const timeDifference = dueDate - dateInserted;
+            const isAfter = timeDifference > 0;
+            this.beforeAfterValue = isAfter ? 'After' : 'Before';
+
+            const absDifference = Math.abs(timeDifference);
+            const dayDifference = absDifference / (1000 * 3600 * 24);
+
+            if (dayDifference <= 30) {
+                this.waitingPeriodTimeValue = 'Days';
+                this.waitingPeriodInputValue = Math.round(dayDifference).toString();
+            } else if (dayDifference <= 365) {
+                this.waitingPeriodTimeValue = 'Weeks';
+                this.waitingPeriodInputValue = Math.round(dayDifference / 7).toString();
+            } else {
+                this.waitingPeriodTimeValue = 'Months';
+                this.waitingPeriodInputValue = Math.round(dayDifference / 30).toString();
+            }
+
+            this.dateInsertedSelected = 'Date Inserted';
+            this.task['Waiting_Period__c'] = { value: this.waitingPeriodInputValue };
+            this.task['Waiting_Period_Time__c'] = { value: this.waitingPeriodTimeValue };
+            this.task['Before_After__c'] = { value: this.beforeAfterValue };
+
+            const waitingPeriodInput = this.template.querySelector('#waiting-period-input');
+            const waitingPeriodTime = this.template.querySelector('#waiting-period-time');
+            const beforeAfter = this.template.querySelector('#before-after');
+            const dateInsertedSelect = this.template.querySelector('#date-inserted-select');
+
+            if (waitingPeriodInput) {
+                waitingPeriodInput.value = this.waitingPeriodInputValue;
+            }
+            if (waitingPeriodTime) {
+                waitingPeriodTime.value = this.waitingPeriodTimeValue;
+            }
+            if (beforeAfter) {
+                beforeAfter.value = this.beforeAfterValue;
+            }
+            if (dateInsertedSelect) {
+                dateInsertedSelect.value = this.dateInsertedSelected;
+            }
+        }
     }
 
     handleCheckboxChange(event) {
