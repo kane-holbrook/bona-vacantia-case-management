@@ -5,26 +5,13 @@
         <div class="slds-col slds-size_1-of-1">
             <div class="slds-text-align_left slds-m-around_x-small">
                 <lightning-input 
-                    label="Name of this sub-task" 
+                    label="Description of task" 
                     type="text" 
                     id="sub-task-name" 
                     value={nameValue} 
                     onchange={handleInputChange} 
                     data-field="Name" 
                     placeholder="Add a name of the task">
-                </lightning-input>
-            </div>
-        </div>
-        <div class="slds-col slds-size_1-of-1 slds-s-top_small">
-            <div class="slds-text-align_left slds-m-around_x-small">
-                <lightning-input 
-                    label="Description" 
-                    type="text" 
-                    id="description" 
-                    value={descriptionValue} 
-                    placeholder="Add a description" 
-                    onchange={handleInputChange} 
-                    data-field="Description__c">
                 </lightning-input>
             </div>
         </div>
