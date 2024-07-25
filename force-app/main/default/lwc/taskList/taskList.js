@@ -119,8 +119,10 @@ export default class TaskList extends LightningElement {
     }
 
     refreshTaskItems() {
-        if (this.selectedTaskType === 'myOpenTasks') {
+        if (this.selectedTaskType === 'myTasks') {
             refreshApex(this.wiredOpenTasks);
+        } else if (this.selectedTaskType === 'othersTasks') {
+            refreshApex(this.wiredOtherTasks);
         } else {
             refreshApex(this.wiredTaskItemsResult);
         }
@@ -271,7 +273,7 @@ export default class TaskList extends LightningElement {
             const taskTypeMatch = this.selectedTaskType === 'allTasks' || 
                               (this.selectedTaskType === 'myTasks' && item.Assigned_To__c === this.currentUserId) ||
                               (this.selectedTaskType === 'myOpenTasks' && item.Assigned_To__c === this.currentUserId && !item.Complete__c) ||
-                              (this.selectedTaskType === 'otherTasks' && item.Assigned_To__c !== this.currentUserId);
+                              (this.selectedTaskType === 'othersTasks' && item.Assigned_To__c !== this.currentUserId);
 
             return searchMatch && taskTypeMatch;
         });
@@ -280,6 +282,7 @@ export default class TaskList extends LightningElement {
     handleTaskTypeChange(event) {
         this.selectedTaskType = event.detail.value;
         this.refreshTaskItems();
+        this.filterTaskItems();
     }
 
     handleRowDoubleClick(event) {
