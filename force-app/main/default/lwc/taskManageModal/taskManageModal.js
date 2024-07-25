@@ -107,6 +107,10 @@ export default class TaskManageModal extends LightningElement {
         }
         this.task[field].value = event.target.value;
 
+        if (field === 'waitingPeriodInputValue' || field === 'waitingPeriodTimeValue' || field === 'beforeAfterValue' || field === 'dateInsertedSelected' || field === 'Date_Inserted__c') {
+            this.calculateDueDate();
+        }
+
         // Check if date-inserted and due-date are populated to auto-populate other fields
         if (field === 'Date_Inserted__c' || field === 'Due_Date__c') {
             this.autoPopulateFields();
@@ -141,23 +145,71 @@ export default class TaskManageModal extends LightningElement {
             this.task['Waiting_Period_Time__c'] = { value: this.waitingPeriodTimeValue };
             this.task['Before_After__c'] = { value: this.beforeAfterValue };
 
-            const waitingPeriodInput = this.template.querySelector('#waiting-period-input');
-            const waitingPeriodTime = this.template.querySelector('#waiting-period-time');
-            const beforeAfter = this.template.querySelector('#before-after');
-            const dateInsertedSelect = this.template.querySelector('#date-inserted-select');
+            this.updateInputFields();
+        }
+    }
 
-            if (waitingPeriodInput) {
-                waitingPeriodInput.value = this.waitingPeriodInputValue;
+    updateInputFields() {
+        const waitingPeriodInput = this.template.querySelector('[data-id="waiting-period-input"]');
+        const waitingPeriodTime = this.template.querySelector('[data-id="waiting-period-time"]');
+        const beforeAfter = this.template.querySelector('[data-id="before-after"]');
+        const dateInsertedSelect = this.template.querySelector('[data-id="date-inserted-select"]');
+
+        console.log('waitingPeriodInput', waitingPeriodInput);
+        console.log('waitingPeriodTime', waitingPeriodTime);
+        console.log('beforeAfter', beforeAfter);
+
+        if (waitingPeriodInput) {
+            waitingPeriodInput.value = this.waitingPeriodInputValue;
+        }
+        if (waitingPeriodTime) {
+            waitingPeriodTime.value = this.waitingPeriodTimeValue;
+        }
+        if (beforeAfter) {
+            beforeAfter.value = this.beforeAfterValue;
+        }
+        if (dateInsertedSelect) {
+            dateInsertedSelect.value = this.dateInsertedSelected;
+        }
+    }
+
+    calculateDueDate() {
+        const dateInsertedStr = this.template.querySelector('[data-id="date-inserted"]').value;
+        const dateInserted = dateInsertedStr ? new Date(dateInsertedStr) : null;
+    
+        if (dateInserted) {
+            const waitingPeriodInputValue = parseInt(this.template.querySelector('[data-id="waiting-period-input"]').value, 10);
+            const waitingPeriodTimeValue = this.template.querySelector('[data-id="waiting-period-time"]').value;
+            const beforeAfterValue = this.template.querySelector('[data-id="before-after"]').value;
+    
+            let dueDate = new Date(dateInserted);
+    
+            switch (waitingPeriodTimeValue) {
+                case 'Days':
+                    dueDate.setDate(beforeAfterValue === 'After' ? dueDate.getDate() + waitingPeriodInputValue : dueDate.getDate() - waitingPeriodInputValue);
+                    break;
+                case 'Weeks':
+                    dueDate.setDate(beforeAfterValue === 'After' ? dueDate.getDate() + waitingPeriodInputValue * 7 : dueDate.getDate() - waitingPeriodInputValue * 7);
+                    break;
+                case 'Months':
+                    dueDate.setMonth(beforeAfterValue === 'After' ? dueDate.getMonth() + waitingPeriodInputValue : dueDate.getMonth() - waitingPeriodInputValue);
+                    break;
+                default:
+                    break;
             }
-            if (waitingPeriodTime) {
-                waitingPeriodTime.value = this.waitingPeriodTimeValue;
-            }
-            if (beforeAfter) {
-                beforeAfter.value = this.beforeAfterValue;
-            }
-            if (dateInsertedSelect) {
-                dateInsertedSelect.value = this.dateInsertedSelected;
-            }
+    
+            this.task.Due_Date__c = { value: dueDate.toISOString().split('T')[0] };
+            this.updateDueDateInput();
+        }
+    }
+
+    updateDueDateInput() {
+        const dueDateInput = this.template.querySelector('[data-id="due-date"]');
+        if (dueDateInput) {
+            dueDateInput.value = this.task.Due_Date__c.value;
+            console.log('dueDateInput updated to', dueDateInput.value);
+        } else {
+            console.error('dueDateInput not found');
         }
     }
 

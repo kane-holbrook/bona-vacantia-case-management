@@ -77,9 +77,11 @@
                     <lightning-input 
                         variant="label-hidden"
                         type="number" 
-                        id="waiting-period-input" 
+                        data-id="waiting-period-input"
                         value={waitingPeriodInputValue}
-                        placeholder="5">
+                        data-field="waitingPeriodInputValue"
+                        placeholder="5"
+                        onchange={handleInputChange}>
                     </lightning-input>
                 </div>
             </div>
@@ -87,9 +89,11 @@
                 <div class="slds-text-align_left slds-m-around_x-small">
                     <lightning-combobox 
                         variant="label-hidden"
-                        id="waiting-period-time" 
+                        data-id="waiting-period-time"
                         value={waitingPeriodTimeValue}
-                        options={timeOptions}>
+                        data-field="waitingPeriodTimeValue"
+                        options={timeOptions}
+                        onchange={handleInputChange}>
                     </lightning-combobox>
                 </div>
             </div>
@@ -97,9 +101,11 @@
                 <div class="slds-text-align_left slds-m-around_x-small">
                     <lightning-combobox 
                         variant="label-hidden" 
-                        id="before-after" 
+                        data-id="before-after" 
                         value={beforeAfterValue}
-                        options={beforeAfterOptions}>
+                        data-field="beforeAfterValue"
+                        options={beforeAfterOptions}
+                        onchange={handleInputChange}>
                     </lightning-combobox>
                 </div>
             </div>
@@ -107,9 +113,11 @@
                 <div class="slds-text-align_left slds-m-around_x-small">
                     <lightning-combobox 
                         variant="label-hidden" 
-                        id="date-inserted-select" 
+                        data-id="date-inserted-select" 
                         value={dateInsertedSelected}
-                        options={dateInsertedOptions}>
+                        data-field="dateInsertedSelected"
+                        options={dateInsertedOptions}
+                        onchange={handleInputChange}>
                     </lightning-combobox>
                 </div>
             </div>
@@ -118,7 +126,7 @@
                     <lightning-input 
                         label="Date inserted" 
                         type="date" 
-                        id="date-inserted" 
+                        data-id="date-inserted" 
                         value={dateInsertedValue} 
                         onchange={handleInputChange} 
                         data-field="Date_Inserted__c" 
@@ -131,7 +139,7 @@
                     <lightning-input 
                         label="Due" 
                         type="date" 
-                        id="due-date" 
+                        data-id="due-date" 
                         value={dueDateValue} 
                         onchange={handleInputChange} 
                         data-field="Due_Date__c" 
