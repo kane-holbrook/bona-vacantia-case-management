@@ -31,17 +31,19 @@ export default class DynamicTree extends LightningElement {
         }
     }
 
-    loadTreeData() {
-        getTreeData({ recordTypeDeveloperName: this.recordTypeDeveloperName })
-            .then(data => {
-                this.treeData = this.formatTreeData(data);
-                this.error = undefined;
-                this.setTreeName(this.recordTypeDeveloperName);
-            })
-            .catch(error => {
-                this.error = error;
-                this.treeData = undefined;
-            });
+    async loadTreeData() {
+        try {
+            const data = await getTreeData({ recordTypeDeveloperName: this.recordTypeDeveloperName });
+            this.treeData = this.formatTreeData(data);
+            this.error = undefined;
+            this.setTreeName(this.recordTypeDeveloperName);
+
+            // Automatically open the first navigable node
+            this.openFirstNavigableNode(this.treeData);
+        } catch (error) {
+            this.error = error;
+            this.treeData = undefined;
+        }
     }
 
     formatTreeData(data) {
@@ -58,6 +60,52 @@ export default class DynamicTree extends LightningElement {
             });
         };
         return addIcons(data);
+    }
+
+    openFirstNavigableNode(nodes) {
+        for (const node of nodes) {
+            if (node.object) {
+                // If the node has an object, it is navigable
+                this.dispatchNavigationEvent(node);
+                return;
+            } else if (node.children && node.children.length > 0) {
+                // Recursively check the children
+                this.openFirstNavigableNode(node.children);
+                return;
+            }
+        }
+    }
+
+    async dispatchNavigationEvent(node) {
+        const updatedLabel = this.prefixLabel(node.label);
+        const recordTypeId = await getRecordTypeId({ objectName: node.object, recordTypeName: updatedLabel });
+        const navigationEvent = new CustomEvent('navigate', {
+            detail: { 
+                recordTypeId, 
+                object: node.object, 
+                label: updatedLabel, 
+                parentLabel: node.label, 
+                grandChildLabel: node.label, 
+                greatGrandChildLabel: node.label 
+            }
+        });
+        this.dispatchEvent(navigationEvent);
+    }
+
+    prefixLabel(label) {
+        if (this.recordTypeDeveloperName == 'ESTA') {
+            return 'Estates - ' + label;
+        } else if (this.recordTypeDeveloperName == 'COMP') {
+            return 'Companies - ' + label;
+        } else if (this.recordTypeDeveloperName == 'CONV') {
+            return 'Conveyancing - ' + label;
+        } else if (this.recordTypeDeveloperName == 'FOIR') {
+            return 'FOIR - ' + label;
+        } else if (this.recordTypeDeveloperName == 'GENE') {
+            return 'General - ' + label;
+        } else {
+            return label;
+        }
     }
 
     handleToggle(event) {
@@ -136,24 +184,11 @@ export default class DynamicTree extends LightningElement {
         }
     
         if (object) {
-            let updatedLabel = label;
-            if (this.recordTypeDeveloperName == 'ESTA') {
-                updatedLabel = 'Estates - ' +label;
-            } else if (this.recordTypeDeveloperName == 'COMP') {
-                updatedLabel = 'Companies - ' +label;
-            } else if (this.recordTypeDeveloperName == 'CONV') {
-                updatedLabel = 'Conveyancing - ' +label;
-            } else if (this.recordTypeDeveloperName == 'FOIR') {
-                updatedLabel = 'FOIR - ' +label;
-            } else if (this.recordTypeDeveloperName == 'GENE') {
-                updatedLabel = 'General - ' +label;
-            } else {
-                updatedLabel = label;
-            }
+            const updatedLabel = this.prefixLabel(label);
 
             const recordTypeId = await getRecordTypeId({ objectName: object, recordTypeName: updatedLabel });
             const navigationEvent = new CustomEvent('navigate', {
-                detail: { recordTypeId, object, label, parentLabel, grandChildLabel, greatGrandChildLabel }
+                detail: { recordTypeId, object, label: updatedLabel, parentLabel, grandChildLabel, greatGrandChildLabel }
             });
             this.dispatchEvent(navigationEvent);
         }
