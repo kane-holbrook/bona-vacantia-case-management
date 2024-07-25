@@ -315,7 +315,7 @@ export default class TaskList extends LightningElement {
     }
 
     get sortedByText() {
-        return `Sorted by ${this.sortedBy} ${this.sortOrder} - Filtered by ${this.selectedTaskType === 'allTasks' ? 'all tasks' : this.selectedTaskType === 'myTasks' ? 'my tasks' : 'my open tasks'}`;
+        return `Sorted by ${this.sortedBy} ${this.sortOrder} - Filtered by ${this.selectedTaskType === 'allTasks' ? 'All tasks' : this.selectedTaskType === 'myTasks' ? 'My tasks' : 'Others tasks'}`;
     }
 
     get isSortedByDue() {
