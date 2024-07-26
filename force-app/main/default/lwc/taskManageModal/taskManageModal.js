@@ -21,6 +21,7 @@ import OTHER_PARTY_MEMBERS_FIELD from '@salesforce/schema/BV_Task__c.Other_party
 import LAST_UPDATED_FIELD from '@salesforce/schema/BV_Task__c.Last_updated__c';
 import BV_CASE_LOOKUP_FIELD from '@salesforce/schema/BV_Task__c.BV_Case_Lookup__c';
 import PARENT_TASK_FIELD from '@salesforce/schema/BV_Task__c.Parent_Task__c';
+import searchUsers from '@salesforce/apex/TaskController.searchUsers';
 
 const fields = [
     NAME_FIELD,
@@ -46,6 +47,11 @@ export default class TaskManageModal extends LightningElement {
     @api parentTaskId;
     @track task = {};
     @track bvCaseId;
+    @track caseOfficerOptions = [];
+    @track caseOfficerValue = '';
+    @track searchTerm = '';
+    @track filteredCaseOfficerOptions = [];
+    @track selectedCaseOfficerName = '';
 
     timeOptions = [
         { label: 'Days', value: 'Days' },
@@ -112,6 +118,43 @@ export default class TaskManageModal extends LightningElement {
         if (field === 'Date_Inserted__c' || field === 'Due_Date__c') {
             this.autoPopulateFields();
         }
+    }
+
+    handleSearchTermChange(event) {
+        this.searchTerm = event.target.value;
+        this.fetchUsers();
+    }
+
+    fetchUsers() {
+        if (this.searchTerm.length > 2) {
+            searchUsers({ searchTerm: this.searchTerm })
+                .then(result => {
+                    this.caseOfficerOptions = result.map(user => {
+                        return { label: user.Name, value: user.Id };
+                    });
+                    this.filteredCaseOfficerOptions = [...this.caseOfficerOptions];
+                })
+                .catch(error => {
+                    console.error('Error fetching users:', error);
+                });
+        } else {
+            this.filteredCaseOfficerOptions = [];
+        }
+    }
+
+    selectCaseOfficer(event) {
+        const selectedCaseOfficerValue = event.currentTarget.dataset.value;
+        const selectedCaseOfficerName = event.currentTarget.dataset.label;
+        this.caseOfficerValue = selectedCaseOfficerValue;
+        this.selectedCaseOfficerName = selectedCaseOfficerName;
+        this.filteredCaseOfficerOptions = [];
+        this.searchTerm = selectedCaseOfficerName;
+        this.task[CASE_OFFICER_FIELD.fieldApiName] = this.caseOfficerValue;
+    }
+
+    handleCaseOfficerChange(event) {
+        this.caseOfficerValue = event.detail.value;
+        this.task[CASE_OFFICER_FIELD.fieldApiName] = this.caseOfficerValue;
     }
 
     autoPopulateFields() {
