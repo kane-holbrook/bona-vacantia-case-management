@@ -149,12 +149,12 @@ export default class TaskManageModal extends LightningElement {
         this.selectedCaseOfficerName = selectedCaseOfficerName;
         this.filteredCaseOfficerOptions = [];
         this.searchTerm = selectedCaseOfficerName;
-        this.task[CASE_OFFICER_FIELD.fieldApiName] = this.caseOfficerValue;
+        this.task[CASE_OFFICER_FIELD.fieldApiName] = { value: this.caseOfficerValue };
     }
 
     handleCaseOfficerChange(event) {
         this.caseOfficerValue = event.detail.value;
-        this.task[CASE_OFFICER_FIELD.fieldApiName] = this.caseOfficerValue;
+        this.task[CASE_OFFICR_FIELD.fieldApiName] = { value: this.caseOfficerValue };
     }
 
     autoPopulateFields() {
