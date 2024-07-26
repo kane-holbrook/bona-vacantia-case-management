@@ -368,4 +368,8 @@ export default class TaskManageModal extends LightningElement {
     get categoryValue() {
         return this.task.Category__c ? this.task.Category__c.value : '';
     }
+
+    get shouldShowDropdown() {
+        return this.searchTerm.length > 2 && this.filteredCaseOfficerOptions.length > 0;
+    }
 }
