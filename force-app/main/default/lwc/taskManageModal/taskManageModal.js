@@ -4,42 +4,26 @@ import { createRecord, updateRecord, getRecord } from 'lightning/uiRecordApi';
 import { getRecordId } from 'c/sharedService';
 import BV_TASK_OBJECT from '@salesforce/schema/BV_Task__c';
 import NAME_FIELD from '@salesforce/schema/BV_Task__c.Name';
-import DESCRIPTION_FIELD from '@salesforce/schema/BV_Task__c.Description__c';
 import COMMENTS_FIELD from '@salesforce/schema/BV_Task__c.Comments__c';
-import SCHEDULE_CODE_FIELD from '@salesforce/schema/BV_Task__c.Schedule_Code__c';
 import CASE_OFFICER_FIELD from '@salesforce/schema/BV_Task__c.Assigned_To__c';
-import CATEGORY_FIELD from '@salesforce/schema/BV_Task__c.Category__c';
 import PRIORITY_FIELD from '@salesforce/schema/BV_Task__c.Priority__c';
 import DATE_INSERTED_FIELD from '@salesforce/schema/BV_Task__c.Date_Inserted__c';
 import DUE_DATE_FIELD from '@salesforce/schema/BV_Task__c.Due_Date__c';
-import GROUP_CODE_FIELD from '@salesforce/schema/BV_Task__c.Group_Code__c';
-import GROUP_CODE_PICK_FIELD from '@salesforce/schema/BV_Task__c.Group_Code_Pick__c';
-import GROUP_CODE_MEMBERS_FIELD from '@salesforce/schema/BV_Task__c.Group_Code_Members__c';
-import OTHER_PARTY_FIELD from '@salesforce/schema/BV_Task__c.Other_party__c';
-import OTHER_PARTY_SELECT_FIELD from '@salesforce/schema/BV_Task__c.Other_party_select__c';
 import OTHER_PARTY_MEMBERS_FIELD from '@salesforce/schema/BV_Task__c.Other_party_members__c';
 import LAST_UPDATED_FIELD from '@salesforce/schema/BV_Task__c.Last_updated__c';
 import BV_CASE_LOOKUP_FIELD from '@salesforce/schema/BV_Task__c.BV_Case_Lookup__c';
 import PARENT_TASK_FIELD from '@salesforce/schema/BV_Task__c.Parent_Task__c';
 import searchUsers from '@salesforce/apex/TaskController.searchUsers';
+import getUserNames from '@salesforce/apex/HistoryController.getUserNames';
 
 const fields = [
     NAME_FIELD,
-    DESCRIPTION_FIELD,
     COMMENTS_FIELD,
-    SCHEDULE_CODE_FIELD,
     CASE_OFFICER_FIELD,
-    CATEGORY_FIELD,
     PRIORITY_FIELD,
     DATE_INSERTED_FIELD,
     DUE_DATE_FIELD,
-    GROUP_CODE_FIELD,
-    GROUP_CODE_PICK_FIELD,
-    GROUP_CODE_MEMBERS_FIELD,
-    OTHER_PARTY_FIELD,
-    OTHER_PARTY_SELECT_FIELD,
-    OTHER_PARTY_MEMBERS_FIELD,
-    LAST_UPDATED_FIELD // Include the new field in the fields array
+    LAST_UPDATED_FIELD
 ];
 
 export default class TaskManageModal extends LightningElement {
@@ -68,14 +52,6 @@ export default class TaskManageModal extends LightningElement {
         { label: 'Date Inserted', value: 'Date Inserted' },
     ];
 
-    categoryOptions = [
-        { label: '(None)', value: '(None)' },
-        { label: 'Adverts', value: 'Adverts' },
-        { label: 'Freedom of Information', value: 'Freedom of Information' },
-        { label: 'New Case', value: 'New case' },
-        { label: 'File Reviews', value: 'File Reviews' },
-    ];
-
     priorityOptions = [
         { label: 'Normal', value: 'Normal' },
         { label: 'High', value: 'High' },
@@ -97,9 +73,29 @@ export default class TaskManageModal extends LightningElement {
     wiredRecord({ error, data }) {
         if (data) {
             this.task = JSON.parse(JSON.stringify(data.fields));
-            this.autoPopulateFields(); // Call the auto-populate function on load
+            this.caseOfficerValue = this.task.Assigned_To__c.value ? this.task.Assigned_To__c.value : '';
+            if (this.caseOfficerValue) {
+                this.fetchCaseOfficerName(this.caseOfficerValue);
+            }
+            this.autoPopulateFields();
         } else if (error) {
             this.error = error;
+        }
+    }
+
+    fetchCaseOfficerName(userId) {
+        if (userId) {
+            getUserNames({ userIds: [userId] })
+                .then((result) => {
+                    this.selectedCaseOfficerName = result[userId];
+                    this.searchTerm = this.selectedCaseOfficerName;
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        } else {
+            this.selectedCaseOfficerName = '';
+            this.searchTerm = '';
         }
     }
 
@@ -114,7 +110,6 @@ export default class TaskManageModal extends LightningElement {
             this.calculateDueDate();
         }
 
-        // Check if date-inserted and due-date are populated to auto-populate other fields
         if (field === 'Date_Inserted__c' || field === 'Due_Date__c') {
             this.autoPopulateFields();
         }
@@ -128,13 +123,13 @@ export default class TaskManageModal extends LightningElement {
     fetchUsers() {
         if (this.searchTerm.length > 2) {
             searchUsers({ searchTerm: this.searchTerm })
-                .then(result => {
-                    this.caseOfficerOptions = result.map(user => {
+                .then((result) => {
+                    this.caseOfficerOptions = result.map((user) => {
                         return { label: user.Name, value: user.Id };
                     });
                     this.filteredCaseOfficerOptions = [...this.caseOfficerOptions];
                 })
-                .catch(error => {
+                .catch((error) => {
                     console.error('Error fetching users:', error);
                 });
         } else {
@@ -264,20 +259,18 @@ export default class TaskManageModal extends LightningElement {
 
     createTask() {
         const fields = {};
-        // Populate the fields with existing task fields, excluding the ones that shouldn't be saved
         for (let key in this.task) {
             if (key !== 'beforeAfterValue' && key !== 'waitingPeriodInputValue' && key !== 'waitingPeriodTimeValue' && key !== 'dateInsertedSelected') {
                 fields[key] = this.task[key].value;
             }
         }
-        fields[LAST_UPDATED_FIELD.fieldApiName] = new Date().toISOString(); // Set current date and time
-        fields[BV_CASE_LOOKUP_FIELD.fieldApiName] = this.bvCaseId; // Set BV_Case_Lookup__c field
+        fields[LAST_UPDATED_FIELD.fieldApiName] = new Date().toISOString();
+        fields[BV_CASE_LOOKUP_FIELD.fieldApiName] = this.bvCaseId;
         if (this.parentTaskId) {
-            fields[PARENT_TASK_FIELD.fieldApiName] = this.parentTaskId; // Set Parent_Task__c field if parentTaskId is present
-            fields[BV_CASE_LOOKUP_FIELD.fieldApiName] = null; // Clear BV_Case_Lookup__c field if parentTaskId is present
+            fields[PARENT_TASK_FIELD.fieldApiName] = this.parentTaskId;
+            fields[BV_CASE_LOOKUP_FIELD.fieldApiName] = null;
         }
         const recordInput = { apiName: BV_TASK_OBJECT.objectApiName, fields };
-
         createRecord(recordInput)
             .then(task => {
                 this.dispatchEvent(
@@ -302,14 +295,13 @@ export default class TaskManageModal extends LightningElement {
 
     updateTask() {
         const fields = {};
-        // Populate the fields with existing task fields, excluding the ones that shouldn't be saved
         for (let key in this.task) {
             if (key !== 'beforeAfterValue' && key !== 'waitingPeriodInputValue' && key !== 'waitingPeriodTimeValue' && key !== 'dateInsertedSelected') {
                 fields[key] = this.task[key].value;
             }
         }
         fields.Id = this.recordId;
-        fields[LAST_UPDATED_FIELD.fieldApiName] = new Date().toISOString(); // Set current date and time
+        fields[LAST_UPDATED_FIELD.fieldApiName] = new Date().toISOString();
         const recordInput = { fields };
 
         updateRecord(recordInput)
@@ -370,6 +362,6 @@ export default class TaskManageModal extends LightningElement {
     }
 
     get shouldShowDropdown() {
-        return this.searchTerm.length > 2 && this.filteredCaseOfficerOptions.length > 0;
+        return this.searchTerm && this.searchTerm.length > 2 && this.filteredCaseOfficerOptions.length > 0;
     }
 }

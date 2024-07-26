@@ -59,7 +59,12 @@ public with sharing class TaskController {
 
     @AuraEnabled(cacheable=true)
     public static List<User> searchUsers(String searchTerm) {
-        String searchQuery = '%' + searchTerm + '%';
-        return [SELECT Id, Name FROM User WHERE Name LIKE :searchQuery LIMIT 50];
+        String searchPattern = '%' + searchTerm + '%';
+        return [
+            SELECT Id, Name 
+            FROM User 
+            WHERE Name LIKE :searchPattern 
+            LIMIT 50
+        ];
     }
 }
