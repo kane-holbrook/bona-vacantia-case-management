@@ -22,7 +22,7 @@ import SERVER_RELATIVE_URL_FIELD from '@salesforce/schema/SHDocument__c.ServerRe
 import DOCUMENT_FILE_SIZE_FIELD from '@salesforce/schema/SHDocument__c.FileSize__c';
 import CASE_HISTORY_FIELD from '@salesforce/schema/SHDocument__c.Case_History__c';
 import USER_ID from '@salesforce/user/Id';
-import getHistoryVersions from '@salesforce/apex/HistoryController.getHistoryVersions';
+import getSHDocuments from '@salesforce/apex/HistoryController.getSHDocuments';
 import uploadFileToSharePoint from '@salesforce/apex/FileController.uploadFileToSharePoint';
 import getCaseName from '@salesforce/apex/FileController.getCaseName';
 import deleteSharepointFile from '@salesforce/apex/FileController.deleteSharepointFile';
@@ -43,7 +43,7 @@ export default class HistoryEditModal extends LightningElement {
     @track serverRelativeURL;
     @track bvCaseId;
     @track isSubModalOpen = false;
-    @track versions = [];
+    @track relatedItems = [];
     @track originalRecord = {};
     @track originalDocumentId; // Added to keep track of the original document ID
     fullURL;
@@ -52,11 +52,21 @@ export default class HistoryEditModal extends LightningElement {
 
     userId = USER_ID; // Get the current user ID
 
-    versionColumns = [
-        { label: 'Version', fieldName: 'versionNumber', type: 'number' },
-        { label: 'Last Edited by', fieldName: 'lastModifiedByName', type: 'text' },
-        { label: 'On', fieldName: 'lastModifiedDate', type: 'date' },
-        { label: 'Action', fieldName: 'action', type: 'text' },
+    relatedItemColumns = [
+        { label: 'Document Name', fieldName: 'Name', type: 'text' },
+        { label: 'Document Type', fieldName: 'DocumentType__c', type: 'text' },
+        { label: 'File Size', fieldName: 'FileSize__c', type: 'text' },
+        { label: 'Created Time', fieldName: 'Created_Time__c', type: 'date' },
+        {
+            label: 'Actions',
+            type: 'action',
+            typeAttributes: {
+                rowActions: [
+                    { label: 'View/Edit', name: 'viewEdit' },
+                    { label: 'Delete', name: 'delete' }
+                ]
+            }
+        }
     ];
 
     connectedCallback() {
@@ -66,17 +76,6 @@ export default class HistoryEditModal extends LightningElement {
         this.flagImportant = this.record.Flag_as_important__c || false;
         this.bvCaseId = this.record.BV_Case__c || '';
 
-        if (this.record.fileName) {
-            this.fileName = this.record.fileName;
-            this.fileSize = this.formatFileSize(this.record.fileSize);
-            this.fileData = this.record.fileData;
-            this.documentType = this.record.documentType;
-            this.correspondenceWith = this.record.correspondenceWith;
-            this.draft = this.record.draft;
-            this.serverRelativeURL = this.record.serverRelativeURL;
-            this.originalDocumentId = this.record.documentId; // Keep track of the original document ID
-        }
-
         console.log('history record', this.record);
 
         // Store the original state for comparison
@@ -84,13 +83,7 @@ export default class HistoryEditModal extends LightningElement {
             dateInserted: this.dateInserted,
             description: this.description,
             details: this.details,
-            flagImportant: this.flagImportant,
-            fileName: this.fileName,
-            fileSize: this.fileSize,
-            documentType: this.documentType,
-            correspondenceWith: this.correspondenceWith,
-            draft: this.draft,
-            serverRelativeURL: this.serverRelativeURL
+            flagImportant: this.flagImportant
         };
 
         // Fetch SharePoint settings
@@ -104,6 +97,9 @@ export default class HistoryEditModal extends LightningElement {
             console.error('Error fetching SharePoint settings:', error);
             this.showToast('Error', 'Error fetching SharePoint settings', 'error');
         });
+
+        // Fetch related items
+        this.fetchRelatedItems();
     }
 
     constructFullURL() {
@@ -115,45 +111,18 @@ export default class HistoryEditModal extends LightningElement {
         }
     }
 
-    @wire(getHistoryVersions, { historyItemId: '$record.Id' })
-    wiredVersions({ error, data }) {
-        if (data) {
-            this.versions = [{
-                id: 'initial',
-                dateInserted: this.dateInserted,
-                description: 'Initial version',
-                details: this.details,
-                flagImportant: this.flagImportant,
-                fileName: this.fileName,
-                fileSize: this.fileSize,
-                serverRelativeURL: this.serverRelativeURL,
-                bvCaseId: this.bvCaseId,
-                lastModifiedByName: 'Initial User', // Replace with actual user data if available
-                lastModifiedDate: this.dateInserted, // Replace with the actual created date if available
-                action: 'History item created',
-                versionNumber: 1,
-                class: 'slds-theme_shade'
-            },
-            ...data.map((version, index) => ({
-                id: version.Id,
-                dateInserted: version.Date_Inserted__c,
-                description: version.Action__c,
-                details: version.Details__c,
-                flagImportant: version.Flag_as_important__c,
-                fileName: this.fileName,
-                fileSize: this.fileSize,
-                serverRelativeURL: this.serverRelativeURL,
-                bvCaseId: version.BV_Case__c,
-                lastModifiedByName: 'User', // Replace with actual user data if available
-                lastModifiedDate: version.Date_Inserted__c, // Replace with the actual modified date if available
-                action: version.Action__c, // Use description as action
-                versionNumber: index + 2,
-                class: 'slds-theme_shade'
-            }))];
-        } else if (error) {
-            console.log('Error fetching versions:', error);
-            this.showToast('Error', 'Error fetching versions', 'error');
-        }
+    fetchRelatedItems() {
+        getSHDocuments({ parentId: this.record.Id })
+            .then(result => {
+                this.relatedItems = result.map(doc => ({
+                    ...doc,
+                    FileSize__c: this.formatFileSize(doc.FileSize__c)
+                }));
+            })
+            .catch(error => {
+                console.error('Error fetching related items:', error);
+                this.showToast('Error', 'Error fetching related items', 'error');
+            });
     }
 
     handleInputChange(event) {
@@ -203,6 +172,7 @@ export default class HistoryEditModal extends LightningElement {
                                     this.correspondenceWith = null;
                                     this.draft = null;
                                     this.originalDocumentId = null;
+                                    this.fetchRelatedItems(); // Refresh related items
                                 })
                                 .catch(error => {
                                     console.log('Error deleting SHDocument record', error);
@@ -249,11 +219,6 @@ export default class HistoryEditModal extends LightningElement {
         };
 
         if (this.record.Id) {
-            // Check for changes before creating a new version
-            if (this.hasChanges()) {
-                this.createVersion(this.record.Id, fields, parentRecordId);
-            }
-
             fields[ID_FIELD.fieldApiName] = this.record.Id;
             const recordInput = { fields };
             updateRecord(recordInput)
@@ -276,7 +241,7 @@ export default class HistoryEditModal extends LightningElement {
                                 })
                                 .catch(error => {
                                     console.log('Error fetching case name', error);
-                                    this.showToast('Error', 'Error fetching case name', 'error');
+                                    this.showToast('Error fetching case name', 'error');
                                 });
                         } else {
                             if (this.fileData) {
@@ -364,31 +329,11 @@ export default class HistoryEditModal extends LightningElement {
             .then((documentRecord) => {
                 this.originalDocumentId = documentRecord.id;
                 this.updateHistoryAction(historyRecordId, action);
+                this.fetchRelatedItems(); // Refresh related items
             })
             .catch(error => {
                 console.log('Error creating SHDocument record', error);
                 this.showToast('Error', 'Error creating SHDocument record', 'error');
-            });
-    }
-
-    createVersion(parentRecordId, fields, bvCaseId) {
-        let versionFields = {
-            [PARENT_HISTORY_RECORD_FIELD.fieldApiName]: parentRecordId,
-            [DATE_INSERTED_FIELD.fieldApiName]: this.dateInserted,
-            [ACTION_FIELD.fieldApiName]: this.description,
-            [DETAILS_FIELD.fieldApiName]: this.details,
-            [FLAG_IMPORTANT_FIELD.fieldApiName]: this.flagImportant,
-            [BV_CASE_FIELD.fieldApiName]: bvCaseId
-        };
-
-        const recordInput = { apiName: CASE_HISTORY_OBJECT.objectApiName, fields: versionFields };
-        createRecord(recordInput)
-            .then(() => {
-                // Version created successfully
-            })
-            .catch(error => {
-                console.log('Error creating version', error);
-                this.showToast('Error', 'Error creating version', error.body.message, 'error');
             });
     }
 
@@ -409,39 +354,40 @@ export default class HistoryEditModal extends LightningElement {
             });
     }
 
-    hasChanges() {
-        return this.dateInserted !== this.originalRecord.dateInserted ||
-               this.description !== this.originalRecord.description ||
-               this.details !== this.originalRecord.details ||
-               this.flagImportant !== this.originalRecord.flagImportant ||
-               this.fileName !== this.originalRecord.fileName ||
-               this.serverRelativeURL !== this.originalRecord.serverRelativeURL ||
-               this.fileSize !== this.originalRecord.fileSize ||
-               this.documentType !== this.originalRecord.documentType ||
-               this.correspondenceWith !== this.originalRecord.correspondenceWith ||
-               this.draft !== this.originalRecord.draft;
-    }
-
     handleRowAction(event) {
         const actionName = event.detail.action.name;
         const row = event.detail.row;
-        if (actionName === 'restore') {
-            this.handleRestore(row.versionNumber);
+        if (actionName === 'delete') {
+            this.handleDeleteRelatedItem(row.Id);
+        } else if (actionName === 'viewEdit') {
+            this.handleViewEditRelatedItem(row);
         }
     }
 
-    handleRestore(versionNumber) {
-        const versionIndex = versionNumber - 1;
-        const versionToRestore = this.versions[versionIndex];
+    handleDeleteRelatedItem(relatedItemId) {
+        deleteRecord(relatedItemId)
+            .then(() => {
+                this.showToast('Success', 'Related item deleted successfully', 'success');
+                this.fetchRelatedItems(); // Refresh related items
+            })
+            .catch(error => {
+                console.error('Error deleting related item:', error);
+                this.showToast('Error', 'Error deleting related item', 'error');
+            });
+    }
 
-        this.dateInserted = versionToRestore.dateInserted;
-        this.description = versionToRestore.description;
-        this.details = versionToRestore.details;
-        this.flagImportant = versionToRestore.flagImportant;
-        this.fileName = versionToRestore.fileName;
-        this.serverRelativeURL = versionToRestore.serverRelativeURL;
-        this.fileSize = versionToRestore.fileSize;
-        this.bvCaseId = versionToRestore.bvCaseId;
+    handleViewEditRelatedItem(relatedItem) {
+        // Handle the logic to view/edit the related item
+        // This can open a modal or perform any other required actions
+        // Example: Open a modal with the details of the selected related item
+        this.fileName = relatedItem.Name;
+        this.fileSize = relatedItem.FileSize__c;
+        this.fileData = relatedItem.FileContent__c;
+        this.documentType = relatedItem.DocumentType__c;
+        this.correspondenceWith = relatedItem.Correspondence_With__c;
+        this.draft = relatedItem.Draft__c;
+        this.serverRelativeURL = relatedItem.ServerRelativeURL__c;
+        this.isSubModalOpen = true;
     }
 
     closeModal() {
