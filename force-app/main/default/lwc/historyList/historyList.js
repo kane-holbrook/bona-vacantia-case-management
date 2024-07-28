@@ -15,7 +15,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     @track isModalOpen = false;
     @track isDeleteModalOpen = false;
     @track currentRecordId;
-    @track showVersions = true;
+    @track showRelatedItems = true;
     @track lastUpdated = 0;
     @track currentRecord = {};
     @track searchKey = '';
@@ -59,7 +59,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
             this.historyItems = result.data.map(item => ({
                 ...item,
                 isExpanded: false,
-                hasVersions: item.Case_History__r && item.Case_History__r.length > 0,
+                hasRelatedItems: item.SHDocuments__r && item.SHDocuments__r.length > 0,
                 iconName: this.getIconName(false),
                 rowClass: item.Flag_as_important__c ? 'highlighted-row' : '',
                 flagIconClass: item.Flag_as_important__c ? 'icon-important' : 'icon-default',
@@ -67,7 +67,11 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
                 hasDetails: item.Details__c ? true : false,
                 documentType: item.SHDocuments__r && item.SHDocuments__r.length > 0 ? item.SHDocuments__r[0].DocumentType__c : '',
                 fileSize: this.formatFileSize(item.SHDocuments__r && item.SHDocuments__r.length > 0 ? item.SHDocuments__r[0].FileSize__c : ''),
-                draft: item.SHDocuments__r && item.SHDocuments__r.length > 0 ? item.SHDocuments__r[0].Draft__c : ''
+                draft: item.SHDocuments__r && item.SHDocuments__r.length > 0 ? item.SHDocuments__r[0].Draft__c : '',
+                SHDocuments__r: item.SHDocuments__r ? item.SHDocuments__r.map(doc => ({
+                    ...doc,
+                    showAttachmentIcon: doc.DocumentType__c === 'Email Attachment'
+                })) : []
             }));
             const userIds = this.historyItems.map(item => item.Case_Officer__c);
             this.fetchUserNames(userIds);
@@ -192,9 +196,9 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
         this.refreshHistoryItems();
     }
 
-    toggleShowVersions(event) {
-        this.showVersions = event.target.checked;
-        if (!this.showVersions) {
+    toggleShowRelatedItems(event) {
+        this.showRelatedItems = event.target.checked;
+        if (!this.showRelatedItems) {
             this.historyItems = this.historyItems.map(item => ({ 
                 ...item, 
                 isExpanded: false,
@@ -303,11 +307,11 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     }
 
     get isSortedByDocumentType() {
-        return this.sortedBy === 'Document_Type__c';
+        return this.sortedBy === 'DocumentType__c';
     }
 
     get isSortedByFileSize() {
-        return this.sortedBy === 'File_Size__c';
+        return this.sortedBy === 'FileSize__c';
     }
 
     get isSortedByDraft() {
@@ -342,5 +346,11 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
         } else {
             return (size / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
         }
+    }
+
+    handleDeleteRelatedItem(event) {
+        const relatedItemId = event.currentTarget.dataset.id;
+        // Handle the deletion of the related item here
+        // Add your deletion logic for related items
     }
 }
