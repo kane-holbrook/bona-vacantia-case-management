@@ -16,6 +16,18 @@ import uploadFileToSharePoint from '@salesforce/apex/FileControllerGraph.uploadF
 import getCaseName from '@salesforce/apex/FileControllerGraph.getCaseName';
 import deleteSharepointFile from '@salesforce/apex/FileControllerGraph.deleteFileFromSharePoint';
 import getSharePointSettings from '@salesforce/apex/FileControllerGraph.getSharePointSettings';
+import { refreshApex } from '@salesforce/apex';
+import SHDOCUMENT_OBJECT from '@salesforce/schema/SHDocument__c';
+import SHDOCUMENT_NAME_FIELD from '@salesforce/schema/SHDocument__c.Name';
+import DOCUMENT_EXTENSION_FIELD from '@salesforce/schema/SHDocument__c.DocumentExtension__c';
+import DOCUMENT_ID_FIELD from '@salesforce/schema/SHDocument__c.DocumentID__c';
+import DOCUMENT_TYPE_FIELD from '@salesforce/schema/SHDocument__c.DocumentType__c';
+import DOCUMENT_CORRESPONDENCE_WITH_FIELD from '@salesforce/schema/SHDocument__c.Correspondence_With__c';
+import DOCUMENT_DRAFT_FIELD from '@salesforce/schema/SHDocument__c.Draft__c';
+import SERVER_RELATIVE_URL_FIELD from '@salesforce/schema/SHDocument__c.ServerRelativeURL__c';
+import DOCUMENT_FILE_SIZE_FIELD from '@salesforce/schema/SHDocument__c.FileSize__c';
+import CASE_HISTORY_FIELD from '@salesforce/schema/SHDocument__c.Case_History__c';
+import CREATED_TIME_FIELD from '@salesforce/schema/SHDocument__c.Created_Time__c';
 
 export default class HistoryEditModal extends LightningElement {
     @api record;
@@ -38,6 +50,8 @@ export default class HistoryEditModal extends LightningElement {
     fullURL;
     sharePointSiteUrl;
     sharePointDirectoryPath;
+
+    wiredRelatedItemsResult; // Track the wired result for refresh
 
     userId = USER_ID; // Get the current user ID
 
@@ -86,9 +100,6 @@ export default class HistoryEditModal extends LightningElement {
             console.error('Error fetching SharePoint settings:', error);
             this.showToast('Error', 'Error fetching SharePoint settings', 'error');
         });
-
-        // Fetch related items
-        this.fetchRelatedItems();
     }
 
     constructFullURL() {
@@ -100,18 +111,18 @@ export default class HistoryEditModal extends LightningElement {
         }
     }
 
-    fetchRelatedItems() {
-        getSHDocuments({ parentId: this.record.Id })
-            .then(result => {
-                this.relatedItems = result.map(doc => ({
-                    ...doc,
-                    FileSize__c: this.formatFileSize(doc.FileSize__c)
-                }));
-            })
-            .catch(error => {
-                console.error('Error fetching related items:', error);
-                this.showToast('Error', 'Error fetching related items', 'error');
-            });
+    @wire(getSHDocuments, { parentId: '$record.Id' })
+    wiredRelatedItems(result) {
+        this.wiredRelatedItemsResult = result; // Store the result for refresh
+        if (result.data) {
+            this.relatedItems = result.data.map(doc => ({
+                ...doc,
+                FileSize__c: this.formatFileSize(doc.FileSize__c)
+            }));
+        } else if (result.error) {
+            console.error('Error fetching related items:', result.error);
+            this.showToast('Error', 'Error fetching related items', 'error');
+        }
     }
 
     handleInputChange(event) {
@@ -161,7 +172,7 @@ export default class HistoryEditModal extends LightningElement {
                                     this.correspondenceWith = null;
                                     this.draft = null;
                                     this.originalDocumentId = null;
-                                    this.fetchRelatedItems(); // Refresh related items
+                                    refreshApex(this.wiredRelatedItemsResult); // Refresh related items
                                 })
                                 .catch(error => {
                                     console.log('Error deleting SHDocument record', error);
@@ -215,7 +226,9 @@ export default class HistoryEditModal extends LightningElement {
                     .then((serverRelativeUrl) => {
                         this.serverRelativeURL = serverRelativeUrl; // Update the serverRelativeURL after successful upload
                         this.showToast('Success', 'File uploaded successfully', 'success');
-                        this.saveRecord(this.record.Id);
+                        this.createSHDocumentRecord(this.record.Id, serverRelativeUrl, this.description); // Attach document to history record
+                        refreshApex(this.wiredRelatedItemsResult); // Refresh related items
+                        this.closeSubModal();
                     })
                     .catch(error => {
                         console.log('Error saving file', error);
@@ -225,6 +238,33 @@ export default class HistoryEditModal extends LightningElement {
             .catch(error => {
                 console.log('Error fetching case name', error);
                 this.showToast('Error', 'Error fetching case name', 'error');
+            });
+    }
+
+    createSHDocumentRecord(historyRecordId, serverRelativeUrl, action) {
+        const shDocumentFields = {
+            [SHDOCUMENT_NAME_FIELD.fieldApiName]: this.fileName,
+            [DOCUMENT_EXTENSION_FIELD.fieldApiName]: this.fileName.split('.').pop(),
+            [DOCUMENT_ID_FIELD.fieldApiName]: historyRecordId,
+            [DOCUMENT_TYPE_FIELD.fieldApiName]: this.documentType,
+            [DOCUMENT_FILE_SIZE_FIELD.fieldApiName]: this.fileSize,
+            [DOCUMENT_CORRESPONDENCE_WITH_FIELD.fieldApiName]: this.correspondenceWith,
+            [DOCUMENT_DRAFT_FIELD.fieldApiName]: this.draft,
+            [SERVER_RELATIVE_URL_FIELD.fieldApiName]: this.sharePointDirectoryPath + '/' + 'Shared%20Documents' + '/' + serverRelativeUrl + '/' + this.fileName,
+            [CREATED_TIME_FIELD.fieldApiName]: new Date(),
+            [CASE_HISTORY_FIELD.fieldApiName]: historyRecordId
+        };
+
+        const recordInput = { apiName: SHDOCUMENT_OBJECT.objectApiName, fields: shDocumentFields };
+        createRecord(recordInput)
+            .then((documentRecord) => {
+                this.originalDocumentId = documentRecord.id;
+                this.showToast('Success', 'SHDocument record created successfully', 'success');
+                refreshApex(this.wiredRelatedItemsResult); // Refresh related items
+            })
+            .catch(error => {
+                console.log('Error creating SHDocument record', error);
+                this.showToast('Error', 'Error creating SHDocument record', 'error');
             });
     }
 
@@ -299,7 +339,7 @@ export default class HistoryEditModal extends LightningElement {
                             deleteRecord(relatedItemId)
                                 .then(() => {
                                     this.showToast('Success', 'Related item and SharePoint file deleted successfully', 'success');
-                                    this.fetchRelatedItems(); // Refresh related items
+                                    refreshApex(this.wiredRelatedItemsResult); // Refresh related items
                                 })
                                 .catch(error => {
                                     console.error('Error deleting related item:', error);
