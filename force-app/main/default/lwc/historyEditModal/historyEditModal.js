@@ -23,9 +23,9 @@ import DOCUMENT_FILE_SIZE_FIELD from '@salesforce/schema/SHDocument__c.FileSize_
 import CASE_HISTORY_FIELD from '@salesforce/schema/SHDocument__c.Case_History__c';
 import USER_ID from '@salesforce/user/Id';
 import getSHDocuments from '@salesforce/apex/HistoryController.getSHDocuments';
-import uploadFileToSharePoint from '@salesforce/apex/FileController.uploadFileToSharePoint';
-import getCaseName from '@salesforce/apex/FileController.getCaseName';
-import deleteSharepointFile from '@salesforce/apex/FileController.deleteSharepointFile';
+import uploadFileToSharePoint from '@salesforce/apex/FileControllerGraph.uploadFileToSharePoint';
+import getCaseName from '@salesforce/apex/FileControllerGraph.getCaseName';
+import deleteSharepointFile from '@salesforce/apex/FileControllerGraph.deleteFileFromSharePoint';
 import getSharePointSettings from '@salesforce/apex/FileController.getSharePointSettings';
 
 export default class HistoryEditModal extends LightningElement {
@@ -159,7 +159,7 @@ export default class HistoryEditModal extends LightningElement {
             getCaseName({ caseId: this.bvCaseId })
                 .then((caseName) => {
                     const folderName = `${caseName}/${this.record.Id}`;
-                    deleteSharepointFile({ caseId: folderName, fileName: this.fileName })
+                    deleteSharepointFile({ filePath: folderName, fileName: this.fileName })
                         .then(() => {
                             deleteRecord(this.originalDocumentId)
                                 .then(() => {
@@ -228,7 +228,7 @@ export default class HistoryEditModal extends LightningElement {
                             getCaseName({ caseId: this.bvCaseId })
                                 .then((caseName) => {
                                     const folderName = `${caseName}/${this.record.Id}`;
-                                    deleteSharepointFile({ caseId: folderName, fileName: this.fileName })
+                                    deleteSharepointFile({ filePath: folderName, fileName: this.fileName })
                                         .then(() => {
                                             if (this.fileData) {
                                                 this.saveFile(this.record.Id, 'Document replaced');
@@ -284,6 +284,9 @@ export default class HistoryEditModal extends LightningElement {
 
         const base64Data = this.fileData.split(',')[1];
 
+        // Decode the base64 encoded data
+        const binaryData = window.atob(base64Data);
+
         // Fetch the case name
         getCaseName({ caseId: this.bvCaseId })
             .then((caseName) => {
@@ -291,9 +294,9 @@ export default class HistoryEditModal extends LightningElement {
 
                 console.log('documentType', this.documentType);
                 uploadFileToSharePoint({
-                    folderName: '/' + folderName,
+                    filePath: folderName,
                     fileName: this.fileName,
-                    base64Data: base64Data,
+                    fileContent: binaryData,
                     documentType: this.documentType
                 })
                     .then((serverRelativeUrl) => {
