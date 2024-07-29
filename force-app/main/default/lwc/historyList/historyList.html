@@ -171,7 +171,7 @@
                                         <td data-label="Case Officer">{relatedItem.Case_Officer_Name}</td>
                                         <td data-label="Actions">
                                             <lightning-button-menu alternative-text="Actions" icon-name="utility:down" menu-alignment="right">
-                                                <lightning-menu-item label="Open in SharePoint" data-id={relatedItem.Id} onclick={handleViewEdit}></lightning-menu-item>
+                                                <lightning-menu-item label="Open in SharePoint" data-id={relatedItem.Id} data-url={relatedItem.ServerRelativeURL__c} onclick={handleOpenInSharePoint}></lightning-menu-item>
                                                 <lightning-menu-item label="Delete" data-id={relatedItem.Id} onclick={handleDeleteRelatedItem}></lightning-menu-item>
                                             </lightning-button-menu>
                                         </td>

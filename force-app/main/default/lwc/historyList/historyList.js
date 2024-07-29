@@ -4,6 +4,7 @@ import getHistoryItems from '@salesforce/apex/HistoryController.getHistoryItems'
 import getUserNames from '@salesforce/apex/HistoryController.getUserNames';
 import getCurrentUserId from '@salesforce/apex/HistoryController.getCurrentUserId';
 import getSHDocuments from '@salesforce/apex/HistoryController.getSHDocuments';
+import getSharePointSettings from '@salesforce/apex/FileController.getSharePointSettings';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { getRecordId } from 'c/sharedService';
 import { NavigationMixin } from 'lightning/navigation';
@@ -27,6 +28,8 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     @track selectedHistoryType = 'allHistory';  // Default selection
     @track currentUserId;  // To store the current user's ID
     @track selectedRecordDetails = 'There are no history notes for this case.';  // New track property to store Details__c value
+    @track sharePointSiteUrl;
+    @track sharePointDirectoryPath;
     wiredHistoryItemsResult;
     userNames = {};
 
@@ -39,6 +42,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
         this.recordId = getRecordId();
         this.fetchCurrentUserId();
         this.refreshHistoryItems();
+        this.fetchSharePointSettings();
     }
 
     fetchCurrentUserId() {
@@ -49,6 +53,18 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
             })
             .catch(error => {
                 this.showToast('Error', 'Error fetching current user ID', 'error');
+            });
+    }
+
+    fetchSharePointSettings() {
+        getSharePointSettings()
+            .then(settings => {
+                this.sharePointSiteUrl = settings.SharePoint_Site_URL;
+                this.sharePointDirectoryPath = settings.SharePoint_Directory_Path;
+            })
+            .catch(error => {
+                this.isLoading = false;
+                console.error('Error fetching SharePoint settings:', error);
             });
     }
 
@@ -167,6 +183,19 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
             .catch(error => {
                 this.showToast('Error', 'Error fetching documents', 'error');
             });
+    }
+
+    handleOpenInSharePoint(event) {
+        const serverRelativeURL = event.currentTarget.dataset.url;
+
+        let url = `${this.sharePointSiteUrl}/${serverRelativeURL}`;
+
+        console.log('serverRelativeURL', url);
+        if (url) {
+            window.open(url, '_blank');
+        } else {
+            this.showToast('Error', 'No URL found for this item.', 'error');
+        }
     }
 
     handleDeleteOpen(event) {
