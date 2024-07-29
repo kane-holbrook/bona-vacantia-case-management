@@ -89,6 +89,10 @@ export default class HistoryEditModal extends LightningElement {
             flagImportant: this.flagImportant
         };
 
+        if (this.record.fileName) {
+            this.originalDocumentId = this.record.documentId; // Keep track of the original document ID
+        }
+
         // Fetch SharePoint settings
         getSharePointSettings()
         .then(result => {
