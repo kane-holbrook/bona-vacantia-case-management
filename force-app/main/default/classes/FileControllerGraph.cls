@@ -378,8 +378,11 @@ public class FileControllerGraph {
             String fileNameWithExtension = contentVersion.Title + '.' + contentVersion.FileExtension;
 
             String base64Data = EncodingUtil.base64Encode(contentVersion.VersionData);
+            Blob decodedBlob = EncodingUtil.base64Decode(base64Data);
+            string decodedString = decodedBlob.toString();
+
             String documentType = 'Email Attachment'; // Adjust as needed
-            String documentId = uploadFileToSharePoint(folderPath, fileNameWithExtension, base64Data, documentType);
+            String documentId = uploadFileToSharePoint(folderPath, fileNameWithExtension, decodedString, documentType);
 
             if (documentId != null) {
                 createSHDocumentRecord(caseHistoryId, contentVersion, documentId, normalizedCaseName);
