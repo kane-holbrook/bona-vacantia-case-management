@@ -1,7 +1,7 @@
 import { LightningElement, api, wire, track } from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import fetchAllFilesFromFolder from '@salesforce/apex/FileControllerGraph.fetchAllFilesFromFolder';
-import getSharePointSettings from '@salesforce/apex/FileController.getSharePointSettings';
+import getSharePointSettings from '@salesforce/apex/FileControllerGraph.getSharePointSettings';
 
 const FIELDS = ['BV_Case__c.Name'];
 const PAGE_SIZE = 10; // Number of records per page

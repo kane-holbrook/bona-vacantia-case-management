@@ -4,7 +4,7 @@ import getHistoryItems from '@salesforce/apex/HistoryController.getHistoryItems'
 import getUserNames from '@salesforce/apex/HistoryController.getUserNames';
 import getCurrentUserId from '@salesforce/apex/HistoryController.getCurrentUserId';
 import getSHDocuments from '@salesforce/apex/HistoryController.getSHDocuments';
-import getSharePointSettings from '@salesforce/apex/FileController.getSharePointSettings';
+import getSharePointSettings from '@salesforce/apex/FileControllerGraph.getSharePointSettings';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { getRecordId } from 'c/sharedService';
 import { NavigationMixin } from 'lightning/navigation';

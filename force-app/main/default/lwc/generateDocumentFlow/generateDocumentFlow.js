@@ -2,7 +2,7 @@ import { LightningElement, api, wire, track } from 'lwc';
 import { CurrentPageReference } from 'lightning/navigation';
 import { FlowNavigationNextEvent } from 'lightning/flowSupport';
 import fetchAllFilesFromFolder from '@salesforce/apex/FileControllerGraph.fetchAllFilesFromFolder';
-import getSharePointSettings from '@salesforce/apex/FileController.getSharePointSettings';
+import getSharePointSettings from '@salesforce/apex/FileControllerGraph.getSharePointSettings';
 
 export default class GenerateDocumentFlow extends LightningElement {
     @api recordId;

@@ -26,7 +26,7 @@ import getSHDocuments from '@salesforce/apex/HistoryController.getSHDocuments';
 import uploadFileToSharePoint from '@salesforce/apex/FileControllerGraph.uploadFileToSharePoint';
 import getCaseName from '@salesforce/apex/FileControllerGraph.getCaseName';
 import deleteSharepointFile from '@salesforce/apex/FileControllerGraph.deleteFileFromSharePoint';
-import getSharePointSettings from '@salesforce/apex/FileController.getSharePointSettings';
+import getSharePointSettings from '@salesforce/apex/FileControllerGraph.getSharePointSettings';
 
 export default class HistoryEditModal extends LightningElement {
     @api record;
