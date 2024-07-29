@@ -126,10 +126,13 @@ export default class FileManager extends NavigationMixin(LightningElement) {
             .then(base64DataArray => {
                 base64DataArray.forEach((base64Data, index) => {
                     const file = uploadedFiles[index];
+                    // Decode the base64 encoeded data
+                    const binaryData = window.atob(base64Data);
+                    
                     uploadFileToSharePoint({
                         filePath: this.bvCaseName,
                         fileName: file.name,
-                        fileContent: base64Data,
+                        fileContent: binaryData,
                         documentType: this.fileType
                     })
                     .then(result => {
