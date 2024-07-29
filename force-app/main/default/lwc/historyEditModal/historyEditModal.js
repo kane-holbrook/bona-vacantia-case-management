@@ -301,7 +301,7 @@ export default class HistoryEditModal extends LightningElement {
                 })
                     .then((serverRelativeUrl) => {
                         this.showToast('Success', 'File uploaded successfully', 'success');
-                        this.createSHDocumentRecord(historyRecordId, serverRelativeUrl, action);
+                        this.createSHDocumentRecord(historyRecordId, folderName, action);
                     })
                     .catch(error => {
                         console.log('Error saving file', error);
@@ -323,7 +323,7 @@ export default class HistoryEditModal extends LightningElement {
             [DOCUMENT_FILE_SIZE_FIELD.fieldApiName]: this.fileSize,
             [DOCUMENT_CORRESPONDENCE_WITH_FIELD.fieldApiName]: this.correspondenceWith,
             [DOCUMENT_DRAFT_FIELD.fieldApiName]: this.draft,
-            [SERVER_RELATIVE_URL_FIELD.fieldApiName]: serverRelativeUrl,
+            [SERVER_RELATIVE_URL_FIELD.fieldApiName]: this.sharePointDirectoryPath + '/' + 'Shared%20Documents' + '/' + serverRelativeUrl + '/' + this.fileName,
             [CASE_HISTORY_FIELD.fieldApiName]: historyRecordId
         };
 
@@ -368,14 +368,48 @@ export default class HistoryEditModal extends LightningElement {
     }
 
     handleDeleteRelatedItem(relatedItemId) {
-        deleteRecord(relatedItemId)
-            .then(() => {
-                this.showToast('Success', 'Related item deleted successfully', 'success');
-                this.fetchRelatedItems(); // Refresh related items
+        // Fetch the related item details first
+        getSHDocuments({ parentId: this.record.Id })
+            .then(result => {
+                const relatedItem = result.find(item => item.Id === relatedItemId);
+                if (relatedItem) {
+                    // Extract necessary details
+                    const { ServerRelativeURL__c: serverRelativeURL, Name: fileName } = relatedItem;
+    
+                    // Extract the part of the URL needed for deletion dynamically
+                    const urlParts = serverRelativeURL.split('/Shared%20Documents/');
+                    let relativePath = urlParts.length > 1 ? urlParts[1] : serverRelativeURL;
+
+                    // Strip the fileName from the relativePath
+                    if (relativePath.endsWith(fileName)) {
+                        relativePath = relativePath.slice(0, -fileName.length - 1); // Remove the fileName and the preceding slash
+                    }
+    
+                    // Call the deleteSharepointFile method first
+                    deleteSharepointFile({ filePath: relativePath, fileName })
+                        .then(() => {
+                            // After deleting the SharePoint file, delete the Salesforce record
+                            deleteRecord(relatedItemId)
+                                .then(() => {
+                                    this.showToast('Success', 'Related item and SharePoint file deleted successfully', 'success');
+                                    this.fetchRelatedItems(); // Refresh related items
+                                })
+                                .catch(error => {
+                                    console.error('Error deleting related item:', error);
+                                    this.showToast('Error', 'Error deleting related item', 'error');
+                                });
+                        })
+                        .catch(error => {
+                            console.error('Error deleting SharePoint file:', error);
+                            this.showToast('Error', 'Error deleting SharePoint file', 'error');
+                        });
+                } else {
+                    this.showToast('Error', 'Related item not found', 'error');
+                }
             })
             .catch(error => {
-                console.error('Error deleting related item:', error);
-                this.showToast('Error', 'Error deleting related item', 'error');
+                console.error('Error fetching related items:', error);
+                this.showToast('Error', 'Error fetching related items', 'error');
             });
     }
 
