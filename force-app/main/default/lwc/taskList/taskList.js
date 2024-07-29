@@ -210,8 +210,8 @@ export default class TaskList extends LightningElement {
     }
 
     handleSaveSuccess() {
+        console.log('Saved successfully');
         this.isModalOpen = false;
-        this.showToast('Success', 'Record saved successfully', 'success');
         this.refreshTaskItems();
     }
 

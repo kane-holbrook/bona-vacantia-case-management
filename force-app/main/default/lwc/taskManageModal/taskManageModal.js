@@ -281,6 +281,13 @@ export default class TaskManageModal extends LightningElement {
                     }),
                 );
                 this.recordId = task.id;
+
+                const createdEvent = new CustomEvent('taskcreated', {
+                    detail: {
+                        taskId: this.recordId,
+                    },
+                });
+                this.dispatchEvent(createdEvent);
             })
             .catch(error => {
                 this.dispatchEvent(
@@ -313,6 +320,12 @@ export default class TaskManageModal extends LightningElement {
                         variant: 'success',
                     }),
                 );
+                const updatedEvent = new CustomEvent('taskupdated', {
+                    detail: {
+                        taskId: this.recordId,
+                    },
+                });
+                this.dispatchEvent(updatedEvent);
             })
             .catch(error => {
                 this.dispatchEvent(

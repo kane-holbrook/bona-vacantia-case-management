@@ -194,7 +194,7 @@
                     <h2 class="slds-text-heading_medium">Task item</h2>
                 </header>
                 <div class="slds-modal__content slds-p-around_medium">
-                    <c-task-manage-modal record-id={currentRecordId} onclose={closeModal} onsave={handleSaveSuccess}></c-task-manage-modal>
+                    <c-task-manage-modal record-id={currentRecordId} onclose={closeModal} ontaskcreated={handleSaveSuccess} ontaskupdated={handleSaveSuccess}></c-task-manage-modal>
                 </div>
                 <footer class="slds-modal__footer">
                     <button class="slds-button slds-button_neutral" onclick={closeModal}>Cancel</button>
