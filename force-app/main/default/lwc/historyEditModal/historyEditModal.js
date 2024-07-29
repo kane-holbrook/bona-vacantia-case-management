@@ -8,7 +8,7 @@ import ACTION_FIELD from '@salesforce/schema/Case_History__c.Action__c';
 import DETAILS_FIELD from '@salesforce/schema/Case_History__c.Details__c';
 import FLAG_IMPORTANT_FIELD from '@salesforce/schema/Case_History__c.Flag_as_important__c';
 import BV_CASE_FIELD from '@salesforce/schema/Case_History__c.BV_Case__c';
-import PARENT_HISTORY_RECORD_FIELD from '@salesforce/schema/Case_History__c.Parent_History_Record__c';
+import CREATED_TIME_FIELD from '@salesforce/schema/SHDocument__c.Created_Time__c';
 import CASE_OFFICER_FIELD from '@salesforce/schema/Case_History__c.Case_Officer__c';
 import LAST_UPDATED_FIELD from '@salesforce/schema/Case_History__c.Last_updated__c';
 import SHDOCUMENT_OBJECT from '@salesforce/schema/SHDocument__c';
@@ -324,6 +324,7 @@ export default class HistoryEditModal extends LightningElement {
             [DOCUMENT_CORRESPONDENCE_WITH_FIELD.fieldApiName]: this.correspondenceWith,
             [DOCUMENT_DRAFT_FIELD.fieldApiName]: this.draft,
             [SERVER_RELATIVE_URL_FIELD.fieldApiName]: this.sharePointDirectoryPath + '/' + 'Shared%20Documents' + '/' + serverRelativeUrl + '/' + this.fileName,
+            [CREATED_TIME_FIELD.fieldApiName]: new Date(),
             [CASE_HISTORY_FIELD.fieldApiName]: historyRecordId
         };
 
