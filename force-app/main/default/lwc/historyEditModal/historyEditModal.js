@@ -8,19 +8,8 @@ import ACTION_FIELD from '@salesforce/schema/Case_History__c.Action__c';
 import DETAILS_FIELD from '@salesforce/schema/Case_History__c.Details__c';
 import FLAG_IMPORTANT_FIELD from '@salesforce/schema/Case_History__c.Flag_as_important__c';
 import BV_CASE_FIELD from '@salesforce/schema/Case_History__c.BV_Case__c';
-import CREATED_TIME_FIELD from '@salesforce/schema/SHDocument__c.Created_Time__c';
 import CASE_OFFICER_FIELD from '@salesforce/schema/Case_History__c.Case_Officer__c';
 import LAST_UPDATED_FIELD from '@salesforce/schema/Case_History__c.Last_updated__c';
-import SHDOCUMENT_OBJECT from '@salesforce/schema/SHDocument__c';
-import SHDOCUMENT_NAME_FIELD from '@salesforce/schema/SHDocument__c.Name';
-import DOCUMENT_EXTENSION_FIELD from '@salesforce/schema/SHDocument__c.DocumentExtension__c';
-import DOCUMENT_ID_FIELD from '@salesforce/schema/SHDocument__c.DocumentID__c';
-import DOCUMENT_TYPE_FIELD from '@salesforce/schema/SHDocument__c.DocumentType__c';
-import DOCUMENT_CORRESPONDENCE_WITH_FIELD from '@salesforce/schema/SHDocument__c.Correspondence_With__c';
-import DOCUMENT_DRAFT_FIELD from '@salesforce/schema/SHDocument__c.Draft__c';
-import SERVER_RELATIVE_URL_FIELD from '@salesforce/schema/SHDocument__c.ServerRelativeURL__c';
-import DOCUMENT_FILE_SIZE_FIELD from '@salesforce/schema/SHDocument__c.FileSize__c';
-import CASE_HISTORY_FIELD from '@salesforce/schema/SHDocument__c.Case_History__c';
 import USER_ID from '@salesforce/user/Id';
 import getSHDocuments from '@salesforce/apex/HistoryController.getSHDocuments';
 import uploadFileToSharePoint from '@salesforce/apex/FileControllerGraph.uploadFileToSharePoint';
@@ -204,7 +193,39 @@ export default class HistoryEditModal extends LightningElement {
     }
 
     handleSave() {
-        this.closeSubModal();
+        // If there's no file data, show an error message and return
+        if (!this.fileData) {
+            this.showToast('Error', 'No file data available to save.', 'error');
+            return;
+        }
+
+        const base64Data = this.fileData.split(',')[1];
+        const binaryData = window.atob(base64Data);
+
+        getCaseName({ caseId: this.bvCaseId })
+            .then((caseName) => {
+                const folderName = `${caseName}/${this.record.Id}`;
+
+                uploadFileToSharePoint({
+                    filePath: folderName,
+                    fileName: this.fileName,
+                    fileContent: binaryData,
+                    documentType: this.documentType
+                })
+                    .then((serverRelativeUrl) => {
+                        this.serverRelativeURL = serverRelativeUrl; // Update the serverRelativeURL after successful upload
+                        this.showToast('Success', 'File uploaded successfully', 'success');
+                        this.saveRecord(this.record.Id);
+                    })
+                    .catch(error => {
+                        console.log('Error saving file', error);
+                        this.showToast('Error', 'Error saving file', 'error');
+                    });
+            })
+            .catch(error => {
+                console.log('Error fetching case name', error);
+                this.showToast('Error', 'Error fetching case name', 'error');
+            });
     }
 
     @api
@@ -223,34 +244,7 @@ export default class HistoryEditModal extends LightningElement {
             const recordInput = { fields };
             updateRecord(recordInput)
                 .then(() => {
-                    if (this.fileName !== this.originalRecord.fileName || this.fileSize !== this.originalRecord.fileSize) {
-                        if (this.originalDocumentId) {
-                            getCaseName({ caseId: this.bvCaseId })
-                                .then((caseName) => {
-                                    const folderName = `${caseName}/${this.record.Id}`;
-                                    deleteSharepointFile({ filePath: folderName, fileName: this.fileName })
-                                        .then(() => {
-                                            if (this.fileData) {
-                                                this.saveFile(this.record.Id, 'Document replaced');
-                                            }
-                                        })
-                                        .catch(error => {
-                                            console.log('Error deleting original SharePoint file', error);
-                                            this.showToast('Error', 'Error deleting original SharePoint file', 'error');
-                                        });
-                                })
-                                .catch(error => {
-                                    console.log('Error fetching case name', error);
-                                    this.showToast('Error fetching case name', 'error');
-                                });
-                        } else {
-                            if (this.fileData) {
-                                this.saveFile(this.record.Id, 'Document added');
-                            }
-                        }
-                    } else {
-                        this.dispatchEvent(new CustomEvent('save'));
-                    }
+                    this.dispatchEvent(new CustomEvent('save'));
                 })
                 .catch(error => {
                     console.log('Error updating record', error);
@@ -261,101 +255,13 @@ export default class HistoryEditModal extends LightningElement {
             const recordInput = { apiName: CASE_HISTORY_OBJECT.objectApiName, fields };
             createRecord(recordInput)
                 .then(record => {
-                    if (this.fileName && this.fileSize) {
-                        if (this.fileData) {
-                            this.saveFile(record.id, 'Document added');
-                        }
-                    } else {
-                        this.dispatchEvent(new CustomEvent('save'));
-                    }
+                    this.dispatchEvent(new CustomEvent('save'));
                 })
                 .catch(error => {
                     console.log('Error creating record', error);
                     this.showToast('Error creating record', error.body.message, 'error');
                 });
         }
-    }
-
-    saveFile(historyRecordId, action) {
-        if (!this.fileData) {
-            console.log('No file data available to save.');
-            return;
-        }
-
-        const base64Data = this.fileData.split(',')[1];
-
-        // Decode the base64 encoded data
-        const binaryData = window.atob(base64Data);
-
-        // Fetch the case name
-        getCaseName({ caseId: this.bvCaseId })
-            .then((caseName) => {
-                const folderName = `${caseName}/${historyRecordId}`;
-
-                console.log('documentType', this.documentType);
-                uploadFileToSharePoint({
-                    filePath: folderName,
-                    fileName: this.fileName,
-                    fileContent: binaryData,
-                    documentType: this.documentType
-                })
-                    .then((serverRelativeUrl) => {
-                        this.showToast('Success', 'File uploaded successfully', 'success');
-                        this.createSHDocumentRecord(historyRecordId, folderName, action);
-                    })
-                    .catch(error => {
-                        console.log('Error saving file', error);
-                        this.showToast('Error', 'Error saving file', 'error');
-                    });
-            })
-            .catch(error => {
-                console.log('Error fetching case name', error);
-                this.showToast('Error', 'Error fetching case name', 'error');
-            });
-    }
-
-    createSHDocumentRecord(historyRecordId, serverRelativeUrl, action) {
-        const shDocumentFields = {
-            [SHDOCUMENT_NAME_FIELD.fieldApiName]: this.fileName,
-            [DOCUMENT_EXTENSION_FIELD.fieldApiName]: this.fileName.split('.').pop(),
-            [DOCUMENT_ID_FIELD.fieldApiName]: historyRecordId,
-            [DOCUMENT_TYPE_FIELD.fieldApiName]: this.documentType,
-            [DOCUMENT_FILE_SIZE_FIELD.fieldApiName]: this.fileSize,
-            [DOCUMENT_CORRESPONDENCE_WITH_FIELD.fieldApiName]: this.correspondenceWith,
-            [DOCUMENT_DRAFT_FIELD.fieldApiName]: this.draft,
-            [SERVER_RELATIVE_URL_FIELD.fieldApiName]: this.sharePointDirectoryPath + '/' + 'Shared%20Documents' + '/' + serverRelativeUrl + '/' + this.fileName,
-            [CREATED_TIME_FIELD.fieldApiName]: new Date(),
-            [CASE_HISTORY_FIELD.fieldApiName]: historyRecordId
-        };
-
-        const recordInput = { apiName: SHDOCUMENT_OBJECT.objectApiName, fields: shDocumentFields };
-        createRecord(recordInput)
-            .then((documentRecord) => {
-                this.originalDocumentId = documentRecord.id;
-                //this.updateHistoryAction(historyRecordId, action);
-                this.fetchRelatedItems(); // Refresh related items
-            })
-            .catch(error => {
-                console.log('Error creating SHDocument record', error);
-                this.showToast('Error', 'Error creating SHDocument record', 'error');
-            });
-    }
-
-    updateHistoryAction(historyRecordId, action) {
-        const fields = {
-            [ID_FIELD.fieldApiName]: historyRecordId,
-            [ACTION_FIELD.fieldApiName]: action
-        };
-
-        const recordInput = { fields };
-        updateRecord(recordInput)
-            .then(() => {
-                this.dispatchEvent(new CustomEvent('save'));
-            })
-            .catch(error => {
-                console.log('Error updating history action', error);
-                this.showToast('Error', 'Error updating history action', 'error');
-            });
     }
 
     handleRowAction(event) {
