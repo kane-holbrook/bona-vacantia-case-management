@@ -331,7 +331,7 @@ export default class HistoryEditModal extends LightningElement {
         createRecord(recordInput)
             .then((documentRecord) => {
                 this.originalDocumentId = documentRecord.id;
-                this.updateHistoryAction(historyRecordId, action);
+                //this.updateHistoryAction(historyRecordId, action);
                 this.fetchRelatedItems(); // Refresh related items
             })
             .catch(error => {
