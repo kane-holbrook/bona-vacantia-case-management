@@ -4,6 +4,7 @@ import getHistoryItems from '@salesforce/apex/HistoryController.getHistoryItems'
 import getUserNames from '@salesforce/apex/HistoryController.getUserNames';
 import getCurrentUserId from '@salesforce/apex/HistoryController.getCurrentUserId';
 import getSHDocuments from '@salesforce/apex/HistoryController.getSHDocuments';
+import getSharePointSettings from '@salesforce/apex/FileControllerGraph.getSharePointSettings';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { getRecordId } from 'c/sharedService';
 import { NavigationMixin } from 'lightning/navigation';
@@ -15,7 +16,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     @track isModalOpen = false;
     @track isDeleteModalOpen = false;
     @track currentRecordId;
-    @track showVersions = true;
+    @track showRelatedItems = true;
     @track lastUpdated = 0;
     @track currentRecord = {};
     @track searchKey = '';
@@ -27,6 +28,8 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     @track selectedHistoryType = 'allHistory';  // Default selection
     @track currentUserId;  // To store the current user's ID
     @track selectedRecordDetails = 'There are no history notes for this case.';  // New track property to store Details__c value
+    @track sharePointSiteUrl;
+    @track sharePointDirectoryPath;
     wiredHistoryItemsResult;
     userNames = {};
 
@@ -39,6 +42,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
         this.recordId = getRecordId();
         this.fetchCurrentUserId();
         this.refreshHistoryItems();
+        this.fetchSharePointSettings();
     }
 
     fetchCurrentUserId() {
@@ -52,23 +56,48 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
             });
     }
 
+    fetchSharePointSettings() {
+        getSharePointSettings()
+            .then(settings => {
+                this.sharePointSiteUrl = settings.SharePoint_Site_URL;
+                this.sharePointDirectoryPath = settings.SharePoint_Directory_Path;
+            })
+            .catch(error => {
+                this.isLoading = false;
+                console.error('Error fetching SharePoint settings:', error);
+            });
+    }
+
     @wire(getHistoryItems, { recordId: '$recordId' })
     wiredHistoryItems(result) {
         this.wiredHistoryItemsResult = result;
         if (result.data) {
-            this.historyItems = result.data.map(item => ({
-                ...item,
-                isExpanded: false,
-                hasVersions: item.Case_History__r && item.Case_History__r.length > 0,
-                iconName: this.getIconName(false),
-                rowClass: item.Flag_as_important__c ? 'highlighted-row' : '',
-                flagIconClass: item.Flag_as_important__c ? 'icon-important' : 'icon-default',
-                notes: item.Details__c ? 'Has details' : '',
-                hasDetails: item.Details__c ? true : false,
-                documentType: item.SHDocuments__r && item.SHDocuments__r.length > 0 ? item.SHDocuments__r[0].DocumentType__c : '',
-                fileSize: this.formatFileSize(item.SHDocuments__r && item.SHDocuments__r.length > 0 ? item.SHDocuments__r[0].FileSize__c : ''),
-                draft: item.SHDocuments__r && item.SHDocuments__r.length > 0 ? item.SHDocuments__r[0].Draft__c : ''
-            }));
+            this.historyItems = result.data.map(item => {
+                // Calculate total file size of related items
+                let totalFileSize = 0;
+                if (item.SHDocuments__r && item.SHDocuments__r.length > 0) {
+                    totalFileSize = item.SHDocuments__r.reduce((sum, doc) => sum + (doc.FileSize__c || 0), 0);
+                }
+    
+                return {
+                    ...item,
+                    isExpanded: false,
+                    hasRelatedItems: item.SHDocuments__r && item.SHDocuments__r.length > 0,
+                    iconName: this.getIconName(false),
+                    rowClass: item.Flag_as_important__c ? 'highlighted-row' : '',
+                    flagIconClass: item.Flag_as_important__c ? 'icon-important' : 'icon-default',
+                    notes: item.Details__c ? 'Has details' : '',
+                    hasDetails: item.Details__c ? true : false,
+                    documentType: item.SHDocuments__r && item.SHDocuments__r.length > 0 ? item.SHDocuments__r[0].DocumentType__c : '',
+                    fileSize: this.formatFileSize(totalFileSize),  // Use the calculated total file size here
+                    draft: item.SHDocuments__r && item.SHDocuments__r.length > 0 ? item.SHDocuments__r[0].Draft__c : '',
+                    SHDocuments__r: item.SHDocuments__r ? item.SHDocuments__r.map(doc => ({
+                        ...doc,
+                        showAttachmentIcon: doc.DocumentType__c === 'Email Attachment',
+                        fileSize: doc.FileSize__c ? this.formatFileSize(doc.FileSize__c) : '',
+                    })) : []
+                };
+            });
             const userIds = this.historyItems.map(item => item.Case_Officer__c);
             this.fetchUserNames(userIds);
             this.updateLastUpdated();
@@ -156,6 +185,19 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
             });
     }
 
+    handleOpenInSharePoint(event) {
+        const serverRelativeURL = event.currentTarget.dataset.url;
+
+        let url = `${this.sharePointSiteUrl}/${serverRelativeURL}`;
+
+        console.log('serverRelativeURL', url);
+        if (url) {
+            window.open(url, '_blank');
+        } else {
+            this.showToast('Error', 'No URL found for this item.', 'error');
+        }
+    }
+
     handleDeleteOpen(event) {
         this.currentRecordId = event.currentTarget.dataset.id;
         const record = this.historyItems.find(item => item.Id === this.currentRecordId);
@@ -192,9 +234,9 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
         this.refreshHistoryItems();
     }
 
-    toggleShowVersions(event) {
-        this.showVersions = event.target.checked;
-        if (!this.showVersions) {
+    toggleShowRelatedItems(event) {
+        this.showRelatedItems = event.target.checked;
+        if (!this.showRelatedItems) {
             this.historyItems = this.historyItems.map(item => ({ 
                 ...item, 
                 isExpanded: false,
@@ -303,11 +345,11 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     }
 
     get isSortedByDocumentType() {
-        return this.sortedBy === 'Document_Type__c';
+        return this.sortedBy === 'DocumentType__c';
     }
 
     get isSortedByFileSize() {
-        return this.sortedBy === 'File_Size__c';
+        return this.sortedBy === 'FileSize__c';
     }
 
     get isSortedByDraft() {
@@ -342,5 +384,11 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
         } else {
             return (size / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
         }
+    }
+
+    handleDeleteRelatedItem(event) {
+        const relatedItemId = event.currentTarget.dataset.id;
+        // Handle the deletion of the related item here
+        // Add your deletion logic for related items
     }
 }

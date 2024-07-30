@@ -19,7 +19,7 @@
                 </div>
             </header>
             <div class="slds-no-flex slds-grid slds-align-middle">
-                <lightning-input type="checkbox" label="Group by related" checked={showVersions} onchange={toggleShowVersions} class="slds-m-right_small"></lightning-input>
+                <lightning-input type="checkbox" label="Group by related" checked={showRelatedItems} onchange={toggleShowRelatedItems} class="slds-m-right_small"></lightning-input>
                 <lightning-button label="Add" onclick={handleAdd} class="slds-button_neutral"></lightning-button>
             </div>
         </div>
@@ -73,7 +73,7 @@
                                 </button>
                             </th>
                             <th scope="col">
-                                <button class="slds-button slds-button_reset slds-truncate" title="Document Type" onclick={handleSort} data-column="Document_Type__c">
+                                <button class="slds-button slds-button_reset slds-truncate" title="Document Type" onclick={handleSort} data-column="DocumentType__c">
                                     Document Type
                                     <template if:true={isSortedByDocumentType}>
                                         <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
@@ -81,7 +81,7 @@
                                 </button>
                             </th>
                             <th scope="col">
-                                <button class="slds-button slds-button_reset slds-truncate" title="File Size" onclick={handleSort} data-column="File_Size__c">
+                                <button class="slds-button slds-button_reset slds-truncate" title="File Size" onclick={handleSort} data-column="FileSize__c">
                                     File Size
                                     <template if:true={isSortedByFileSize}>
                                         <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
@@ -113,8 +113,8 @@
                         <template for:each={filteredHistoryItems} for:item="item">
                             <tr key={item.Id} class={item.rowClass} onclick={handleRowClick} data-id={item.Id}>
                                 <td data-label="Expand">
-                                    <template if:true={showVersions}>
-                                        <template if:true={item.hasVersions}>
+                                    <template if:true={showRelatedItems}>
+                                        <template if:true={item.hasRelatedItems}>
                                             <button class="slds-button slds-button_icon slds-m-right_x-small" aria-expanded={item.isExpanded} onclick={toggleRow} data-id={item.Id}>
                                                 <lightning-icon icon-name={item.iconName} alternative-text="Expand"></lightning-icon>
                                             </button>
@@ -146,32 +146,33 @@
                                 </td>
                             </tr>
                             <template if:true={item.isExpanded}>
-                                <template for:each={item.Case_History__r} for:item="version">
-                                    <tr key={version.Id} class={version.rowClass}>
+                                <template for:each={item.SHDocuments__r} for:item="relatedItem">
+                                    <tr key={relatedItem.Id} class={relatedItem.rowClass}>
                                         <td data-label="Expand">
                                             <lightning-icon icon-name="utility:level_down" alternative-text="Sub-item" class="slds-icon-text-default version-expand-icon"></lightning-icon>
                                         </td>
                                         <td data-label="Date">
                                             <div class="slds-grid slds-align_absolute-center">
-                                                <lightning-icon icon-name="utility:flag" alternative-text="Important" class={version.flagIconClass}></lightning-icon>
-                                                <lightning-formatted-date-time value={version.Date_Inserted__c} year="numeric" month="2-digit" day="2-digit" day-style="2-digit" month-style="2-digit" timezone="UTC"></lightning-formatted-date-time>
+                                                <template if:true={relatedItem.showAttachmentIcon}>
+                                                    <lightning-icon icon-name="utility:attach" alternative-text="Attachment" size="small" class="slds-m-right_x-small"></lightning-icon>
+                                                </template>
+                                                <lightning-formatted-date-time value={relatedItem.Created_Time__c} year="numeric" month="2-digit" day="2-digit" day-style="2-digit" month-style="2-digit" timezone="UTC"></lightning-formatted-date-time>
                                             </div>
                                         </td>
-                                        <td data-label="Action">{version.Action__c}</td>
+                                        <td data-label="Action">{relatedItem.Action__c}</td>
                                         <td data-label="Notes">
-                                            <template if:true={version.hasDetails}>
+                                            <template if:true={relatedItem.hasDetails}>
                                                 <lightning-icon icon-name="utility:check" alternative-text="Has Details" size="x-small"></lightning-icon>
                                             </template>
                                         </td>
-                                        <td data-label="Document Type">{version.Document_Type__c}</td>
-                                        <td data-label="File Size">{version.File_Size__c}</td>
-                                        <td data-label="Draft">{version.Draft__c}</td>
-                                        <td data-label="Case Officer">{version.Case_Officer_Name}</td>
+                                        <td data-label="Document Type">{relatedItem.DocumentType__c}</td>
+                                        <td data-label="File Size">{relatedItem.fileSize}</td>
+                                        <td data-label="Draft">{relatedItem.Draft__c}</td>
+                                        <td data-label="Case Officer">{relatedItem.Case_Officer_Name}</td>
                                         <td data-label="Actions">
                                             <lightning-button-menu alternative-text="Actions" icon-name="utility:down" menu-alignment="right">
-                                                <lightning-menu-item label="View/Edit" data-id={version.Id} onclick={handleViewEdit}></lightning-menu-item>
-                                                <lightning-menu-item label="Forward to Mail Recipient" data-id={version.Id} onclick={handleForward}></lightning-menu-item>
-                                                <lightning-menu-item label="Delete" data-id={version.Id} onclick={handleDelete}></lightning-menu-item>
+                                                <lightning-menu-item label="Open in SharePoint" data-id={relatedItem.Id} data-url={relatedItem.ServerRelativeURL__c} onclick={handleOpenInSharePoint}></lightning-menu-item>
+                                                <lightning-menu-item label="Delete" data-id={relatedItem.Id} onclick={handleDeleteRelatedItem}></lightning-menu-item>
                                             </lightning-button-menu>
                                         </td>
                                     </tr>

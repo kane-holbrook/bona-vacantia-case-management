@@ -8,9 +8,15 @@ import ACTION_FIELD from '@salesforce/schema/Case_History__c.Action__c';
 import DETAILS_FIELD from '@salesforce/schema/Case_History__c.Details__c';
 import FLAG_IMPORTANT_FIELD from '@salesforce/schema/Case_History__c.Flag_as_important__c';
 import BV_CASE_FIELD from '@salesforce/schema/Case_History__c.BV_Case__c';
-import PARENT_HISTORY_RECORD_FIELD from '@salesforce/schema/Case_History__c.Parent_History_Record__c';
 import CASE_OFFICER_FIELD from '@salesforce/schema/Case_History__c.Case_Officer__c';
 import LAST_UPDATED_FIELD from '@salesforce/schema/Case_History__c.Last_updated__c';
+import USER_ID from '@salesforce/user/Id';
+import getSHDocuments from '@salesforce/apex/HistoryController.getSHDocuments';
+import uploadFileToSharePoint from '@salesforce/apex/FileControllerGraph.uploadFileToSharePoint';
+import getCaseName from '@salesforce/apex/FileControllerGraph.getCaseName';
+import deleteSharepointFile from '@salesforce/apex/FileControllerGraph.deleteFileFromSharePoint';
+import getSharePointSettings from '@salesforce/apex/FileControllerGraph.getSharePointSettings';
+import { refreshApex } from '@salesforce/apex';
 import SHDOCUMENT_OBJECT from '@salesforce/schema/SHDocument__c';
 import SHDOCUMENT_NAME_FIELD from '@salesforce/schema/SHDocument__c.Name';
 import DOCUMENT_EXTENSION_FIELD from '@salesforce/schema/SHDocument__c.DocumentExtension__c';
@@ -21,12 +27,7 @@ import DOCUMENT_DRAFT_FIELD from '@salesforce/schema/SHDocument__c.Draft__c';
 import SERVER_RELATIVE_URL_FIELD from '@salesforce/schema/SHDocument__c.ServerRelativeURL__c';
 import DOCUMENT_FILE_SIZE_FIELD from '@salesforce/schema/SHDocument__c.FileSize__c';
 import CASE_HISTORY_FIELD from '@salesforce/schema/SHDocument__c.Case_History__c';
-import USER_ID from '@salesforce/user/Id';
-import getHistoryVersions from '@salesforce/apex/HistoryController.getHistoryVersions';
-import uploadFileToSharePoint from '@salesforce/apex/FileController.uploadFileToSharePoint';
-import getCaseName from '@salesforce/apex/FileController.getCaseName';
-import deleteSharepointFile from '@salesforce/apex/FileController.deleteSharepointFile';
-import getSharePointSettings from '@salesforce/apex/FileController.getSharePointSettings';
+import CREATED_TIME_FIELD from '@salesforce/schema/SHDocument__c.Created_Time__c';
 
 export default class HistoryEditModal extends LightningElement {
     @api record;
@@ -43,20 +44,32 @@ export default class HistoryEditModal extends LightningElement {
     @track serverRelativeURL;
     @track bvCaseId;
     @track isSubModalOpen = false;
-    @track versions = [];
+    @track relatedItems = [];
     @track originalRecord = {};
     @track originalDocumentId; // Added to keep track of the original document ID
     fullURL;
     sharePointSiteUrl;
     sharePointDirectoryPath;
 
+    wiredRelatedItemsResult; // Track the wired result for refresh
+
     userId = USER_ID; // Get the current user ID
 
-    versionColumns = [
-        { label: 'Version', fieldName: 'versionNumber', type: 'number' },
-        { label: 'Last Edited by', fieldName: 'lastModifiedByName', type: 'text' },
-        { label: 'On', fieldName: 'lastModifiedDate', type: 'date' },
-        { label: 'Action', fieldName: 'action', type: 'text' },
+    relatedItemColumns = [
+        { label: 'Document Name', fieldName: 'Name', type: 'text' },
+        { label: 'Document Type', fieldName: 'DocumentType__c', type: 'text' },
+        { label: 'File Size', fieldName: 'FileSize__c', type: 'text' },
+        { label: 'Created Time', fieldName: 'Created_Time__c', type: 'date' },
+        {
+            label: 'Actions',
+            type: 'action',
+            typeAttributes: {
+                rowActions: [
+                    { label: 'View/Edit', name: 'viewEdit' },
+                    { label: 'Delete', name: 'delete' }
+                ]
+            }
+        }
     ];
 
     connectedCallback() {
@@ -66,17 +79,6 @@ export default class HistoryEditModal extends LightningElement {
         this.flagImportant = this.record.Flag_as_important__c || false;
         this.bvCaseId = this.record.BV_Case__c || '';
 
-        if (this.record.fileName) {
-            this.fileName = this.record.fileName;
-            this.fileSize = this.formatFileSize(this.record.fileSize);
-            this.fileData = this.record.fileData;
-            this.documentType = this.record.documentType;
-            this.correspondenceWith = this.record.correspondenceWith;
-            this.draft = this.record.draft;
-            this.serverRelativeURL = this.record.serverRelativeURL;
-            this.originalDocumentId = this.record.documentId; // Keep track of the original document ID
-        }
-
         console.log('history record', this.record);
 
         // Store the original state for comparison
@@ -84,14 +86,12 @@ export default class HistoryEditModal extends LightningElement {
             dateInserted: this.dateInserted,
             description: this.description,
             details: this.details,
-            flagImportant: this.flagImportant,
-            fileName: this.fileName,
-            fileSize: this.fileSize,
-            documentType: this.documentType,
-            correspondenceWith: this.correspondenceWith,
-            draft: this.draft,
-            serverRelativeURL: this.serverRelativeURL
+            flagImportant: this.flagImportant
         };
+
+        if (this.record.fileName) {
+            this.originalDocumentId = this.record.documentId; // Keep track of the original document ID
+        }
 
         // Fetch SharePoint settings
         getSharePointSettings()
@@ -115,44 +115,17 @@ export default class HistoryEditModal extends LightningElement {
         }
     }
 
-    @wire(getHistoryVersions, { historyItemId: '$record.Id' })
-    wiredVersions({ error, data }) {
-        if (data) {
-            this.versions = [{
-                id: 'initial',
-                dateInserted: this.dateInserted,
-                description: 'Initial version',
-                details: this.details,
-                flagImportant: this.flagImportant,
-                fileName: this.fileName,
-                fileSize: this.fileSize,
-                serverRelativeURL: this.serverRelativeURL,
-                bvCaseId: this.bvCaseId,
-                lastModifiedByName: 'Initial User', // Replace with actual user data if available
-                lastModifiedDate: this.dateInserted, // Replace with the actual created date if available
-                action: 'History item created',
-                versionNumber: 1,
-                class: 'slds-theme_shade'
-            },
-            ...data.map((version, index) => ({
-                id: version.Id,
-                dateInserted: version.Date_Inserted__c,
-                description: version.Action__c,
-                details: version.Details__c,
-                flagImportant: version.Flag_as_important__c,
-                fileName: this.fileName,
-                fileSize: this.fileSize,
-                serverRelativeURL: this.serverRelativeURL,
-                bvCaseId: version.BV_Case__c,
-                lastModifiedByName: 'User', // Replace with actual user data if available
-                lastModifiedDate: version.Date_Inserted__c, // Replace with the actual modified date if available
-                action: version.Action__c, // Use description as action
-                versionNumber: index + 2,
-                class: 'slds-theme_shade'
-            }))];
-        } else if (error) {
-            console.log('Error fetching versions:', error);
-            this.showToast('Error', 'Error fetching versions', 'error');
+    @wire(getSHDocuments, { parentId: '$record.Id' })
+    wiredRelatedItems(result) {
+        this.wiredRelatedItemsResult = result; // Store the result for refresh
+        if (result.data) {
+            this.relatedItems = result.data.map(doc => ({
+                ...doc,
+                FileSize__c: this.formatFileSize(doc.FileSize__c)
+            }));
+        } else if (result.error) {
+            console.error('Error fetching related items:', result.error);
+            this.showToast('Error', 'Error fetching related items', 'error');
         }
     }
 
@@ -190,7 +163,7 @@ export default class HistoryEditModal extends LightningElement {
             getCaseName({ caseId: this.bvCaseId })
                 .then((caseName) => {
                     const folderName = `${caseName}/${this.record.Id}`;
-                    deleteSharepointFile({ caseId: folderName, fileName: this.fileName })
+                    deleteSharepointFile({ filePath: folderName, fileName: this.fileName })
                         .then(() => {
                             deleteRecord(this.originalDocumentId)
                                 .then(() => {
@@ -203,6 +176,7 @@ export default class HistoryEditModal extends LightningElement {
                                     this.correspondenceWith = null;
                                     this.draft = null;
                                     this.originalDocumentId = null;
+                                    refreshApex(this.wiredRelatedItemsResult); // Refresh related items
                                 })
                                 .catch(error => {
                                     console.log('Error deleting SHDocument record', error);
@@ -234,106 +208,31 @@ export default class HistoryEditModal extends LightningElement {
     }
 
     handleSave() {
-        this.closeSubModal();
-    }
-
-    @api
-    saveRecord(parentRecordId) {
-        let fields = {
-            [DATE_INSERTED_FIELD.fieldApiName]: this.dateInserted,
-            [ACTION_FIELD.fieldApiName]: this.description,
-            [DETAILS_FIELD.fieldApiName]: this.details,
-            [FLAG_IMPORTANT_FIELD.fieldApiName]: this.flagImportant,
-            [CASE_OFFICER_FIELD.fieldApiName]: this.userId, // Set the current user's ID
-            [LAST_UPDATED_FIELD.fieldApiName]: new Date().toISOString() // Set current date and time
-        };
-
-        if (this.record.Id) {
-            // Check for changes before creating a new version
-            if (this.hasChanges()) {
-                this.createVersion(this.record.Id, fields, parentRecordId);
-            }
-
-            fields[ID_FIELD.fieldApiName] = this.record.Id;
-            const recordInput = { fields };
-            updateRecord(recordInput)
-                .then(() => {
-                    if (this.fileName !== this.originalRecord.fileName || this.fileSize !== this.originalRecord.fileSize) {
-                        if (this.originalDocumentId) {
-                            getCaseName({ caseId: this.bvCaseId })
-                                .then((caseName) => {
-                                    const folderName = `${caseName}/${this.record.Id}`;
-                                    deleteSharepointFile({ caseId: folderName, fileName: this.fileName })
-                                        .then(() => {
-                                            if (this.fileData) {
-                                                this.saveFile(this.record.Id, 'Document replaced');
-                                            }
-                                        })
-                                        .catch(error => {
-                                            console.log('Error deleting original SharePoint file', error);
-                                            this.showToast('Error', 'Error deleting original SharePoint file', 'error');
-                                        });
-                                })
-                                .catch(error => {
-                                    console.log('Error fetching case name', error);
-                                    this.showToast('Error', 'Error fetching case name', 'error');
-                                });
-                        } else {
-                            if (this.fileData) {
-                                this.saveFile(this.record.Id, 'Document added');
-                            }
-                        }
-                    } else {
-                        this.dispatchEvent(new CustomEvent('save'));
-                    }
-                })
-                .catch(error => {
-                    console.log('Error updating record', error);
-                    this.showToast('Error updating record', error.body.message, 'error');
-                });
-        } else {
-            fields[BV_CASE_FIELD.fieldApiName] = parentRecordId;
-            const recordInput = { apiName: CASE_HISTORY_OBJECT.objectApiName, fields };
-            createRecord(recordInput)
-                .then(record => {
-                    if (this.fileName && this.fileSize) {
-                        if (this.fileData) {
-                            this.saveFile(record.id, 'Document added');
-                        }
-                    } else {
-                        this.dispatchEvent(new CustomEvent('save'));
-                    }
-                })
-                .catch(error => {
-                    console.log('Error creating record', error);
-                    this.showToast('Error creating record', error.body.message, 'error');
-                });
-        }
-    }
-
-    saveFile(historyRecordId, action) {
+        // If there's no file data, show an error message and return
         if (!this.fileData) {
-            console.log('No file data available to save.');
+            this.showToast('Error', 'No file data available to save.', 'error');
             return;
         }
 
         const base64Data = this.fileData.split(',')[1];
+        const binaryData = window.atob(base64Data);
 
-        // Fetch the case name
         getCaseName({ caseId: this.bvCaseId })
             .then((caseName) => {
-                const folderName = `${caseName}/${historyRecordId}`;
+                const folderName = `${caseName}/${this.record.Id}`;
 
-                console.log('documentType', this.documentType);
                 uploadFileToSharePoint({
-                    folderName: '/' + folderName,
+                    filePath: folderName,
                     fileName: this.fileName,
-                    base64Data: base64Data,
+                    fileContent: binaryData,
                     documentType: this.documentType
                 })
                     .then((serverRelativeUrl) => {
+                        this.serverRelativeURL = serverRelativeUrl; // Update the serverRelativeURL after successful upload
                         this.showToast('Success', 'File uploaded successfully', 'success');
-                        this.createSHDocumentRecord(historyRecordId, serverRelativeUrl, action);
+                        this.createSHDocumentRecord(this.record.Id, serverRelativeUrl, this.description); // Attach document to history record
+                        refreshApex(this.wiredRelatedItemsResult); // Refresh related items
+                        this.closeSubModal();
                     })
                     .catch(error => {
                         console.log('Error saving file', error);
@@ -355,7 +254,8 @@ export default class HistoryEditModal extends LightningElement {
             [DOCUMENT_FILE_SIZE_FIELD.fieldApiName]: this.fileSize,
             [DOCUMENT_CORRESPONDENCE_WITH_FIELD.fieldApiName]: this.correspondenceWith,
             [DOCUMENT_DRAFT_FIELD.fieldApiName]: this.draft,
-            [SERVER_RELATIVE_URL_FIELD.fieldApiName]: serverRelativeUrl,
+            [SERVER_RELATIVE_URL_FIELD.fieldApiName]: this.sharePointDirectoryPath + '/' + 'Shared%20Documents' + '/' + serverRelativeUrl + '/' + this.fileName,
+            [CREATED_TIME_FIELD.fieldApiName]: new Date(),
             [CASE_HISTORY_FIELD.fieldApiName]: historyRecordId
         };
 
@@ -363,7 +263,8 @@ export default class HistoryEditModal extends LightningElement {
         createRecord(recordInput)
             .then((documentRecord) => {
                 this.originalDocumentId = documentRecord.id;
-                this.updateHistoryAction(historyRecordId, action);
+                this.showToast('Success', 'SHDocument record created successfully', 'success');
+                refreshApex(this.wiredRelatedItemsResult); // Refresh related items
             })
             .catch(error => {
                 console.log('Error creating SHDocument record', error);
@@ -371,77 +272,110 @@ export default class HistoryEditModal extends LightningElement {
             });
     }
 
-    createVersion(parentRecordId, fields, bvCaseId) {
-        let versionFields = {
-            [PARENT_HISTORY_RECORD_FIELD.fieldApiName]: parentRecordId,
+    @api
+    saveRecord(parentRecordId) {
+        let fields = {
             [DATE_INSERTED_FIELD.fieldApiName]: this.dateInserted,
             [ACTION_FIELD.fieldApiName]: this.description,
             [DETAILS_FIELD.fieldApiName]: this.details,
             [FLAG_IMPORTANT_FIELD.fieldApiName]: this.flagImportant,
-            [BV_CASE_FIELD.fieldApiName]: bvCaseId
+            [CASE_OFFICER_FIELD.fieldApiName]: this.userId, // Set the current user's ID
+            [LAST_UPDATED_FIELD.fieldApiName]: new Date().toISOString() // Set current date and time
         };
 
-        const recordInput = { apiName: CASE_HISTORY_OBJECT.objectApiName, fields: versionFields };
-        createRecord(recordInput)
-            .then(() => {
-                // Version created successfully
-            })
-            .catch(error => {
-                console.log('Error creating version', error);
-                this.showToast('Error', 'Error creating version', error.body.message, 'error');
-            });
-    }
-
-    updateHistoryAction(historyRecordId, action) {
-        const fields = {
-            [ID_FIELD.fieldApiName]: historyRecordId,
-            [ACTION_FIELD.fieldApiName]: action
-        };
-
-        const recordInput = { fields };
-        updateRecord(recordInput)
-            .then(() => {
-                this.dispatchEvent(new CustomEvent('save'));
-            })
-            .catch(error => {
-                console.log('Error updating history action', error);
-                this.showToast('Error', 'Error updating history action', 'error');
-            });
-    }
-
-    hasChanges() {
-        return this.dateInserted !== this.originalRecord.dateInserted ||
-               this.description !== this.originalRecord.description ||
-               this.details !== this.originalRecord.details ||
-               this.flagImportant !== this.originalRecord.flagImportant ||
-               this.fileName !== this.originalRecord.fileName ||
-               this.serverRelativeURL !== this.originalRecord.serverRelativeURL ||
-               this.fileSize !== this.originalRecord.fileSize ||
-               this.documentType !== this.originalRecord.documentType ||
-               this.correspondenceWith !== this.originalRecord.correspondenceWith ||
-               this.draft !== this.originalRecord.draft;
+        if (this.record.Id) {
+            fields[ID_FIELD.fieldApiName] = this.record.Id;
+            const recordInput = { fields };
+            updateRecord(recordInput)
+                .then(() => {
+                    this.dispatchEvent(new CustomEvent('save'));
+                })
+                .catch(error => {
+                    console.log('Error updating record', error);
+                    this.showToast('Error updating record', error.body.message, 'error');
+                });
+        } else {
+            fields[BV_CASE_FIELD.fieldApiName] = parentRecordId;
+            const recordInput = { apiName: CASE_HISTORY_OBJECT.objectApiName, fields };
+            createRecord(recordInput)
+                .then(record => {
+                    this.dispatchEvent(new CustomEvent('save'));
+                })
+                .catch(error => {
+                    console.log('Error creating record', error);
+                    this.showToast('Error creating record', error.body.message, 'error');
+                });
+        }
     }
 
     handleRowAction(event) {
         const actionName = event.detail.action.name;
         const row = event.detail.row;
-        if (actionName === 'restore') {
-            this.handleRestore(row.versionNumber);
+        if (actionName === 'delete') {
+            this.handleDeleteRelatedItem(row.Id);
+        } else if (actionName === 'viewEdit') {
+            this.handleViewEditRelatedItem(row);
         }
     }
 
-    handleRestore(versionNumber) {
-        const versionIndex = versionNumber - 1;
-        const versionToRestore = this.versions[versionIndex];
+    handleDeleteRelatedItem(relatedItemId) {
+        // Fetch the related item details first
+        getSHDocuments({ parentId: this.record.Id })
+            .then(result => {
+                const relatedItem = result.find(item => item.Id === relatedItemId);
+                if (relatedItem) {
+                    // Extract necessary details
+                    const { ServerRelativeURL__c: serverRelativeURL, Name: fileName } = relatedItem;
+    
+                    // Extract the part of the URL needed for deletion dynamically
+                    const urlParts = serverRelativeURL.split('/Shared%20Documents/');
+                    let relativePath = urlParts.length > 1 ? urlParts[1] : serverRelativeURL;
 
-        this.dateInserted = versionToRestore.dateInserted;
-        this.description = versionToRestore.description;
-        this.details = versionToRestore.details;
-        this.flagImportant = versionToRestore.flagImportant;
-        this.fileName = versionToRestore.fileName;
-        this.serverRelativeURL = versionToRestore.serverRelativeURL;
-        this.fileSize = versionToRestore.fileSize;
-        this.bvCaseId = versionToRestore.bvCaseId;
+                    // Strip the fileName from the relativePath
+                    if (relativePath.endsWith(fileName)) {
+                        relativePath = relativePath.slice(0, -fileName.length - 1); // Remove the fileName and the preceding slash
+                    }
+    
+                    // Call the deleteSharepointFile method first
+                    deleteSharepointFile({ filePath: relativePath, fileName })
+                        .then(() => {
+                            // After deleting the SharePoint file, delete the Salesforce record
+                            deleteRecord(relatedItemId)
+                                .then(() => {
+                                    this.showToast('Success', 'Related item and SharePoint file deleted successfully', 'success');
+                                    refreshApex(this.wiredRelatedItemsResult); // Refresh related items
+                                })
+                                .catch(error => {
+                                    console.error('Error deleting related item:', error);
+                                    this.showToast('Error', 'Error deleting related item', 'error');
+                                });
+                        })
+                        .catch(error => {
+                            console.error('Error deleting SharePoint file:', error);
+                            this.showToast('Error', 'Error deleting SharePoint file', 'error');
+                        });
+                } else {
+                    this.showToast('Error', 'Related item not found', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching related items:', error);
+                this.showToast('Error', 'Error fetching related items', 'error');
+            });
+    }
+
+    handleViewEditRelatedItem(relatedItem) {
+        // Handle the logic to view/edit the related item
+        // This can open a modal or perform any other required actions
+        // Example: Open a modal with the details of the selected related item
+        this.fileName = relatedItem.Name;
+        this.fileSize = relatedItem.FileSize__c;
+        this.fileData = relatedItem.FileContent__c;
+        this.documentType = relatedItem.DocumentType__c;
+        this.correspondenceWith = relatedItem.Correspondence_With__c;
+        this.draft = relatedItem.Draft__c;
+        this.serverRelativeURL = relatedItem.ServerRelativeURL__c;
+        this.isSubModalOpen = true;
     }
 
     closeModal() {

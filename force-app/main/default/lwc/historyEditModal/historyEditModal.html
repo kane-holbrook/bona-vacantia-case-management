@@ -24,30 +24,17 @@
         </div>
     </div>
 
-    <!-- Display file details if a file was uploaded -->
-    <template if:true={fileName}>
-        <div class="slds-form-element slds-m-around_medium">
-            <p>Uploaded Document: <a href={fullURL} target="_blank">{fileName}</a></p>
-            <p>Document Size: {fileSize}</p>
-            <p>Document Type: {documentType}</p>
-            <p>Correspondence With: {correspondenceWith}</p>
-            <p>Draft: {draft}</p>
-            <button class="slds-button slds-button_neutral" onclick={handleViewEdit}>View/Edit</button>
-        </div>
-    </template>
-    <template if:false={fileName}>
-        <div class="slds-form-element slds-m-around_medium">
-            <button class="slds-button slds-button_neutral" onclick={handleImport}>Import</button>
-        </div>
-    </template>
-
-    <!-- Versions Section -->
     <div class="slds-form-element slds-m-around_medium">
-        <h3>Versions</h3>
+        <button class="slds-button slds-button_neutral" onclick={handleImport}>Import</button>
+    </div>
+
+    <!-- Related Items Section -->
+    <div class="slds-form-element slds-m-around_medium">
+        <h3>Related Items</h3>
         <lightning-datatable
             key-field="id"
-            data={versions}
-            columns={versionColumns}
+            data={relatedItems}
+            columns={relatedItemColumns}
             hide-checkbox-column="true"
             onrowaction={handleRowAction}>
         </lightning-datatable>

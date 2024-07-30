@@ -96,65 +96,6 @@ public with sharing class PDFTron_ContentVersionController {
     }
 
     @AuraEnabled
-    public static String saveDocumentToSharePoint(String jsonpayload, String folderName) {
-        try {
-            PDFTron_ContentVersionPayload pl = new PDFTron_ContentVersionPayload(jsonpayload);
-            // Decode the base64 string to get the binary content of the file
-            Blob fileContent = EncodingUtil.base64Decode(pl.base64Data);
-        
-            // Manually encode the file name to ensure all special characters are properly URL encoded
-            String encodedFolderName = EncodingUtil.urlEncode(folderName, 'UTF-8');
-            
-            // Check if the folder exists; if not, create it
-            if (!FileController.doesFolderExist(encodedFolderName)) {
-                FileController.createSharePointFolder(encodedFolderName);
-            }
-
-            String fileName = pl.filename;
-            
-            // Replace problematic characters in the file name
-            fileName = fileName.replace('\'', '_').replace('#', '_');
-            
-            String encodedFileName = EncodingUtil.urlEncode(fileName, 'UTF-8');
-
-            // SharePoint API endpoint
-            String endpoint = 'callout:BVSharepointNamed/_api/web/GetFolderByServerRelativeUrl(\'' +
-            'Shared%20Documents/' + encodedFolderName + '\')/Files/Add(url=\'' +
-            encodedFileName + '\',overwrite=true)';
-
-            // Prepare the HTTP request
-            HttpRequest req = new HttpRequest();
-            req.setEndpoint(endpoint);
-            req.setMethod('POST');
-            req.setHeader('Content-Type', 'application/octet-stream');
-            req.setHeader('Accept', 'application/json;odata=verbose');
-            req.setBodyAsBlob(fileContent);
-
-            // Send the request
-            Http http = new Http();
-            HttpResponse response = http.send(req);
-
-            // Check the response status and parse if successful
-            if (response.getStatusCode() == 200) {
-                // Parse the JSON response
-                Map<String, Object> jsonResponse = (Map<String, Object>)JSON.deserializeUntyped(response.getBody());
-                Map<String, Object> d = (Map<String, Object>)jsonResponse.get('d');
-                Map<String, Object> listItemAllFields = (Map<String, Object>)d.get('ListItemAllFields');
-
-                // Extract and return the SharePoint Document ID
-                return (String)listItemAllFields.get('UniqueId');
-            } else {
-                // Handle the error accordingly
-                System.debug('Error from SharePoint: ' + response.getBody());
-                throw new AuraHandledException('Error saving document to SharePoint: ' + response.getStatus());
-            }
-        } catch (Exception e) {
-            System.debug('Error saving document to SharePoint: ' + e.getMessage());
-            throw new AuraHandledException(e.getMessage());
-        }
-    }
-
-    @AuraEnabled
     public static String saveDocumentToSharePointViaFlow(String jsonpayload, String folderName) {
         try {
             PDFTron_ContentVersionPayload pl = new PDFTron_ContentVersionPayload(jsonpayload);
@@ -171,8 +112,12 @@ public with sharing class PDFTron_ContentVersionController {
             
             String encodedFileName = EncodingUtil.urlEncode(fileName, 'UTF-8');
 
+            Map<String, String> settings = FileControllerGraph.getSharePointSettings();
+            String siteUrl = settings.get('SharePoint_Site_URL');
+            String directoryPath = settings.get('SharePoint_Directory_Path');
+
             // Get the site ID dynamically
-            String siteId = FileControllerGraph.getSiteId();
+            String siteId = FileControllerGraph.getSiteId(siteUrl, directoryPath);
             
             // Graph API endpoint to upload the file
             String endpoint = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/drive/root:/' + encodedFolderName + '/' + encodedFileName + ':/content';
@@ -386,7 +331,7 @@ public with sharing class PDFTron_ContentVersionController {
                 } else if (key == 'FileType') {
                     doc.DocumentExtension__c = value;
                 } else if (key == 'Created') {
-                    doc.Created_Time__c = value; // Adjust this line according to your date field type
+                    doc.Created_Time__c = Date.valueOf(value); // Adjust this line according to your date field type
                 } else if (key == 'UniqueId') {
                     doc.DocumentID__c = value;
                 }

@@ -3,7 +3,7 @@ import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import { NavigationMixin, CurrentPageReference } from 'lightning/navigation';
 import LightningConfirm from 'lightning/confirm';
 import { fireEvent } from 'c/pubsub';
-import getSharePointSettings from '@salesforce/apex/FileController.getSharePointSettings';
+import getSharePointSettings from '@salesforce/apex/FileControllerGraph.getSharePointSettings';
 import uploadFileToSharePoint from '@salesforce/apex/FileControllerGraph.uploadFileToSharePoint';
 import processFiles from '@salesforce/apex/FileControllerGraph.processFiles';
 import fetchFilesFromSharePoint from '@salesforce/apex/FileControllerGraph.fetchFilesFromSharePoint';
@@ -126,10 +126,13 @@ export default class FileManager extends NavigationMixin(LightningElement) {
             .then(base64DataArray => {
                 base64DataArray.forEach((base64Data, index) => {
                     const file = uploadedFiles[index];
+                    // Decode the base64 encoeded data
+                    const binaryData = window.atob(base64Data);
+
                     uploadFileToSharePoint({
                         filePath: this.bvCaseName,
                         fileName: file.name,
-                        fileContent: base64Data,
+                        fileContent: binaryData,
                         documentType: this.fileType
                     })
                     .then(result => {
