@@ -11,7 +11,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
 
     @track tableDataObj = [];
 
-    //columnsMain is to store table headers; columns is to store all fields; sectionsMain is used to store section title
+    // columnsMain is to store table headers; columns is to store all fields; sectionsMain is used to store section title
     @track layoutSections = [];
     @track sectionsMain = [];
     @track recordData;
@@ -24,6 +24,9 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
     @track subRecordId;
     @track columnLayoutStyle = 2;
     @track emptySpaceIndices = [];
+    @track populatedLeftColumnFields = [];
+    @track populatedRightColumnFields = [];
+
     hasDataBeenUpdated = false;
     isModalOpen = false;
     isModalOpenDelete = false;
@@ -268,7 +271,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                                         type: 'text'
                                     };
 
-                                    //Section at index 0 contains table headers (filter by section so variables are separated)
+                                    // Section at index 0 contains table headers (filter by section so variables are separated)
                                     if (!this.isBVCase) {
                                         if (this.expandedView) {
                                             // Run the 0 index check when not bvCase and expanded view
@@ -403,6 +406,9 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
             this.sectionsMain.forEach(section => {
                 this.columnLayoutStyle = section.columns;
             });
+
+            // Populate left and right columns for expanded view
+            this.populateExpandedColumns();
         } else if (error) {
             this.dispatchEvent(
                 new ShowToastEvent({
@@ -413,7 +419,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
             );
         }
     }
-    
+
     // Helper method to get field value from a record
     getFieldValueFromRecord(record, apiName) {
         return record ? record[apiName] : null;
@@ -591,7 +597,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
         this.updateSortIcons();
     }
 
-    //Handle expanded view dropdown event
+    // Handle expanded view dropdown event
     expandSection(event) {
         const targetRowId = event.currentTarget.dataset.targetrow;
         console.log(targetRowId);
@@ -611,9 +617,9 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
         }
     }
 
-    //utility method to show blank object values in console
-    replacer(key, value){
-        if(value === undefined || value === null){
+    // Utility method to show blank object values in console
+    replacer(key, value) {
+        if (value === undefined || value === null) {
             return 'null';
         }
         return value;
@@ -758,6 +764,8 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
         this.isModalOpenDelete = false;
         this.expandedView = true;
         this.multipleRecords = false;
+        this.populatedLeftColumnFields = [];
+        this.populatedRightColumnFields = [];
     }
 
     preprocessKeys(data) {
@@ -955,5 +963,31 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
             };
             return newItem;
         });
+    }
+
+    get isTwoColumnLayout() {
+        return this.columnLayoutStyle === 2;
+    }
+
+    populateExpandedColumns() {
+        this.populatedLeftColumnFields = this.leftColumnFields
+            .filter(field => field.componentType !== 'EmptySpace')
+            .map(field => {
+                const fieldValue = this.recordData[0][field.apiName] || '—';
+                return {
+                    ...field,
+                    value: fieldValue
+                };
+            });
+    
+        this.populatedRightColumnFields = this.rightColumnFields
+            .filter(field => field.componentType !== 'EmptySpace')
+            .map(field => {
+                const fieldValue = this.recordData[0][field.apiName] || '—';
+                return {
+                    ...field,
+                    value: fieldValue
+                };
+            });
     }
 }
