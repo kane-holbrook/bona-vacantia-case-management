@@ -21,3 +21,9 @@
 .no-box-borders {
     border-radius: 0% !important;
 }
+
+.label-wrap {
+    max-width: 150px;
+    white-space: normal;
+    word-break: break-word;
+}
