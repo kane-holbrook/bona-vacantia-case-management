@@ -38,6 +38,16 @@
                                         onchange={handleInputChange}>
                                     </lightning-input>
                                 </template>
+                                <template if:true={item.isDate}>
+                                    <lightning-input 
+                                        type="date" 
+                                        data-record-id={item.recordId} 
+                                        name={item.fieldName} 
+                                        label={item.label} 
+                                        value={item.value}
+                                        onchange={handleInputChange}>
+                                    </lightning-input>
+                                </template>
                                 <template if:true={item.isDefault}>
                                     <template if:true={item.isNumber}>
                                         <lightning-input 
@@ -124,6 +134,16 @@
                                         onchange={handleInputChange}>
                                     </lightning-input>
                                 </template>
+                                <template if:true={item.isDate}>
+                                    <lightning-input 
+                                        type="date" 
+                                        data-record-id={item.recordId} 
+                                        name={item.fieldName} 
+                                        label={item.label} 
+                                        value={item.value}
+                                        onchange={handleInputChange}>
+                                    </lightning-input>
+                                </template>
                                 <template if:true={item.isDefault}>
                                     <template if:true={item.isNumber}>
                                         <lightning-input 
@@ -198,6 +218,16 @@
                                     name={item.fieldName} 
                                     label={item.label} 
                                     checked={item.checked} 
+                                    onchange={handleInputChange}>
+                                </lightning-input>
+                            </template>
+                            <template if:true={item.isDate}>
+                                <lightning-input 
+                                    type="date" 
+                                    data-record-id={item.recordId} 
+                                    name={item.fieldName} 
+                                    label={item.label} 
+                                    value={item.value}
                                     onchange={handleInputChange}>
                                 </lightning-input>
                             </template>

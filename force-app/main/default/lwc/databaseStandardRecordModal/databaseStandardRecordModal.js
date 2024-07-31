@@ -76,7 +76,8 @@ export default class DatabaseStandardRecordModal extends LightningElement {
                             length: length,
                             isPicklist: column.type === 'picklist',
                             isCheckbox: column.type === 'checkbox',
-                            isDefault: column.type !== 'picklist' && column.type !== 'checkbox' && column.type !== 'long-text',
+                            isDate: column.type === 'date',
+                            isDefault: column.type !== 'picklist' && column.type !== 'checkbox' && column.type !== 'long-text' && column.type !== 'date',
                             checked: column.type === 'checkbox' ? !!record[column.fieldName] : false,
                             options: column.type === 'picklist' ? [] : []
                         };
@@ -207,7 +208,7 @@ export default class DatabaseStandardRecordModal extends LightningElement {
             return record;
         });
 
-        this.splitFieldsByColumns();
+        //this.splitFieldsByColumns();
     }
 
     handleSave() {
