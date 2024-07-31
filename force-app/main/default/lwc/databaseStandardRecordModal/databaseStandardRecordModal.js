@@ -54,9 +54,11 @@ export default class DatabaseStandardRecordModal extends LightningElement {
                         let type = column.type;
                         let formatter = null;
                         let step = null;
+                        let max = null;
                         if (column.length) {
                             if (typeof column.length === 'object' && column.length.precision !== undefined && column.length.scale !== undefined) {
                                 length = column.length.precision;
+                                max = '9'.repeat(length - column.length.scale ) + (column.length.scale  > 0 ? '.' + '9'.repeat(column.length.scale) : '');
                                 if (column.type === 'currency') {
                                     type = 'number';
                                     formatter = 'currency';
@@ -66,8 +68,6 @@ export default class DatabaseStandardRecordModal extends LightningElement {
                                 length = column.length;
                             }
                         }
-
-                        console.log('column', column);
                         return {
                             label: column.label,
                             fieldName: column.fieldName,
@@ -76,6 +76,7 @@ export default class DatabaseStandardRecordModal extends LightningElement {
                             step: step,
                             value: record[column.fieldName] || '',
                             length: length,
+                            max: max,
                             isPicklist: column.type === 'picklist',
                             isCheckbox: column.type === 'checkbox',
                             isDate: column.type === 'date',
