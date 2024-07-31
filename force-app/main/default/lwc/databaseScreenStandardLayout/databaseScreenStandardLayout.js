@@ -212,7 +212,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                                             if (match) {
                                                 length = { precision: parseInt(match[1], 10), scale: parseInt(match[2], 10) };
                                             }
-                                        } else if (fieldType === 'Currency') {
+                                        } else if (fieldType.startsWith('Currency')) {
                                             columnType = 'currency';
                                             const match = fieldType.match(/\((\d+),\s*(\d+)\)/);
                                             if (match) {
