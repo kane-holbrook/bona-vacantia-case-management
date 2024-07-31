@@ -66,6 +66,8 @@ export default class DatabaseStandardRecordModal extends LightningElement {
                                 length = column.length;
                             }
                         }
+
+                        console.log('column', column);
                         return {
                             label: column.label,
                             fieldName: column.fieldName,
