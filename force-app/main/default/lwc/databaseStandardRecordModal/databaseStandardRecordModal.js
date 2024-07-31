@@ -212,16 +212,24 @@ export default class DatabaseStandardRecordModal extends LightningElement {
     }
 
     handleSave() {
-        // // Check if at least one field is filled
-        // const isAtLeastOneFieldFilled = this.combinedData.some(record => {
-        //     return record.fields.some(field => field.value || field.checked);
-        // });
+        // Get all input elements
+        const inputs = this.template.querySelectorAll('lightning-input, lightning-combobox, lightning-textarea');
+        
+        // Check if all inputs are valid
+        let allInputsValid = true;
+        inputs.forEach(input => {
+            if (!input.reportValidity()) {
+                allInputsValid = false;
+            }
+        });
     
-        // if (!isAtLeastOneFieldFilled) {
-        //     this.showErrorMessage = true;
-        //     return;
-        // }
+        // If any input is invalid, show an error message and do not proceed with save
+        if (!allInputsValid) {
+            this.showErrorMessage = true;
+            return;
+        }
     
+        // Proceed with save operation if all inputs are valid
         this.showErrorMessage = false;
     
         this.combinedData.forEach(record => {
