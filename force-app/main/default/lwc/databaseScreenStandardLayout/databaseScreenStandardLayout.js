@@ -970,24 +970,38 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
     }
 
     populateExpandedColumns() {
-        this.populatedLeftColumnFields = this.leftColumnFields
-            .filter(field => field.componentType !== 'EmptySpace')
-            .map(field => {
-                const fieldValue = this.recordData[0][field.apiName] || '—';
-                return {
-                    ...field,
-                    value: fieldValue
-                };
-            });
+        const blankField = {
+            label: '',
+            value: '',
+            labelKey: 'empty-label',
+            valueKey: 'empty-value',
+            style: 'min-height: 20px;' // Adjust this value to match the height of one line of text
+        };
     
-        this.populatedRightColumnFields = this.rightColumnFields
-            .filter(field => field.componentType !== 'EmptySpace')
-            .map(field => {
-                const fieldValue = this.recordData[0][field.apiName] || '—';
-                return {
-                    ...field,
-                    value: fieldValue
-                };
-            });
+        this.populatedLeftColumnFields = this.leftColumnFields.map(field => {
+            if (field.componentType === 'EmptySpace') {
+                return { ...blankField };
+            }
+            const fieldValue = this.recordData[0][field.apiName] || '—';
+            return {
+                ...field,
+                value: fieldValue,
+                labelKey: `${field.apiName}-label`,
+                valueKey: `${field.apiName}-value`
+            };
+        });
+    
+        this.populatedRightColumnFields = this.rightColumnFields.map(field => {
+            if (field.componentType === 'EmptySpace') {
+                return { ...blankField };
+            }
+            const fieldValue = this.recordData[0][field.apiName] || '—';
+            return {
+                ...field,
+                value: fieldValue,
+                labelKey: `${field.apiName}-label`,
+                valueKey: `${field.apiName}-value`
+            };
+        });
     }
 }

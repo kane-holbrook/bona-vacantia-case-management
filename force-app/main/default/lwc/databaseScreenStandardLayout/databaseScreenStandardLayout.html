@@ -102,7 +102,7 @@
                                                             <template if:true={field.insertDivider}>
                                                                 <div class="slds-section slds-m-vertical_large" style="border-top: 1px solid #d8dde6;" key={field.dividerKey}></div>
                                                             </template>
-                                                            <div class="slds-dl_horizontal" key={field.labelKey}>
+                                                            <div class="slds-dl_horizontal" key={field.labelKey} style={field.style}>
                                                                 <dt class="slds-dl_horizontal__label label-wrap-less" key={field.labelKey} title={field.label} style="font-weight: bold;">{field.label}</dt>
                                                                 <dd class="slds-dl_horizontal__detail less-horizontal-width wrap-label-value" key={field.valueKey} title={field.value}>{field.value}</dd>
                                                             </div>
@@ -114,7 +114,7 @@
                                                             <template if:true={field.insertDivider}>
                                                                 <div class="slds-section slds-m-vertical_large" style="border-top: 1px solid #d8dde6;" key={field.dividerKey}></div>
                                                             </template>
-                                                            <div class="slds-dl_horizontal" key={field.labelKey}>
+                                                            <div class="slds-dl_horizontal" key={field.labelKey} style={field.style}>
                                                                 <dt class="slds-dl_horizontal__label label-wrap-less" key={field.labelKey} title={field.label} style="font-weight: bold;">{field.label}</dt>
                                                                 <dd class="slds-dl_horizontal__detail less-horizontal-width wrap-label-value" key={field.valueKey} title={field.value}>{field.value}</dd>
                                                             </div>
