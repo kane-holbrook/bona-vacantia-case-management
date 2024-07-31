@@ -27,3 +27,20 @@
     white-space: normal;
     word-break: break-word;
 }
+
+.label-wrap-less {
+    max-width: 200px;
+    white-space: normal;
+    word-break: break-word;
+    width: 60% !important;
+}
+
+.wrap-label-value {
+    max-width: 150px;
+    white-space: normal;
+    word-break: break-word;
+}
+
+.less-horizontal-width {
+    width: 40% !important;
+}
