@@ -957,11 +957,18 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
 
     get tableDataWithIndex() {
         return this.tableDataObj.map((item, index) => {
-            const newItem = {
+            const formattedCells = item.Cells.map(cell => {
+                return {
+                    ...cell,
+                    value: this.formatDateField(cell.value)
+                };
+            });
+
+            return {
                 ...item,
-                rowIndex: index + 1
+                rowIndex: index + 1,
+                Cells: formattedCells
             };
-            return newItem;
         });
     }
 
@@ -983,9 +990,10 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                 return { ...blankField };
             }
             const fieldValue = (this.recordData && this.recordData[0] && this.recordData[0][field.apiName]) || '—';
+            const formattedValue = this.formatDateField(fieldValue);
             return {
                 ...field,
-                value: fieldValue,
+                value: formattedValue,
                 labelKey: `${field.apiName}-label`,
                 valueKey: `${field.apiName}-value`
             };
@@ -996,12 +1004,21 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                 return { ...blankField };
             }
             const fieldValue = (this.recordData && this.recordData[0] && this.recordData[0][field.apiName]) || '—';
+            const formattedValue = this.formatDateField(fieldValue);
             return {
                 ...field,
-                value: fieldValue,
+                value: formattedValue,
                 labelKey: `${field.apiName}-label`,
                 valueKey: `${field.apiName}-value`
             };
         });
+    }
+
+    formatDateField(fieldValue) {
+        if (typeof fieldValue === 'string' && fieldValue.match(/^\d{4}-\d{2}-\d{2}$/)) {
+            const [year, month, day] = fieldValue.split('-');
+            return `${day}/${month}/${year}`;
+        }
+        return fieldValue;
     }
 }
