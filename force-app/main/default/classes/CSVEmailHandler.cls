@@ -35,9 +35,15 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
             List<String> acceptedCompanies = new List<String>();
 
             if (errorMessages.isEmpty() && !casesToCreate.isEmpty()) {
+                // Check for duplicates
+                Set<String> existingCompanyNumbers = getExistingCompanyNumbers(casesToCreate);
                 List<BV_Case__c> casesToInsert = new List<BV_Case__c>();
 
                 for (BV_Case__c caseRecord : casesToCreate) {
+                    if (existingCompanyNumbers.contains(caseRecord.Company_No__c)) {
+                        errorMessages.add('Duplicate company number found: ' + caseRecord.Company_No__c + ' - Company Name: ' + caseRecord.Name);
+                        continue;
+                    }
                     String postalCode = fetchPostCode(caseRecord.Company_No__c);
                     Integer jurisdictionStatus = handleJurisdictionCheck(postalCode);
 
@@ -51,7 +57,11 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
                     }
                 }
 
-                if (!casesToInsert.isEmpty()) {
+                if(!errorMessages.isEmpty()) {
+                    sendErrorEmail(email.fromAddress, errorMessages);
+                    result.success = false;
+                    return result;
+                } else if (!casesToInsert.isEmpty()) {
                     insert casesToInsert; // Insert the cases if they are within jurisdiction
                 }
 
@@ -73,36 +83,76 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
     private List<BV_Case__c> parseCSV(String csvContent, List<String> errorMessages) {
         List<BV_Case__c> cases = new List<BV_Case__c>();
         List<String> csvLines = csvContent.split('\n');
+        Set<String> companyNumbersInCSV = new Set<String>();
+
+        if (csvLines.size() <= 1) {
+            errorMessages.add('CSV does not contain any data rows after the header.');
+            return cases;
+        }
+
+        // Check the headers
+        if (!validateCSVHeaders(csvLines[0], errorMessages)) {
+            return cases;
+        }
 
         for (Integer i = 1; i < csvLines.size(); i++) {
             String line = csvLines[i];
             List<String> columns = parseCSVLine(line);
 
-            if (columns.size() >= 5) {
+            if (columns.size() == 6) {
                 BV_Case__c caseRecord = new BV_Case__c();
                 Boolean isValid = true;
 
+                for (Integer j = 0; j < columns.size(); j++) {
+                    if (columns[j].trim() == '' || columns[j].trim() == null){
+                        errorMessages.add('Row ' + i + ': Missing value in column ' + (j + 1));
+                        isValid = false;
+                    }
+                }
+                
                 caseRecord.Company_No__c = columns[0];
+
+                if (!isCompanyNumberValid(caseRecord.Company_No__c)) {
+                    errorMessages.add('Row ' + i + ': Company number not found in the Companies House: ' + caseRecord.Company_No__c);
+                    isValid = false;
+                }
+
+                if (companyNumbersInCSV.contains(caseRecord.Company_No__c)) {
+                    errorMessages.add('Row ' + i + ': Duplicate company number found within CSV: ' + caseRecord.Company_No__c);
+                    isValid = false;
+                } else {
+                    companyNumbersInCSV.add(caseRecord.Company_No__c);
+                }
 
                 try {
                     caseRecord.Date_Dissolved__c = Date.valueOf(columns[1]);
-                    System.debug('Date_Dissolved__c: ' + caseRecord.Date_Dissolved__c);
                 } catch (Exception e) {
                     errorMessages.add('Row ' + i + ': Error converting Date_Dissolved__c to Date: ' + columns[1]);
                     isValid = false;
                 }
 
                 caseRecord.Rm_Reference__c = columns[2];
-                System.debug('Rm_Reference__c: ' + caseRecord.Rm_Reference__c);
-                caseRecord.Case_Name__c = columns[3];
-                caseRecord.Name = columns[3];
-                System.debug('Case_Name__c: ' + caseRecord.Case_Name__c);
+                caseRecord.Case_Name__c = columns[3].toUpperCase();
+                caseRecord.Name = columns[3].toUpperCase();
+
+                String apiCompanyName = fetchCompanyName(caseRecord.Company_No__c);
+                if (!caseRecord.Name.equals(apiCompanyName)) {
+                    errorMessages.add('Row ' + i + ': Company name mismatch. Company Name in the CSV: ' + caseRecord.Name + ' - Company Name in Company House: ' + apiCompanyName);
+                    isValid = false;
+                }
 
                 try {
                     caseRecord.Date_Received__c = Date.valueOf(columns[4]);
-                    System.debug('Date_Received__c: ' + caseRecord.Date_Received__c);
                 } catch (Exception e) {
                     errorMessages.add('Row ' + i + ': Error converting Date_Received__c to Date: ' + columns[4]);
+                    isValid = false;
+                }
+
+                try {
+                    String amountCollected = columns[5].trim().replace(',', '');
+                    caseRecord.Amount_Collected__c = Decimal.valueOf(amountCollected);
+                } catch (Exception e) {
+                    errorMessages.add('Row ' + i + ': Error converting Amount_Collected__c to Decimal: ' + columns[5]);
                     isValid = false;
                 }
 
@@ -115,8 +165,45 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
                 errorMessages.add('Row ' + i + ': CSV line does not have the expected number of columns: ' + line);
             }
         }
+
         return cases;
     }
+
+    // Validate CSV headers
+    private Boolean validateCSVHeaders(String headerLine, List<String> errorMessages) {
+        List<String> expectedHeaders = new List<String>{
+            'Company Number',
+            'Date of Dissolution',
+            'Reference Number',
+            'Company name',
+            'Date Monies Transferred',
+            'Amount to be transferred'
+        };
+        List<String> actualHeaders = parseCSVLine(headerLine);
+    
+        Boolean headersValid = true;
+    
+        if (actualHeaders.size() != expectedHeaders.size()) {
+            errorMessages.add('CSV headers do not match the expected number of columns.');
+            errorMessages.add('Here are the expected headers: ' + String.join(expectedHeaders, ', '));
+            headersValid = false;
+        } else {
+            List<String> mismatchedHeaders = new List<String>();
+            for (Integer i = 0; i < expectedHeaders.size(); i++) {
+                if (actualHeaders[i].trim() != expectedHeaders[i]) {
+                    mismatchedHeaders.add('Expected: ' + expectedHeaders[i] + ', Found: ' + actualHeaders[i]);
+                    headersValid = false;
+                }
+            }
+            if (!mismatchedHeaders.isEmpty()) {
+                errorMessages.add('CSV header mismatches found:');
+                errorMessages.addAll(mismatchedHeaders);
+            }
+        }
+    
+        return headersValid;
+    }
+    
 
     // Parse a CSV line
     private List<String> parseCSVLine(String line) {
@@ -136,6 +223,49 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
         }
         result.add(current);
         return result;
+    }
+
+    // Check if the company number is valid
+    private Boolean isCompanyNumberValid(String companyNumber) {
+        String endpoint = '/company/' + companyNumber;
+        System.debug('Endpoint: ' + endpoint);
+
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint('callout:Companies_House_Named' + endpoint);
+        req.setMethod('GET');
+
+        Http http = new Http();
+        HttpResponse res = http.send(req);
+
+        if (res.getStatusCode() == 200) {
+            Map<String, Object> responseMap = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
+            return responseMap.containsKey('company_number');
+        }
+
+        return false;
+    }
+
+    // Fetch the company name
+    private String fetchCompanyName(String companyNumber) {
+        String companyName = '';
+        String endpoint = '/company/' + companyNumber;
+        System.debug('Endpoint: ' + endpoint);
+        
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint('callout:Companies_House_Named' + endpoint);
+        req.setMethod('GET');
+
+        Http http = new Http();
+        HttpResponse res = http.send(req);
+
+        if (res.getStatusCode() == 200) {
+            Map<String, Object> responseMap = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
+            if (responseMap.containsKey('company_name')) {
+                companyName = ((String) responseMap.get('company_name')).toUpperCase();
+            }
+        }
+
+        return companyName;
     }
 
     // Fetch the postcode
@@ -160,7 +290,7 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
                 }
             }
         }
-        System.debug('Postal Code: ' + postalCode);
+
         return postalCode;
     }
 
@@ -226,5 +356,26 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
         email.setPlainTextBody(body);
 
         Messaging.sendEmail(new Messaging.SingleEmailMessage[] { email });
+    }
+
+    // Fetch existing company numbers from the system
+    private Set<String> getExistingCompanyNumbers(List<BV_Case__c> casesToCreate) {
+        Set<String> companyNumbers = new Set<String>();
+        for (BV_Case__c caseRecord : casesToCreate) {
+            companyNumbers.add(caseRecord.Company_No__c);
+        }
+
+        List<BV_Case__c> existingCases = [
+            SELECT Company_No__c 
+            FROM BV_Case__c 
+            WHERE Company_No__c IN :companyNumbers
+        ];
+
+        Set<String> existingCompanyNumbers = new Set<String>();
+        for (BV_Case__c existingCase : existingCases) {
+            existingCompanyNumbers.add(existingCase.Company_No__c);
+        }
+
+        return existingCompanyNumbers;
     }
 }
