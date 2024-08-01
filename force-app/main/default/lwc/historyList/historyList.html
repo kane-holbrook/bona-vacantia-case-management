@@ -153,9 +153,6 @@
                                         </td>
                                         <td data-label="Date">
                                             <div class="slds-grid slds-align_absolute-center">
-                                                <template if:true={relatedItem.showAttachmentIcon}>
-                                                    <lightning-icon icon-name="utility:attach" alternative-text="Attachment" size="small" class="slds-m-right_x-small"></lightning-icon>
-                                                </template>
                                                 <lightning-formatted-date-time value={relatedItem.Created_Time__c} year="numeric" month="2-digit" day="2-digit" day-style="2-digit" month-style="2-digit" timezone="UTC"></lightning-formatted-date-time>
                                             </div>
                                         </td>
@@ -165,7 +162,14 @@
                                                 <lightning-icon icon-name="utility:check" alternative-text="Has Details" size="x-small"></lightning-icon>
                                             </template>
                                         </td>
-                                        <td data-label="Document Type">{relatedItem.DocumentType__c}</td>
+                                        <td data-label="Document Type">
+                                            <div class="slds-grid slds-align_absolute-center">
+                                                {relatedItem.DocumentType__c}
+                                                <template if:true={relatedItem.showAttachmentIcon}>
+                                                    <lightning-icon icon-name="utility:attach" alternative-text="Attachment" size="small" class="slds-m-left_x-small"></lightning-icon>
+                                                </template>
+                                            </div>
+                                        </td>
                                         <td data-label="File Size">{relatedItem.fileSize}</td>
                                         <td data-label="Draft">{relatedItem.Draft__c}</td>
                                         <td data-label="Case Officer">{relatedItem.Case_Officer_Name}</td>
