@@ -29,3 +29,11 @@
 .accordion-content-margin {
     margin-left: 4.3em;
 }
+
+.critical-icon {
+    --slds-c-icon-color-foreground-default: #8e030f;
+}
+
+.high-icon {
+    --slds-c-icon-color-foreground-default: #194e31;
+}

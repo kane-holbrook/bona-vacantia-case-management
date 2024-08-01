@@ -1,7 +1,7 @@
 <template>
     <template if:true={isTaskDetailVisible}>
         <a onclick={handleTaskDetailClose} class="slds-text-body_small">Return to task list</a>
-        <c-task-detail record-id={currentRecordId} onclose={handleTaskDetailClose}></c-task-detail>
+        <c-task-detail record-id={currentRecordId} onclose={handleTaskDetailClose} ontaskdeleted={handleTaskDetailClose}></c-task-detail>
     </template>
     <template if:false={isTaskDetailVisible}>
         <article class="slds-card card-background">
@@ -36,6 +36,9 @@
                     </div>
                     <div class="slds-col slds-size_1-of-2 slds-grid slds-wrap slds-grid_align-end">
                         <lightning-input type="text" placeholder="Search tasks" variant="label-hidden" class="slds-m-bottom_small slds-col slds-size_1-of-3" onchange={handleSearchInputChange}></lightning-input>
+                        <template if:true={searchKey}>
+                            <lightning-button-icon icon-name="utility:close" alternative-text="Clear" variant="bare" class="slds-input__icon slds-input__icon_right" onclick={handleClearSearch}></lightning-button-icon>
+                        </template>
                     </div>
                 </div>
                 <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_col-bordered">
@@ -45,8 +48,8 @@
                                 <div class="slds-truncate" title="Expand"></div>
                             </th>
                             <th scope="col">
-                                <button class="slds-button slds-button_reset slds-truncate" title="Due" onclick={handleSort} data-column="Due__c">
-                                    Due
+                                <button class="slds-button slds-button_reset slds-truncate" title="Due Date" onclick={handleSort} data-column="Due_Date__c">
+                                    Due Date
                                     <template if:true={isSortedByDue}>
                                         <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
                                     </template>
@@ -56,30 +59,6 @@
                                 <button class="slds-button slds-button_reset slds-truncate" title="Description" onclick={handleSort} data-column="Description__c">
                                     Description
                                     <template if:true={isSortedByDescription}>
-                                        <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
-                                    </template>
-                                </button>
-                            </th>
-                            <th scope="col">
-                                <button class="slds-button slds-button_reset slds-truncate" title="Document Type" onclick={handleSort} data-column="Document_Type__c">
-                                    Document Type
-                                    <template if:true={isSortedByDocumentType}>
-                                        <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
-                                    </template>
-                                </button>
-                            </th>
-                            <th scope="col">
-                                <button class="slds-button slds-button_reset slds-truncate" title="Correspondence" onclick={handleSort} data-column="Correspondence__c">
-                                    Correspondence
-                                    <template if:true={isSortedByCorrespondence}>
-                                        <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
-                                    </template>
-                                </button>
-                            </th>
-                            <th scope="col">
-                                <button class="slds-button slds-button_reset slds-truncate" title="Draft" onclick={handleSort} data-column="Draft__c">
-                                    Draft
-                                    <template if:true={isSortedByDraft}>
                                         <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
                                     </template>
                                 </button>
@@ -101,7 +80,7 @@
                                 </button>
                             </th>
                             <th scope="col">
-                                <div class="slds-truncate" title="Actions">Actions</div>
+                                <div class="slds-truncate" title="Actions"></div>
                             </th>
                         </tr>
                     </thead>
@@ -123,9 +102,6 @@
                                     <lightning-formatted-date-time value={item.Due_Date__c} year="numeric" month="2-digit" day="2-digit" day-style="2-digit" month-style="2-digit" timezone="UTC"></lightning-formatted-date-time>
                                 </td>
                                 <td data-label="Description">{item.Name}</td>
-                                <td data-label="Document Type">{item.Document_Type__c}</td>
-                                <td data-label="Correspondence">{item.Correspondence__c}</td>
-                                <td data-label="Draft">{item.Draft__c}</td>
                                 <td data-label="Priority">
                                     <template if:true={item.isCritical}>
                                         <lightning-icon icon-name="utility:info" alternative-text="Info" size="small" class="critical-icon slds-m-right_x-small"></lightning-icon>
@@ -151,12 +127,9 @@
                                             <span class="task-number subtask-number">{subTask.number}</span>
                                         </td>
                                         <td data-label="Due">
-                                            <lightning-formatted-date-time value={subTask.Due__c} year="numeric" month="2-digit" day="2-digit" day-style="2-digit" month-style="2-digit" timezone="UTC"></lightning-formatted-date-time>
+                                            <lightning-formatted-date-time value={subTask.Due_Date__c} year="numeric" month="2-digit" day="2-digit" day-style="2-digit" month-style="2-digit" timezone="UTC"></lightning-formatted-date-time>
                                         </td>
                                         <td data-label="Description">{subTask.Description__c}</td>
-                                        <td data-label="Document Type">{subTask.Document_Type__c}</td>
-                                        <td data-label="Correspondence">{subTask.Correspondence__c}</td>
-                                        <td data-label="Draft">{subTask.Draft__c}</td>
                                         <td data-label="Priority">
                                             <template if:true={subTask.isCritical}>
                                                 <lightning-icon icon-name="utility:info" alternative-text="Info" size="small" class="critical-icon slds-m-right_x-small"></lightning-icon>
@@ -168,15 +141,12 @@
                                         </td>
                                         <td data-label="Case Officer">{subTask.Case_Officer_Name}</td>
                                         <td data-label="Actions">
-                                            <lightning-button-menu alternative-text="Actions" icon-name="utility:down" menu-alignment="right" onclick={stopPropagation}>
-                                                <lightning-menu-item label="Manage" data-id={subTask.Id} onclick={handleViewEdit}></lightning-menu-item>
-                                                <lightning-menu-item label="Delete" data-id={subTask.Id} onclick={handleDeleteOpen}></lightning-menu-item>
-                                            </lightning-button-menu>
+                                            <!-- Actions removed for sub-tasks -->
                                         </td>
                                     </tr>
                                 </template>
-                            </template>
-                        </template>
+                            </template>                            
+                        </template>                        
                     </tbody>
                 </table>
             </div>
@@ -216,7 +186,7 @@
                     <h2 class="slds-text-heading_medium">Are you sure you want to delete this task item?</h2>
                 </header>
                 <div class="slds-modal__content slds-p-around_medium">
-                    <c-task-delete-modal record-id={currentRecordId}></c-task-delete-modal>
+                    <c-task-delete-modal record-id={currentRecordId} onclick={closeDeleteModal} ontaskdeleted={handleDeleteSuccess}></c-task-delete-modal>
                 </div>
                 <footer class="slds-modal__footer">
                     <button class="slds-button slds-button_neutral" onclick={closeDeleteModal}>Cancel</button>

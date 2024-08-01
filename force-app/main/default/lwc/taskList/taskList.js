@@ -18,8 +18,8 @@ export default class TaskList extends LightningElement {
     @track lastUpdated = 0;
     @track currentRecord = {};
     @track searchKey = '';
-    @track sortOrder = 'desc';
-    @track sortOrderIcon = 'utility:arrowdown';
+    @track sortOrder = 'asc';
+    @track sortOrderIcon = 'utility:arrowup';
     @track sortedBy = 'Due_Date__c';
     @track selectedTaskType = 'allTasks';  // Default selection
     @track currentUserId;  // To store the current user's ID
@@ -32,6 +32,14 @@ export default class TaskList extends LightningElement {
         { label: 'My tasks', value: 'myTasks' },
         { label: 'Others tasks', value: 'othersTasks' }
     ];
+
+    sortLabels = {
+        'Due__c': 'Due',
+        'Description__c': 'Description',
+        'Priority__c': 'Priority',
+        'Case_Officer_Name__c': 'Case Officer',
+        'Due_Date__c' : 'Due Date'
+    };
 
     connectedCallback() {
         this.recordId = getRecordId();
@@ -86,43 +94,69 @@ export default class TaskList extends LightningElement {
             iconName: this.getIconName(false),
             rowClass: this.getRowClass(item),
             flagIconClass: item.Flag_as_important__c ? 'icon-important' : 'icon-default',
-            SubTasks: item.BV_Tasks1__r ? item.BV_Tasks1__r.map(subTask => ({
-                ...subTask,
-                rowClass: this.getRowClass(subTask),
-                isCritical: subTask.Priority__c === 'Critical',
-                isHigh: subTask.Priority__c === 'High'
-            })) : [],
+            SubTasks: item.BV_Tasks1__r ? item.BV_Tasks1__r
+                .map(subTask => ({
+                    ...subTask,
+                    rowClass: this.getRowClass(subTask),
+                    isCritical: subTask.Priority__c === 'Critical',
+                    isHigh: subTask.Priority__c === 'High',
+                    Due_Date__c: subTask.Due_Date__c,
+                    Case_Officer_Name: this.userNames[subTask.Assigned_To__c] || subTask.Assigned_To__c,
+                    Description__c: subTask.Description__c || subTask.Name // Ensure Description__c is set
+                }))
+                .sort((a, b) => new Date(a.Due_Date__c) - new Date(b.Due_Date__c)) : [],  // Sort by Due_Date__c
             isCritical: item.Priority__c === 'Critical',
-            isHigh: item.Priority__c === 'High'
+            isHigh: item.Priority__c === 'High',
+            Description__c: item.Description__c || item.Name // Ensure Description__c is set
         }));
-        const userIds = this.taskItems.map(item => item.Assigned_To__c);
-        this.fetchUserNames(userIds);
+    
+        // Collect all user IDs from both tasks and sub-tasks
+        const userIds = this.taskItems.reduce((ids, item) => {
+            ids.add(item.Assigned_To__c);
+            if (item.SubTasks) {
+                item.SubTasks.forEach(subTask => ids.add(subTask.Assigned_To__c));
+            }
+            return ids;
+        }, new Set());
+    
+        this.fetchUserNames([...userIds]);
         this.updateLastUpdated();
         this.assignNumbers();
         this.filterTaskItems();
+        this.sortTaskItems();
     }
+    
 
     fetchUserNames(userIds) {
         getUserNames({ userIds })
             .then(result => {
                 this.userNames = result;
-                this.taskItems = this.taskItems.map(item => ({
-                    ...item,
-                    Case_Officer_Name: this.userNames[item.Assigned_To__c] || item.Assigned_To__c
-                }));
+    
+                // Update Case_Officer_Name for both main tasks and sub-tasks
+                this.taskItems = this.taskItems.map(item => {
+                    item.Case_Officer_Name = this.userNames[item.Assigned_To__c] || item.Assigned_To__c;
+                    if (item.SubTasks) {
+                        item.SubTasks = item.SubTasks.map(subTask => ({
+                            ...subTask,
+                            Case_Officer_Name: this.userNames[subTask.Assigned_To__c] || subTask.Assigned_To__c
+                        }));
+                    }
+                    return item;
+                });
+    
                 this.assignNumbers();
                 this.filterTaskItems();
             })
             .catch(error => {
                 this.showToast('Error', 'Error fetching user names', 'error');
             });
-    }
+    }    
 
     refreshTaskItems() {
         if (this.selectedTaskType === 'myTasks') {
-            refreshApex(this.wiredOpenTasks);
+            refreshApex(this.wiredTaskItemsResult);
         } else if (this.selectedTaskType === 'othersTasks') {
-            refreshApex(this.wiredOtherTasks);
+            refreshApex(this.wiredTaskItemsResult);
         } else {
             refreshApex(this.wiredTaskItemsResult);
         }
@@ -170,8 +204,9 @@ export default class TaskList extends LightningElement {
         this.currentRecordId = event.currentTarget.dataset.id;
         const record = this.taskItems.find(item => item.Id === this.currentRecordId);
         this.currentRecord = { ...record };
-
-        this.isModalOpen = true;
+    
+        // Redirect to the task detail page instead of opening the edit modal
+        this.isTaskDetailVisible = true;
     }
 
     handleDeleteOpen(event) {
@@ -210,7 +245,6 @@ export default class TaskList extends LightningElement {
     }
 
     handleSaveSuccess() {
-        console.log('Saved successfully');
         this.isModalOpen = false;
         this.refreshTaskItems();
     }
@@ -239,12 +273,22 @@ export default class TaskList extends LightningElement {
 
     sortTaskItems() {
         this.taskItems.sort((a, b) => {
-            const valA = a[this.sortedBy] ? a[this.sortedBy].toLowerCase() : '';
-            const valB = b[this.sortedBy] ? b[this.sortedBy].toLowerCase() : '';
-
+            let valA, valB;
+    
+            if (this.sortedBy === 'Case_Officer_Name__c') {
+                valA = this.userNames[a.Assigned_To__c]?.toLowerCase() || '';
+                valB = this.userNames[b.Assigned_To__c]?.toLowerCase() || '';
+            } else if (this.sortedBy === 'Description__c') {
+                valA = a.Description__c ? a.Description__c.toLowerCase() : '';
+                valB = b.Description__c ? b.Description__c.toLowerCase() : '';
+            } else {
+                valA = a[this.sortedBy] ? a[this.sortedBy].toLowerCase() : '';
+                valB = b[this.sortedBy] ? b[this.sortedBy].toLowerCase() : '';
+            }
+    
             if (valA === '' || valA === null || valA === undefined) return 1;
             if (valB === '' || valB === null || valB === undefined) return -1;
-
+    
             if (valA < valB) {
                 return this.sortOrder === 'asc' ? -1 : 1;
             } else if (valA > valB) {
@@ -255,7 +299,7 @@ export default class TaskList extends LightningElement {
         this.assignNumbers();
         this.filterTaskItems();
     }
-
+    
     filterTaskItems() {
         this.assignNumbers();
         this.filteredTaskItems = this.taskItems.filter(item => {
@@ -263,35 +307,82 @@ export default class TaskList extends LightningElement {
             const searchMatch = this.searchKey ? (
                 (item.Name?.toLowerCase() ?? '').includes(searchKeyLower) ||
                 (item.Description__c?.toLowerCase() ?? '').includes(searchKeyLower) ||
-                (item.Document_Type__c?.toLowerCase() ?? '').includes(searchKeyLower) ||
-                (item.Correspondence__c?.toLowerCase() ?? '').includes(searchKeyLower) ||
-                (item.Draft__c?.toLowerCase() ?? '').includes(searchKeyLower) ||
                 (item.Priority__c?.toLowerCase() ?? '').includes(searchKeyLower) ||
                 (item.Case_Officer_Name?.toLowerCase() ?? '').includes(searchKeyLower)
             ) : true;
-
-            const taskTypeMatch = this.selectedTaskType === 'allTasks' || 
-                              (this.selectedTaskType === 'myTasks' && item.Assigned_To__c === this.currentUserId) ||
-                              (this.selectedTaskType === 'myOpenTasks' && item.Assigned_To__c === this.currentUserId && !item.Complete__c) ||
-                              (this.selectedTaskType === 'othersTasks' && item.Assigned_To__c !== this.currentUserId);
-
-            return searchMatch && taskTypeMatch;
+    
+            const subTaskMatch = this.searchKey && item.SubTasks ? item.SubTasks.some(subTask =>
+                (subTask.Name?.toLowerCase() ?? '').includes(searchKeyLower) ||
+                (subTask.Description__c?.toLowerCase() ?? '').includes(searchKeyLower) ||
+                (subTask.Priority__c?.toLowerCase() ?? '').includes(searchKeyLower) ||
+                (subTask.Case_Officer_Name?.toLowerCase() ?? '').includes(searchKeyLower)
+            ) : false;
+    
+            const taskTypeMatch = this.selectedTaskType === 'allTasks' ||
+                (this.selectedTaskType === 'myTasks' && 
+                    (item.Assigned_To__c === this.currentUserId || 
+                    item.SubTasks.some(subTask => subTask.Assigned_To__c === this.currentUserId))) ||
+                (this.selectedTaskType === 'othersTasks' && 
+                    (item.Assigned_To__c !== this.currentUserId || 
+                    item.SubTasks.some(subTask => subTask.Assigned_To__c !== this.currentUserId)));
+    
+            return (searchMatch || subTaskMatch) && taskTypeMatch;
+        });
+    
+        // Filter sub-tasks based on the selected task type
+        this.filteredTaskItems = this.filteredTaskItems.map(item => {
+            if (this.selectedTaskType === 'myTasks') {
+                return {
+                    ...item,
+                    SubTasks: item.SubTasks.filter(subTask => subTask.Assigned_To__c === this.currentUserId)
+                };
+            } else if (this.selectedTaskType === 'othersTasks') {
+                return {
+                    ...item,
+                    SubTasks: item.SubTasks.filter(subTask => subTask.Assigned_To__c !== this.currentUserId)
+                };
+            }
+            return item;
         });
     }
-
+    
     handleTaskTypeChange(event) {
         this.selectedTaskType = event.detail.value;
         this.refreshTaskItems();
         this.filterTaskItems();
     }
 
+    handleClearSearch() {
+        this.searchKey = '';
+        this.filterTaskItems();
+        const searchInput = this.template.querySelector('lightning-input');
+        if (searchInput) {
+            searchInput.value = '';
+        }
+    }
+    
     handleRowDoubleClick(event) {
-        this.currentRecordId = event.currentTarget.dataset.id;
+        const clickedId = event.currentTarget.dataset.id;
+        let mainTaskId = clickedId;
+    
+        // Find the main task if the clicked item is a sub-task
+        this.taskItems.forEach(task => {
+            if (task.SubTasks) {
+                task.SubTasks.forEach(subTask => {
+                    if (subTask.Id === clickedId) {
+                        mainTaskId = task.Id;
+                    }
+                });
+            }
+        });
+    
+        this.currentRecordId = mainTaskId;
         this.isTaskDetailVisible = true;
     }
 
     handleTaskDetailClose() {
         this.isTaskDetailVisible = false;
+        this.refreshTaskItems();
     }
 
     assignNumbers() {
@@ -318,7 +409,8 @@ export default class TaskList extends LightningElement {
     }
 
     get sortedByText() {
-        return `Sorted by ${this.sortedBy} ${this.sortOrder} - Filtered by ${this.selectedTaskType === 'allTasks' ? 'All tasks' : this.selectedTaskType === 'myTasks' ? 'My tasks' : 'Others tasks'}`;
+        const displaySortedBy = this.sortLabels[this.sortedBy] || this.sortedBy;
+        return `Sorted by ${displaySortedBy} ${this.sortOrder} - Filtered by ${this.selectedTaskType === 'allTasks' ? 'All tasks' : this.selectedTaskType === 'myTasks' ? 'My tasks' : 'Others tasks'}`;
     }
 
     get isSortedByDue() {
@@ -327,18 +419,6 @@ export default class TaskList extends LightningElement {
 
     get isSortedByDescription() {
         return this.sortedBy === 'Description__c';
-    }
-
-    get isSortedByDocumentType() {
-        return this.sortedBy === 'Document_Type__c';
-    }
-
-    get isSortedByCorrespondence() {
-        return this.sortedBy === 'Correspondence__c';
-    }
-
-    get isSortedByDraft() {
-        return this.sortedBy === 'Draft__c';
     }
 
     get isSortedByPriority() {

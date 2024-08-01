@@ -6,8 +6,12 @@
                 <span class="slds-size_3-of-4">{taskName}</span>
             </p>
             <p class="slds-grid slds-wrap">
-                <strong class="slds-size_1-of-4">Case officers:</strong>
-                <span class="slds-size_3-of-4">{caseOfficers}</span>
+                <strong class="slds-size_1-of-4">Comments:</strong>
+                <span class="slds-size_3-of-4">{comments}</span>
+            </p>
+            <p class="slds-grid slds-wrap">
+                <strong class="slds-size_1-of-4">Case officer:</strong>
+                <span class="slds-size_3-of-4">{caseOfficerNames}</span>
             </p>
             <p class="slds-grid slds-wrap">
                 <strong class="slds-size_1-of-4">Category:</strong>
@@ -41,6 +45,22 @@
                 <strong class="slds-size_1-of-4">Other party:</strong>
                 <span class="slds-size_3-of-4">{otherParty}</span>
             </p>
+            <template if:true={subTaskCount}>
+                <p class="slds-grid slds-wrap">
+                    <strong class="slds-size_1-of-4">Number of Subtasks:</strong>
+                    <span class="slds-size_3-of-4">{subTaskCount}</span>
+                </p>
+                <p class="slds-grid slds-wrap">
+                    <strong class="slds-size_1-of-4"></strong>
+                    <span class="slds-size_3-of-4">If you delete this task, it will delete all sub-tasks associated with it.</span>
+                </p>
+            </template>
+            <template if:false={subTaskCount}>
+                <p class="slds-grid slds-wrap">
+                    <strong class="slds-size_1-of-4">Number of Subtasks:</strong>
+                    <span class="slds-size_3-of-4">{subTaskCount}</span>
+                </p>
+            </template>
         </div>
     </div>
 </template>

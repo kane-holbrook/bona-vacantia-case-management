@@ -1,5 +1,6 @@
 import { LightningElement, api, track, wire } from 'lwc';
-import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
+import { getRecord, getFieldValue, updateRecord } from 'lightning/uiRecordApi';
+import { refreshApex } from '@salesforce/apex';
 import getUserNames from '@salesforce/apex/HistoryController.getUserNames';
 import getSubTasks from '@salesforce/apex/TaskController.getSubTasks';
 import TASK_ID_FIELD from '@salesforce/schema/BV_Task__c.Id';
@@ -31,16 +32,23 @@ export default class TaskDetail extends LightningElement {
     @track assignedToName = '';
     @track createdByName = '';
     @track lastModifiedByName = '';
+    @track createSubTask = false;
+    @track isParentTask = false;
+    @track taskDeleteMarkedComplete = false;
     currentSubTaskId; // Added this to track current sub-task ID
     parentTaskId;
     editTaskState; // Added this to track current task ID
+    wiredTaskResult;
+    wiredSubTaskResult;
 
     @wire(getRecord, { recordId: '$recordId', fields: [
         TASK_ID_FIELD, TASK_NAME_FIELD, TASK_PARENT_FIELD, TASK_ASSIGNED_TO_FIELD, TASK_DUE_DATE_FIELD, TASK_PRIORITY_FIELD, 
         TASK_COMMENTS_FIELD, TASK_CREATED_BY_FIELD, TASK_LAST_MODIFIED_BY_FIELD, TASK_NEXT_TASK_FIELD, 
         TASK_DESCRIPTION_FIELD, TASK_DATE_INSERTED_FIELD, TASK_GROUP_CODE_FIELD, TASK_OTHER_PARTY_FIELD
     ] })
-    wiredTask({ error, data }) {
+    wiredTask(result) {
+        this.wiredTaskResult = result;
+        const { error, data } = result;
         if (data) {
             this.task = data;
             const userIds = [
@@ -61,23 +69,29 @@ export default class TaskDetail extends LightningElement {
     }
 
     @wire(getSubTasks, { parentTaskId: '$recordId' })
-    wiredSubTasks({ error, data }) {
+    wiredSubTasks(result) {
+        this.wiredSubTaskResult = result;
+        const { error, data } = result;
         if (data) {
             this.subTasks = data.map(record => ({
-                Id: record.Id,
-                Name: record.Name,
-                Assigned_To__c: record.Assigned_To__c,
-                Due_Date__c: record.Due_Date__c,
-                Priority__c: record.Priority__c,
-                Comments__c: record.Comments__c,
-                Description__c: record.Description__c,
-                Date_Inserted__c: record.Date_Inserted__c,
+                ...record,
                 isOpen: false,
                 sectionClass: 'slds-accordion__section',
                 iconName: 'utility:chevronright',
                 formattedDateInserted: this.formatDate(record.Date_Inserted__c),
-                formattedDueDate: this.formatDate(record.Due_Date__c)
+                formattedDueDate: this.formatDate(record.Due_Date__c),
+                Assigned_To_Name: '',
+                Waiting_Period__c: this.calculateWaitingPeriod(record.Date_Inserted__c, record.Due_Date__c),
+                Comments: record.Comments__c
             }));
+
+            this.subTasks.sort((a, b) => {
+                const dateA = new Date(a.Due_Date__c);
+                const dateB = new Date(b.Due_Date__c);
+                return dateA - dateB;
+            });
+
+            this.fetchSubTaskUserNames(this.subTasks);
         } else if (error) {
             this.dispatchEvent(
                 new ShowToastEvent({
@@ -88,6 +102,54 @@ export default class TaskDetail extends LightningElement {
             );
         }
     }
+
+    calculateWaitingPeriod(dateInserted, dueDate) {
+        if (!dateInserted || !dueDate) return '';
+    
+        const dateInsertedObj = new Date(dateInserted);
+        const dueDateObj = new Date(dueDate);
+        const timeDifference = dueDateObj - dateInsertedObj;
+    
+        const absDifference = Math.abs(timeDifference);
+        const dayDifference = absDifference / (1000 * 3600 * 24);
+        let waitingPeriod = '';
+    
+        if (dayDifference <= 30) {
+            waitingPeriod = `${Math.round(dayDifference)} days`;
+        } else if (dayDifference <= 365) {
+            waitingPeriod = `${Math.round(dayDifference / 7)} weeks`;
+        } else {
+            waitingPeriod = `${Math.round(dayDifference / 30)} months`;
+        }
+    
+        return `${waitingPeriod} ${timeDifference > 0 ? 'after' : 'before'} date inserted`;
+    }
+    
+
+    fetchSubTaskUserNames(subTasks) {
+        const userIds = subTasks.map(record => record.Assigned_To__c).filter(userId => !!userId);
+        if (userIds.length === 0) return;
+    
+        getUserNames({ userIds })
+            .then(result => {
+                this.subTasks = this.subTasks.map(subTask => {
+                    return {
+                        ...subTask,
+                        Assigned_To_Name: result[subTask.Assigned_To__c] || subTask.Assigned_To__c
+                    };
+                });
+            })
+            .catch(error => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Error fetching sub-task user names',
+                        message: error.body.message,
+                        variant: 'error'
+                    })
+                );
+            });
+    }
+
 
     fetchUserNames(userIds) {
         getUserNames({ userIds })
@@ -105,6 +167,14 @@ export default class TaskDetail extends LightningElement {
                     })
                 );
             });
+    }
+
+    refreshTaskItems() {
+        if (this.currentSubTaskId && !this.editTaskState || this.createSubTask){
+            return refreshApex(this.wiredSubTaskResult);
+        } else{
+            return refreshApex(this.wiredTaskResult);
+        }
     }
 
     formatDate(dateString) {
@@ -154,6 +224,15 @@ export default class TaskDetail extends LightningElement {
         return getFieldValue(this.task, TASK_NEXT_TASK_FIELD);
     }
 
+    get isCritical() {
+        return this.priority === 'Critical';
+    }
+    
+    get isHigh() {
+        return this.priority === 'High';
+    }
+    
+
     get modalHeader() {
         if (this.currentSubTaskId && !this.editTaskState) {
             return 'Edit sub-task';
@@ -174,7 +253,9 @@ export default class TaskDetail extends LightningElement {
 
         if (!this.currentSubTaskId) {
             this.parentTaskId = this.recordId;
-            console.log('Parent task ID:', this.parentTaskId);
+            this.createSubTask = true;
+        } else{
+            this.createSubTask = false; 
         }
     }
 
@@ -188,15 +269,26 @@ export default class TaskDetail extends LightningElement {
         this.editSubTask = false;
         this.currentSubTaskId = null;
         this.editTaskState = false;
+        this.createSubTask = false;
+        this.parentTaskId = null;
     }
 
     onDeleteTask(event) {
         this.deleteTask = true;
-        this.currentSubTaskId = event.currentTarget.dataset.id;
+        const taskId = event.currentTarget.dataset.id;
+        if (taskId === this.recordId) {
+            // This is the parent task
+            this.isParentTask = true;
+            this.currentSubTaskId = taskId;
+        } else{
+            // This is a sub-task
+            this.currentSubTaskId = taskId;
+        }
     }
 
     onDeleteTaskClose() {
         this.deleteTask = false;
+        this.currentSubTaskId = null;
     }
 
     onChangeDueDateTask() {
@@ -233,19 +325,39 @@ export default class TaskDetail extends LightningElement {
 
     onCompleteTask() {
         this.completeTask = true;
+        this.isParentTask = true;
     }
 
     onCompleteTaskClose() {
         this.completeTask = false;
+        this.isParentTask = false;
     }
 
     handleSave() {
         this.template.querySelector('c-task-manage-modal').handleSave();
     }
 
+    handleSaveSuccess() {
+        this.refreshTaskItems().then(() => {
+            this.onEditTaskClose();
+        });
+    }
+    
     handleDelete() {
         const deleteModal = this.template.querySelector('c-task-delete-modal');
         deleteModal.deleteRecord();
+    }
+
+    handleDeleteSuccess() {
+        if (this.isParentTask === true) {
+            this.dispatchEvent(new CustomEvent('taskdeleted'));
+        } else if (this.taskDeleteMarkedComplete === true) {
+            this.dispatchEvent(new CustomEvent('taskdeleted'));
+        } else {
+            this.refreshTaskItems().then(() => {
+                this.onDeleteTaskClose();
+            });
+        }
     }
 
     toggleSubTask(event) {
@@ -277,11 +389,12 @@ export default class TaskDetail extends LightningElement {
                     })
                 );
                 this.completeTask = false;
+                
             })
             .catch(error => {
                 this.dispatchEvent(
                     new ShowToastEvent({
-                        title: 'Error marking task complete',
+                        title: 'Error',
                         message: error.body.message,
                         variant: 'error'
                     })

@@ -2,12 +2,15 @@ import { LightningElement, api, track, wire } from 'lwc';
 import { deleteRecord } from 'lightning/uiRecordApi';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getTaskById from '@salesforce/apex/TaskController.getTaskById';
+import getUserNames from '@salesforce/apex/HistoryController.getUserNames';
+import getSubTasks from '@salesforce/apex/TaskController.getSubTasks';
 
 export default class TaskDeleteModal extends LightningElement {
     @api recordId;
     @track taskName;
     @track description;
     @track caseOfficers;
+    @track caseOfficerNames = '';
     @track category;
     @track priority;
     @track waitingPeriod;
@@ -16,6 +19,7 @@ export default class TaskDeleteModal extends LightningElement {
     @track document;
     @track groupCode;
     @track otherParty;
+    @track subTaskCount = 0;
 
     @wire(getTaskById, { taskId: '$recordId' })
     wiredTask({ error, data }) {
@@ -31,6 +35,37 @@ export default class TaskDeleteModal extends LightningElement {
             this.document = data.Document__c;
             this.groupCode = data.Group_Code__c;
             this.otherParty = data.Other_party__c;
+            this.comments = data.Comments__c;
+
+            if (this.caseOfficers) {
+                getUserNames({ userIds: [this.caseOfficers] })
+                    .then(result => {
+                        this.caseOfficerNames = result[this.caseOfficers] || this.caseOfficers;
+                    })
+                    .catch(error => {
+                        this.dispatchEvent(
+                            new ShowToastEvent({
+                                title: 'Error fetching case officer names',
+                                message: error.body.message,
+                                variant: 'error'
+                            })
+                        );
+                    });
+            }
+
+            getSubTasks({ parentTaskId: this.recordId })
+                .then(result => {
+                    this.subTaskCount = result.length;
+                })
+                .catch(error => {
+                    this.dispatchEvent(
+                        new ShowToastEvent({
+                            title: 'Error fetching subtasks',
+                            message: error.body.message,
+                            variant: 'error'
+                        })
+                    );
+                });
         } else if (error) {
             // handle error
         }
@@ -47,6 +82,7 @@ export default class TaskDeleteModal extends LightningElement {
                         variant: 'success'
                     })
                 );
+                this.dispatchEvent(new CustomEvent('taskdeleted'));
                 this.dispatchEvent(new CustomEvent('close'));
             })
             .catch(error => {

@@ -15,6 +15,7 @@ import BV_CASE_LOOKUP_FIELD from '@salesforce/schema/BV_Task__c.BV_Case_Lookup__
 import PARENT_TASK_FIELD from '@salesforce/schema/BV_Task__c.Parent_Task__c';
 import searchUsers from '@salesforce/apex/TaskController.searchUsers';
 import getUserNames from '@salesforce/apex/HistoryController.getUserNames';
+import CURRENT_USER_ID from '@salesforce/user/Id';
 
 const fields = [
     NAME_FIELD,
@@ -36,6 +37,7 @@ export default class TaskManageModal extends LightningElement {
     @track searchTerm = '';
     @track filteredCaseOfficerOptions = [];
     @track selectedCaseOfficerName = '';
+    @track caseOfficerValue = CURRENT_USER_ID;
 
     timeOptions = [
         { label: 'Days', value: 'Days' },
@@ -66,7 +68,11 @@ export default class TaskManageModal extends LightningElement {
     connectedCallback() {
         if (!this.recordId) {
             this.bvCaseId = getRecordId();
+            this.task.Date_Inserted__c = { value: new Date().toISOString().split('T')[0] }
         }
+
+        // Fetch the current user's name to display in the search input
+        this.fetchCaseOfficerName(CURRENT_USER_ID);
     }
 
     @wire(getRecord, { recordId: '$recordId', fields })
@@ -106,14 +112,21 @@ export default class TaskManageModal extends LightningElement {
         }
         this.task[field].value = event.target.value;
 
+        // If Date Inserted is cleared, skip calculations and updates
+        if (field === 'Date_Inserted__c' && !event.target.value) {
+            
+            return;
+        }
+    
         if (field === 'waitingPeriodInputValue' || field === 'waitingPeriodTimeValue' || field === 'beforeAfterValue' || field === 'dateInsertedSelected' || field === 'Date_Inserted__c') {
             this.calculateDueDate();
         }
-
+    
         if (field === 'Date_Inserted__c' || field === 'Due_Date__c') {
             this.autoPopulateFields();
         }
     }
+    
 
     handleSearchTermChange(event) {
         this.searchTerm = event.target.value;
@@ -145,7 +158,7 @@ export default class TaskManageModal extends LightningElement {
         this.filteredCaseOfficerOptions = [];
         this.searchTerm = selectedCaseOfficerName;
         this.task[CASE_OFFICER_FIELD.fieldApiName] = { value: this.caseOfficerValue };
-    }
+    }    
 
     handleCaseOfficerChange(event) {
         this.caseOfficerValue = event.detail.value;
@@ -205,31 +218,41 @@ export default class TaskManageModal extends LightningElement {
         const dateInsertedStr = this.template.querySelector('[data-id="date-inserted"]').value;
         const dateInserted = dateInsertedStr ? new Date(dateInsertedStr) : null;
 
-        if (dateInserted) {
-            const waitingPeriodInputValue = parseInt(this.template.querySelector('[data-id="waiting-period-input"]').value, 10);
-            const waitingPeriodTimeValue = this.template.querySelector('[data-id="waiting-period-time"]').value;
-            const beforeAfterValue = this.template.querySelector('[data-id="before-after"]').value;
-
-            let dueDate = new Date(dateInserted);
-
-            switch (waitingPeriodTimeValue) {
-                case 'Days':
-                    dueDate.setDate(beforeAfterValue === 'After' ? dueDate.getDate() + waitingPeriodInputValue : dueDate.getDate() - waitingPeriodInputValue);
-                    break;
-                case 'Weeks':
-                    dueDate.setDate(beforeAfterValue === 'After' ? dueDate.getDate() + waitingPeriodInputValue * 7 : dueDate.getDate() - waitingPeriodInputValue * 7);
-                    break;
-                case 'Months':
-                    dueDate.setMonth(beforeAfterValue === 'After' ? dueDate.getMonth() + waitingPeriodInputValue : dueDate.getMonth() - waitingPeriodInputValue);
-                    break;
-                default:
-                    break;
-            }
-
-            this.task.Due_Date__c = { value: dueDate.toISOString().split('T')[0] };
-            this.updateDueDateInput();
+        if (!dateInserted) {
+            return;
         }
+
+        const waitingPeriodInputValue = parseInt(this.template.querySelector('[data-id="waiting-period-input"]').value, 10);
+        const waitingPeriodTimeValue = this.template.querySelector('[data-id="waiting-period-time"]').value;
+        const beforeAfterValue = this.template.querySelector('[data-id="before-after"]').value;
+
+        if (isNaN(waitingPeriodInputValue) || waitingPeriodInputValue <= 0) {
+            this.task.Due_Date__c = { value: '' };
+            this.updateDueDateInput();
+            return;
+        }
+
+        let dueDate = new Date(dateInserted);
+
+        switch (waitingPeriodTimeValue) {
+            case 'Days':
+                dueDate.setDate(beforeAfterValue === 'After' ? dueDate.getDate() + waitingPeriodInputValue : dueDate.getDate() - waitingPeriodInputValue);
+                break;
+            case 'Weeks':
+                dueDate.setDate(beforeAfterValue === 'After' ? dueDate.getDate() + waitingPeriodInputValue * 7 : dueDate.getDate() - waitingPeriodInputValue * 7);
+                break;
+            case 'Months':
+                dueDate.setMonth(beforeAfterValue === 'After' ? dueDate.getMonth() + waitingPeriodInputValue : dueDate.getMonth() - waitingPeriodInputValue);
+                break;
+            default:
+                break;
+        }
+
+        this.task.Due_Date__c = { value: dueDate.toISOString().split('T')[0] };
+        this.updateDueDateInput();
     }
+
+    
 
     updateDueDateInput() {
         const dueDateInput = this.template.querySelector('[data-id="due-date"]');
@@ -266,6 +289,7 @@ export default class TaskManageModal extends LightningElement {
         }
         fields[LAST_UPDATED_FIELD.fieldApiName] = new Date().toISOString();
         fields[BV_CASE_LOOKUP_FIELD.fieldApiName] = this.bvCaseId;
+        fields[CASE_OFFICER_FIELD.fieldApiName] = this.caseOfficerValue; // Add this line
         if (this.parentTaskId) {
             fields[PARENT_TASK_FIELD.fieldApiName] = this.parentTaskId;
             fields[BV_CASE_LOOKUP_FIELD.fieldApiName] = null;
@@ -281,7 +305,7 @@ export default class TaskManageModal extends LightningElement {
                     }),
                 );
                 this.recordId = task.id;
-
+    
                 const createdEvent = new CustomEvent('taskcreated', {
                     detail: {
                         taskId: this.recordId,
@@ -299,7 +323,7 @@ export default class TaskManageModal extends LightningElement {
                 );
             });
     }
-
+    
     updateTask() {
         const fields = {};
         for (let key in this.task) {
@@ -309,8 +333,9 @@ export default class TaskManageModal extends LightningElement {
         }
         fields.Id = this.recordId;
         fields[LAST_UPDATED_FIELD.fieldApiName] = new Date().toISOString();
+        fields[CASE_OFFICER_FIELD.fieldApiName] = this.caseOfficerValue; // Add this line
         const recordInput = { fields };
-
+    
         updateRecord(recordInput)
             .then(() => {
                 this.dispatchEvent(
@@ -337,6 +362,7 @@ export default class TaskManageModal extends LightningElement {
                 );
             });
     }
+    
 
     get nameValue() {
         return this.task.Name ? this.task.Name.value : '';
@@ -355,9 +381,10 @@ export default class TaskManageModal extends LightningElement {
     }
 
     get dateInsertedValue() {
-        return this.task.Date_Inserted__c ? this.task.Date_Inserted__c.value : '';
+        return this.task.Date_Inserted__c ? this.task.Date_Inserted__c.value : new Date().toISOString().split('T')[0];
     }
-
+    
+    
     get priorityValue() {
         return this.task.Priority__c ? this.task.Priority__c.value : '';
     }
@@ -367,8 +394,8 @@ export default class TaskManageModal extends LightningElement {
     }
 
     get caseOfficerValue() {
-        return this.task.Assigned_To__c ? this.task.Assigned_To__c.value : '';
-    }
+        return this.task.Assigned_To__c ? this.task.Assigned_To__c.value : CURRENT_USER_ID;
+    }    
 
     get categoryValue() {
         return this.task.Category__c ? this.task.Category__c.value : '';

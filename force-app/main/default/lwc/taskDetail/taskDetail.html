@@ -21,7 +21,7 @@
                         <lightning-button variant="neutral" label="Mark task as complete" onclick={onCompleteTask} disabled={hasSubTasks}></lightning-button>
                         <lightning-button variant="neutral" label="Create a sub-task" data-id={parentTaskId} onclick={onEditSubTask}></lightning-button>
                         <lightning-button-menu alternative-text="Show More">
-                            <lightning-menu-item label="Manage" data-id={recordId} onclick={onEditTask}></lightning-menu-item>
+                            <lightning-menu-item label="Edit Task" data-id={recordId} onclick={onEditTask}></lightning-menu-item>
                             <lightning-menu-item label="Delete" data-id={recordId} onclick={onDeleteTask}></lightning-menu-item>
                         </lightning-button-menu>
                     </div>
@@ -41,7 +41,15 @@
                                 <p class="detail-item"><strong>Parent task:</strong> {parentTask}</p>
                                 <p class="detail-item"><strong>Assigned to:</strong> {assignedToName}</p>
                                 <p class="detail-item"><strong>Due date:</strong> <lightning-formatted-date-time value={dueDate} day="numeric" month="numeric" year="numeric"></lightning-formatted-date-time></p>
-                                <p class="detail-item"><strong>Priority:</strong> <lightning-icon icon-name="utility:priority" alternative-text="Priority" size="small"></lightning-icon> {priority}</p>
+                                <p class="detail-item"><strong>Priority:</strong>
+                                    <template if:true={isCritical}>
+                                        <lightning-icon icon-name="utility:info" alternative-text="Critical" size="small" class="critical-icon slds-m-right_x-small"></lightning-icon>
+                                    </template>
+                                    <template if:true={isHigh}>
+                                        <lightning-icon icon-name="utility:info_alt" alternative-text="High" size="small" class="high-icon slds-m-right_x-small"></lightning-icon>
+                                    </template>
+                                    {priority}
+                                </p>                                
                                 <p class="detail-item"><strong>Comments:</strong> {comments}</p>
                             </div>
                             <div class="slds-col slds-size_1-of-2">
@@ -52,7 +60,6 @@
                         </div>
 
                         <div class="slds-section slds-m-vertical_large" style="border-top: 2px solid #c9c9c9;"></div>
-
                         <ul class="slds-accordion">
                             <template for:each={subTasks} for:item="subTask">
                                 <li key={subTask.Id} class="slds-accordion__list-item">
@@ -67,7 +74,7 @@
                                             </h2>
                                             <div class="slds-dropdown-trigger slds-dropdown-trigger_click">
                                                 <lightning-button-menu alternative-text="Show More" menu-alignment="right">
-                                                    <lightning-menu-item label="Manage" data-id={subTask.Id} onclick={onEditSubTask}></lightning-menu-item>
+                                                    <lightning-menu-item label="Edit Subtask" data-id={subTask.Id} onclick={onEditSubTask}></lightning-menu-item>
                                                     <lightning-menu-item label="Delete" data-id={subTask.Id} onclick={onDeleteTask}></lightning-menu-item>
                                                 </lightning-button-menu>
                                             </div>
@@ -77,7 +84,8 @@
                                             <div class="slds-section">
                                                 <h3 class="slds-section__title">General</h3>
                                                 <p><strong>Description of task:</strong> {subTask.Name}</p>
-                                                <p><strong>Case officers:</strong> {subTask.Assigned_To__c}</p>
+                                                <p><strong>Comments:</strong> {subTask.Comments}</p>
+                                                <p><strong>Case officer:</strong> {subTask.Assigned_To_Name}</p>
                                                 <p><strong>Priority:</strong> {subTask.Priority__c}</p>
                                             </div>
                                             <!-- Waiting Period Section -->
@@ -118,7 +126,7 @@
                     <h2 class="slds-text-heading_medium">{modalHeader}</h2>
                 </header>
                 <div class="slds-modal__content slds-p-around_medium">
-                    <c-task-manage-modal record-id={currentSubTaskId} parent-task-id={parentTaskId}></c-task-manage-modal>
+                    <c-task-manage-modal record-id={currentSubTaskId} parent-task-id={parentTaskId} ontaskcreated={handleSaveSuccess} ontaskupdated={handleSaveSuccess}></c-task-manage-modal>
                 </div>
                 <footer class="slds-modal__footer">
                     <button class="slds-button slds-button_neutral" onclick={onEditTaskClose}>Cancel</button>
@@ -141,7 +149,7 @@
                     <h2 class="slds-text-heading_medium">Are you sure you want to delete this task?</h2>
                 </header>
                 <div class="slds-modal__content slds-p-around_medium">
-                    <c-task-delete-modal record-id={currentSubTaskId}></c-task-delete-modal>
+                    <c-task-delete-modal record-id={currentSubTaskId} onclose={onDeleteTaskClose} ontaskdeleted={handleDeleteSuccess}></c-task-delete-modal>
                 </div>
                 <footer class="slds-modal__footer">
                     <button class="slds-button slds-button_neutral" onclick={onDeleteTaskClose}>Cancel</button>
@@ -175,7 +183,8 @@
                         created-by={createdBy}
                         last-modified-by={lastModifiedBy}
                         next-task={nextTask}
-                        onclose={onCompleteTaskClose}>
+                        onclose={onCompleteTaskClose}
+                        ontaskdeletecomplete={handleDeleteSuccess}>
                     </c-task-mark-as-complete-modal>
                 </div>
             </div>
