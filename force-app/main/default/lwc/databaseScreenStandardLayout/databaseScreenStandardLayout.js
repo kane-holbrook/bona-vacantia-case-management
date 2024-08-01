@@ -982,7 +982,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
             if (field.componentType === 'EmptySpace') {
                 return { ...blankField };
             }
-            const fieldValue = this.recordData[0][field.apiName] || '—';
+            const fieldValue = (this.recordData && this.recordData[0] && this.recordData[0][field.apiName]) || '—';
             return {
                 ...field,
                 value: fieldValue,
@@ -995,7 +995,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
             if (field.componentType === 'EmptySpace') {
                 return { ...blankField };
             }
-            const fieldValue = this.recordData[0][field.apiName] || '—';
+            const fieldValue = (this.recordData && this.recordData[0] && this.recordData[0][field.apiName]) || '—';
             return {
                 ...field,
                 value: fieldValue,
