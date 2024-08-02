@@ -73,29 +73,33 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
         this.wiredHistoryItemsResult = result;
         if (result.data) {
             this.historyItems = result.data.map(item => {
+                const history = item.history;
+                const emailMessage = item.EmailMessage || null;
+
                 // Calculate total file size of related items
                 let totalFileSize = 0;
-                if (item.SHDocuments__r && item.SHDocuments__r.length > 0) {
-                    totalFileSize = item.SHDocuments__r.reduce((sum, doc) => sum + (doc.FileSize__c || 0), 0);
+                if (history.SHDocuments__r && history.SHDocuments__r.length > 0) {
+                    totalFileSize = history.SHDocuments__r.reduce((sum, doc) => sum + (doc.FileSize__c || 0), 0);
                 }
-    
+
                 return {
-                    ...item,
+                    ...history,
                     isExpanded: false,
-                    hasRelatedItems: item.SHDocuments__r && item.SHDocuments__r.length > 0,
+                    hasRelatedItems: (history.SHDocuments__r && history.SHDocuments__r.length > 0) || emailMessage,
                     iconName: this.getIconName(false),
-                    rowClass: item.Flag_as_important__c ? 'highlighted-row' : '',
-                    flagIconClass: item.Flag_as_important__c ? 'icon-important' : 'icon-default',
-                    notes: item.Details__c ? 'Has details' : '',
-                    hasDetails: item.Details__c ? true : false,
-                    documentType: item.SHDocuments__r && item.SHDocuments__r.length > 0 ? item.SHDocuments__r[0].DocumentType__c : '',
+                    rowClass: history.Flag_as_important__c ? 'highlighted-row' : '',
+                    flagIconClass: history.Flag_as_important__c ? 'icon-important' : 'icon-default',
+                    notes: history.Details__c ? 'Has details' : '',
+                    hasDetails: history.Details__c ? true : false,
+                    documentType: history.SHDocuments__r && history.SHDocuments__r.length > 0 ? history.SHDocuments__r[0].DocumentType__c : '',
                     fileSize: this.formatFileSize(totalFileSize),  // Use the calculated total file size here
-                    draft: item.SHDocuments__r && item.SHDocuments__r.length > 0 ? item.SHDocuments__r[0].Draft__c : '',
-                    SHDocuments__r: item.SHDocuments__r ? item.SHDocuments__r.map(doc => ({
+                    draft: history.SHDocuments__r && history.SHDocuments__r.length > 0 ? history.SHDocuments__r[0].Draft__c : '',
+                    SHDocuments__r: history.SHDocuments__r ? history.SHDocuments__r.map(doc => ({
                         ...doc,
                         showAttachmentIcon: doc.DocumentType__c === 'Email Attachment',
                         fileSize: doc.FileSize__c ? this.formatFileSize(doc.FileSize__c) : '',
-                    })) : []
+                    })) : [],
+                    emailMessage  // Include EmailMessage details
                 };
             });
             const userIds = this.historyItems.map(item => item.Case_Officer__c);
