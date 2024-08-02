@@ -395,4 +395,16 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
         // Handle the deletion of the related item here
         // Add your deletion logic for related items
     }
+
+    handleOpenEmailMessage(event) {
+        const emailMessageId = event.currentTarget.dataset.id;
+        this[NavigationMixin.Navigate]({
+            type: 'standard__recordPage',
+            attributes: {
+                recordId: emailMessageId,
+                objectApiName: 'EmailMessage',
+                actionName: 'view'
+            }
+        });
+    }
 }

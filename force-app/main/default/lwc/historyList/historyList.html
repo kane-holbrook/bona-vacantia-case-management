@@ -197,6 +197,11 @@
                                         <td data-label="Cc">{item.emailMessage.CcAddress}</td>
                                         <td data-label="Bcc">{item.emailMessage.BccAddress}</td>
                                         <td data-label="Status">{item.emailMessage.Status}</td>
+                                        <td data-label="Actions">
+                                            <lightning-button-menu alternative-text="Actions" icon-name="utility:down" menu-alignment="right">
+                                                <lightning-menu-item label="Open Email" data-id={item.emailMessage.Id} onclick={handleOpenEmailMessage}></lightning-menu-item>
+                                            </lightning-button-menu>
+                                        </td>
                                     </tr>
                                 </template>
                             </template>
