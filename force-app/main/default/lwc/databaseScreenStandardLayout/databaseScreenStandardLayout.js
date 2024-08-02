@@ -1047,6 +1047,16 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
             const parsedValue = parseFloat(fieldValue);
             return isNaN(parsedValue) ? '—' : parsedValue.toLocaleString();
         }
+
+        if (fieldType === 'checkbox' || fieldType === 'boolean') {
+            if (fieldValue === true) {
+                return { iconName: 'utility:check', altText: 'Tick' };
+            } else if (fieldValue === false) {
+                return { iconName: 'utility:close', altText: 'Cross' };
+            } else {
+                return { iconName: 'utility:close', altText: 'Unchecked' };
+            }
+        }
     
         return fieldValue;
     }    
