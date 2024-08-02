@@ -1050,7 +1050,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
 
         if (fieldType === 'checkbox' || fieldType === 'boolean') {
             if (fieldValue === true) {
-                return { iconName: 'utility:check', altText: 'Tick' };
+                return { iconName: 'utility:check', altText: 'Checked' };
             } else if (fieldValue === false) {
                 return { iconName: 'utility:close', altText: 'Cross' };
             } else {
