@@ -40,8 +40,11 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
                 List<BV_Case__c> casesToInsert = new List<BV_Case__c>();
 
                 for (BV_Case__c caseRecord : casesToCreate) {
-                    if (existingCompanyNumbers.contains(caseRecord.Company_No__c)) {
-                        errorMessages.add('Duplicate company number found: ' + caseRecord.Company_No__c + ' - Company Name: ' + caseRecord.Name);
+                    String paddedCompanyNumber = padCompanyNumber(caseRecord.Company_No__c);
+                    caseRecord.Company_No__c = paddedCompanyNumber;
+                    
+                    if (existingCompanyNumbers.contains(paddedCompanyNumber)) {
+                        errorMessages.add('Duplicate company number found: ' + paddedCompanyNumber + ' - Company Name: ' + caseRecord.Name);
                         continue;
                     }
                     String postalCode = fetchPostCode(caseRecord.Company_No__c);
@@ -110,7 +113,7 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
                     }
                 }
                 
-                caseRecord.Company_No__c = columns[0];
+                caseRecord.Company_No__c = padCompanyNumber(columns[0]);
 
                 if (!isCompanyNumberValid(caseRecord.Company_No__c)) {
                     errorMessages.add('Row ' + i + ': Company number not found in the Companies House: ' + caseRecord.Company_No__c);
@@ -377,5 +380,13 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
         }
 
         return existingCompanyNumbers;
+    }
+
+    // Pad the company number to ensure it is 8 digits long
+    private String padCompanyNumber(String companyNumber) {
+        while (companyNumber.length() < 8) {
+            companyNumber = '0' + companyNumber;
+        }
+        return companyNumber;
     }
 }
