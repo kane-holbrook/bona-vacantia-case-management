@@ -52,7 +52,10 @@
                 </p>
                 <p class="slds-grid slds-wrap">
                     <strong class="slds-size_1-of-4"></strong>
-                    <span class="slds-size_3-of-4">If you delete this task, it will delete all sub-tasks associated with it.</span>
+                    <span class="slds-size_3-of-4">
+                        <lightning-icon icon-name="utility:warning" alternative-text="Warning" size="small" class="warning-icon slds-m-right_x-small"></lightning-icon>
+                        If you delete this task, it will delete all sub-tasks associated with it.
+                    </span>
                 </p>
             </template>
             <template if:false={subTaskCount}>

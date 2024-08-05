@@ -15,7 +15,9 @@ import BV_CASE_LOOKUP_FIELD from '@salesforce/schema/BV_Task__c.BV_Case_Lookup__
 import PARENT_TASK_FIELD from '@salesforce/schema/BV_Task__c.Parent_Task__c';
 import searchUsers from '@salesforce/apex/TaskController.searchUsers';
 import getUserNames from '@salesforce/apex/HistoryController.getUserNames';
-import CURRENT_USER_ID from '@salesforce/user/Id';
+import getCaseOwnerId from '@salesforce/apex/HistoryController.getCaseOwnerId';
+import getTaskOwnerId from '@salesforce/apex/HistoryController.getTaskOwnerId';
+
 
 const fields = [
     NAME_FIELD,
@@ -37,7 +39,8 @@ export default class TaskManageModal extends LightningElement {
     @track searchTerm = '';
     @track filteredCaseOfficerOptions = [];
     @track selectedCaseOfficerName = '';
-    @track caseOfficerValue = CURRENT_USER_ID;
+    @track caseOfficerValue = '';
+    @track parentTaskOwner = '';
 
     timeOptions = [
         { label: 'Days', value: 'Days' },
@@ -60,6 +63,7 @@ export default class TaskManageModal extends LightningElement {
         { label: 'Critical', value: 'Critical' },
     ];
 
+    // Waiting Period Fields
     @track waitingPeriodInputValue = '';
     @track waitingPeriodTimeValue = '';
     @track beforeAfterValue = '';
@@ -68,12 +72,32 @@ export default class TaskManageModal extends LightningElement {
     connectedCallback() {
         if (!this.recordId) {
             this.bvCaseId = getRecordId();
-            this.task.Date_Inserted__c = { value: new Date().toISOString().split('T')[0] }
+            const currentDate = new Date().toISOString().split('T')[0];
+            this.task.Date_Inserted__c = { value: currentDate };
+            
+            // Initialize waiting period fields
+            this.waitingPeriodInputValue = 1;
+            this.waitingPeriodTimeValue = 'Days';
+            this.beforeAfterValue = 'After';
+            this.dateInsertedSelected = 'Date Inserted';
+        }
+    
+        if (this.bvCaseId) {
+            this.fetchCaseOwner(this.bvCaseId);
+        }
+    
+        if (this.parentTaskId) {
+            this.fetchTaskOwner(this.parentTaskId); // Fetch task owner for sub-tasks
+        } else if (this.recordId) {
+            this.fetchTaskOwner(this.recordId); // Fetch task owner if editing an existing task
         }
 
-        // Fetch the current user's name to display in the search input
-        this.fetchCaseOfficerName(CURRENT_USER_ID);
-    }
+        setTimeout(() => {
+            if (this.task && this.task.Date_Inserted__c && this.task.Date_Inserted__c.value) {
+                this.calculateDueDate();
+            }
+        }, 0);
+    }    
 
     @wire(getRecord, { recordId: '$recordId', fields })
     wiredRecord({ error, data }) {
@@ -87,6 +111,51 @@ export default class TaskManageModal extends LightningElement {
         } else if (error) {
             this.error = error;
         }
+    }
+
+    @wire(getRecord, { recordId: '$parentTaskId', fields: [CASE_OFFICER_FIELD]})
+    wiredParentTask({ error, data }) {
+        if (data) {
+            this.parentTaskOwner = data.fields.Assigned_To__c.value;
+            this.caseOfficerValue = this.parentTaskOwner;
+            this.fetchCaseOfficerName(this.caseOfficerValue);
+        } else if (error) {
+            console.error('Error fetching parent task owner:', error);
+        }
+    }
+
+    refreshOwnerData() {
+        if (this.bvCaseId) {
+            refreshApex(this.bvCaseId).then(() => this.fetchCaseOwner(this.bvCaseId));
+        }
+    
+        if (this.parentTaskId) {
+            refreshApex(this.parentTaskId).then(() => this.fetchTaskOwner(this.parentTaskId));
+        } else if (this.recordId) {
+            refreshApex(this.recordId).then(() => this.fetchTaskOwner(this.recordId));
+        }
+    }    
+
+    fetchCaseOwner(caseId) {
+        getCaseOwnerId({ caseId })
+            .then(ownerId => {
+                this.caseOfficerValue = ownerId;
+                this.fetchCaseOfficerName(this.caseOfficerValue);
+            })
+            .catch(error => {
+                console.error('Error fetching case owner:', error);
+            });
+    }
+    
+    fetchTaskOwner(taskId) {
+        getTaskOwnerId({ taskId })
+            .then(ownerId => {
+                this.caseOfficerValue = ownerId;
+                this.fetchCaseOfficerName(this.caseOfficerValue);
+            })
+            .catch(error => {
+                console.error('Error fetching task owner:', error);
+            });
     }
 
     fetchCaseOfficerName(userId) {
@@ -104,6 +173,10 @@ export default class TaskManageModal extends LightningElement {
             this.searchTerm = '';
         }
     }
+    
+    handleModalOpen() {
+        this.refreshOwnerData();
+    }
 
     handleInputChange(event) {
         const field = event.target.dataset.field;
@@ -111,10 +184,8 @@ export default class TaskManageModal extends LightningElement {
             this.task[field] = { value: '' };
         }
         this.task[field].value = event.target.value;
-
-        // If Date Inserted is cleared, skip calculations and updates
+    
         if (field === 'Date_Inserted__c' && !event.target.value) {
-            
             return;
         }
     
@@ -289,7 +360,7 @@ export default class TaskManageModal extends LightningElement {
         }
         fields[LAST_UPDATED_FIELD.fieldApiName] = new Date().toISOString();
         fields[BV_CASE_LOOKUP_FIELD.fieldApiName] = this.bvCaseId;
-        fields[CASE_OFFICER_FIELD.fieldApiName] = this.caseOfficerValue; // Add this line
+        fields[CASE_OFFICER_FIELD.fieldApiName] = this.caseOfficerValue;
         if (this.parentTaskId) {
             fields[PARENT_TASK_FIELD.fieldApiName] = this.parentTaskId;
             fields[BV_CASE_LOOKUP_FIELD.fieldApiName] = null;
@@ -394,7 +465,7 @@ export default class TaskManageModal extends LightningElement {
     }
 
     get caseOfficerValue() {
-        return this.task.Assigned_To__c ? this.task.Assigned_To__c.value : CURRENT_USER_ID;
+        return this.task.Assigned_To__c ? this.task.Assigned_To__c.value : '';
     }    
 
     get categoryValue() {

@@ -171,9 +171,19 @@ export default class TaskList extends LightningElement {
             const now = new Date();
             const lastUpdateTime = new Date(latestItem.Last_updated__c);
             const diffInMinutes = Math.floor((now - lastUpdateTime) / 60000);
-            this.lastUpdated = diffInMinutes;
+    
+            if (diffInMinutes < 60) {
+                this.lastUpdated = `${diffInMinutes} minutes ago`;
+            } else if (diffInMinutes < 1440) {
+                const diffInHours = Math.floor(diffInMinutes / 60);
+                this.lastUpdated = `${diffInHours} hour${diffInHours > 1 ? 's' : ''} ago`;
+            } else {
+                const diffInDays = Math.floor(diffInMinutes / 1440);
+                this.lastUpdated = `${diffInDays} day${diffInDays > 1 ? 's' : ''} ago`;
+            }
         }
     }
+    
 
     getIconName(isExpanded) {
         return isExpanded ? "utility:chevrondown" : "utility:chevronright";
@@ -410,8 +420,10 @@ export default class TaskList extends LightningElement {
 
     get sortedByText() {
         const displaySortedBy = this.sortLabels[this.sortedBy] || this.sortedBy;
-        return `Sorted by ${displaySortedBy} ${this.sortOrder} - Filtered by ${this.selectedTaskType === 'allTasks' ? 'All tasks' : this.selectedTaskType === 'myTasks' ? 'My tasks' : 'Others tasks'}`;
+        const sortOrderText = this.sortOrder === 'asc' ? '(ascending)' : '(descending)';
+        return `Sorted by ${displaySortedBy} ${sortOrderText} - Filtered by ${this.selectedTaskType === 'allTasks' ? 'All tasks' : this.selectedTaskType === 'myTasks' ? 'My tasks' : 'Others tasks'}`;
     }
+    
 
     get isSortedByDue() {
         return this.sortedBy === 'Due_Date__c';
@@ -431,10 +443,10 @@ export default class TaskList extends LightningElement {
 
     getRowClass(item) {
         if (item.Priority__c === 'Critical') {
-            return 'critical-priority';
+            return 'slds-hint-parent critical-priority';
         } else if (item.Priority__c === 'High') {
-            return 'high-priority';
+            return 'slds-hint-parent high-priority';
         }
-        return '';
+        return 'slds-hint-parent normal-priority';
     }
 }

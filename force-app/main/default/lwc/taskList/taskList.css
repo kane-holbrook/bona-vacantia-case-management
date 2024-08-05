@@ -10,11 +10,31 @@
 
 .critical-priority {
     background-color: #fef1ee;
+    transition: background-color 0.3s ease;
+}
+
+.critical-priority:hover {
+    background-color: #fee8e5;
 }
 
 .high-priority {
     background-color: #ebf7e6;
+    transition: background-color 0.3s ease;
 }
+
+.high-priority:hover {
+    background-color: #e2f0d9;
+}
+
+.normal-priority {
+    background-color: #ffffff;
+    transition: background-color 0.3s ease;
+}
+
+.normal-priority:hover {
+    background-color: #eaeaea;
+}
+
 
 .critical-icon {
     --slds-c-icon-color-foreground-default: #8e030f;
@@ -34,4 +54,9 @@
 
 .subtask-number {
     margin-left: 20px;
+}
+
+table tr:hover td { 
+    background-color: inherit;     
+    opacity: 1.0;
 }
