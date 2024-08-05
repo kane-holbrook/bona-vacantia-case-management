@@ -54,9 +54,11 @@ export default class DatabaseStandardRecordModal extends LightningElement {
                         let type = column.type;
                         let formatter = null;
                         let step = null;
+                        let max = null;
                         if (column.length) {
                             if (typeof column.length === 'object' && column.length.precision !== undefined && column.length.scale !== undefined) {
                                 length = column.length.precision;
+                                max = '9'.repeat(length - column.length.scale ) + (column.length.scale  > 0 ? '.' + '9'.repeat(column.length.scale) : '');
                                 if (column.type === 'currency') {
                                     type = 'number';
                                     formatter = 'currency';
@@ -74,9 +76,11 @@ export default class DatabaseStandardRecordModal extends LightningElement {
                             step: step,
                             value: record[column.fieldName] || '',
                             length: length,
+                            max: max,
                             isPicklist: column.type === 'picklist',
                             isCheckbox: column.type === 'checkbox',
-                            isDefault: column.type !== 'picklist' && column.type !== 'checkbox' && column.type !== 'long-text',
+                            isDate: column.type === 'date',
+                            isDefault: column.type !== 'picklist' && column.type !== 'checkbox' && column.type !== 'long-text' && column.type !== 'date',
                             checked: column.type === 'checkbox' ? !!record[column.fieldName] : false,
                             options: column.type === 'picklist' ? [] : []
                         };
@@ -207,20 +211,28 @@ export default class DatabaseStandardRecordModal extends LightningElement {
             return record;
         });
 
-        this.splitFieldsByColumns();
+        //this.splitFieldsByColumns();
     }
 
     handleSave() {
-        // // Check if at least one field is filled
-        // const isAtLeastOneFieldFilled = this.combinedData.some(record => {
-        //     return record.fields.some(field => field.value || field.checked);
-        // });
+        // Get all input elements
+        const inputs = this.template.querySelectorAll('lightning-input, lightning-combobox, lightning-textarea');
+        
+        // Check if all inputs are valid
+        let allInputsValid = true;
+        inputs.forEach(input => {
+            if (!input.reportValidity()) {
+                allInputsValid = false;
+            }
+        });
     
-        // if (!isAtLeastOneFieldFilled) {
-        //     this.showErrorMessage = true;
-        //     return;
-        // }
+        // If any input is invalid, show an error message and do not proceed with save
+        if (!allInputsValid) {
+            this.showErrorMessage = true;
+            return;
+        }
     
+        // Proceed with save operation if all inputs are valid
         this.showErrorMessage = false;
     
         this.combinedData.forEach(record => {

@@ -11,7 +11,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
 
     @track tableDataObj = [];
 
-    //columnsMain is to store table headers; columns is to store all fields; sectionsMain is used to store section title
+    // columnsMain is to store table headers; columns is to store all fields; sectionsMain is used to store section title
     @track layoutSections = [];
     @track sectionsMain = [];
     @track recordData;
@@ -24,6 +24,9 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
     @track subRecordId;
     @track columnLayoutStyle = 2;
     @track emptySpaceIndices = [];
+    @track populatedLeftColumnFields = [];
+    @track populatedRightColumnFields = [];
+
     hasDataBeenUpdated = false;
     isModalOpen = false;
     isModalOpenDelete = false;
@@ -132,19 +135,20 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
     
             // Extract fieldDataTypes from data
             const fieldDataTypes = data.fieldDataTypes || {};
+            this.fieldDataTypes = fieldDataTypes; // Store the fieldDataTypes for later use
     
             // Create deep copies of layoutSections and attach field values
             this.layoutSections = JSON.parse(JSON.stringify(data.sections));
             let tableDataTemp = []; // Adjusted for multiple records
             let columnsTemp = [];
             let columnsMainTemp = [];
-
+    
             // Process fields into left and right columns
             this.splitFieldsByColumns();
-
+    
             // Detect consecutive "EmptySpace" components in left and right columns
             this.emptySpaceIndices = []; // Reset the emptySpaceIndices array
-
+    
             for (let i = 0; i < this.leftColumnFields.length; i++) {
                 if (this.leftColumnFields[i].componentType === 'EmptySpace' && this.rightColumnFields[i].componentType === 'EmptySpace') {
                     this.emptySpaceIndices.push(i);
@@ -156,9 +160,9 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                     console.log(`Field after empty spaces: ${afterLabel}`);
                 }
             }
-
+    
             console.log('Empty Space Indices: ', this.emptySpaceIndices);
-
+    
             // Adjust emptySpaceIndices
             this.adjustEmptySpaceIndices();
     
@@ -175,7 +179,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                                         const fieldType = fieldDataTypes[component.apiName] || 'text';
                                         let columnType = 'text'; // default type
                                         let length = null; // variable to store the number in the field type
-
+    
                                         // Check the field type and adjust columnType and length accordingly
                                         if (fieldType.startsWith('Long Text Area')) {
                                             columnType = 'long-text';
@@ -209,7 +213,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                                             if (match) {
                                                 length = { precision: parseInt(match[1], 10), scale: parseInt(match[2], 10) };
                                             }
-                                        } else if (fieldType === 'Currency') {
+                                        } else if (fieldType.startsWith('Currency')) {
                                             columnType = 'currency';
                                             const match = fieldType.match(/\((\d+),\s*(\d+)\)/);
                                             if (match) {
@@ -240,35 +244,35 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                                         } else {
                                             columnType = 'text'; // Default to text if no other type matches
                                         }
-
+    
                                         // Construct the column object
                                         const column = {
                                             label: component.label,
                                             fieldName: component.apiName,
                                             type: columnType
                                         };
-
+    
                                         // Add length if available
                                         if (length !== null) {
                                             column.length = length;
                                         }
-
+    
                                         columnsTemp.push(column);
                                     }
-
+    
                                     console.log('sections temp', columnsTemp);
-
+    
                                     console.log(section);
                                     console.log(this.layoutSections[0]);
-
+    
                                     // Construct the column object
                                     const column = {
                                         label: component.label,
                                         fieldName: component.apiName,
                                         type: 'text'
                                     };
-
-                                    //Section at index 0 contains table headers (filter by section so variables are separated)
+    
+                                    // Section at index 0 contains table headers (filter by section so variables are separated)
                                     if (!this.isBVCase) {
                                         if (this.expandedView) {
                                             // Run the 0 index check when not bvCase and expanded view
@@ -379,7 +383,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                         length: column.length || null
                     }))
             }));
-
+    
             // Mark positions for dividers
             this.markDividerPositions();
     
@@ -387,7 +391,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
             this.tableDataObj.forEach(row => {
                 row['fullData'] = this.preprocessFullData(this.combinedData.filter(dataRow => dataRow.id === row.Id));
             });
-
+    
             this.combinedData = this.preprocessKeys(this.combinedData);
     
             console.log('Columns Map: ', columnsMainTemp);
@@ -398,11 +402,14 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
             console.log('Table Data Object: ', JSON.stringify(this.tableDataObj));
             console.log('Record Data: ', JSON.stringify(this.recordData, this.replacer));
             console.log('Combined Data: ', JSON.stringify(this.combinedData));
-
+    
             // We want to see how many columns the section has, so we need to read the "columns" attribute
             this.sectionsMain.forEach(section => {
                 this.columnLayoutStyle = section.columns;
             });
+    
+            // Populate left and right columns for expanded view
+            this.populateExpandedColumns();
         } else if (error) {
             this.dispatchEvent(
                 new ShowToastEvent({
@@ -413,7 +420,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
             );
         }
     }
-    
+
     // Helper method to get field value from a record
     getFieldValueFromRecord(record, apiName) {
         return record ? record[apiName] : null;
@@ -574,7 +581,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                 return {
                     ...column,
                     isSortedAsc: this.sortDirection === 'asc',
-                    isSortedDesc: this.sortDirection === 'desc',
+                    isSortedDesc: this.sortDirection  === 'desc',
                     ariaSort: this.sortDirection
                 };
             }
@@ -591,7 +598,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
         this.updateSortIcons();
     }
 
-    //Handle expanded view dropdown event
+    // Handle expanded view dropdown event
     expandSection(event) {
         const targetRowId = event.currentTarget.dataset.targetrow;
         console.log(targetRowId);
@@ -611,29 +618,32 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
         }
     }
 
-    //utility method to show blank object values in console
-    replacer(key, value){
-        if(value === undefined || value === null){
+    // Utility method to show blank object values in console
+    replacer(key, value) {
+        if (value === undefined || value === null) {
             return 'null';
         }
         return value;
     }
 
-    // Helper method to split fields into left and right columns
     splitFieldsByColumns() {
         const leftFields = [];
         const rightFields = [];
-
+    
+        // Ensure fieldDataTypes is populated
+        const fieldDataTypes = this.wiredLayoutResult.data.fieldDataTypes || {};
+    
         this.layoutSections.forEach(section => {
             if (section.heading === 'Fields') {
                 section.layoutRows.forEach((row, rowIndex) => {
                     row.layoutItems.forEach((item, itemIndex) => {
                         item.layoutComponents.forEach((component, componentIndex) => {
                             if (component.componentType === 'Field' || component.componentType === 'EmptySpace') {
+                                const fieldType = fieldDataTypes[component.apiName] || 'text';
                                 if (itemIndex % 2 === 0) {
-                                    leftFields.push({ ...component, rowIndex, itemIndex });
+                                    leftFields.push({ ...component, rowIndex, itemIndex, type: fieldType });
                                 } else {
-                                    rightFields.push({ ...component, rowIndex, itemIndex });
+                                    rightFields.push({ ...component, rowIndex, itemIndex, type: fieldType });
                                 }
                             }
                         });
@@ -641,12 +651,12 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                 });
             }
         });
-
+    
         this.leftColumnFields = leftFields;
         this.rightColumnFields = rightFields;
-
-        console.log('left column layout fields', this.leftColumnFields);
-        console.log('right column layout fields', this.rightColumnFields);
+    
+        console.log('left column layout fields', JSON.stringify(this.leftColumnFields, null, 2));
+        console.log('right column layout fields', JSON.stringify(this.rightColumnFields, null, 2));
     }
 
     adjustEmptySpaceIndices() {
@@ -758,6 +768,8 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
         this.isModalOpenDelete = false;
         this.expandedView = true;
         this.multipleRecords = false;
+        this.populatedLeftColumnFields = [];
+        this.populatedRightColumnFields = [];
     }
 
     preprocessKeys(data) {
@@ -949,11 +961,103 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
 
     get tableDataWithIndex() {
         return this.tableDataObj.map((item, index) => {
-            const newItem = {
+            const formattedCells = item.Cells.map(cell => {
+                // Find the corresponding fullData field to get the field type
+                const field = item.fullData[0].fields.find(f => f.value === cell.value);
+                const fieldType = field ? field.type : 'text';
+                return {
+                    ...cell,
+                    value: this.formatFieldValue(cell.value, fieldType)
+                };
+            });
+    
+            return {
                 ...item,
-                rowIndex: index + 1
+                rowIndex: index + 1,
+                Cells: formattedCells
             };
-            return newItem;
         });
     }
+
+    get isTwoColumnLayout() {
+        return this.columnLayoutStyle === 2;
+    }
+
+    populateExpandedColumns() {
+        const blankField = {
+            label: '',
+            value: '',
+            labelKey: 'empty-label',
+            valueKey: 'empty-value',
+            style: 'min-height: 20px;' // Adjust this value to match the height of one line of text
+        };
+    
+        this.populatedLeftColumnFields = this.leftColumnFields.map(field => {
+            if (field.componentType === 'EmptySpace') {
+                return { ...blankField };
+            }
+            const fieldValue = (this.recordData && this.recordData[0] && this.recordData[0][field.apiName]) || '—';
+            const formattedValue = this.formatFieldValue(fieldValue, field.type);
+            return {
+                ...field,
+                value: formattedValue,
+                labelKey: `${field.apiName}-label`,
+                valueKey: `${field.apiName}-value`
+            };
+        });
+    
+        this.populatedRightColumnFields = this.rightColumnFields.map(field => {
+            if (field.componentType === 'EmptySpace') {
+                return { ...blankField };
+            }
+            const fieldValue = (this.recordData && this.recordData[0] && this.recordData[0][field.apiName]) || '—';
+            const formattedValue = this.formatFieldValue(fieldValue, field.type);
+            return {
+                ...field,
+                value: formattedValue,
+                labelKey: `${field.apiName}-label`,
+                valueKey: `${field.apiName}-value`
+            };
+        });
+    }
+    
+    formatFieldValue(fieldValue, fieldType) {
+        fieldType = fieldType ? fieldType.toLowerCase() : 'text';
+    
+        if (!fieldValue && fieldValue !== 0) {
+            return '—'; // or any default value you want for null/undefined values
+        }
+    
+        if (typeof fieldValue === 'string' && fieldValue.match(/^\d{4}-\d{2}-\d{2}$/)) {
+            const [year, month, day] = fieldValue.split('-');
+            return `${day}/${month}/${year}`;
+        }
+    
+        if (fieldType.startsWith('currency')) {
+            const parsedValue = parseFloat(fieldValue);
+            return isNaN(parsedValue) ? '—' : `£${parsedValue.toFixed(2)}`;
+        }
+    
+        if (fieldType === 'percent') {
+            const parsedValue = parseFloat(fieldValue);
+            return isNaN(parsedValue) ? '—' : `${parsedValue.toFixed(2)}%`;
+        }
+    
+        if (fieldType === 'number') {
+            const parsedValue = parseFloat(fieldValue);
+            return isNaN(parsedValue) ? '—' : parsedValue.toLocaleString();
+        }
+
+        if (fieldType === 'checkbox' || fieldType === 'boolean') {
+            if (fieldValue === true) {
+                return { iconName: 'utility:check', altText: 'Checked' };
+            } else if (fieldValue === false) {
+                return { iconName: 'utility:close', altText: 'Cross' };
+            } else {
+                return { iconName: 'utility:close', altText: 'Unchecked' };
+            }
+        }
+    
+        return fieldValue;
+    }    
 }

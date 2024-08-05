@@ -38,6 +38,16 @@
                                         onchange={handleInputChange}>
                                     </lightning-input>
                                 </template>
+                                <template if:true={item.isDate}>
+                                    <lightning-input 
+                                        type="date" 
+                                        data-record-id={item.recordId} 
+                                        name={item.fieldName} 
+                                        label={item.label} 
+                                        value={item.value}
+                                        onchange={handleInputChange}>
+                                    </lightning-input>
+                                </template>
                                 <template if:true={item.isDefault}>
                                     <template if:true={item.isNumber}>
                                         <lightning-input 
@@ -48,11 +58,8 @@
                                             value={item.value}
                                             formatter={item.formatter}
                                             step={item.step}
-                                            maxlength={item.length.precision} 
-                                            pattern={item.pattern}
-                                            message-when-pattern-mismatch="Too many characters"
-                                            message-when-too-long="Too many characters"
-                                            placeholder="Enter a number"
+                                            max={item.max}
+                                            placeholder="Enter an amount"
                                             onchange={handleInputChange}>
                                         </lightning-input>
                                     </template>
@@ -124,6 +131,16 @@
                                         onchange={handleInputChange}>
                                     </lightning-input>
                                 </template>
+                                <template if:true={item.isDate}>
+                                    <lightning-input 
+                                        type="date" 
+                                        data-record-id={item.recordId} 
+                                        name={item.fieldName} 
+                                        label={item.label} 
+                                        value={item.value}
+                                        onchange={handleInputChange}>
+                                    </lightning-input>
+                                </template>
                                 <template if:true={item.isDefault}>
                                     <template if:true={item.isNumber}>
                                         <lightning-input 
@@ -132,13 +149,10 @@
                                             name={item.fieldName} 
                                             label={item.label} 
                                             value={item.value} 
-                                            maxlength={item.length.precision} 
-                                            pattern={item.pattern}
                                             formatter={item.formatter}
                                             step={item.step}
-                                            placeholder="Enter a number"
-                                            message-when-pattern-mismatch="Too many characters"
-                                            message-when-too-long="Too many characters"
+                                            max={item.max}
+                                            placeholder="Enter an amount"
                                             onchange={handleInputChange}>
                                         </lightning-input>
                                     </template>
@@ -201,6 +215,16 @@
                                     onchange={handleInputChange}>
                                 </lightning-input>
                             </template>
+                            <template if:true={item.isDate}>
+                                <lightning-input 
+                                    type="date" 
+                                    data-record-id={item.recordId} 
+                                    name={item.fieldName} 
+                                    label={item.label} 
+                                    value={item.value}
+                                    onchange={handleInputChange}>
+                                </lightning-input>
+                            </template>
                             <template if:true={item.isDefault}>
                                 <template if:true={item.isNumber}>
                                     <lightning-input 
@@ -211,11 +235,8 @@
                                         value={item.value}
                                         formatter={item.formatter}
                                         step={item.step}
-                                        maxlength={item.length.precision} 
-                                        pattern={item.pattern}
-                                        placeholder="Enter a number"
-                                        message-when-pattern-mismatch="Too many characters"
-                                        message-when-too-long="Too many characters"
+                                        max={item.max}
+                                        placeholder="Enter an amount"
                                         onchange={handleInputChange}>
                                     </lightning-input>
                                 </template>
@@ -254,8 +275,8 @@
 
     <div class="slds-form-element slds-m-around_medium">
         <template if:true={showErrorMessage}>
-            <div class="slds-text-color_error">
-                At least one field must be filled before saving.
+            <div class="slds-text-color_error slds-m-bottom_medium">
+                Please correct the errors in the database screen before saving.
             </div>
         </template>
         <button class="slds-button slds-button_brand" onclick={handleSave}>Confirm</button>
