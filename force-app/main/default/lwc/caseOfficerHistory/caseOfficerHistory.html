@@ -1,0 +1,107 @@
+<template>
+    <article class="slds-card card-background">
+        <lightning-card title="Case Officer History">
+            <div class="slds-p-around_medium">
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col slds-size_4-of-6">
+                        <lightning-input label="Current Officer" value={currentOfficer}></lightning-input>
+                    </div>
+                    <div class="slds-col slds-size_2-of-6">
+                        <lightning-datepicker label="Date" value={currentOfficerDate} onchange={handleDateChange}></lightning-datepicker>
+                    </div>
+                </div>
+
+                <div class="slds-m-top_large">
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col slds-size_4-of-6">
+                            <lightning-input label="Previous 1" value={previous1}></lightning-input>
+                        </div>
+                        <div class="slds-col slds-size_2-of-6">
+                            <lightning-datepicker label="Date" value={previous1Date} onchange={handleDateChange}></lightning-datepicker>
+                        </div>
+                    </div>
+                    <div class="slds-grid slds-gutters slds-m-top_small">
+                        <div class="slds-col slds-size_4-of-6">
+                            <lightning-input label="Previous 2" value={previous2}></lightning-input>
+                        </div>
+                        <div class="slds-col slds-size_2-of-6">
+                            <lightning-datepicker label="Date" value={previous2Date} onchange={handleDateChange}></lightning-datepicker>
+                        </div>
+                    </div>
+                    <div class="slds-grid slds-gutters slds-m-top_small">
+                        <div class="slds-col slds-size_4-of-6">
+                            <lightning-input label="Previous 3" value={previous3}></lightning-input>
+                        </div>
+                        <div class="slds-col slds-size_2-of-6">
+                            <lightning-datepicker label="Date" value={previous3Date} onchange={handleDateChange}></lightning-datepicker>
+                        </div>
+                    </div>
+                    <div class="slds-grid slds-gutters slds-m-top_small">
+                        <div class="slds-col slds-size_4-of-6">
+                            <lightning-input label="Previous 4" value={previous4}></lightning-input>
+                        </div>
+                        <div class="slds-col slds-size_2-of-6">
+                            <lightning-datepicker label="Date" value={previous4Date} onchange={handleDateChange}></lightning-datepicker>
+                        </div>
+                    </div>
+                    <div class="slds-grid slds-gutters slds-m-top_small">
+                        <div class="slds-col slds-size_4-of-6">
+                            <lightning-input label="Previous 5" value={previous5}></lightning-input>
+                        </div>
+                        <div class="slds-col slds-size_2-of-6">
+                            <lightning-datepicker label="Date" value={previous5Date} onchange={handleDateChange}></lightning-datepicker>
+                        </div>
+                    </div>
+                    <div class="slds-grid slds-gutters slds-m-top_small">
+                        <div class="slds-col slds-size_4-of-6">
+                            <lightning-input label="Previous 6" value={previous6}></lightning-input>
+                        </div>
+                        <div class="slds-col slds-size_2-of-6">
+                            <lightning-datepicker label="Date" value={previous6Date} onchange={handleDateChange}></lightning-datepicker>
+                        </div>
+                    </div>
+                    <div class="slds-grid slds-gutters slds-m-top_small">
+                        <div class="slds-col slds-size_4-of-6">
+                            <lightning-input label="Previous 7" value={previous7}></lightning-input>
+                        </div>
+                        <div class="slds-col slds-size_2-of-6">
+                            <lightning-datepicker label="Date" value={previous7Date} onchange={handleDateChange}></lightning-datepicker>
+                        </div>
+                    </div>
+                    <div class="slds-grid slds-gutters slds-m-top_small">
+                        <div class="slds-col slds-size_4-of-6">
+                            <lightning-input label="Previous 8" value={previous8}></lightning-input>
+                        </div>
+                        <div class="slds-col slds-size_2-of-6">
+                            <lightning-datepicker label="Date" value={previous8Date} onchange={handleDateChange}></lightning-datepicker>
+                        </div>
+                    </div>
+                    <div class="slds-grid slds-gutters slds-m-top_small">
+                        <div class="slds-col slds-size_4-of-6">
+                            <lightning-input label="Previous 9" value={previous9}></lightning-input>
+                        </div>
+                        <div class="slds-col slds-size_2-of-6">
+                            <lightning-datepicker label="Date" value={previous9Date} onchange={handleDateChange}></lightning-datepicker>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="slds-m-top_large">
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col slds-size_2-of-6">
+                            <lightning-datepicker label="Put Away" value={putAway} onchange={handleDateChange}></lightning-datepicker>
+                        </div>
+                    </div>
+                    <div class="slds-grid slds-gutters slds-m-top_small">
+                        <div class="slds-col slds-size_2-of-6">
+                            <lightning-datepicker label="Reopened" value={reopened} onchange={handleDateChange}></lightning-datepicker>
+                        </div>
+                        <div class="slds-col slds-size_4-of-6">
+                            <lightning-input label="Reopened By" value={reopenedBy}></lightning-input>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </lightning-card>
+    </article>
+</template>

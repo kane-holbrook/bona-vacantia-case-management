@@ -1,0 +1,15 @@
+.container {
+    display: flex;
+}
+
+.column {
+    padding: 10px;
+}
+
+.column-left {
+    flex: 5; /* Larger column */
+}
+
+.column-right {
+    flex: 1; /* Smaller column */
+}
