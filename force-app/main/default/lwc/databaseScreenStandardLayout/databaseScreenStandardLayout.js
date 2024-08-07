@@ -962,9 +962,11 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
     get tableDataWithIndex() {
         return this.tableDataObj.map((item, index) => {
             const formattedCells = item.Cells.map(cell => {
-                // Find the corresponding fullData field to get the field type
-                const field = item.fullData[0].fields.find(f => f.value === cell.value);
-                const fieldType = field ? field.type : 'text';
+                let fieldType = 'text';
+                if (item.fullData && item.fullData.fields) {
+                    const field = item.fullData.fields.find(f => f.value === cell.value);
+                    fieldType = field ? field.type : 'text';
+                }
                 return {
                     ...cell,
                     value: this.formatFieldValue(cell.value, fieldType)
@@ -992,31 +994,41 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
             style: 'min-height: 20px;' // Adjust this value to match the height of one line of text
         };
     
-        this.populatedLeftColumnFields = this.leftColumnFields.map(field => {
-            if (field.componentType === 'EmptySpace') {
-                return { ...blankField };
-            }
-            const fieldValue = (this.recordData && this.recordData[0] && this.recordData[0][field.apiName]) || '—';
-            const formattedValue = this.formatFieldValue(fieldValue, field.type);
-            return {
-                ...field,
-                value: formattedValue,
-                labelKey: `${field.apiName}-label`,
-                valueKey: `${field.apiName}-value`
-            };
-        });
+        this.tableDataObj.forEach(row => {
+            const rowData = this.recordData.find(record => record.Id === row.Id);
     
-        this.populatedRightColumnFields = this.rightColumnFields.map(field => {
-            if (field.componentType === 'EmptySpace') {
-                return { ...blankField };
-            }
-            const fieldValue = (this.recordData && this.recordData[0] && this.recordData[0][field.apiName]) || '—';
-            const formattedValue = this.formatFieldValue(fieldValue, field.type);
-            return {
-                ...field,
-                value: formattedValue,
-                labelKey: `${field.apiName}-label`,
-                valueKey: `${field.apiName}-value`
+            const leftFields = this.leftColumnFields.map(field => {
+                if (field.componentType === 'EmptySpace') {
+                    return { ...blankField };
+                }
+                const fieldValue = (rowData && rowData[field.apiName]) || '—';
+                const formattedValue = this.formatFieldValue(fieldValue, field.type);
+                return {
+                    ...field,
+                    value: formattedValue,
+                    labelKey: `${field.apiName}-label`,
+                    valueKey: `${field.apiName}-value`
+                };
+            });
+    
+            const rightFields = this.rightColumnFields.map(field => {
+                if (field.componentType === 'EmptySpace') {
+                    return { ...blankField };
+                }
+                const fieldValue = (rowData && rowData[field.apiName]) || '—';
+                const formattedValue = this.formatFieldValue(fieldValue, field.type);
+                return {
+                    ...field,
+                    value: formattedValue,
+                    labelKey: `${field.apiName}-label`,
+                    valueKey: `${field.apiName}-value`
+                };
+            });
+    
+            row.fullData = {
+                fields: [...leftFields, ...rightFields],
+                leftFields: leftFields,
+                rightFields: rightFields
             };
         });
     }

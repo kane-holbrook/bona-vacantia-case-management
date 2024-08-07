@@ -44,3 +44,7 @@
 .less-horizontal-width {
     width: 40% !important;
 }
+
+.slds-resizable__handle {
+    z-index: 1;
+}
