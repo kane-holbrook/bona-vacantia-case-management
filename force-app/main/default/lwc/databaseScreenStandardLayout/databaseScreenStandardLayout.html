@@ -99,56 +99,16 @@
                                         </td>
                                     </tr>
                                     <div class="slds-p-around_x-small expanded-section" key={row.Id} data-rowid={row.Id} style="display:none;">
-                                        <template for:each={row.fullData} for:item="dataRow">
-                                            <div class="slds-grid slds-wrap slds-gutters" key={dataRow.id}>
-                                                <template if:true={isTwoColumnLayout}>
-                                                    <div class="slds-col slds-size_1-of-2">
-                                                        <template for:each={populatedLeftColumnFields} for:item="field">
-                                                            <template if:true={field.insertDivider}>
-                                                                <div class="slds-section slds-m-vertical_large" style="border-top: 1px solid #d8dde6;" key={field.dividerKey}></div>
-                                                            </template>
-                                                            <div class="slds-dl_horizontal" key={field.labelKey} style={field.style}>
-                                                                <dt class="slds-dl_horizontal__label label-wrap-less" key={field.labelKey} title={field.label} style="font-weight: bold;">{field.label}</dt>
-                                                                <dd class="slds-dl_horizontal__detail less-horizontal-width wrap-label-value" key={field.valueKey} title={field.value}>
-                                                                    <template if:true={field.value.iconName}>
-                                                                        <lightning-icon icon-name={field.value.iconName} alternative-text={field.value.altText} size="small"></lightning-icon>
-                                                                    </template>
-                                                                    <template if:false={field.value.iconName}>
-                                                                        {field.value}
-                                                                    </template>
-                                                                </dd>
-                                                            </div>
-                                                            <br key={field.valueKey}/>
-                                                        </template>
-                                                    </div>
-                                                    <div class="slds-col slds-size_1-of-2">
-                                                        <template for:each={populatedRightColumnFields} for:item="field">
-                                                            <template if:true={field.insertDivider}>
-                                                                <div class="slds-section slds-m-vertical_large" style="border-top: 1px solid #d8dde6;" key={field.dividerKey}></div>
-                                                            </template>
-                                                            <div class="slds-dl_horizontal" key={field.labelKey} style={field.style}>
-                                                                <dt class="slds-dl_horizontal__label label-wrap-less" key={field.labelKey} title={field.label} style="font-weight: bold;">{field.label}</dt>
-                                                                <dd class="slds-dl_horizontal__detail less-horizontal-width wrap-label-value" key={field.valueKey} title={field.value}>
-                                                                    <template if:true={field.value.iconName}>
-                                                                        <lightning-icon icon-name={field.value.iconName} alternative-text={field.value.altText} size="small"></lightning-icon>
-                                                                    </template>
-                                                                    <template if:false={field.value.iconName}>
-                                                                        {field.value}
-                                                                    </template>
-                                                                </dd>
-                                                            </div>
-                                                            <br key={field.valueKey}/>
-                                                        </template>
-                                                    </div>
-                                                </template>
-                                                <template if:false={isTwoColumnLayout}>
-                                                    <template for:each={dataRow.fieldsWithDividers} for:item="field">
+                                        <div class="slds-grid slds-wrap slds-gutters">
+                                            <template if:true={isTwoColumnLayout}>
+                                                <div class="slds-col slds-size_1-of-2">
+                                                    <template for:each={row.fullData.leftFields} for:item="field">
                                                         <template if:true={field.insertDivider}>
                                                             <div class="slds-section slds-m-vertical_large" style="border-top: 1px solid #d8dde6;" key={field.dividerKey}></div>
                                                         </template>
-                                                        <div class="slds-col slds-size_1-of-1" key={field.labelKey}>
-                                                            <dt class="slds-dl_horizontal__label label-wrap" key={field.labelKey} title={field.label} style="font-weight: bold;">{field.label}</dt>
-                                                            <dd class="slds-dl_horizontal__detail" key={field.valueKey} title={field.value}>
+                                                        <div class="slds-dl_horizontal" key={field.labelKey} style={field.style}>
+                                                            <dt class="slds-dl_horizontal__label label-wrap-less" key={field.labelKey} title={field.label} style="font-weight: bold;">{field.label}</dt>
+                                                            <dd class="slds-dl_horizontal__detail less-horizontal-width wrap-label-value" key={field.valueKey} title={field.value}>
                                                                 <template if:true={field.value.iconName}>
                                                                     <lightning-icon icon-name={field.value.iconName} alternative-text={field.value.altText} size="small"></lightning-icon>
                                                                 </template>
@@ -157,10 +117,48 @@
                                                                 </template>
                                                             </dd>
                                                         </div>
+                                                        <br key={field.valueKey}/>
                                                     </template>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2">
+                                                    <template for:each={row.fullData.rightFields} for:item="field">
+                                                        <template if:true={field.insertDivider}>
+                                                            <div class="slds-section slds-m-vertical_large" style="border-top: 1px solid #d8dde6;" key={field.dividerKey}></div>
+                                                        </template>
+                                                        <div class="slds-dl_horizontal" key={field.labelKey} style={field.style}>
+                                                            <dt class="slds-dl_horizontal__label label-wrap-less" key={field.labelKey} title={field.label} style="font-weight: bold;">{field.label}</dt>
+                                                            <dd class="slds-dl_horizontal__detail less-horizontal-width wrap-label-value" key={field.valueKey} title={field.value}>
+                                                                <template if:true={field.value.iconName}>
+                                                                    <lightning-icon icon-name={field.value.iconName} alternative-text={field.value.altText} size="small"></lightning-icon>
+                                                                </template>
+                                                                <template if:false={field.value.iconName}>
+                                                                    {field.value}
+                                                                </template>
+                                                            </dd>
+                                                        </div>
+                                                        <br key={field.valueKey}/>
+                                                    </template>
+                                                </div>
+                                            </template>
+                                            <template if:false={isTwoColumnLayout}>
+                                                <template for:each={row.fullData.fields} for:item="field">
+                                                    <template if:true={field.insertDivider}>
+                                                        <div class="slds-section slds-m-vertical_large" style="border-top: 1px solid #d8dde6;" key={field.dividerKey}></div>
+                                                    </template>
+                                                    <div class="slds-col slds-size_1-of-1" key={field.labelKey}>
+                                                        <dt class="slds-dl_horizontal__label label-wrap" key={field.labelKey} title={field.label} style="font-weight: bold;">{field.label}</dt>
+                                                        <dd class="slds-dl_horizontal__detail" key={field.valueKey} title={field.value}>
+                                                            <template if:true={field.value.iconName}>
+                                                                <lightning-icon icon-name={field.value.iconName} alternative-text={field.value.altText} size="small"></lightning-icon>
+                                                            </template>
+                                                            <template if:false={field.value.iconName}>
+                                                                {field.value}
+                                                            </template>
+                                                        </dd>
+                                                    </div>
                                                 </template>
-                                            </div>
-                                        </template>
+                                            </template>
+                                        </div>
                                     </div>
                                 </template>
                             </tbody>
