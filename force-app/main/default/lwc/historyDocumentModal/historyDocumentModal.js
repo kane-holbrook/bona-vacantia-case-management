@@ -29,6 +29,12 @@ export default class HistoryDocumentModal extends LightningElement {
         { label: 'Not applicable', value: 'Not applicable' }
     ];
 
+    connectedCallback() {
+        this.documentType = this.initialDocumentType;
+        this.correspondenceWith = this.initialCorrespondenceWith;
+        this.draft = this.initialDraft;
+    }
+
     handleFileChange(event) {
         const file = event.target.files[0];
         const reader = new FileReader();

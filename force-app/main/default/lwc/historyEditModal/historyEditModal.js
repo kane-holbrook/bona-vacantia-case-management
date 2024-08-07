@@ -73,7 +73,7 @@ export default class HistoryEditModal extends LightningElement {
     ];
 
     connectedCallback() {
-        this.dateInserted = this.record.Date_Inserted__c || '';
+        this.dateInserted = this.record.Date_Inserted__c || this.getTodayDate();
         this.description = this.record.Action__c || '';
         this.details = this.record.Details__c || '';
         this.flagImportant = this.record.Flag_as_important__c || false;
@@ -104,6 +104,7 @@ export default class HistoryEditModal extends LightningElement {
             console.error('Error fetching SharePoint settings:', error);
             this.showToast('Error', 'Error fetching SharePoint settings', 'error');
         });
+
     }
 
     constructFullURL() {
@@ -208,7 +209,6 @@ export default class HistoryEditModal extends LightningElement {
     }
 
     handleSave() {
-        // If there's no file data, show an error message and return
         if (!this.fileData) {
             this.showToast('Error', 'No file data available to save.', 'error');
             return;
@@ -274,6 +274,10 @@ export default class HistoryEditModal extends LightningElement {
 
     @api
     saveRecord(parentRecordId) {
+        if (!this.validateFields()) {
+            this.showToast('Error', 'Please complete all required fields.', 'error');
+            return;
+        }
         let fields = {
             [DATE_INSERTED_FIELD.fieldApiName]: this.dateInserted,
             [ACTION_FIELD.fieldApiName]: this.description,
@@ -402,4 +406,26 @@ export default class HistoryEditModal extends LightningElement {
             return (size / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
         }
     }
+
+    validateFields() {
+        const allValid = [
+            ...this.template.querySelectorAll('lightning-input'),
+            ...this.template.querySelectorAll('lightning-textarea')
+        ].reduce((validSoFar, inputCmp) => {
+            inputCmp.reportValidity();
+            return validSoFar && inputCmp.checkValidity();
+        }, true);
+    
+        return allValid;
+    }
+
+    getTodayDate() {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+        const dd = String(today.getDate()).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd}`;
+    }
+    
+    
 }

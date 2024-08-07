@@ -9,13 +9,34 @@
 }
 
 .highlighted-row {
-    background-color: #fedfd0;
+    background-color: #fef1ee;
+    transition: background-color 0.3s ease;
+}
+
+.highlighted-row:hover {
+    background-color: #fee8e5;
 }
 
 .icon-important {
-    --slds-c-icon-color-foreground-default: #5f3e02;
+    --slds-c-icon-color-foreground-default: #8e030f;
 }
 
 .icon-default {
     --slds-c-icon-color-foreground-default: #c9c9c9;
+}
+
+table tr {
+    transition: background-color 0.3s ease;
+}
+
+table tr:not(.highlighted-row):hover td { 
+    background-color: #f0f0f0;
+    opacity: 1.0;
+    transition: background-color 0.3s ease;
+}
+
+table tr.highlighted-row:hover td {
+    background-color: #fee8e5;
+    opacity: 1.0;
+    transition: background-color 0.3s ease;
 }

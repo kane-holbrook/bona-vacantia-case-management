@@ -24,6 +24,16 @@
             </div>
         </div>
         <div class="slds-card__body slds-p-horizontal_small slds-p-vertical_medium">
+            <div class="slds-text-body_small slds-m-bottom_medium slds-grid slds-wrap slds-grid_align-end">
+                <div class="slds-col slds-size_1-of-2">
+                    {filteredHistoryItems.length} items - {sortedByText} - Updated {lastUpdated}
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-grid slds-wrap slds-grid_align-end">
+                    <lightning-input type="text" placeholder="Search history" variant="label-hidden" class="slds-m-bottom_small slds-col slds-size_1-of-3" onchange={handleSearchInputChange}></lightning-input>
+                    <lightning-input type="date" placeholder="From" variant="label-hidden" class="slds-m-bottom_small slds-col slds-size_1-of-3" onchange={handleDateFilterChange} data-filter="from"></lightning-input>
+                    <lightning-input type="date" placeholder="To" variant="label-hidden" class="slds-m-bottom_small slds-col slds-size_1-of-3" onchange={handleDateFilterChange} data-filter="to"></lightning-input>
+                </div>
+            </div>
             <template if:false={filteredHistoryItems.length}>
                 <div class="slds-text-align_center slds-p-vertical_medium">
                     <lightning-icon icon-name="utility:info" alternative-text="Info" size="large"></lightning-icon>
@@ -32,21 +42,19 @@
                 </div>
             </template>
             <template if:true={filteredHistoryItems.length}>
-                <div class="slds-text-body_small slds-m-bottom_medium slds-grid slds-wrap slds-grid_align-end">
-                    <div class="slds-col slds-size_1-of-2">
-                        ({filteredHistoryItems.length} items - {sortedByText} - Updated {lastUpdated} minutes ago)
-                    </div>
-                    <div class="slds-col slds-size_1-of-2 slds-grid slds-wrap slds-grid_align-end">
-                        <lightning-input type="text" placeholder="Search history" variant="label-hidden" class="slds-m-bottom_small slds-col slds-size_1-of-3" onchange={handleSearchInputChange}></lightning-input>
-                        <lightning-input type="date" placeholder="From" variant="label-hidden" class="slds-m-bottom_small slds-col slds-size_1-of-3" onchange={handleDateFilterChange} data-filter="from"></lightning-input>
-                        <lightning-input type="date" placeholder="To" variant="label-hidden" class="slds-m-bottom_small slds-col slds-size_1-of-3" onchange={handleDateFilterChange} data-filter="to"></lightning-input>
-                    </div>
-                </div>
                 <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_col-bordered">
                     <thead>
                         <tr class="slds-line-height_reset">
                             <th scope="col">
                                 <div class="slds-truncate" title="Expand"></div>
+                            </th>
+                            <th scope="col">
+                                <button class="slds-button slds-button_reset slds-truncate" title="Important" onclick={handleSort} data-column="Important">
+                                    Important
+                                    <template if:true={isSortedByImportant}>
+                                        <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
+                                    </template>
+                                </button>
                             </th>
                             <th scope="col">
                                 <button class="slds-button slds-button_reset slds-truncate" title="Date" onclick={handleSort} data-column="Date_Inserted__c">
@@ -108,7 +116,7 @@
                                 <div class="slds-truncate" title="Actions">Actions</div>
                             </th>
                         </tr>
-                    </thead>
+                    </thead>                    
                     <tbody>
                         <template for:each={filteredHistoryItems} for:item="item">
                             <tr key={item.Id} class={item.rowClass} onclick={handleRowClick} data-id={item.Id}>
@@ -121,9 +129,11 @@
                                         </template>
                                     </template>
                                 </td>
+                                <td data-label="Important">
+                                    <lightning-icon icon-name="utility:priority" alternative-text="Important" class={item.flagIconClass}></lightning-icon>
+                                </td>
                                 <td data-label="Date">
                                     <div class="slds-grid slds-align_absolute-center">
-                                        <lightning-icon icon-name="utility:priority" alternative-text="Important" class={item.flagIconClass}></lightning-icon>
                                         <lightning-formatted-date-time value={item.Date_Inserted__c} year="numeric" month="2-digit" day="2-digit" day-style="2-digit" month-style="2-digit" timezone="UTC"></lightning-formatted-date-time>
                                     </div>
                                 </td>
@@ -151,6 +161,7 @@
                                         <td data-label="Expand">
                                             <lightning-icon icon-name="utility:level_down" alternative-text="Sub-item" class="slds-icon-text-default version-expand-icon"></lightning-icon>
                                         </td>
+                                        <td data-label="Important"></td>
                                         <td data-label="Date">
                                             <div class="slds-grid slds-align_absolute-center">
                                                 <lightning-formatted-date-time value={relatedItem.Created_Time__c} year="numeric" month="2-digit" day="2-digit" day-style="2-digit" month-style="2-digit" timezone="UTC"></lightning-formatted-date-time>
@@ -186,6 +197,7 @@
                                         <td data-label="Expand">
                                             <lightning-icon icon-name="utility:level_down" alternative-text="Sub-item" class="slds-icon-text-default version-expand-icon"></lightning-icon>
                                         </td>
+                                        <td data-label="Important"></td>
                                         <td data-label="Date">
                                             <div class="slds-grid slds-align_absolute-center">
                                                 <lightning-formatted-date-time value={item.emailMessage.MessageDate} year="numeric" month="2-digit" day="2-digit" day-style="2-digit" month-style="2-digit" timezone="UTC"></lightning-formatted-date-time>
@@ -206,7 +218,7 @@
                                 </template>
                             </template>
                         </template>
-                    </tbody>
+                    </tbody>                    
                 </table>
             </template>
         </div>

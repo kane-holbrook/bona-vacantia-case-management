@@ -16,20 +16,21 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     @track isModalOpen = false;
     @track isDeleteModalOpen = false;
     @track currentRecordId;
-    @track showRelatedItems = true;
+    @track showRelatedItems = false;
     @track lastUpdated = 0;
     @track currentRecord = {};
     @track searchKey = '';
     @track dateFrom = null;
     @track dateTo = null;
-    @track sortOrder = 'desc';
-    @track sortOrderIcon = 'utility:arrowdown';
+    @track sortOrder = 'asc';
+    @track sortOrderIcon = 'utility:arrowup';
     @track sortedBy = 'Date_Inserted__c';
     @track selectedHistoryType = 'allHistory';  // Default selection
     @track currentUserId;  // To store the current user's ID
     @track selectedRecordDetails = 'There are no history notes for this case.';  // New track property to store Details__c value
     @track sharePointSiteUrl;
     @track sharePointDirectoryPath;
+    @track sortedByPriority = false;
     wiredHistoryItemsResult;
     userNames = {};
 
@@ -73,35 +74,48 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
         this.wiredHistoryItemsResult = result;
         if (result.data) {
             this.historyItems = result.data.map(item => {
-                const history = item.history;
-                const emailMessage = item.EmailMessage || null;
-
+                // Ensure history is an object and handle missing fields
+                const history = item || {};
+                const emailMessage = history.EmailMessage || null;
+                const shDocuments = history.SHDocuments__r || [];
+    
                 // Calculate total file size of related items
                 let totalFileSize = 0;
-                if (history.SHDocuments__r && history.SHDocuments__r.length > 0) {
-                    totalFileSize = history.SHDocuments__r.reduce((sum, doc) => sum + (doc.FileSize__c || 0), 0);
+                if (shDocuments.length > 0) {
+                    totalFileSize = shDocuments.reduce((sum, doc) => sum + (doc.FileSize__c || 0), 0);
                 }
-
-                return {
-                    ...history,
+    
+                const mappedItem = {
+                    Id: history.Id || '',
+                    BV_Case__c: history.BV_Case__c || '',
+                    Date_Inserted__c: history.Date_Inserted__c || '',
+                    Details__c: history.Details__c || '',
+                    Action__c: history.Action__c || '',
+                    Case_Officer__c: history.Case_Officer__c || '',
+                    Flag_as_important__c: history.Flag_as_important__c || false,
+                    Last_updated__c: history.Last_updated__c || '',
                     isExpanded: false,
-                    hasRelatedItems: (history.SHDocuments__r && history.SHDocuments__r.length > 0) || emailMessage,
+                    hasRelatedItems: shDocuments.length > 0 || emailMessage !== null,
                     iconName: this.getIconName(false),
                     rowClass: history.Flag_as_important__c ? 'highlighted-row' : '',
                     flagIconClass: history.Flag_as_important__c ? 'icon-important' : 'icon-default',
                     notes: history.Details__c ? 'Has details' : '',
-                    hasDetails: history.Details__c ? true : false,
-                    documentType: history.SHDocuments__r && history.SHDocuments__r.length > 0 ? history.SHDocuments__r[0].DocumentType__c : '',
+                    hasDetails: !!history.Details__c,
+                    documentType: shDocuments.length > 0 ? shDocuments[0].DocumentType__c : '',
                     fileSize: this.formatFileSize(totalFileSize),  // Use the calculated total file size here
-                    draft: history.SHDocuments__r && history.SHDocuments__r.length > 0 ? history.SHDocuments__r[0].Draft__c : '',
-                    SHDocuments__r: history.SHDocuments__r ? history.SHDocuments__r.map(doc => ({
+                    draft: shDocuments.length > 0 ? shDocuments[0].Draft__c : '',
+                    SHDocuments__r: shDocuments.map(doc => ({
                         ...doc,
                         showAttachmentIcon: doc.DocumentType__c === 'Email Attachment',
                         fileSize: doc.FileSize__c ? this.formatFileSize(doc.FileSize__c) : '',
-                    })) : [],
-                    emailMessage  // Include EmailMessage details
+                    })),
+                    emailMessage,  // Include EmailMessage details
+                    Case_Officer_Name: this.userNames[history.Case_Officer__c] || history.Case_Officer__c // Fetch Case Officer Name here
                 };
+
+                return mappedItem;
             });
+    
             const userIds = this.historyItems.map(item => item.Case_Officer__c);
             this.fetchUserNames(userIds);
             this.updateLastUpdated();
@@ -110,6 +124,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
             this.showToast('Error', 'Error fetching history items', 'error');
         }
     }
+        
 
     fetchUserNames(userIds) {
         getUserNames({ userIds })
@@ -124,7 +139,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
             .catch(error => {
                 this.showToast('Error', 'Error fetching user names', 'error');
             });
-    }
+    }    
 
     refreshHistoryItems() {
         refreshApex(this.wiredHistoryItemsResult);
@@ -139,9 +154,19 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
             const now = new Date();
             const lastUpdateTime = new Date(latestItem.Last_updated__c);
             const diffInMinutes = Math.floor((now - lastUpdateTime) / 60000);
-            this.lastUpdated = diffInMinutes;
+    
+            if (diffInMinutes < 60) {
+                this.lastUpdated = `${diffInMinutes} minutes ago`;
+            } else if (diffInMinutes < 1440) {
+                const diffInHours = Math.floor(diffInMinutes / 60);
+                this.lastUpdated = `${diffInHours} hour${diffInHours > 1 ? 's' : ''} ago`;
+            } else {
+                const diffInDays = Math.floor(diffInMinutes / 1440);
+                this.lastUpdated = `${diffInDays} day${diffInDays > 1 ? 's' : ''} ago`;
+            }
         }
     }
+    
 
     getIconName(isExpanded) {
         return isExpanded ? "utility:chevrondown" : "utility:chevronright";
@@ -284,12 +309,19 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
 
     sortHistoryItems() {
         this.historyItems.sort((a, b) => {
-            const valA = a[this.sortedBy] ? a[this.sortedBy].toLowerCase() : '';
-            const valB = b[this.sortedBy] ? b[this.sortedBy].toLowerCase() : '';
-
-            if (valA === '' || valA === null || valA === undefined) return 1;
-            if (valB === '' || valB === null || valB === undefined) return -1;
-
+            let valA, valB;
+    
+            if (this.sortedBy === 'Important') {
+                valA = a.Flag_as_important__c ? 0 : 1;
+                valB = b.Flag_as_important__c ? 0 : 1;
+            } else if (this.sortedBy === 'Notes__c') {
+                valA = a.hasDetails ? 1 : 0;
+                valB = b.hasDetails ? 1 : 0;
+            } else {
+                valA = a[this.sortedBy] ? a[this.sortedBy].toLowerCase() : '';
+                valB = b[this.sortedBy] ? b[this.sortedBy].toLowerCase() : '';
+            }
+    
             if (valA < valB) {
                 return this.sortOrder === 'asc' ? -1 : 1;
             } else if (valA > valB) {
@@ -299,6 +331,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
         });
         this.filterHistoryItems();
     }
+    
 
     filterHistoryItems() {
         this.filteredHistoryItems = this.historyItems.filter(item => {
@@ -333,7 +366,20 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     }
 
     get sortedByText() {
-        return `Sorted by ${this.sortedBy} ${this.sortOrder} - Filtered by ${this.selectedHistoryType === 'allHistory' ? 'all history' : 'my history'}`;
+        const fieldLabelMap = {
+            'Date_Inserted__c': 'Date Inserted',
+            'Action__c': 'Action',
+            'Notes__c': 'Notes',
+            'DocumentType__c': 'Document Type',
+            'FileSize__c': 'File Size',
+            'Draft__c': 'Draft',
+            'Case_Officer_Name': 'Case Officer',
+            'Important': 'Important'
+        };
+    
+        const sortedByLabel = fieldLabelMap[this.sortedBy] || this.sortedBy;
+        const sortOrderText = this.sortOrder === 'asc' ? '(ascending)' : '(descending)';
+        return `Sorted by ${sortedByLabel} ${sortOrderText} - Filtered by ${this.selectedHistoryType === 'allHistory' ? 'all history' : 'my history'}`;
     }
 
     get isSortedByDate() {
@@ -363,6 +409,10 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     get isSortedByCaseOfficer() {
         return this.sortedBy === 'Case_Officer_Name';
     }
+
+    get isSortedByImportant() {
+        return this.sortedBy === 'Important';
+    }      
 
     handleForward(event) {
         const itemId = event.currentTarget.dataset.id;
