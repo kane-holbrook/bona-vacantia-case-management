@@ -29,7 +29,7 @@ export default class TaskDeleteModal extends LightningElement {
             this.caseOfficers = data.Assigned_To__c;
             this.category = data.Category__c;
             this.priority = data.Priority__c;
-            this.waitingPeriod = data.Waiting_Period__c;
+            this.waitingPeriod = this.calculateWaitingPeriod(data.Date_Inserted__c, data.Due_Date__c);
             this.dateInserted = data.Date_Inserted__c;
             this.due = data.Due_Date__c;
             this.document = data.Document__c;
@@ -55,7 +55,9 @@ export default class TaskDeleteModal extends LightningElement {
 
             getSubTasks({ parentTaskId: this.recordId })
                 .then(result => {
-                    this.subTaskCount = result.length;
+                    if (!data.Parent_Task__c) {
+                        this.subTaskCount = result.length;
+                    }
                 })
                 .catch(error => {
                     this.dispatchEvent(
@@ -71,28 +73,26 @@ export default class TaskDeleteModal extends LightningElement {
         }
     }
 
-    @api
-    deleteRecord() {
-        deleteRecord(this.recordId)
-            .then(() => {
-                this.dispatchEvent(
-                    new ShowToastEvent({
-                        title: 'Success',
-                        message: 'Task deleted successfully',
-                        variant: 'success'
-                    })
-                );
-                this.dispatchEvent(new CustomEvent('taskdeleted'));
-                this.dispatchEvent(new CustomEvent('close'));
-            })
-            .catch(error => {
-                this.dispatchEvent(
-                    new ShowToastEvent({
-                        title: 'Error deleting task',
-                        message: error.body.message,
-                        variant: 'error'
-                    })
-                );
-            });
+    calculateWaitingPeriod(dateInserted, dueDate) {
+        if (!dateInserted || !dueDate) return '';
+
+        const dateInsertedObj = new Date(dateInserted);
+        const dueDateObj = new Date(dueDate);
+        const timeDifference = dueDateObj - dateInsertedObj;
+
+        const absDifference = Math.abs(timeDifference);
+        const dayDifference = absDifference / (1000 * 3600 * 24);
+        let waitingPeriod = '';
+
+        if (dayDifference <= 30) {
+            waitingPeriod = `${Math.round(dayDifference)} days`;
+        } else if (dayDifference <= 365) {
+            waitingPeriod = `${Math.round(dayDifference / 7)} weeks`;
+        } else {
+            waitingPeriod = `${Math.round(dayDifference / 30)} months`;
+        }
+
+        return `${waitingPeriod} ${timeDifference > 0 ? 'after' : 'before'} date inserted`;
     }
+
 }
