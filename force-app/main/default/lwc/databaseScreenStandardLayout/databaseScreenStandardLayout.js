@@ -106,9 +106,9 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
         const { error, data } = result;
         if (data) {
             console.log('Layout Data: ', JSON.stringify(data));
-    
+
             let isMultipleRecords = false;
-    
+
             // Check if the layout contains "Multiple Records: YES"
             data.sections.forEach(section => {
                 if (section.heading && section.heading.includes("Multiple Records: YES")) {
@@ -116,39 +116,39 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                     this.multipleRecords = true;
                 }
             });
-    
+
             // Check if the layout contains "Expanded View: NO"
             data.sections.forEach(section => {
                 if (section.heading && section.heading.includes("Expanded View: NO")) {
                     this.expandedView = false;
                 }
             });
-    
+
             // Handle recordData based on Multiple Records
             if (isMultipleRecords) {
                 this.recordData = data.recordData;
             } else {
                 this.recordData = [data.recordData[0] || {}]; // Ensure recordData is an array with a single object
             }
-    
+
             console.log('Initial Record Data: ', JSON.stringify(this.recordData));
-    
+
             // Extract fieldDataTypes from data
             const fieldDataTypes = data.fieldDataTypes || {};
             this.fieldDataTypes = fieldDataTypes; // Store the fieldDataTypes for later use
-    
+
             // Create deep copies of layoutSections and attach field values
             this.layoutSections = JSON.parse(JSON.stringify(data.sections));
             let tableDataTemp = []; // Adjusted for multiple records
             let columnsTemp = [];
             let columnsMainTemp = [];
-    
+
             // Process fields into left and right columns
             this.splitFieldsByColumns();
-    
+
             // Detect consecutive "EmptySpace" components in left and right columns
             this.emptySpaceIndices = []; // Reset the emptySpaceIndices array
-    
+
             for (let i = 0; i < this.leftColumnFields.length; i++) {
                 if (this.leftColumnFields[i].componentType === 'EmptySpace' && this.rightColumnFields[i].componentType === 'EmptySpace') {
                     this.emptySpaceIndices.push(i);
@@ -160,12 +160,12 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                     console.log(`Field after empty spaces: ${afterLabel}`);
                 }
             }
-    
+
             console.log('Empty Space Indices: ', this.emptySpaceIndices);
-    
+
             // Adjust emptySpaceIndices
             this.adjustEmptySpaceIndices();
-    
+
             this.layoutSections.forEach(section => {
                 section.layoutRows.forEach(row => {
                     row.layoutItems.forEach(item => {
@@ -179,7 +179,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                                         const fieldType = fieldDataTypes[component.apiName] || 'text';
                                         let columnType = 'text'; // default type
                                         let length = null; // variable to store the number in the field type
-    
+
                                         // Check the field type and adjust columnType and length accordingly
                                         if (fieldType.startsWith('Long Text Area')) {
                                             columnType = 'long-text';
@@ -244,34 +244,34 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                                         } else {
                                             columnType = 'text'; // Default to text if no other type matches
                                         }
-    
+
                                         // Construct the column object
                                         const column = {
-                                            label: component.label,
+                                            label: this.decodeHtmlEntities(component.label), // Decode HTML entities in the label
                                             fieldName: component.apiName,
                                             type: columnType
                                         };
-    
+
                                         // Add length if available
                                         if (length !== null) {
                                             column.length = length;
                                         }
-    
+
                                         columnsTemp.push(column);
                                     }
-    
+
                                     console.log('sections temp', columnsTemp);
-    
+
                                     console.log(section);
                                     console.log(this.layoutSections[0]);
-    
+
                                     // Construct the column object
                                     const column = {
-                                        label: component.label,
+                                        label: this.decodeHtmlEntities(component.label), // Decode HTML entities in the label
                                         fieldName: component.apiName,
                                         type: 'text'
                                     };
-    
+
                                     // Section at index 0 contains table headers (filter by section so variables are separated)
                                     if (!this.isBVCase) {
                                         if (this.expandedView) {
@@ -296,7 +296,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                     });
                 });
             });
-    
+
             // Set table data for multiple records
             this.recordData.forEach(record => {
                 let recordTemp = {
@@ -313,28 +313,28 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                 }
                 tableDataTemp.push(recordTemp);
             });
-    
+
             // Add row actions column, this may no longer be needed with new table component (action column is hardcoded) but doesn't currently seem to affect data prepping
             columnsTemp.push({ type: 'action', typeAttributes: { rowActions: this.getRowActions.bind(this) } });
-    
+
             // Make all columns sortable
             columnsTemp = columnsTemp.map(col => {
                 return { ...col, sortable: true };
             });
-    
+
             this.columnsMain = columnsMainTemp;
             this.columns = columnsTemp;
             this.tableData = tableDataTemp;
             let mainSection = [];
             mainSection = [...mainSection, this.layoutSections[1]];
             this.sectionsMain = mainSection;
-    
+
             // Create object array to be used for the table data
             let tableDataObjTemp = [];
             this.tableData.forEach(function (row, i) {
                 let rowId = row.rowId;
                 let keys = Object.keys(row);
-    
+
                 // Filter so only data for headers is pulled into the main table
                 keys.forEach(key => {
                     let isHeader = columnsMainTemp.some(col => col.fieldName === key);
@@ -342,7 +342,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                         delete row[key];
                     }
                 });
-    
+
                 // Get values after filtering the keys
                 let values = Object.values(row);
                 let valueMap = [];
@@ -353,7 +353,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                     };
                     valueMap.push(valueItem);
                 });
-    
+
                 // Ensure each row is assigned to a cell properly
                 const item = {
                     Id: rowId,
@@ -361,16 +361,16 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                 }
                 tableDataObjTemp.push(item);
             });
-    
+
             // Assign the processed table data to the tableDataObj
             this.tableDataObj = tableDataObjTemp;
-    
+
             // Prep data for expanded view field values
             let filteredData = this.recordData;
             if (this.subRecordId) {
                 filteredData = this.recordData.filter(record => record.Id === this.subRecordId);
             }
-    
+
             this.combinedData = filteredData.map(record => ({
                 id: record.Id,
                 fields: this.columns
@@ -383,17 +383,17 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                         length: column.length || null
                     }))
             }));
-    
+
             // Mark positions for dividers
             this.markDividerPositions();
-    
+
             // Merge table data with expanded view field values
             this.tableDataObj.forEach(row => {
                 row['fullData'] = this.preprocessFullData(this.combinedData.filter(dataRow => dataRow.id === row.Id));
             });
-    
+
             this.combinedData = this.preprocessKeys(this.combinedData);
-    
+
             console.log('Columns Map: ', columnsMainTemp);
             console.log('Columns Main: ', JSON.stringify(this.columnsMain));
             console.log('Sections Main: ', JSON.stringify(this.sectionsMain));
@@ -402,12 +402,12 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
             console.log('Table Data Object: ', JSON.stringify(this.tableDataObj));
             console.log('Record Data: ', JSON.stringify(this.recordData, this.replacer));
             console.log('Combined Data: ', JSON.stringify(this.combinedData));
-    
+
             // We want to see how many columns the section has, so we need to read the "columns" attribute
             this.sectionsMain.forEach(section => {
                 this.columnLayoutStyle = section.columns;
             });
-    
+
             // Populate left and right columns for expanded view
             this.populateExpandedColumns();
         } else if (error) {
