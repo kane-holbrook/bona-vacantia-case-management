@@ -1003,8 +1003,10 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                 }
                 const fieldValue = (rowData && rowData[field.apiName]) || '—';
                 const formattedValue = this.formatFieldValue(fieldValue, field.type);
+                const decodedLabel = this.decodeHtmlEntities(field.label); // Decode HTML entities in the label
                 return {
                     ...field,
+                    label: decodedLabel,
                     value: formattedValue,
                     labelKey: `${field.apiName}-label`,
                     valueKey: `${field.apiName}-value`
@@ -1017,8 +1019,10 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                 }
                 const fieldValue = (rowData && rowData[field.apiName]) || '—';
                 const formattedValue = this.formatFieldValue(fieldValue, field.type);
+                const decodedLabel = this.decodeHtmlEntities(field.label); // Decode HTML entities in the label
                 return {
                     ...field,
+                    label: decodedLabel,
                     value: formattedValue,
                     labelKey: `${field.apiName}-label`,
                     valueKey: `${field.apiName}-value`
@@ -1071,5 +1075,11 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
         }
     
         return fieldValue;
-    }    
+    }
+
+    decodeHtmlEntities(text) {
+        const textArea = document.createElement('textarea');
+        textArea.innerHTML = text;
+        return textArea.value;
+    }
 }
