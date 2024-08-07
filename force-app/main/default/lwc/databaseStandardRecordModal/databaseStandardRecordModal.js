@@ -68,8 +68,9 @@ export default class DatabaseStandardRecordModal extends LightningElement {
                                 length = column.length;
                             }
                         }
+                        const decodedLabel = this.decodeHtmlEntities(column.label); // Decode HTML entities in the label
                         return {
-                            label: column.label,
+                            label: decodedLabel,
                             fieldName: column.fieldName,
                             type: type,
                             formatter: formatter,
@@ -371,5 +372,11 @@ export default class DatabaseStandardRecordModal extends LightningElement {
         });
     
         return fieldsWithDividers;
+    }
+
+    decodeHtmlEntities(text) {
+        const textArea = document.createElement('textarea');
+        textArea.innerHTML = text;
+        return textArea.value;
     }
 }
