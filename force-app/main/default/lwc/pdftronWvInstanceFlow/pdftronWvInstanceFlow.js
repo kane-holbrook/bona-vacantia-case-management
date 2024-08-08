@@ -118,20 +118,32 @@ export default class PdftronWvInstanceFlow extends LightningElement {
             .then(result => {
                 console.log('data by id result', result);
 
-                // Delay to allow the iframe to load
-                setTimeout(() => {
+                this.waitForIframeLoad().then(() => {
                     this.handleBlobSelected(result);
-
+    
                     registerListener('doc_gen_options', this.handleOptions, this);
                     this.columns = [
                         { "label": "Template Key", "apiName": "templateKey", "fieldType": "text", "objectName": "Account" },
                         { "label": "Value", "apiName": "Value", "fieldType": "text", "objectName": "Account" }
                     ];
-                }, 3000);
+                });
             })
             .catch(error => {
                 console.log("Error fetching file data", error);
             });
+    }
+
+    waitForIframeLoad() {
+        return new Promise((resolve) => {
+            const checkIframe = () => {
+                if (this.iframeWindow) {
+                    resolve();
+                } else {
+                    requestAnimationFrame(checkIframe);
+                }
+            };
+            checkIframe();
+        });
     }
 
     generateDocument() {
