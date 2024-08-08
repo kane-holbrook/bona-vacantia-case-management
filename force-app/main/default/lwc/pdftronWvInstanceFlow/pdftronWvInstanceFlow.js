@@ -128,11 +128,6 @@ export default class PdftronWvInstanceFlow extends LightningElement {
                         { "label": "Value", "apiName": "Value", "fieldType": "text", "objectName": "Account" }
                     ];
                 }, 3000);
-
-                // Delay to allow mapping to be set
-                setTimeout(() => {
-                    this.generateDocument();
-                }, 8000);
             })
             .catch(error => {
                 console.log("Error fetching file data", error);
@@ -354,7 +349,17 @@ export default class PdftronWvInstanceFlow extends LightningElement {
 
                     this.mapping = mapping;
 
-                    fireEvent(this.pageRef, 'doc_gen_options', keys);
+                    // Create a Promise to handle the listener execution sequence
+                    const listenerPromise = new Promise((resolve) => {
+                        fireEvent(this.pageRef, 'doc_gen_options', keys);
+                        resolve();
+                    });
+
+                    // Chain the generateDocument call after the Promise resolves
+                    listenerPromise.then(() => {
+                        this.generateDocument();
+                    });
+                    
                     break;
                 case 'SAVE_DOCUMENT':
                     const cvId = event.data.payload.contentDocumentId;
