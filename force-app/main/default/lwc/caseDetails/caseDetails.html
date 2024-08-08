@@ -1,25 +1,33 @@
 <template>
-    <lightning-card variant="Narrow" icon-name="standard:case">
-        <div slot="title" class="slds-grid slds-wrap">
-            <div class="slds-col slds-size_1-of-3">
-                <b>{caseNumber}</b>  <span class="slds-m-left_large"><b>{caseTypeName}</b></span>
-            </div>
-            <div class="slds-col slds-size_2-of-3 slds-text-align_right">
-                <span class="slds-m-left_large"><b>Name: </b> <span style="font-weight: normal;">{deceasedName}</span></span>
-                <span class="slds-m-left_large"><b>DoD: </b> <span style="font-weight: normal;">{dateOfDeath}</span></span>
-            </div>
+    <article class="slds-card">
+        <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__figure">
+                    <lightning-icon icon-name="standard:case" size="small" alternative-text="Case"></lightning-icon>
+                </div>
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <span class="slds-truncate">
+                            <b>{caseNumber}</b>
+                            <span class="slds-m-left_large"><b>{caseTypeName}</b></span>
+                            <span class="slds-m-left_large"><b>Name: </b><span style="font-weight: normal;">{deceasedName}</span></span>
+                            <span class="slds-m-left_large"><b>DoD: </b><span style="font-weight: normal;">{dateOfDeath}</span></span>
+                        </span>
+                    </h2>
+                </div>
+                <div class="slds-no-flex slds-grid slds-col_bump-left">
+                    <lightning-button-group>
+                        <lightning-button label="Send an Email" variant="neutral" onclick={handleSendAnEmail} title="Send an Email"></lightning-button>
+                        <lightning-button-menu icon-name="utility:down" alternative-text="Show More" variant="border-filled" menu-alignment="right">
+                            <lightning-menu-item value="changeOwner" label="Change Owner" onclick={handleChangeOwner}></lightning-menu-item>
+                            <!-- <lightning-menu-item value="changeRecordType" label="Change Record Type" onclick={handleChangeRecordType}></lightning-menu-item> -->
+                            <lightning-menu-item value="delete" label="Delete" onclick={handleDelete}></lightning-menu-item>
+                            <lightning-menu-item value="clone" label="Clone" onclick={handleClone}></lightning-menu-item>
+                        </lightning-button-menu>
+                    </lightning-button-group>
+                </div>
+            </header>
         </div>
-        <div slot="actions">
-            <lightning-button-group>
-                <lightning-button label="Send an Email" variant="neutral" onclick={handleSendAnEmail} title="Send an Email"></lightning-button>
-                <lightning-button-menu icon-name="utility:down" alternative-text="Show More" variant="border-filled" menu-alignment="right">
-                    <lightning-menu-item value="changeOwner" label="Change Owner" onclick={handleChangeOwner}></lightning-menu-item>
-                    <!-- <lightning-menu-item value="changeRecordType" label="Change Record Type" onclick={handleChangeRecordType}></lightning-menu-item> -->
-                    <lightning-menu-item value="delete" label="Delete" onclick={handleDelete}></lightning-menu-item>
-                    <lightning-menu-item value="clone" label="Clone" onclick={handleClone}></lightning-menu-item>
-                </lightning-button-menu>
-            </lightning-button-group>
-        </div>
-    </lightning-card>
+    </article>
     <c-email-quick-action record-id={recordId}></c-email-quick-action>
 </template>
