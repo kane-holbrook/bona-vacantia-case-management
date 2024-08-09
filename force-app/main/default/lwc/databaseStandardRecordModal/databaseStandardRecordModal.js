@@ -80,6 +80,7 @@ export default class DatabaseStandardRecordModal extends LightningElement {
                             max: max,
                             isPicklist: column.type === 'picklist',
                             isCheckbox: column.type === 'checkbox',
+                            isLongText: column.type === 'long-text',
                             isDate: column.type === 'date',
                             isDefault: column.type !== 'picklist' && column.type !== 'checkbox' && column.type !== 'long-text' && column.type !== 'date',
                             checked: column.type === 'checkbox' ? !!record[column.fieldName] : false,
@@ -331,10 +332,6 @@ export default class DatabaseStandardRecordModal extends LightningElement {
         return field.type === 'number' || field.type === 'currency';
     }
 
-    isLongText(field) {
-        return field.type === 'long-text';
-    }
-
     addDividers(fields) {
         const fieldsWithDividers = [];
         const combinedDividerIndices = this.getDividerIndices();
@@ -345,7 +342,6 @@ export default class DatabaseStandardRecordModal extends LightningElement {
                 key: field.fieldName,
                 isEmptySpace: field.componentType === 'EmptySpace',
                 isNumber: this.isNumberType(field),
-                isLongText: this.isLongText(field),
                 pattern: this.getFieldPattern(field.length)
             };
     
