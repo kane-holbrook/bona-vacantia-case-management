@@ -230,7 +230,8 @@ export default class HistoryEditModal extends LightningElement {
                     .then((serverRelativeUrl) => {
                         this.serverRelativeURL = serverRelativeUrl; // Update the serverRelativeURL after successful upload
                         this.showToast('Success', 'File uploaded successfully', 'success');
-                        this.createSHDocumentRecord(this.record.Id, serverRelativeUrl, this.description); // Attach document to history record
+                        console.log('serverRelativeUrl', serverRelativeUrl);
+                        this.createSHDocumentRecord(this.record.Id, folderName); // Attach document to history record
                         refreshApex(this.wiredRelatedItemsResult); // Refresh related items
                         this.closeSubModal();
                     })
@@ -245,7 +246,7 @@ export default class HistoryEditModal extends LightningElement {
             });
     }
 
-    createSHDocumentRecord(historyRecordId, serverRelativeUrl, action) {
+    createSHDocumentRecord(historyRecordId, folderName) {
         const shDocumentFields = {
             [SHDOCUMENT_NAME_FIELD.fieldApiName]: this.fileName,
             [DOCUMENT_EXTENSION_FIELD.fieldApiName]: this.fileName.split('.').pop(),
@@ -254,7 +255,7 @@ export default class HistoryEditModal extends LightningElement {
             [DOCUMENT_FILE_SIZE_FIELD.fieldApiName]: this.fileSize,
             [DOCUMENT_CORRESPONDENCE_WITH_FIELD.fieldApiName]: this.correspondenceWith,
             [DOCUMENT_DRAFT_FIELD.fieldApiName]: this.draft,
-            [SERVER_RELATIVE_URL_FIELD.fieldApiName]: this.sharePointDirectoryPath + '/' + 'Shared%20Documents' + '/' + serverRelativeUrl + '/' + this.fileName,
+            [SERVER_RELATIVE_URL_FIELD.fieldApiName]: this.sharePointDirectoryPath + '/' + 'Shared%20Documents' + '/' + folderName + '/' + this.fileName,
             [CREATED_TIME_FIELD.fieldApiName]: new Date(),
             [CASE_HISTORY_FIELD.fieldApiName]: historyRecordId
         };
