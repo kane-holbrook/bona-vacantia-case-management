@@ -110,7 +110,12 @@ export default class CaseOfficerButtons extends LightningElement {
         createRecord(recordInput)
             .then(result => {
                 this.caseDetailId = result.id;
-                this.dispatchEvent(new CustomEvent('caseofficersaved'));
+                const event = new CustomEvent('caseofficersaved', {
+                    detail: { recordId: this.recordId },
+                    bubbles: true, // Allow the event to bubble up
+                    composed: true // Allow the event to cross the shadow DOM boundary
+                });
+                this.dispatchEvent(event);
                 console.log('Case_Detail__c created successfully with Id: ' + this.caseDetailId);
                 // Optionally, handle further actions like notifying the user
             })
@@ -164,7 +169,12 @@ export default class CaseOfficerButtons extends LightningElement {
         updateRecord(recordInput)
             .then(() => {
                 console.log('Case_Detail__c updated successfully');
-                this.dispatchEvent(new CustomEvent('caseofficersaved'));
+                const event = new CustomEvent('caseofficersaved', {
+                    detail: { recordId: this.recordId },
+                    bubbles: true, // Allow the event to bubble up
+                    composed: true // Allow the event to cross the shadow DOM boundary
+                });
+                this.dispatchEvent(event);
                 // Optionally, handle further actions like notifying the user
             })
             .catch(error => {
