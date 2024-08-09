@@ -1,6 +1,7 @@
 import { LightningElement, api, track, wire } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import { createRecord, updateRecord, deleteRecord } from 'lightning/uiRecordApi';
+import { createRecord, updateRecord, deleteRecord } from 'lightning/uiRecordApi'
+import { getRecordId } from 'c/sharedService';
 import CASE_HISTORY_OBJECT from '@salesforce/schema/Case_History__c';
 import ID_FIELD from '@salesforce/schema/Case_History__c.Id';
 import DATE_INSERTED_FIELD from '@salesforce/schema/Case_History__c.Date_Inserted__c';
@@ -77,7 +78,7 @@ export default class HistoryEditModal extends LightningElement {
         this.description = this.record.Action__c || '';
         this.details = this.record.Details__c || '';
         this.flagImportant = this.record.Flag_as_important__c || false;
-        this.bvCaseId = this.record.BV_Case__c || '';
+        this.bvCaseId = this.record.BV_Case__c || getRecordId();
 
         console.log('history record', this.record);
 
@@ -209,41 +210,62 @@ export default class HistoryEditModal extends LightningElement {
     }
 
     handleSave() {
-        if (!this.fileData) {
-            this.showToast('Error', 'No file data available to save.', 'error');
-            return;
-        }
-
-        const base64Data = this.fileData.split(',')[1];
-        const binaryData = window.atob(base64Data);
-
-        getCaseName({ caseId: this.bvCaseId })
-            .then((caseName) => {
-                const folderName = `${caseName}/${this.record.Id}`;
-
-                uploadFileToSharePoint({
-                    filePath: folderName,
-                    fileName: this.fileName,
-                    fileContent: binaryData,
-                    documentType: this.documentType
-                })
-                    .then((serverRelativeUrl) => {
-                        this.serverRelativeURL = serverRelativeUrl; // Update the serverRelativeURL after successful upload
-                        this.showToast('Success', 'File uploaded successfully', 'success');
-                        console.log('serverRelativeUrl', serverRelativeUrl);
-                        this.createSHDocumentRecord(this.record.Id, folderName); // Attach document to history record
-                        refreshApex(this.wiredRelatedItemsResult); // Refresh related items
-                        this.closeSubModal();
-                    })
-                    .catch(error => {
-                        console.log('Error saving file', error);
-                        this.showToast('Error', 'Error saving file', 'error');
-                    });
+        const parentRecordId = this.bvCaseId; // Assuming this.bvCaseId is the correct ID you want to pass
+    
+        this.saveRecord(parentRecordId)
+            .then(() => {
+                if (this.fileName) {
+                    // After saving the new record, proceed to save the document
+                    return this.saveDocument();
+                }
+            })
+            .then(() => {
+                this.fileName = null;
             })
             .catch(error => {
-                console.log('Error fetching case name', error);
-                this.showToast('Error', 'Error fetching case name', 'error');
+                console.log('Error saving record or uploading document', error);
+                this.showToast('Error', 'Error saving record or uploading document: ' + error, 'error');
             });
+    }
+    
+    saveDocument() {
+        return new Promise((resolve, reject) => {
+            if (!this.fileData) {
+                this.showToast('Error', 'No file data available to save.', 'error');
+                reject(new Error('No file data available to save'));
+                return;
+            }
+    
+            const base64Data = this.fileData.split(',')[1];
+            const binaryData = window.atob(base64Data);
+            let folderName; // Declare folderName outside the promise chain
+    
+            getCaseName({ caseId: this.bvCaseId })
+                .then((caseName) => {
+                    folderName = `${caseName}/${this.record.Id}`;
+    
+                    return uploadFileToSharePoint({
+                        filePath: folderName,
+                        fileName: this.fileName,
+                        fileContent: binaryData,
+                        documentType: this.documentType
+                    });
+                })
+                .then((serverRelativeUrl) => {
+                    this.serverRelativeURL = serverRelativeUrl; // Update the serverRelativeURL after successful upload
+                    this.showToast('Success', 'File uploaded successfully', 'success');
+                    return this.createSHDocumentRecord(this.record.Id, folderName); // Attach document to history record
+                })
+                .then(() => {
+                    refreshApex(this.wiredRelatedItemsResult); // Refresh related items
+                    this.closeSubModal();
+                    resolve();
+                })
+                .catch(error => {
+                    console.error('Error in saveDocument:', error); // Log the error for easier debugging
+                    reject(error);
+                });
+        });
     }
 
     createSHDocumentRecord(historyRecordId, folderName) {
@@ -275,42 +297,60 @@ export default class HistoryEditModal extends LightningElement {
 
     @api
     saveRecord(parentRecordId) {
-        if (!this.validateFields()) {
-            this.showToast('Error', 'Please complete all required fields.', 'error');
-            return;
-        }
-        let fields = {
-            [DATE_INSERTED_FIELD.fieldApiName]: this.dateInserted,
-            [ACTION_FIELD.fieldApiName]: this.description,
-            [DETAILS_FIELD.fieldApiName]: this.details,
-            [FLAG_IMPORTANT_FIELD.fieldApiName]: this.flagImportant,
-            [CASE_OFFICER_FIELD.fieldApiName]: this.userId, // Set the current user's ID
-            [LAST_UPDATED_FIELD.fieldApiName]: new Date().toISOString() // Set current date and time
-        };
-
-        if (this.record.Id) {
-            fields[ID_FIELD.fieldApiName] = this.record.Id;
-            const recordInput = { fields };
-            updateRecord(recordInput)
-                .then(() => {
-                    this.dispatchEvent(new CustomEvent('save'));
-                })
-                .catch(error => {
-                    console.log('Error updating record', error);
-                    this.showToast('Error updating record', error.body.message, 'error');
-                });
-        } else {
-            fields[BV_CASE_FIELD.fieldApiName] = parentRecordId;
-            const recordInput = { apiName: CASE_HISTORY_OBJECT.objectApiName, fields };
-            createRecord(recordInput)
-                .then(record => {
-                    this.dispatchEvent(new CustomEvent('save'));
-                })
-                .catch(error => {
-                    console.log('Error creating record', error);
-                    this.showToast('Error creating record', error.body.message, 'error');
-                });
-        }
+        return new Promise((resolve, reject) => {
+            if (!this.validateFields()) {
+                this.showToast('Error', 'Please complete all required fields.', 'error');
+                reject(new Error('Validation failed'));
+                return;
+            }
+    
+            // Ensure parentRecordId is a string, or null if not provided
+            const bvCaseIdString = parentRecordId ? String(parentRecordId) : null;
+    
+            // Define the fields to be saved or updated
+            let fields = {
+                [DATE_INSERTED_FIELD.fieldApiName]: this.dateInserted,
+                [ACTION_FIELD.fieldApiName]: this.description,
+                [DETAILS_FIELD.fieldApiName]: this.details,
+                [FLAG_IMPORTANT_FIELD.fieldApiName]: this.flagImportant,
+                [CASE_OFFICER_FIELD.fieldApiName]: this.userId, // Set the current user's ID
+                [LAST_UPDATED_FIELD.fieldApiName]: new Date().toISOString() // Set current date and time
+            };
+    
+            if (this.record.Id) {
+                // If updating an existing record, ensure BV_Case__c is not included
+                fields[ID_FIELD.fieldApiName] = this.record.Id;
+    
+                updateRecord({ fields })
+                    .then(() => {
+                        if (!this.fileName) {
+                            this.dispatchEvent(new CustomEvent('save'));
+                        }
+                        resolve(this.record.Id);  // Resolve with the existing record ID
+                    })
+                    .catch(error => {
+                        console.error('Error updating record:', error);
+                        this.showToast('Error', 'Error updating record: ' + error.body.message, 'error');
+                        reject(error);
+                    });
+            } else {
+                // If creating a new record, include BV_Case__c
+                if (bvCaseIdString) {
+                    fields[BV_CASE_FIELD.fieldApiName] = bvCaseIdString;
+                }
+    
+                createRecord({ apiName: CASE_HISTORY_OBJECT.objectApiName, fields })
+                    .then(record => {
+                        this.record = { ...this.record, Id: record.id }; // Safely assign the new ID
+                        resolve(record.id);  // Resolve with the new record ID
+                    })
+                    .catch(error => {
+                        console.error('Error creating record:', error);
+                        this.showToast('Error', 'Error creating record: ' + error.body.message, 'error');
+                        reject(error);
+                    });
+            }
+        });
     }
 
     handleRowAction(event) {

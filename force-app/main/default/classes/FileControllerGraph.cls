@@ -356,13 +356,18 @@ public class FileControllerGraph {
         return bvCase.Name;
     }
 
-    public static void handleEmailAttachments(Id emailMessageId, Id caseHistoryId, Id caseId) {
+    public static Boolean handleEmailAttachments(Id emailMessageId, Id caseHistoryId, Id caseId) {
         List<ContentDocumentLink> contentDocumentLinks = [
             SELECT ContentDocumentId
             FROM ContentDocumentLink
             WHERE LinkedEntityId = :emailMessageId
         ];
-
+    
+        if (contentDocumentLinks.isEmpty()) {
+            // Return false if no attachments were found
+            return false;
+        }
+    
         for (ContentDocumentLink contentDocumentLink : contentDocumentLinks) {
             ContentVersion contentVersion = [
                 SELECT Id, Title, VersionData, FileExtension, ContentSize
@@ -370,24 +375,27 @@ public class FileControllerGraph {
                 WHERE ContentDocumentId = :contentDocumentLink.ContentDocumentId AND IsLatest = true
                 LIMIT 1
             ];
-
+    
             String normalizedCaseName = getCaseName(caseId);
             String folderPath = normalizedCaseName + '/' + caseHistoryId;
-
+    
             // Include the file extension in the filename
             String fileNameWithExtension = contentVersion.Title + '.' + contentVersion.FileExtension;
-
+    
             String base64Data = EncodingUtil.base64Encode(contentVersion.VersionData);
             Blob decodedBlob = EncodingUtil.base64Decode(base64Data);
             string decodedString = decodedBlob.toString();
-
+    
             String documentType = 'Email Attachment'; // Adjust as needed
             String documentId = uploadFileToSharePoint(folderPath, fileNameWithExtension, decodedString, documentType);
-
+    
             if (documentId != null) {
                 createSHDocumentRecord(caseHistoryId, contentVersion, documentId, normalizedCaseName);
             }
         }
+    
+        // Return true if attachments were found and processed
+        return true;
     }
 
     public static void createSHDocumentRecord(Id caseHistoryId, ContentVersion contentVersion, String documentId, String caseName) {

@@ -46,10 +46,15 @@ public class EmailMessageHandler {
             insert caseHistories;
         }
 
-        // Enqueue Queueable jobs for SharePointUploader
+        // Enqueue Queueable jobs for SharePointUploader with an initial retry count of 0
         if (!emailMessageIds.isEmpty()) {
             for (Case_History__c caseHistory : caseHistories) {
-                System.enqueueJob(new SharePointUploader(emailMessageIds.remove(0), caseHistory.Id, caseHistory.BV_Case__c));
+                try {
+                    System.enqueueJob(new SharePointUploader(emailMessageIds.remove(0), caseHistory.Id, caseHistory.BV_Case__c, 0));
+                } catch (Exception e) {
+                    // Log the error but do not fail the entire process
+                    System.debug('Error enqueuing SharePointUploader job: ' + e.getMessage());
+                }
             }
         }
     }
