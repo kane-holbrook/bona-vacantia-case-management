@@ -75,8 +75,8 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
         if (result.data) {
             this.historyItems = result.data.map(item => {
                 // Ensure history is an object and handle missing fields
-                const history = item || {};
-                const emailMessage = history.EmailMessage || null;
+                const history = item.history || {};
+                const emailMessage = item.EmailMessage || {};
                 const shDocuments = history.SHDocuments__r || [];
     
                 // Calculate total file size of related items
