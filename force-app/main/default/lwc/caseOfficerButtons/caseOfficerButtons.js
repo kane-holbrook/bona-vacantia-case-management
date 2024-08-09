@@ -4,6 +4,24 @@ import { createRecord, updateRecord } from 'lightning/uiRecordApi';
 import CASE_DETAIL_OBJECT from '@salesforce/schema/Case_Detail__c';
 import CURRENT_OFFICER_FIELD from '@salesforce/schema/Case_Detail__c.Current_Officer__c';
 import DATE_OFFICER_FIELD from '@salesforce/schema/Case_Detail__c.Date_Officer__c';
+import DATE_1_OFFICER_FIELD from '@salesforce/schema/Case_Detail__c.Date_1_Officer__c';
+import DATE_2_OFFICER_FIELD from '@salesforce/schema/Case_Detail__c.Date_2_Officer__c';
+import DATE_3_OFFICER_FIELD from '@salesforce/schema/Case_Detail__c.Date_3_Officer__c';
+import DATE_4_OFFICER_FIELD from '@salesforce/schema/Case_Detail__c.Date_4_Officer__c';
+import DATE_5_OFFICER_FIELD from '@salesforce/schema/Case_Detail__c.Date_5_Officer__c';
+import DATE_6_OFFICER_FIELD from '@salesforce/schema/Case_Detail__c.Date_6_Officer__c';
+import DATE_7_OFFICER_FIELD from '@salesforce/schema/Case_Detail__c.Date_7_Officer__c';
+import DATE_8_OFFICER_FIELD from '@salesforce/schema/Case_Detail__c.Date_8_Officer__c';
+import DATE_9_OFFICER_FIELD from '@salesforce/schema/Case_Detail__c.Date_9_Officer__c';
+import PREVIOUS_OFFICER_FIELD from '@salesforce/schema/Case_Detail__c.Previous_1__c';
+import PREVIOUS_2_OFFICER_FIELD from '@salesforce/schema/Case_Detail__c.Previous_2__c';
+import PREVIOUS_3_OFFICER_FIELD from '@salesforce/schema/Case_Detail__c.Previous_3__c';
+import PREVIOUS_4_OFFICER_FIELD from '@salesforce/schema/Case_Detail__c.Previous_4__c';
+import PREVIOUS_5_OFFICER_FIELD from '@salesforce/schema/Case_Detail__c.Previous_5__c';
+import PREVIOUS_6_OFFICER_FIELD from '@salesforce/schema/Case_Detail__c.Previous_6__c';
+import PREVIOUS_7_OFFICER_FIELD from '@salesforce/schema/Case_Detail__c.Previous_7__c';
+import PREVIOUS_8_OFFICER_FIELD from '@salesforce/schema/Case_Detail__c.Previous_8__c';
+import PREVIOUS_9_OFFICER_FIELD from '@salesforce/schema/Case_Detail__c.Previous_9__c';
 import getCaseDetail from '@salesforce/apex/CaseOfficerController.getCaseDetail';
 import { getRecordId } from 'c/sharedService';
 
@@ -39,18 +57,24 @@ export default class CaseOfficerButtons extends LightningElement {
     }
 
     loadCaseDetailRecord() {
-        if (this.recordId && this.officerHistoryRecordTypeId) {
-            getCaseDetail({ bvCaseId: this.recordId, recordTypeId: this.officerHistoryRecordTypeId })
-                .then(result => {
-                    if (result) {
-                        this.caseDetailRecord = result;
-                        this.caseDetailId = result.Id;
-                    }
-                })
-                .catch(error => {
-                    console.error('Error loading Case_Detail__c record:', error);
-                });
-        }
+        return new Promise((resolve, reject) => {
+            if (this.recordId && this.officerHistoryRecordTypeId) {
+                getCaseDetail({ bvCaseId: this.recordId, recordTypeId: this.officerHistoryRecordTypeId })
+                    .then(result => {
+                        if (result) {
+                            this.caseDetailRecord = result;
+                            this.caseDetailId = result.Id;
+                        }
+                        resolve(result);
+                    })
+                    .catch(error => {
+                        console.error('Error loading Case_Detail__c record:', error);
+                        reject(error);
+                    });
+            } else {
+                resolve(null);
+            }
+        });
     }
 
     handleActionClick(event) {
@@ -64,13 +88,15 @@ export default class CaseOfficerButtons extends LightningElement {
     handleCaseOfficerSave(event) {
         const newCaseOfficer = event.detail;
 
-        if (this.caseDetailId) {
-            // Update existing Case_Detail__c record
-            this.updateCaseDetail(newCaseOfficer);
-        } else {
-            // Create new Case_Detail__c record
-            this.createCaseDetail(newCaseOfficer);
-        }
+        this.loadCaseDetailRecord().then(() => {
+            if (this.caseDetailId) {
+                // Update existing Case_Detail__c record
+                this.updateCaseDetail(newCaseOfficer);
+            } else {
+                // Create new Case_Detail__c record
+                this.createCaseDetail(newCaseOfficer);
+            }
+        });
     }
 
     createCaseDetail(newCaseOfficer) {
@@ -84,6 +110,7 @@ export default class CaseOfficerButtons extends LightningElement {
         createRecord(recordInput)
             .then(result => {
                 this.caseDetailId = result.id;
+                this.dispatchEvent(new CustomEvent('caseofficersaved'));
                 console.log('Case_Detail__c created successfully with Id: ' + this.caseDetailId);
                 // Optionally, handle further actions like notifying the user
             })
@@ -137,6 +164,7 @@ export default class CaseOfficerButtons extends LightningElement {
         updateRecord(recordInput)
             .then(() => {
                 console.log('Case_Detail__c updated successfully');
+                this.dispatchEvent(new CustomEvent('caseofficersaved'));
                 // Optionally, handle further actions like notifying the user
             })
             .catch(error => {
