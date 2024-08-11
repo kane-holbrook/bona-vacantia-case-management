@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>61.0</apiVersion>
+    <environments>Default</environments>
+    <interviewLabel>Conference Attendance Note (COUNSEL2) {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Conference Attendance Note (COUNSEL2)</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <screens>
+        <name>Insert_date_of_the_conference</name>
+        <label>Insert date of the conference</label>
+        <locationX>176</locationX>
+        <locationY>242</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Insert_details_of_the_conference_agenda</targetReference>
+        </connector>
+        <fields>
+            <name>Insert_date_of_the_conference1</name>
+            <dataType>Date</dataType>
+            <fieldText>Insert date of the conference</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Insert_details_of_any_actions_agreed</name>
+        <label>Insert details of any actions agreed</label>
+        <locationX>176</locationX>
+        <locationY>458</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Insert_details_of_any_conclusions_reached</targetReference>
+        </connector>
+        <fields>
+            <name>Insert_details_of_any_actions_agreed1</name>
+            <fieldText>Insert details of any actions agreed</fieldText>
+            <fieldType>LargeTextArea</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Insert_details_of_any_conclusions_reached</name>
+        <label>Insert details of any conclusions reached</label>
+        <locationX>176</locationX>
+        <locationY>566</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>Insert_details_of_any_conclusions_reached1</name>
+            <fieldText>Insert details of any conclusions reached</fieldText>
+            <fieldType>LargeTextArea</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Insert_details_of_the_conference_agenda</name>
+        <label>Insert details of the conference agenda</label>
+        <locationX>176</locationX>
+        <locationY>350</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Insert_details_of_any_actions_agreed</targetReference>
+        </connector>
+        <fields>
+            <name>Insert_details_of_the_conference_agenda1</name>
+            <fieldText>Insert details of the conference agenda</fieldText>
+            <fieldType>LargeTextArea</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Insert_names_of_the_parties_present_at_conference</name>
+        <label>Insert names of the parties present at conference</label>
+        <locationX>176</locationX>
+        <locationY>134</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Insert_date_of_the_conference</targetReference>
+        </connector>
+        <fields>
+            <name>Insert_names_of_the_parties_present_at_conference1</name>
+            <fieldText>Insert names of the parties present at conference</fieldText>
+            <fieldType>LargeTextArea</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Insert_names_of_the_parties_present_at_conference</targetReference>
+        </connector>
+    </start>
+    <status>Draft</status>
+</Flow>
