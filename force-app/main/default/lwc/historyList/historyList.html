@@ -192,7 +192,7 @@
                                         </td>
                                     </tr>
                                 </template>
-                                <template if:true={item.emailMessage}>
+                                <template if:true={item.hasValidEmailMessage}>
                                     <tr key={item.emailMessage.Id} class="email-message-row">
                                         <td data-label="Expand">
                                             <lightning-icon icon-name="utility:level_down" alternative-text="Sub-item" class="slds-icon-text-default version-expand-icon"></lightning-icon>

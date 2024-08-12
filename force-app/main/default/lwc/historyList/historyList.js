@@ -75,9 +75,13 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
         if (result.data) {
             this.historyItems = result.data.map(item => {
                 // Ensure history is an object and handle missing fields
+
+                console.log('item', item);
                 const history = item.history || {};
                 const emailMessage = item.EmailMessage || {};
                 const shDocuments = history.SHDocuments__r || [];
+
+                const nonEmptyDocuments = shDocuments.filter(doc => doc.FileSize__c > 0 || doc.DocumentType__c);
     
                 // Calculate total file size of related items
                 let totalFileSize = 0;
@@ -95,7 +99,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
                     Flag_as_important__c: history.Flag_as_important__c || false,
                     Last_updated__c: history.Last_updated__c || '',
                     isExpanded: false,
-                    hasRelatedItems: shDocuments.length > 0 || emailMessage !== null,
+                    hasRelatedItems: nonEmptyDocuments.length > 0 || (emailMessage.Subject && emailMessage.Subject.trim() !== ''),
                     iconName: this.getIconName(false),
                     rowClass: history.Flag_as_important__c ? 'highlighted-row' : '',
                     flagIconClass: history.Flag_as_important__c ? 'icon-important' : 'icon-default',
@@ -104,12 +108,13 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
                     documentType: shDocuments.length > 0 ? shDocuments[0].DocumentType__c : '',
                     fileSize: this.formatFileSize(totalFileSize),  // Use the calculated total file size here
                     draft: shDocuments.length > 0 ? shDocuments[0].Draft__c : '',
-                    SHDocuments__r: shDocuments.map(doc => ({
+                    SHDocuments__r: nonEmptyDocuments.map(doc => ({
                         ...doc,
                         showAttachmentIcon: doc.DocumentType__c === 'Email Attachment',
                         fileSize: doc.FileSize__c ? this.formatFileSize(doc.FileSize__c) : '',
                     })),
                     emailMessage,  // Include EmailMessage details
+                    hasValidEmailMessage: !!emailMessage.Id,
                     Case_Officer_Name: this.userNames[history.Case_Officer__c] || history.Case_Officer__c // Fetch Case Officer Name here
                 };
 
@@ -266,6 +271,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     toggleShowRelatedItems(event) {
         this.showRelatedItems = event.target.checked;
         if (!this.showRelatedItems) {
+            console.log('Show related items false');
             this.historyItems = this.historyItems.map(item => ({ 
                 ...item, 
                 isExpanded: false,

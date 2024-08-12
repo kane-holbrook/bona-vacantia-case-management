@@ -80,8 +80,6 @@ export default class HistoryEditModal extends LightningElement {
         this.flagImportant = this.record.Flag_as_important__c || false;
         this.bvCaseId = this.record.BV_Case__c || getRecordId();
 
-        console.log('history record', this.record);
-
         // Store the original state for comparison
         this.originalRecord = {
             dateInserted: this.dateInserted,
@@ -342,6 +340,9 @@ export default class HistoryEditModal extends LightningElement {
                 createRecord({ apiName: CASE_HISTORY_OBJECT.objectApiName, fields })
                     .then(record => {
                         this.record = { ...this.record, Id: record.id }; // Safely assign the new ID
+                        if (!this.fileName) {
+                            this.dispatchEvent(new CustomEvent('save'));
+                        }
                         resolve(record.id);  // Resolve with the new record ID
                     })
                     .catch(error => {
