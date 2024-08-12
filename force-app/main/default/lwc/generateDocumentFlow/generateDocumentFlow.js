@@ -3,6 +3,7 @@ import { CurrentPageReference } from 'lightning/navigation';
 import { FlowNavigationNextEvent } from 'lightning/flowSupport';
 import fetchAllFilesFromFolder from '@salesforce/apex/FileControllerGraph.fetchAllFilesFromFolder';
 import getSharePointSettings from '@salesforce/apex/FileControllerGraph.getSharePointSettings';
+import { getRecordId } from 'c/sharedService';
 
 export default class GenerateDocumentFlow extends LightningElement {
     @api recordId;
@@ -22,6 +23,7 @@ export default class GenerateDocumentFlow extends LightningElement {
     selectedCategory = '';
 
     connectedCallback() {
+        this.caseId = getRecordId();
         this.fetchSharePointSettings();
     }
 
