@@ -132,19 +132,30 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
         
 
     fetchUserNames(userIds) {
-        getUserNames({ userIds })
-            .then(result => {
-                this.userNames = result;
-                this.historyItems = this.historyItems.map(item => ({
-                    ...item,
-                    Case_Officer_Name: this.userNames[item.Case_Officer__c] || item.Case_Officer__c
-                }));
-                this.sortHistoryItems();
-            })
-            .catch(error => {
-                this.showToast('Error', 'Error fetching user names', 'error');
-            });
-    }    
+        // Filter out invalid or undefined IDs
+        const validUserIds = userIds.filter(id => id && id.length === 18);
+    
+        // Check if there are any valid IDs before making the Apex call
+        if (validUserIds.length > 0) {
+            getUserNames({ userIds: validUserIds })
+                .then(result => {
+                    this.userNames = result;
+                    this.historyItems = this.historyItems.map(item => ({
+                        ...item,
+                        Case_Officer_Name: this.userNames[item.Case_Officer__c] || item.Case_Officer__c
+                    }));
+                    this.sortHistoryItems();
+                })
+                .catch(error => {
+                    console.log('Error fetching usernames', error);
+                    this.showToast('Error', 'Error fetching user names', 'error');
+                });
+        } else {
+            // Handle the case where there are no valid user IDs to fetch
+            console.log('No valid user IDs to fetch');
+            this.sortHistoryItems(); // Proceed to sort with existing data
+        }
+    }
 
     refreshHistoryItems() {
         refreshApex(this.wiredHistoryItemsResult);
