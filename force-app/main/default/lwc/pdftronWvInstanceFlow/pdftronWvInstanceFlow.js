@@ -41,6 +41,7 @@ export default class PdftronWvInstanceFlow extends LightningElement {
 
     @api selectedDocumentId;
     @api flowData; // Custom class property
+    @api historyRecordId;
 
     @wire(CurrentPageReference)
     pageRef;
@@ -86,8 +87,8 @@ export default class PdftronWvInstanceFlow extends LightningElement {
 
         // Add default values for specific placeholders
         this.mapping.currentDate = this.getCurrentDateFormatted();
-        this.mapping.caseReference = this.recordId;
-        this.mapping.caseName = this.bvCaseName;
+        // this.mapping.caseReference = this.recordId;
+        // this.mapping.caseName = this.bvCaseName;
 
         console.log('Processed flowData:', this.mapping);
     }
@@ -392,12 +393,13 @@ export default class PdftronWvInstanceFlow extends LightningElement {
                         });
                     break;
                 case 'SAVE_SHAREPOINT_DOCUMENT':
-                    const folderName = this.bvCaseName;
+                    const folderName = this.bvCaseName + '/' + this.historyRecordId;
 
                     console.log(event.data.payload);
                     saveDocumentToSharePoint({
                         jsonpayload: JSON.stringify(event.data.payload),
-                        folderName: folderName
+                        folderName: folderName,
+                        historyRecordId: this.historyRecordId
                     })
                         .then((response) => {
                             me.iframeWindow.postMessage({ type: 'DOCUMENT_SAVED', response }, '*');

@@ -10,6 +10,7 @@
       <targetConfig targets="lightning__FlowScreen">
           <property name="selectedDocumentId" type="String" label="Selected document ID"/>
           <property name="flowData" type="String" label="Flow inputs"/>
+          <property name="historyRecordId" type="String" label="History RecordID"/>
       </targetConfig>
   </targetConfigs>
 </LightningComponentBundle>

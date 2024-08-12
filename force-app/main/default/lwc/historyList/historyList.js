@@ -232,9 +232,10 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
 
     handleOpenInSharePoint(event) {
         const serverRelativeURL = event.currentTarget.dataset.url;
-
-        let url = `${this.sharePointSiteUrl}/${serverRelativeURL}`;
-
+    
+        // Check if serverRelativeURL already contains a full URL (starts with http or https)
+        let url = serverRelativeURL.startsWith('http') ? serverRelativeURL : `${this.sharePointSiteUrl}/${serverRelativeURL}`;
+    
         console.log('serverRelativeURL', url);
         if (url) {
             window.open(url, '_blank');

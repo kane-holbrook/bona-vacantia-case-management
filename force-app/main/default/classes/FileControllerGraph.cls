@@ -82,7 +82,7 @@ public class FileControllerGraph {
     }
 
     // Method to get list item information from SharePoint
-    private static Map<String, String> getListItemInfo(String siteId, String itemId) {
+    public static Map<String, String> getListItemInfo(String siteId, String itemId) {
         String listItemUrl = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/drive/items/' + itemId + '/listItem?expand=fields';
         
         HttpRequest req = new HttpRequest();

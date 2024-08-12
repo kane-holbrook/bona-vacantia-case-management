@@ -96,12 +96,12 @@ public with sharing class PDFTron_ContentVersionController {
     }
 
     @AuraEnabled
-    public static String saveDocumentToSharePointViaFlow(String jsonpayload, String folderName) {
+    public static String saveDocumentToSharePointViaFlow(String jsonpayload, String folderName, String historyRecordId) {
         try {
             PDFTron_ContentVersionPayload pl = new PDFTron_ContentVersionPayload(jsonpayload);
             // Decode the base64 string to get the binary content of the file
             Blob fileContent = EncodingUtil.base64Decode(pl.base64Data);
-        
+    
             // Manually encode the file name to ensure all special characters are properly URL encoded
             String encodedFolderName = EncodingUtil.urlEncode(folderName, 'UTF-8');
             
@@ -111,17 +111,17 @@ public with sharing class PDFTron_ContentVersionController {
             fileName = fileName.replace('\'', '_').replace('#', '_');
             
             String encodedFileName = EncodingUtil.urlEncode(fileName, 'UTF-8');
-
+    
             Map<String, String> settings = FileControllerGraph.getSharePointSettings();
             String siteUrl = settings.get('SharePoint_Site_URL');
             String directoryPath = settings.get('SharePoint_Directory_Path');
-
+    
             // Get the site ID dynamically
             String siteId = FileControllerGraph.getSiteId(siteUrl, directoryPath);
             
             // Graph API endpoint to upload the file
             String endpoint = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/drive/root:/' + encodedFolderName + '/' + encodedFileName + ':/content';
-
+    
             // Prepare the HTTP request
             HttpRequest req = new HttpRequest();
             req.setEndpoint(endpoint);
@@ -129,19 +129,33 @@ public with sharing class PDFTron_ContentVersionController {
             req.setHeader('Content-Type', 'application/octet-stream');
             req.setHeader('Accept', 'application/json');
             req.setBodyAsBlob(fileContent);
-
+    
             // Send the request
             Http http = new Http();
             HttpResponse response = http.send(req);
-
+    
             // Check the response status and parse if successful
             if (response.getStatusCode() == 201 || response.getStatusCode() == 200) {
                 // Parse the JSON response
                 Map<String, Object> jsonResponse = (Map<String, Object>)JSON.deserializeUntyped(response.getBody());
                 String documentId = (String)jsonResponse.get('id');
-
-                // Return the SharePoint Document ID
-                return documentId;
+    
+                // Fetch the list item information using the documentId
+                Map<String, String> listItemInfo = FileControllerGraph.getListItemInfo(siteId, documentId);
+    
+                // Get the webUrl to construct ServerRelativeURL__c
+                String webUrl = (String)jsonResponse.get('webUrl');
+                listItemInfo.put('webUrl', webUrl);
+                listItemInfo.put('fileName', fileName);
+                listItemInfo.put('fileSize', String.valueOf(fileContent.size()));
+                listItemInfo.put('fileExtension', fileName.substringAfterLast('.'));
+                listItemInfo.put('documentType', 'Generated Document');
+    
+                // Save the SHDocument__c record
+                String shDocumentId = saveSHDocumentRecord(historyRecordId, listItemInfo);
+    
+                // Return the ID of the newly created SHDocument__c record
+                return shDocumentId;
             } else {
                 // Handle the error accordingly
                 System.debug('Error from SharePoint: ' + response.getBody());
@@ -149,6 +163,31 @@ public with sharing class PDFTron_ContentVersionController {
             }
         } catch (Exception e) {
             System.debug('Error saving document to SharePoint: ' + e.getMessage());
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
+    private static String saveSHDocumentRecord(String historyRecordId, Map<String, String> listItemInfo) {
+        try {
+            // Create a new SHDocument__c record
+            SHDocument__c shDocument = new SHDocument__c();
+            shDocument.Case_History__c = historyRecordId;
+            shDocument.DocumentID__c = listItemInfo.get('listItemId');
+            shDocument.ServerRelativeURL__c = listItemInfo.get('webUrl');
+            shDocument.Document_Name__c = listItemInfo.get('fileName');
+            shDocument.FileSize__c = Integer.valueOf(listItemInfo.get('fileSize'));
+            shDocument.DocumentExtension__c = listItemInfo.get('fileExtension');
+            shDocument.DocumentType__c = listItemInfo.get('documentType');
+            shDocument.Name = listItemInfo.get('fileName');
+            shDocument.Created_Time__c = Date.today();
+    
+            // Insert the SHDocument__c record
+            insert shDocument;
+            
+            // Return the Id of the newly created SHDocument__c record
+            return shDocument.Id;
+        } catch (Exception e) {
+            System.debug('Error creating SHDocument__c record: ' + e.getMessage());
             throw new AuraHandledException(e.getMessage());
         }
     }
