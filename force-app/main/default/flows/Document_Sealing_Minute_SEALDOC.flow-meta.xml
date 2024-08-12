@@ -5,42 +5,50 @@
         <name>Store_field_values</name>
         <label>Store field values</label>
         <locationX>176</locationX>
-        <locationY>566</locationY>
+        <locationY>458</locationY>
         <assignmentItems>
             <assignToReference>storedFieldValues</assignToReference>
             <operator>Add</operator>
             <value>
-                <stringValue>titleOfReceiver: {!Insert_title_and_name_of_receiver1};</stringValue>
+                <stringValue>insertParties: {!Insert_parties_for_Transfer1};</stringValue>
             </value>
         </assignmentItems>
         <assignmentItems>
             <assignToReference>storedFieldValues</assignToReference>
             <operator>Add</operator>
             <value>
-                <stringValue>refOfReceiver: {!Insert_Ref_of_receiver1};</stringValue>
+                <stringValue>numberOfShares: {!OK};</stringValue>
             </value>
         </assignmentItems>
         <assignmentItems>
             <assignToReference>storedFieldValues</assignToReference>
             <operator>Add</operator>
             <value>
-                <stringValue>currentOfficer: {!currentOfficer};</stringValue>
+                <stringValue>companyName: {!companyName};</stringValue>
             </value>
         </assignmentItems>
         <assignmentItems>
             <assignToReference>storedFieldValues</assignToReference>
             <operator>Add</operator>
             <value>
-                <stringValue>EST02: {!caseReference};</stringValue>
+                <stringValue>caseReference: {!caseReference};</stringValue>
             </value>
         </assignmentItems>
         <connector>
             <targetReference>Create_a_history_record</targetReference>
         </connector>
     </assignments>
+    <choices>
+        <name>OK</name>
+        <choiceText>OK</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>OK</stringValue>
+        </value>
+    </choices>
     <environments>Default</environments>
-    <interviewLabel>Minute (Minute) {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Minute (Minute)</label>
+    <interviewLabel>Document Sealing Minute (SEALDOC) {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Document Sealing Minute (SEALDOC)</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -64,12 +72,12 @@
         <name>Create_a_history_record</name>
         <label>Create a history record</label>
         <locationX>176</locationX>
-        <locationY>674</locationY>
+        <locationY>566</locationY>
         <assignRecordIdToReference>historyRecordId</assignRecordIdToReference>
         <inputAssignments>
             <field>Action__c</field>
             <value>
-                <stringValue>Minute to {!Insert_title_and_name_of_receiver1}</stringValue>
+                <stringValue>Stock Transfer Form sent for sealing</stringValue>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -87,13 +95,13 @@
         <object>Case_History__c</object>
     </recordCreates>
     <recordLookups>
-        <name>Get_case_details</name>
-        <label>Get case details</label>
+        <name>Get_case_data</name>
+        <label>Get case data</label>
         <locationX>176</locationX>
         <locationY>350</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Get_case_details_case_details</targetReference>
+            <targetReference>Store_field_values</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -108,45 +116,26 @@
             <assignToReference>caseReference</assignToReference>
             <field>Name</field>
         </outputAssignments>
-    </recordLookups>
-    <recordLookups>
-        <name>Get_case_details_case_details</name>
-        <label>Get case details (case details)</label>
-        <locationX>176</locationX>
-        <locationY>458</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Store_field_values</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>BV_Case__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>recordId</elementReference>
-            </value>
-        </filters>
-        <object>Case_Detail__c</object>
         <outputAssignments>
-            <assignToReference>currentOfficer</assignToReference>
-            <field>Current_Officer__c</field>
+            <assignToReference>companyName</assignToReference>
+            <field>Reg_Name__c</field>
         </outputAssignments>
     </recordLookups>
     <screens>
-        <name>Insert_Ref_of_receiver</name>
-        <label>Insert Ref. of receiver</label>
+        <name>Insert_parties_to_Transfer</name>
+        <label>Insert parties to Transfer</label>
         <locationX>176</locationX>
-        <locationY>242</locationY>
+        <locationY>134</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Get_case_details</targetReference>
+            <targetReference>Select_as_required</targetReference>
         </connector>
         <fields>
-            <name>Insert_Ref_of_receiver1</name>
+            <name>Insert_parties_for_Transfer1</name>
             <dataType>String</dataType>
-            <fieldText>Insert Ref. of receiver</fieldText>
+            <fieldText>Insert parties for Transfer</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
         </fields>
@@ -154,21 +143,22 @@
         <showHeader>true</showHeader>
     </screens>
     <screens>
-        <name>Insert_title_and_name_of_receiver</name>
-        <label>Insert title and name of receiver</label>
+        <name>Select_as_required</name>
+        <label>Select as required</label>
         <locationX>176</locationX>
-        <locationY>134</locationY>
+        <locationY>242</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Insert_Ref_of_receiver</targetReference>
+            <targetReference>Get_case_data</targetReference>
         </connector>
         <fields>
-            <name>Insert_title_and_name_of_receiver1</name>
+            <name>Select_as_required1</name>
+            <choiceReferences>OK</choiceReferences>
             <dataType>String</dataType>
-            <fieldText>Insert title and name of receiver</fieldText>
-            <fieldType>InputField</fieldType>
+            <fieldText>Select as required</fieldText>
+            <fieldType>RadioButtons</fieldType>
             <isRequired>false</isRequired>
         </fields>
         <showFooter>true</showFooter>
@@ -178,7 +168,7 @@
         <locationX>50</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Insert_title_and_name_of_receiver</targetReference>
+            <targetReference>Insert_parties_to_Transfer</targetReference>
         </connector>
     </start>
     <status>Active</status>
@@ -190,7 +180,7 @@
         <isOutput>false</isOutput>
     </variables>
     <variables>
-        <name>currentOfficer</name>
+        <name>companyName</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
@@ -214,7 +204,7 @@
         <name>storedFieldValues</name>
         <dataType>String</dataType>
         <isCollection>true</isCollection>
-        <isInput>false</isInput>
+        <isInput>true</isInput>
         <isOutput>true</isOutput>
     </variables>
 </Flow>

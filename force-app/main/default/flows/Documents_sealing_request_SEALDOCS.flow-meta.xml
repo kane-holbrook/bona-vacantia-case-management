@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>61.0</apiVersion>
+    <choices>
+        <name>CH1_form</name>
+        <choiceText>CH1 form</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>CH1 form</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Deed_of_Assignment</name>
+        <choiceText>Deed of Assignment</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Deed of Assignment</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Deed_of_Covenant</name>
+        <choiceText>Deed of Covenant</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Deed of Covenant</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Deed_of_Rectification</name>
+        <choiceText>Deed of Rectification</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Deed of Rectification</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Deed_of_Release</name>
+        <choiceText>Deed of Release</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Deed of Release</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Deed_of_Surrender</name>
+        <choiceText>Deed of Surrender</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Deed of Surrender</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>DS1_form_Lease</name>
+        <choiceText>DS1 form”:”Lease</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>DS1 form”:”Lease</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Licence_to_Assign_Lease</name>
+        <choiceText>Licence to Assign Lease</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Licence to Assign Lease</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>No</name>
+        <choiceText>No</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>No</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Stock_Transfer_Form</name>
+        <choiceText>Stock Transfer Form</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Stock Transfer Form</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Transfer_of_Part_TP1</name>
+        <choiceText>Transfer of Part TP1</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Transfer of Part TP1</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Transfer_of_Whole_Part_portfolio_TR5</name>
+        <choiceText>Transfer of Whole/Part portfolio TR5</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Transfer of Whole/Part portfolio TR5</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Transfer_of_Whole_Part_TP3</name>
+        <choiceText>Transfer of Whole/Part  TP3</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Transfer of Whole/Part  TP3</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Transfer_of_Whole_TR1</name>
+        <choiceText>Transfer of Whole TR1</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Transfer of Whole TR1</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Yes</name>
+        <choiceText>Yes</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Yes</stringValue>
+        </value>
+    </choices>
+    <decisions>
+        <name>Amendments_requireinitialling</name>
+        <label>Amendments require initialling?</label>
+        <locationX>314</locationX>
+        <locationY>458</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Selected_Yes</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Question1</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Yes</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Insert_number_of_amended_panel_clause</targetReference>
+            </connector>
+            <label>Selected Yes</label>
+        </rules>
+        <rules>
+            <name>Selected_No</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Question1</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>No</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Amendments_require_initialling1</targetReference>
+            </connector>
+            <label>Selected No</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <interviewLabel>Documents sealing request (SEALDOCS) {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Documents sealing request (SEALDOCS)</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <screens>
+        <name>Amendments_require_initialling1</name>
+        <label>Amendments require initialling?</label>
+        <locationX>314</locationX>
+        <locationY>566</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>Amendments_require_initialling</name>
+            <choiceReferences>Yes</choiceReferences>
+            <choiceReferences>No</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Amendments require initialling?</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Copy_1_of_Duplicate_also_attached</name>
+        <label>Plan attached (if any) requires signing</label>
+        <locationX>314</locationX>
+        <locationY>350</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Amendments_requireinitialling</targetReference>
+        </connector>
+        <fields>
+            <name>Question1</name>
+            <choiceReferences>Yes</choiceReferences>
+            <choiceReferences>No</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Plan attached (if any) requires signing</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Duplicate_also_attached</name>
+        <label>Duplicate also attached</label>
+        <locationX>314</locationX>
+        <locationY>242</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Copy_1_of_Duplicate_also_attached</targetReference>
+        </connector>
+        <fields>
+            <name>Question</name>
+            <choiceReferences>Yes</choiceReferences>
+            <choiceReferences>No</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Duplicate also attached</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Insert_number_of_amended_panel_clause</name>
+        <label>Insert number of amended panel/clause</label>
+        <locationX>50</locationX>
+        <locationY>566</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Plan_to_be_sealed</targetReference>
+        </connector>
+        <fields>
+            <name>Insert_number_of_amended_panel_clause2</name>
+            <dataType>Number</dataType>
+            <fieldText>Insert number of amended panel/clause</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+            <scale>0</scale>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Plan_to_be_sealed</name>
+        <label>Plan to be sealed?</label>
+        <locationX>50</locationX>
+        <locationY>674</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>Plan_to_be_sealed2</name>
+            <choiceReferences>Yes</choiceReferences>
+            <choiceReferences>No</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Plan to be sealed?</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Please_select_nature_of_document_for_sealing</name>
+        <label>Please select nature of document for sealing</label>
+        <locationX>314</locationX>
+        <locationY>134</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Duplicate_also_attached</targetReference>
+        </connector>
+        <fields>
+            <name>Choose</name>
+            <choiceReferences>Transfer_of_Whole_TR1</choiceReferences>
+            <choiceReferences>Transfer_of_Part_TP1</choiceReferences>
+            <choiceReferences>Transfer_of_Whole_Part_TP3</choiceReferences>
+            <choiceReferences>Transfer_of_Whole_Part_portfolio_TR5</choiceReferences>
+            <choiceReferences>Deed_of_Assignment</choiceReferences>
+            <choiceReferences>Licence_to_Assign_Lease</choiceReferences>
+            <choiceReferences>Deed_of_Release</choiceReferences>
+            <choiceReferences>Deed_of_Covenant</choiceReferences>
+            <choiceReferences>Deed_of_Rectification</choiceReferences>
+            <choiceReferences>Deed_of_Surrender</choiceReferences>
+            <choiceReferences>Stock_Transfer_Form</choiceReferences>
+            <choiceReferences>DS1_form_Lease</choiceReferences>
+            <choiceReferences>CH1_form</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Choose</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <start>
+        <locationX>188</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Please_select_nature_of_document_for_sealing</targetReference>
+        </connector>
+    </start>
+    <status>Draft</status>
+</Flow>

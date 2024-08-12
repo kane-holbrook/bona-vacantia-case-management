@@ -1,6 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>61.0</apiVersion>
+    <assignments>
+        <name>Store_field_values</name>
+        <label>Store field values</label>
+        <locationX>176</locationX>
+        <locationY>890</locationY>
+        <assignmentItems>
+            <assignToReference>storedFieldValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>nameOfParties_LONG: {!Insert_names_of_the_parties_present_at_conference1};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>storedFieldValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>dateOfConference: {!Insert_date_of_the_conference1};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>storedFieldValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>conferenceAgreed_LONG: {!Insert_details_of_any_actions_agreed1};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>storedFieldValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>conferenceAgenda_LONG: {!Insert_details_of_the_conference_agenda1};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>storedFieldValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>conferenceConclusions_LONG: {!Insert_details_of_any_conclusions_reached1};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>storedFieldValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>caseReference: {!caseReference};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>storedFieldValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>currentOfficer: {!currentOfficer};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>storedFieldValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>EST02: {!EST02};</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Create_a_history_record</targetReference>
+        </connector>
+    </assignments>
     <environments>Default</environments>
     <interviewLabel>Conference Attendance Note (COUNSEL2) {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Conference Attendance Note (COUNSEL2)</label>
@@ -23,6 +88,82 @@
         </value>
     </processMetadataValues>
     <processType>Flow</processType>
+    <recordCreates>
+        <name>Create_a_history_record</name>
+        <label>Create a history record</label>
+        <locationX>176</locationX>
+        <locationY>998</locationY>
+        <assignRecordIdToReference>historyRecordId</assignRecordIdToReference>
+        <inputAssignments>
+            <field>Action__c</field>
+            <value>
+                <stringValue>Counsel Attendance</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>BV_Case__c</field>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Date_Inserted__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Case_History__c</object>
+    </recordCreates>
+    <recordLookups>
+        <name>Get_case_details</name>
+        <label>Get case details</label>
+        <locationX>176</locationX>
+        <locationY>674</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_case_details_case_details</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <object>BV_Case__c</object>
+        <outputAssignments>
+            <assignToReference>EST02</assignToReference>
+            <field>Forenames__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>caseReference</assignToReference>
+            <field>Name</field>
+        </outputAssignments>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_case_details_case_details</name>
+        <label>Get case details (case details)</label>
+        <locationX>176</locationX>
+        <locationY>782</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Store_field_values</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>BV_Case__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <object>Case_Detail__c</object>
+        <outputAssignments>
+            <assignToReference>currentOfficer</assignToReference>
+            <field>Current_Officer__c</field>
+        </outputAssignments>
+    </recordLookups>
     <screens>
         <name>Insert_date_of_the_conference</name>
         <label>Insert date of the conference</label>
@@ -72,6 +213,9 @@
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Get_case_details</targetReference>
+        </connector>
         <fields>
             <name>Insert_details_of_any_conclusions_reached1</name>
             <fieldText>Insert details of any conclusions reached</fieldText>
@@ -128,5 +272,47 @@
             <targetReference>Insert_names_of_the_parties_present_at_conference</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
+    <variables>
+        <name>caseReference</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>currentOfficer</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>EST02</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>historyRecordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>recordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>storedFieldValues</name>
+        <dataType>String</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
 </Flow>
