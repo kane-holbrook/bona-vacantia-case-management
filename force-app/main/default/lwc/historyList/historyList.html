@@ -184,36 +184,7 @@
                                         <td data-label="File Size">{relatedItem.fileSize}</td>
                                         <td data-label="Draft">{relatedItem.Draft__c}</td>
                                         <td data-label="Case Officer">{relatedItem.Case_Officer_Name}</td>
-                                        <td data-label="Actions">
-                                            <lightning-button-menu alternative-text="Actions" icon-name="utility:down" menu-alignment="right">
-                                                <lightning-menu-item label="Open in SharePoint" data-id={relatedItem.Id} data-url={relatedItem.ServerRelativeURL__c} onclick={handleOpenInSharePoint}></lightning-menu-item>
-                                                <lightning-menu-item label="Delete" data-id={relatedItem.Id} onclick={handleDeleteRelatedItem}></lightning-menu-item>
-                                            </lightning-button-menu>
-                                        </td>
-                                    </tr>
-                                </template>
-                                <template if:true={item.hasValidEmailMessage}>
-                                    <tr key={item.emailMessage.Id} class="email-message-row">
-                                        <td data-label="Expand">
-                                            <lightning-icon icon-name="utility:level_down" alternative-text="Sub-item" class="slds-icon-text-default version-expand-icon"></lightning-icon>
-                                        </td>
-                                        <td data-label="Important"></td>
-                                        <td data-label="Date">
-                                            <div class="slds-grid slds-align_absolute-center">
-                                                <lightning-formatted-date-time value={item.emailMessage.MessageDate} year="numeric" month="2-digit" day="2-digit" day-style="2-digit" month-style="2-digit" timezone="UTC"></lightning-formatted-date-time>
-                                            </div>
-                                        </td>
-                                        <td data-label="Subject">{item.emailMessage.Subject}</td>
-                                        <td data-label="From">{item.emailMessage.FromAddress}</td>
-                                        <td data-label="To">{item.emailMessage.ToAddress}</td>
-                                        <td data-label="Cc">{item.emailMessage.CcAddress}</td>
-                                        <td data-label="Bcc">{item.emailMessage.BccAddress}</td>
-                                        <td data-label="Status">{item.emailMessage.Status}</td>
-                                        <td data-label="Actions">
-                                            <lightning-button-menu alternative-text="Actions" icon-name="utility:down" menu-alignment="right">
-                                                <lightning-menu-item label="Open Email" data-id={item.emailMessage.Id} onclick={handleOpenEmailMessage}></lightning-menu-item>
-                                            </lightning-button-menu>
-                                        </td>
+                                        <!-- No actions for related items, so removing the Actions column -->
                                     </tr>
                                 </template>
                             </template>

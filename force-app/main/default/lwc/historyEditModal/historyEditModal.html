@@ -28,9 +28,25 @@
         </div>
     </div>
 
-    <div class="slds-form-element slds-m-around_medium">
-        <button class="slds-button slds-button_neutral" onclick={handleImport}>Import</button>
-    </div>
+    <template if:true={isEmailHistory}>
+        <div class="slds-form-element slds-m-around_medium">
+            <div class="slds-box slds-theme_default">
+                <p><strong>Subject:</strong> {emailMessageSubject}</p>
+                <p><strong>From:</strong> {emailMessageFrom}</p>
+                <p><strong>To:</strong> {emailMessageTo}</p>
+                <p><strong>Cc:</strong> {emailMessageCc}</p>
+                <p><strong>Bcc:</strong> {emailMessageBcc}</p>
+                <p><strong>Status:</strong> {emailMessageStatus}</p>
+                <lightning-button label="View email log" onclick={handleViewEditEmailLog}></lightning-button>
+            </div>
+        </div>
+    </template>
+
+    <template if:false={isEmailHistory}>
+        <div class="slds-form-element slds-m-around_medium">
+            <button class="slds-button slds-button_neutral" onclick={handleImport}>Import</button>
+        </div>
+    </template>
 
     <!-- Related Items Section -->
     <div class="slds-form-element slds-m-around_medium">

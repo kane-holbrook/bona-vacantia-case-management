@@ -1,6 +1,7 @@
 import { LightningElement, api, track, wire } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import { createRecord, updateRecord, deleteRecord } from 'lightning/uiRecordApi'
+import { createRecord, updateRecord, deleteRecord } from 'lightning/uiRecordApi';
+import { NavigationMixin } from 'lightning/navigation';
 import { getRecordId } from 'c/sharedService';
 import CASE_HISTORY_OBJECT from '@salesforce/schema/Case_History__c';
 import ID_FIELD from '@salesforce/schema/Case_History__c.Id';
@@ -30,7 +31,7 @@ import DOCUMENT_FILE_SIZE_FIELD from '@salesforce/schema/SHDocument__c.FileSize_
 import CASE_HISTORY_FIELD from '@salesforce/schema/SHDocument__c.Case_History__c';
 import CREATED_TIME_FIELD from '@salesforce/schema/SHDocument__c.Created_Time__c';
 
-export default class HistoryEditModal extends LightningElement {
+export default class HistoryEditModal extends NavigationMixin(LightningElement) {
     @api record;
     @track dateInserted;
     @track description;
@@ -47,14 +48,25 @@ export default class HistoryEditModal extends LightningElement {
     @track isSubModalOpen = false;
     @track relatedItems = [];
     @track originalRecord = {};
-    @track originalDocumentId; // Added to keep track of the original document ID
+    @track originalDocumentId;
+    @track isEmailHistory = false; // Track if it's an email history record
+
+    // Email related fields
+    @track emailMessageId;
+    @track emailMessageSubject;
+    @track emailMessageFrom;
+    @track emailMessageTo;
+    @track emailMessageCc;
+    @track emailMessageBcc;
+    @track emailMessageStatus;
+
     fullURL;
     sharePointSiteUrl;
     sharePointDirectoryPath;
 
-    wiredRelatedItemsResult; // Track the wired result for refresh
+    wiredRelatedItemsResult;
 
-    userId = USER_ID; // Get the current user ID
+    userId = USER_ID;
 
     relatedItemColumns = [
         { label: 'Document Name', fieldName: 'Name', type: 'text' },
@@ -80,7 +92,20 @@ export default class HistoryEditModal extends LightningElement {
         this.flagImportant = this.record.Flag_as_important__c || false;
         this.bvCaseId = this.record.BV_Case__c || getRecordId();
 
-        // Store the original state for comparison
+        // Check if this is an email history record
+        this.isEmailHistory = !!this.record.emailMessageSubject;
+
+        if (this.isEmailHistory) {
+            // Populate email-related fields
+            this.emailMessageId = this.record.emailMessageId;
+            this.emailMessageSubject = this.record.emailMessageSubject;
+            this.emailMessageFrom = this.record.emailMessageFrom;
+            this.emailMessageTo = this.record.emailMessageTo;
+            this.emailMessageCc = this.record.emailMessageCc;
+            this.emailMessageBcc = this.record.emailMessageBcc;
+            this.emailMessageStatus = this.record.emailMessageStatus;
+        }
+
         this.originalRecord = {
             dateInserted: this.dateInserted,
             description: this.description,
@@ -89,10 +114,9 @@ export default class HistoryEditModal extends LightningElement {
         };
 
         if (this.record.fileName) {
-            this.originalDocumentId = this.record.documentId; // Keep track of the original document ID
+            this.originalDocumentId = this.record.documentId;
         }
 
-        // Fetch SharePoint settings
         getSharePointSettings()
         .then(result => {
             this.sharePointSiteUrl = result.SharePoint_Site_URL;
@@ -103,13 +127,12 @@ export default class HistoryEditModal extends LightningElement {
             console.error('Error fetching SharePoint settings:', error);
             this.showToast('Error', 'Error fetching SharePoint settings', 'error');
         });
-
     }
 
     constructFullURL() {
         if (this.sharePointSiteUrl && this.serverRelativeURL) {
             const decodedServerRelativeURL = decodeURIComponent(this.serverRelativeURL).replace(/%2F/g, '/');
-            const parentFolderPath = '123'; // Adjust this as needed, no need for encodeURIComponent
+            const parentFolderPath = '123';
             const previewPageUrl = `${this.sharePointSiteUrl}/${this.sharePointDirectoryPath}/Shared%20Documents/Forms/AllItems.aspx?id=${encodeURIComponent(decodedServerRelativeURL)}&parent=${parentFolderPath}`;
             this.fullURL = previewPageUrl;
         }
@@ -117,7 +140,7 @@ export default class HistoryEditModal extends LightningElement {
 
     @wire(getSHDocuments, { parentId: '$record.Id' })
     wiredRelatedItems(result) {
-        this.wiredRelatedItemsResult = result; // Store the result for refresh
+        this.wiredRelatedItemsResult = result;
         if (result.data) {
             this.relatedItems = result.data.map(doc => ({
                 ...doc,
@@ -140,6 +163,17 @@ export default class HistoryEditModal extends LightningElement {
         } else if (field === 'flag-important') {
             this.flagImportant = event.target.checked;
         }
+    }
+
+    handleViewEditEmailLog() {
+        this[NavigationMixin.Navigate]({
+            type: 'standard__recordPage',
+            attributes: {
+                recordId: this.emailMessageId,
+                objectApiName: 'EmailMessage',
+                actionName: 'view'
+            }
+        });
     }
 
     handleFileChange(event) {
@@ -176,7 +210,7 @@ export default class HistoryEditModal extends LightningElement {
                                     this.correspondenceWith = null;
                                     this.draft = null;
                                     this.originalDocumentId = null;
-                                    refreshApex(this.wiredRelatedItemsResult); // Refresh related items
+                                    refreshApex(this.wiredRelatedItemsResult);
                                 })
                                 .catch(error => {
                                     console.log('Error deleting SHDocument record', error);
@@ -195,25 +229,12 @@ export default class HistoryEditModal extends LightningElement {
         }
     }
 
-    handleImport() {
-        this.isSubModalOpen = true;
-    }
-
-    handleViewEdit() {
-        this.isSubModalOpen = true;
-    }
-
-    closeSubModal() {
-        this.isSubModalOpen = false;
-    }
-
     handleSave() {
-        const parentRecordId = this.bvCaseId; // Assuming this.bvCaseId is the correct ID you want to pass
-    
+        const parentRecordId = this.bvCaseId;
+
         this.saveRecord(parentRecordId)
             .then(() => {
                 if (this.fileName) {
-                    // After saving the new record, proceed to save the document
                     return this.saveDocument();
                 }
             })
@@ -225,7 +246,7 @@ export default class HistoryEditModal extends LightningElement {
                 this.showToast('Error', 'Error saving record or uploading document: ' + error, 'error');
             });
     }
-    
+
     saveDocument() {
         return new Promise((resolve, reject) => {
             if (!this.fileData) {
@@ -233,15 +254,15 @@ export default class HistoryEditModal extends LightningElement {
                 reject(new Error('No file data available to save'));
                 return;
             }
-    
+
             const base64Data = this.fileData.split(',')[1];
             const binaryData = window.atob(base64Data);
-            let folderName; // Declare folderName outside the promise chain
-    
+            let folderName;
+
             getCaseName({ caseId: this.bvCaseId })
                 .then((caseName) => {
                     folderName = `${caseName}/${this.record.Id}`;
-    
+
                     return uploadFileToSharePoint({
                         filePath: folderName,
                         fileName: this.fileName,
@@ -250,17 +271,17 @@ export default class HistoryEditModal extends LightningElement {
                     });
                 })
                 .then((serverRelativeUrl) => {
-                    this.serverRelativeURL = serverRelativeUrl; // Update the serverRelativeURL after successful upload
+                    this.serverRelativeURL = serverRelativeUrl;
                     this.showToast('Success', 'File uploaded successfully', 'success');
-                    return this.createSHDocumentRecord(this.record.Id, folderName); // Attach document to history record
+                    return this.createSHDocumentRecord(this.record.Id, folderName);
                 })
                 .then(() => {
-                    refreshApex(this.wiredRelatedItemsResult); // Refresh related items
+                    refreshApex(this.wiredRelatedItemsResult);
                     this.closeSubModal();
                     resolve();
                 })
                 .catch(error => {
-                    console.error('Error in saveDocument:', error); // Log the error for easier debugging
+                    console.error('Error in saveDocument:', error);
                     reject(error);
                 });
         });
@@ -285,7 +306,7 @@ export default class HistoryEditModal extends LightningElement {
             .then((documentRecord) => {
                 this.originalDocumentId = documentRecord.id;
                 this.showToast('Success', 'SHDocument record created successfully', 'success');
-                refreshApex(this.wiredRelatedItemsResult); // Refresh related items
+                refreshApex(this.wiredRelatedItemsResult);
             })
             .catch(error => {
                 console.log('Error creating SHDocument record', error);
@@ -301,30 +322,27 @@ export default class HistoryEditModal extends LightningElement {
                 reject(new Error('Validation failed'));
                 return;
             }
-    
-            // Ensure parentRecordId is a string, or null if not provided
+
             const bvCaseIdString = parentRecordId ? String(parentRecordId) : null;
-    
-            // Define the fields to be saved or updated
+
             let fields = {
                 [DATE_INSERTED_FIELD.fieldApiName]: this.dateInserted,
                 [ACTION_FIELD.fieldApiName]: this.description,
                 [DETAILS_FIELD.fieldApiName]: this.details,
                 [FLAG_IMPORTANT_FIELD.fieldApiName]: this.flagImportant,
-                [CASE_OFFICER_FIELD.fieldApiName]: this.userId, // Set the current user's ID
-                [LAST_UPDATED_FIELD.fieldApiName]: new Date().toISOString() // Set current date and time
+                [CASE_OFFICER_FIELD.fieldApiName]: this.userId,
+                [LAST_UPDATED_FIELD.fieldApiName]: new Date().toISOString()
             };
-    
+
             if (this.record.Id) {
-                // If updating an existing record, ensure BV_Case__c is not included
                 fields[ID_FIELD.fieldApiName] = this.record.Id;
-    
+
                 updateRecord({ fields })
                     .then(() => {
                         if (!this.fileName) {
                             this.dispatchEvent(new CustomEvent('save'));
                         }
-                        resolve(this.record.Id);  // Resolve with the existing record ID
+                        resolve(this.record.Id);
                     })
                     .catch(error => {
                         console.error('Error updating record:', error);
@@ -332,18 +350,17 @@ export default class HistoryEditModal extends LightningElement {
                         reject(error);
                     });
             } else {
-                // If creating a new record, include BV_Case__c
                 if (bvCaseIdString) {
                     fields[BV_CASE_FIELD.fieldApiName] = bvCaseIdString;
                 }
-    
+
                 createRecord({ apiName: CASE_HISTORY_OBJECT.objectApiName, fields })
                     .then(record => {
-                        this.record = { ...this.record, Id: record.id }; // Safely assign the new ID
+                        this.record = { ...this.record, Id: record.id };
                         if (!this.fileName) {
                             this.dispatchEvent(new CustomEvent('save'));
                         }
-                        resolve(record.id);  // Resolve with the new record ID
+                        resolve(record.id);
                     })
                     .catch(error => {
                         console.error('Error creating record:', error);
@@ -365,31 +382,25 @@ export default class HistoryEditModal extends LightningElement {
     }
 
     handleDeleteRelatedItem(relatedItemId) {
-        // Fetch the related item details first
         getSHDocuments({ parentId: this.record.Id })
             .then(result => {
                 const relatedItem = result.find(item => item.Id === relatedItemId);
                 if (relatedItem) {
-                    // Extract necessary details
                     const { ServerRelativeURL__c: serverRelativeURL, Name: fileName } = relatedItem;
-    
-                    // Extract the part of the URL needed for deletion dynamically
+
                     const urlParts = serverRelativeURL.split('/Shared%20Documents/');
                     let relativePath = urlParts.length > 1 ? urlParts[1] : serverRelativeURL;
 
-                    // Strip the fileName from the relativePath
                     if (relativePath.endsWith(fileName)) {
-                        relativePath = relativePath.slice(0, -fileName.length - 1); // Remove the fileName and the preceding slash
+                        relativePath = relativePath.slice(0, -fileName.length - 1);
                     }
-    
-                    // Call the deleteSharepointFile method first
+
                     deleteSharepointFile({ filePath: relativePath, fileName })
                         .then(() => {
-                            // After deleting the SharePoint file, delete the Salesforce record
                             deleteRecord(relatedItemId)
                                 .then(() => {
                                     this.showToast('Success', 'Related item and SharePoint file deleted successfully', 'success');
-                                    refreshApex(this.wiredRelatedItemsResult); // Refresh related items
+                                    refreshApex(this.wiredRelatedItemsResult);
                                 })
                                 .catch(error => {
                                     console.error('Error deleting related item:', error);
@@ -411,9 +422,6 @@ export default class HistoryEditModal extends LightningElement {
     }
 
     handleViewEditRelatedItem(relatedItem) {
-        // Handle the logic to view/edit the related item
-        // This can open a modal or perform any other required actions
-        // Example: Open a modal with the details of the selected related item
         this.fileName = relatedItem.Name;
         this.fileSize = relatedItem.FileSize__c;
         this.fileData = relatedItem.FileContent__c;
@@ -457,17 +465,15 @@ export default class HistoryEditModal extends LightningElement {
             inputCmp.reportValidity();
             return validSoFar && inputCmp.checkValidity();
         }, true);
-    
+
         return allValid;
     }
 
     getTodayDate() {
         const today = new Date();
         const yyyy = today.getFullYear();
-        const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
         const dd = String(today.getDate()).padStart(2, '0');
         return `${yyyy}-${mm}-${dd}`;
     }
-    
-    
 }

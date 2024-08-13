@@ -74,22 +74,19 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
         this.wiredHistoryItemsResult = result;
         if (result.data) {
             this.historyItems = result.data.map(item => {
-                // Ensure history is an object and handle missing fields
-
-                console.log('item', item);
                 const history = item.history || {};
                 const emailMessage = item.EmailMessage || {};
                 const shDocuments = history.SHDocuments__r || [];
 
                 const nonEmptyDocuments = shDocuments.filter(doc => doc.FileSize__c > 0 || doc.DocumentType__c);
-    
+
                 // Calculate total file size of related items
                 let totalFileSize = 0;
                 if (shDocuments.length > 0) {
                     totalFileSize = shDocuments.reduce((sum, doc) => sum + (doc.FileSize__c || 0), 0);
                 }
-    
-                const mappedItem = {
+
+                const mergedRecord = {
                     Id: history.Id || '',
                     BV_Case__c: history.BV_Case__c || '',
                     Date_Inserted__c: history.Date_Inserted__c || '',
@@ -99,28 +96,33 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
                     Flag_as_important__c: history.Flag_as_important__c || false,
                     Last_updated__c: history.Last_updated__c || '',
                     isExpanded: false,
-                    hasRelatedItems: nonEmptyDocuments.length > 0 || (emailMessage.Subject && emailMessage.Subject.trim() !== ''),
+                    hasRelatedItems: nonEmptyDocuments.length > 0,
                     iconName: this.getIconName(false),
                     rowClass: history.Flag_as_important__c ? 'highlighted-row' : '',
                     flagIconClass: history.Flag_as_important__c ? 'icon-important' : 'icon-default',
                     notes: history.Details__c ? 'Has details' : '',
                     hasDetails: !!history.Details__c,
-                    documentType: shDocuments.length > 0 ? shDocuments[0].DocumentType__c : '',
+                    documentType: nonEmptyDocuments.length > 0 ? nonEmptyDocuments[0].DocumentType__c : '',
                     fileSize: this.formatFileSize(totalFileSize),  // Use the calculated total file size here
-                    draft: shDocuments.length > 0 ? shDocuments[0].Draft__c : '',
+                    draft: nonEmptyDocuments.length > 0 ? nonEmptyDocuments[0].Draft__c : '',
                     SHDocuments__r: nonEmptyDocuments.map(doc => ({
                         ...doc,
                         showAttachmentIcon: doc.DocumentType__c === 'Email Attachment',
                         fileSize: doc.FileSize__c ? this.formatFileSize(doc.FileSize__c) : '',
                     })),
-                    emailMessage,  // Include EmailMessage details
-                    hasValidEmailMessage: !!emailMessage.Id,
+                    emailMessageId: emailMessage.Id || '',
+                    emailMessageSubject: emailMessage.Subject || '',
+                    emailMessageFrom: emailMessage.FromAddress || '',
+                    emailMessageTo: emailMessage.ToAddress || '',
+                    emailMessageCc: emailMessage.CcAddress || '',
+                    emailMessageBcc: emailMessage.BccAddress || '',
+                    emailMessageStatus: emailMessage.Status || '',
                     Case_Officer_Name: this.userNames[history.Case_Officer__c] || history.Case_Officer__c // Fetch Case Officer Name here
                 };
 
-                return mappedItem;
+                return mergedRecord;
             });
-    
+
             const userIds = this.historyItems.map(item => item.Case_Officer__c);
             this.fetchUserNames(userIds);
             this.updateLastUpdated();
@@ -129,13 +131,10 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
             this.showToast('Error', 'Error fetching history items', 'error');
         }
     }
-        
 
     fetchUserNames(userIds) {
-        // Filter out invalid or undefined IDs
         const validUserIds = userIds.filter(id => id && id.length === 18);
-    
-        // Check if there are any valid IDs before making the Apex call
+
         if (validUserIds.length > 0) {
             getUserNames({ userIds: validUserIds })
                 .then(result => {
@@ -151,9 +150,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
                     this.showToast('Error', 'Error fetching user names', 'error');
                 });
         } else {
-            // Handle the case where there are no valid user IDs to fetch
-            console.log('No valid user IDs to fetch');
-            this.sortHistoryItems(); // Proceed to sort with existing data
+            this.sortHistoryItems();
         }
     }
 
@@ -170,7 +167,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
             const now = new Date();
             const lastUpdateTime = new Date(latestItem.Last_updated__c);
             const diffInMinutes = Math.floor((now - lastUpdateTime) / 60000);
-    
+
             if (diffInMinutes < 60) {
                 this.lastUpdated = `${diffInMinutes} minutes ago`;
             } else if (diffInMinutes < 1440) {
@@ -182,7 +179,6 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
             }
         }
     }
-    
 
     getIconName(isExpanded) {
         return isExpanded ? "utility:chevrondown" : "utility:chevronright";
@@ -232,11 +228,9 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
 
     handleOpenInSharePoint(event) {
         const serverRelativeURL = event.currentTarget.dataset.url;
-    
-        // Check if serverRelativeURL already contains a full URL (starts with http or https)
+
         let url = serverRelativeURL.startsWith('http') ? serverRelativeURL : `${this.sharePointSiteUrl}/${serverRelativeURL}`;
-    
-        console.log('serverRelativeURL', url);
+
         if (url) {
             window.open(url, '_blank');
         } else {
@@ -283,7 +277,6 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     toggleShowRelatedItems(event) {
         this.showRelatedItems = event.target.checked;
         if (!this.showRelatedItems) {
-            console.log('Show related items false');
             this.historyItems = this.historyItems.map(item => ({ 
                 ...item, 
                 isExpanded: false,
@@ -328,7 +321,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     sortHistoryItems() {
         this.historyItems.sort((a, b) => {
             let valA, valB;
-    
+
             if (this.sortedBy === 'Important') {
                 valA = a.Flag_as_important__c ? 0 : 1;
                 valB = b.Flag_as_important__c ? 0 : 1;
@@ -339,7 +332,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
                 valA = a[this.sortedBy] ? a[this.sortedBy].toLowerCase() : '';
                 valB = b[this.sortedBy] ? b[this.sortedBy].toLowerCase() : '';
             }
-    
+
             if (valA < valB) {
                 return this.sortOrder === 'asc' ? -1 : 1;
             } else if (valA > valB) {
@@ -349,7 +342,6 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
         });
         this.filterHistoryItems();
     }
-    
 
     filterHistoryItems() {
         this.filteredHistoryItems = this.historyItems.filter(item => {
@@ -394,7 +386,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
             'Case_Officer_Name': 'Case Officer',
             'Important': 'Important'
         };
-    
+
         const sortedByLabel = fieldLabelMap[this.sortedBy] || this.sortedBy;
         const sortOrderText = this.sortOrder === 'asc' ? '(ascending)' : '(descending)';
         return `Sorted by ${sortedByLabel} ${sortOrderText} - Filtered by ${this.selectedHistoryType === 'allHistory' ? 'all history' : 'my history'}`;
@@ -456,23 +448,5 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
         } else {
             return (size / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
         }
-    }
-
-    handleDeleteRelatedItem(event) {
-        const relatedItemId = event.currentTarget.dataset.id;
-        // Handle the deletion of the related item here
-        // Add your deletion logic for related items
-    }
-
-    handleOpenEmailMessage(event) {
-        const emailMessageId = event.currentTarget.dataset.id;
-        this[NavigationMixin.Navigate]({
-            type: 'standard__recordPage',
-            attributes: {
-                recordId: emailMessageId,
-                objectApiName: 'EmailMessage',
-                actionName: 'view'
-            }
-        });
     }
 }
