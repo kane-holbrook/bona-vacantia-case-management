@@ -368,6 +368,8 @@ public class FileControllerGraph {
             return false;
         }
     
+        List<SHDocument__c> shDocumentsToInsert = new List<SHDocument__c>();
+    
         for (ContentDocumentLink contentDocumentLink : contentDocumentLinks) {
             ContentVersion contentVersion = [
                 SELECT Id, Title, VersionData, FileExtension, ContentSize
@@ -390,17 +392,22 @@ public class FileControllerGraph {
             String documentId = uploadFileToSharePoint(folderPath, fileNameWithExtension, decodedString, documentType);
     
             if (documentId != null) {
-                createSHDocumentRecord(caseHistoryId, contentVersion, documentId, normalizedCaseName);
+                SHDocument__c shDocument = createSHDocumentRecord(caseHistoryId, contentVersion, documentId, normalizedCaseName);
+                shDocumentsToInsert.add(shDocument);
             }
+        }
+    
+        if (!shDocumentsToInsert.isEmpty()) {
+            insert shDocumentsToInsert; // Insert all the SHDocument records at once
         }
     
         // Return true if attachments were found and processed
         return true;
     }
-
-    public static void createSHDocumentRecord(Id caseHistoryId, ContentVersion contentVersion, String documentId, String caseName) {
+    
+    private static SHDocument__c createSHDocumentRecord(Id caseHistoryId, ContentVersion contentVersion, String documentId, String caseName) {
         Map<String, String> settings = getSharePointSettings();
-        
+    
         SHDocument__c shDocument = new SHDocument__c();
         shDocument.Case_History__c = caseHistoryId;
         shDocument.DocumentID__c = documentId;
@@ -411,7 +418,7 @@ public class FileControllerGraph {
         shDocument.FileSize__c = contentVersion.ContentSize;
         shDocument.DocumentExtension__c = contentVersion.FileExtension;
         shDocument.ServerRelativeURL__c = '/' + settings.get('SharePoint_Directory_Path') + '/Shared%20Documents/' + caseName + '/' + caseHistoryId + '/' + contentVersion.Title + '.' + contentVersion.FileExtension;
-        insert shDocument;
+        return shDocument;
     }
 
     @AuraEnabled(cacheable=true)
