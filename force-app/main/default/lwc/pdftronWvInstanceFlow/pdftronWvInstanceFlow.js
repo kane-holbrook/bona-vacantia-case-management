@@ -50,6 +50,8 @@ export default class PdftronWvInstanceFlow extends LightningElement {
     columns;
     mapping = {};
 
+    @track doc_keys;
+
     @wire(getRecord, { recordId: '$recordId', fields: ['BV_Case__c.Name'] })
     record;
 
@@ -130,7 +132,6 @@ export default class PdftronWvInstanceFlow extends LightningElement {
                         { "label": "Value", "apiName": "Value", "fieldType": "text", "objectName": "Account" }
                     ];
                 });
-                this.iframeWindow.postMessage({ type: 'SAVE_DOCUMENT' }, '*');
             })
             .catch(error => {
                 console.log("Error fetching file data", error);
@@ -285,6 +286,7 @@ export default class PdftronWvInstanceFlow extends LightningElement {
             title: title,
             message: message,
             variant: variant,
+            mode: 'pester'
         });
         this.dispatchEvent(evt);
     }
@@ -368,6 +370,8 @@ export default class PdftronWvInstanceFlow extends LightningElement {
                     let keys = event.data.keys;
                     console.log("keys", keys);
 
+                    this.doc_keys = keys;
+
                     console.log("firing doc_gen_options");
 
                     const mapping = this.matchKeysToProperties(keys);
@@ -379,18 +383,6 @@ export default class PdftronWvInstanceFlow extends LightningElement {
                     });
 
                     this.mapping = mapping;
-
-                    // Create a Promise to handle the listener execution sequence
-                    const listenerPromise = new Promise((resolve) => {
-                        fireEvent(this.pageRef, 'doc_gen_options', keys);
-                        resolve();
-                    });
-
-                    // Chain the generateDocument call after the Promise resolves
-                    listenerPromise.then(() => {
-                        this.generateDocument();
-                    });
-                    
                     break;
                 case 'SAVE_DOCUMENT':
                     const cvId = event.data.payload.contentDocumentId;
@@ -424,7 +416,7 @@ export default class PdftronWvInstanceFlow extends LightningElement {
 
                             fireEvent(this.pageRef, 'refreshOnSave', response);
 
-                            this.showNotification('Success', event.data.payload.filename + ' Saved', 'success');
+                            this.showNotification('Document Generated', event.data.payload.filename + ' has been generated and attached to history', 'success');
                         })
                         .catch(error => {
                             me.iframeWindow.postMessage({ type: 'DOCUMENT_SAVED', error }, '*')
@@ -450,7 +442,20 @@ export default class PdftronWvInstanceFlow extends LightningElement {
     }
 
     handleSaveDocumentEvent() {
-        this.iframeWindow.postMessage({ type: 'SAVE_DOCUMENT' }, '*');
+        // Create a Promise to handle the listener execution sequence
+        const listenerPromise = new Promise((resolve) => {
+            // Fire the DOC_KEYS event and resolve the promise when done
+            fireEvent(this.pageRef, 'doc_gen_options', this.doc_keys);
+            resolve();  // Resolve immediately after firing the event
+        });
+    
+        // Chain the generateDocument call and SAVE_DOCUMENT after the Promise resolves
+        listenerPromise.then(() => {
+            this.generateDocument();  // Process the document generation
+    
+            // After document generation is complete, trigger SAVE_DOCUMENT
+            this.iframeWindow.postMessage({ type: 'SAVE_DOCUMENT' }, '*');
+        });
     }
 
     createUUID() {
