@@ -372,64 +372,53 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
     }
 
     handleRowAction(event) {
-        const actionName = event.detail.action.name;
-        const row = event.detail.row;
-        if (actionName === 'delete') {
-            this.handleDeleteRelatedItem(row.Id);
-        } else if (actionName === 'viewEdit') {
-            this.handleViewEditRelatedItem(row);
+        const actionName = event.detail.value;
+        const relatedItemId = event.target.dataset.id;
+
+        console.log('Action:', actionName, 'Related Item Id:', relatedItemId);
+
+        if (actionName === 'viewEdit') {
+            this.handleViewEditRelatedItem(relatedItemId);
+        } else if (actionName === 'delete') {
+            this.handleDeleteRelatedItem(relatedItemId);
         }
     }
 
     handleDeleteRelatedItem(relatedItemId) {
-        getSHDocuments({ parentId: this.record.Id })
-            .then(result => {
-                const relatedItem = result.find(item => item.Id === relatedItemId);
-                if (relatedItem) {
-                    const { ServerRelativeURL__c: serverRelativeURL, Name: fileName } = relatedItem;
+        const selectedItem = this.relatedItems.find(item => item.Id === relatedItemId);
+        if (selectedItem) {
+            const serverRelativeURL = selectedItem.ServerRelativeURL__c;
+            const fileName = selectedItem.Name;
 
-                    const urlParts = serverRelativeURL.split('/Shared%20Documents/');
-                    let relativePath = urlParts.length > 1 ? urlParts[1] : serverRelativeURL;
-
-                    if (relativePath.endsWith(fileName)) {
-                        relativePath = relativePath.slice(0, -fileName.length - 1);
-                    }
-
-                    deleteSharepointFile({ filePath: relativePath, fileName })
+            deleteSharepointFile({ filePath: serverRelativeURL, fileName })
+                .then(() => {
+                    deleteRecord(relatedItemId)
                         .then(() => {
-                            deleteRecord(relatedItemId)
-                                .then(() => {
-                                    this.showToast('Success', 'Related item and SharePoint file deleted successfully', 'success');
-                                    refreshApex(this.wiredRelatedItemsResult);
-                                })
-                                .catch(error => {
-                                    console.error('Error deleting related item:', error);
-                                    this.showToast('Error', 'Error deleting related item', 'error');
-                                });
+                            this.showToast('Success', 'Document deleted successfully', 'success');
+                            refreshApex(this.wiredRelatedItemsResult); // Refresh the list of related items
                         })
                         .catch(error => {
-                            console.error('Error deleting SharePoint file:', error);
-                            this.showToast('Error', 'Error deleting SharePoint file', 'error');
+                            this.showToast('Error', 'Error deleting document record', 'error');
                         });
-                } else {
-                    this.showToast('Error', 'Related item not found', 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching related items:', error);
-                this.showToast('Error', 'Error fetching related items', 'error');
-            });
+                })
+                .catch(error => {
+                    this.showToast('Error', 'Error deleting file from SharePoint', 'error');
+                });
+        }
     }
 
-    handleViewEditRelatedItem(relatedItem) {
-        this.fileName = relatedItem.Name;
-        this.fileSize = relatedItem.FileSize__c;
-        this.fileData = relatedItem.FileContent__c;
-        this.documentType = relatedItem.DocumentType__c;
-        this.correspondenceWith = relatedItem.Correspondence_With__c;
-        this.draft = relatedItem.Draft__c;
-        this.serverRelativeURL = relatedItem.ServerRelativeURL__c;
-        this.isSubModalOpen = true;
+    handleViewEditRelatedItem(relatedItemId) {
+        const selectedItem = this.relatedItems.find(item => item.Id === relatedItemId);
+        if (selectedItem) {
+            this.fileName = selectedItem.Name;
+            this.fileSize = selectedItem.FileSize__c;
+            this.documentType = selectedItem.DocumentType__c;
+            this.correspondenceWith = selectedItem.Correspondence_With__c;
+            this.draft = selectedItem.Draft__c;
+            this.serverRelativeURL = selectedItem.ServerRelativeURL__c;
+
+            this.isSubModalOpen = true; // Open the modal to view/edit the item
+        }
     }
 
     closeModal() {
@@ -475,5 +464,17 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
         const mm = String(today.getMonth() + 1).padStart(2, '0');
         const dd = String(today.getDate()).padStart(2, '0');
         return `${yyyy}-${mm}-${dd}`;
+    }
+
+    handleImport() {
+        this.isSubModalOpen = true;
+    }
+
+    handleViewEdit() {
+        this.isSubModalOpen = true;
+    }
+
+    closeSubModal() {
+        this.isSubModalOpen = false;
     }
 }

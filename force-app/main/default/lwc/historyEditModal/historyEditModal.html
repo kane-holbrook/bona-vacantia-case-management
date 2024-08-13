@@ -51,13 +51,53 @@
     <!-- Related Items Section -->
     <div class="slds-form-element slds-m-around_medium">
         <h3>Related Documents</h3>
-        <lightning-datatable
-            key-field="id"
-            data={relatedItems}
-            columns={relatedItemColumns}
-            hide-checkbox-column="true"
-            onrowaction={handleRowAction}>
-        </lightning-datatable>
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered" aria-label="Related Documents">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th scope="col">
+                        <div class="slds-truncate" title="Document Name">Document Name</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Document Type">Document Type</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="File Size">File Size</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Created Time">Created Time</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Actions">Actions</div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <template for:each={relatedItems} for:item="item">
+                    <tr key={item.Id} class="slds-hint-parent">
+                        <th scope="row" data-label="Document Name">
+                            <div class="slds-truncate" title={item.Name}>
+                                {item.Name}
+                            </div>
+                        </th>
+                        <td data-label="Document Type">
+                            <div class="slds-truncate" title={item.DocumentType__c}>{item.DocumentType__c}</div>
+                        </td>
+                        <td data-label="File Size">
+                            <div class="slds-truncate" title={item.FileSize__c}>{item.FileSize__c}</div>
+                        </td>
+                        <td data-label="Created Time">
+                            <div class="slds-truncate" title={item.Created_Time__c}>{item.Created_Time__c}</div>
+                        </td>
+                        <td data-label="Actions">
+                            <lightning-button-menu alternative-text="Show actions" icon-name="utility:down" data-id={item.Id} menu-alignment="right" onselect={handleRowAction}>
+                                <lightning-menu-item label="View/Edit" value="viewEdit" data-id={item.Id}></lightning-menu-item>
+                                <lightning-menu-item label="Delete" value="delete" data-id={item.Id}></lightning-menu-item>
+                            </lightning-button-menu>
+                        </td>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
     </div>
 
     <template if:true={isSubModalOpen}>
