@@ -66,6 +66,8 @@ export default class PdftronWvInstanceFlow extends LightningElement {
 
         this.processFlowData(); // Process the flowData string
         this.processFile();
+
+        this.template.addEventListener('savedocument', this.handleSaveDocumentEvent.bind(this));
     }
 
     disconnectedCallback() {
@@ -128,6 +130,7 @@ export default class PdftronWvInstanceFlow extends LightningElement {
                         { "label": "Value", "apiName": "Value", "fieldType": "text", "objectName": "Account" }
                     ];
                 });
+                this.iframeWindow.postMessage({ type: 'SAVE_DOCUMENT' }, '*');
             })
             .catch(error => {
                 console.log("Error fetching file data", error);
@@ -444,6 +447,10 @@ export default class PdftronWvInstanceFlow extends LightningElement {
     @api
     closeDocument() {
         this.iframeWindow.postMessage({ type: "CLOSE_DOCUMENT" }, "*");
+    }
+
+    handleSaveDocumentEvent() {
+        this.iframeWindow.postMessage({ type: 'SAVE_DOCUMENT' }, '*');
     }
 
     createUUID() {
