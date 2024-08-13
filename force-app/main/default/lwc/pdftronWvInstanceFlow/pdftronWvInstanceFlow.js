@@ -36,7 +36,7 @@ export default class PdftronWvInstanceFlow extends LightningElement {
 
     source = 'My file';
     fullAPI = true;
-    enableRedaction = true;
+    enableRedaction = false;
     @api recordId;
 
     @api selectedDocumentId;
@@ -335,6 +335,21 @@ export default class PdftronWvInstanceFlow extends LightningElement {
             enableMeasurement: this.enableMeasurement,
             enableOptimizedWorkers: false,
             l: 'demo:1698667176711:7ccce815030000000032579c76ef4bf6398d5025f2b556af0efef948be',
+            disabledElements: [
+                'toolbarGroup-Annotate', // Disable the Annotate toolbar group
+                'toolbarGroup-Shapes', // Disable the Shapes toolbar group
+                'toolbarGroup-Insert', // Disable the Insert toolbar group
+                'toolbarGroup-Edit', // Disable the Edit toolbar group
+                'toolbarGroup-FillAndSign', // Disable the Fill and Sign toolbar group
+                'toolbarGroup-Forms', // Disable the Forms toolbar group
+                'toolbarGroup-Save', // Disable the Save toolbar group (tool.saveDocument)
+                'selectToolButton', // Disable the Select tool button
+                'viewControlsButton', // Disable the View Controls button
+                'menuButton', // Disable the Menu button
+                'panToolButton', // Disable the Pan tool button
+                'toggleNotesButton', // Disable the Panel toggle button
+                'eraserToolButton', // Disable the Eraser tool button
+            ],
         }, viewerElement);
 
         viewerElement.addEventListener('ready', () => {
