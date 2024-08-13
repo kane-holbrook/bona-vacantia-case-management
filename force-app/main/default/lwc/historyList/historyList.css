@@ -40,3 +40,8 @@ table tr.highlighted-row:hover td {
     opacity: 1.0;
     transition: background-color 0.3s ease;
 }
+
+.bigger-modal {
+    width: 80% !important;
+    max-width: 100rem !important;
+}
