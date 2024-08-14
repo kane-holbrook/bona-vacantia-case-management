@@ -476,4 +476,16 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
         const dd = String(today.getDate()).padStart(2, '0');
         return `${yyyy}-${mm}-${dd}`;
     }
+
+    handleImport() {
+        this.isSubModalOpen = true;
+    }
+
+    handleViewEdit() {
+        this.isSubModalOpen = true;
+    }
+
+    closeSubModal() {
+        this.isSubModalOpen = false;
+    }
 }
