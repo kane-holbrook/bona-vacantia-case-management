@@ -402,13 +402,34 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
     handleRowAction(event) {
         const actionName = event.detail.value;
         const relatedItemId = event.target.dataset.id;
-
+    
         console.log('Action:', actionName, 'Related Item Id:', relatedItemId);
-
-        if (actionName === 'viewEditDetails') {
+    
+        if (actionName === 'viewEditFile') {
+            this.handleViewEditFile(relatedItemId);
+        } else if (actionName === 'viewEditDetails') {
             this.handleViewEditRelatedItem(relatedItemId);
         } else if (actionName === 'delete') {
             this.handleDeleteRelatedItem(relatedItemId);
+        }
+    }
+    
+    handleViewEditFile(relatedItemId) {
+        const selectedItem = this.relatedItems.find(item => item.Id === relatedItemId);
+        if (selectedItem && selectedItem.ServerRelativeURL__c) {
+            let serverRelativeURL = selectedItem.ServerRelativeURL__c;
+    
+            // Check if serverRelativeURL already contains a full URL (starts with http or https)
+            let url = serverRelativeURL.startsWith('http') ? serverRelativeURL : `${this.sharePointSiteUrl}/${serverRelativeURL}`;
+    
+            console.log('serverRelativeURL', url);
+            if (url) {
+                window.open(url, '_blank');
+            } else {
+                this.showToast('Error', 'No URL found for this item.', 'error');
+            }
+        } else {
+            this.showToast('Error', 'File URL not found.', 'error');
         }
     }
 
