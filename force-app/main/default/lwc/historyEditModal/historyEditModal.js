@@ -409,6 +409,8 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
             this.handleViewEditFile(relatedItemId);
         } else if (actionName === 'viewEditDetails') {
             this.handleViewEditRelatedItem(relatedItemId);
+        } else if (actionName === 'convertToPDF') {
+            this.handleConvertToPDF(relatedItemId);
         } else if (actionName === 'delete') {
             this.handleDeleteRelatedItem(relatedItemId);
         }
@@ -431,6 +433,9 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
         } else {
             this.showToast('Error', 'File URL not found.', 'error');
         }
+    }
+
+    handleConvertToPDF(relatedItemId) {
     }
 
     handleDeleteRelatedItem(relatedItemId) {
