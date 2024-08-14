@@ -403,7 +403,7 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
 
         console.log('Action:', actionName, 'Related Item Id:', relatedItemId);
 
-        if (actionName === 'viewEdit') {
+        if (actionName === 'viewEditDetails') {
             this.handleViewEditRelatedItem(relatedItemId);
         } else if (actionName === 'delete') {
             this.handleDeleteRelatedItem(relatedItemId);
