@@ -231,15 +231,19 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
 
     handleSave() {
         const parentRecordId = this.bvCaseId;
-
+    
         this.saveRecord(parentRecordId)
             .then(() => {
-                if (this.fileName) {
-                    return this.saveDocument();
+                if (this.fileName && this.fileData) {
+                    return this.saveDocument(); // Only save document if file data exists
+                } else if (this.originalDocumentId) {
+                    // Update the SHDocument record with new metadata (even without file data)
+                    return this.updateSHDocumentRecord();
                 }
             })
             .then(() => {
                 this.fileName = null;
+                this.fileData = null; // Clear file data after saving
             })
             .catch(error => {
                 console.log('Error saving record or uploading document', error);
@@ -247,22 +251,44 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
             });
     }
 
+    updateSHDocumentRecord() {
+        return new Promise((resolve, reject) => {
+            const fields = {};
+            fields[ID_FIELD.fieldApiName] = this.originalDocumentId; // Ensure you use the correct field for the record ID
+            fields[DOCUMENT_TYPE_FIELD.fieldApiName] = this.documentType;
+            fields[DOCUMENT_CORRESPONDENCE_WITH_FIELD.fieldApiName] = this.correspondenceWith;
+            fields[DOCUMENT_DRAFT_FIELD.fieldApiName] = this.draft;
+    
+            updateRecord({ fields })
+                .then(() => {
+                    this.showToast('Success', 'Document metadata updated successfully', 'success');
+                    refreshApex(this.wiredRelatedItemsResult);
+                    this.closeSubModal();
+                    resolve();
+                })
+                .catch(error => {
+                    console.error('Error updating SHDocument record:', error);
+                    this.showToast('Error', 'Error updating document metadata: ' + error.body.message, 'error');
+                    reject(error);
+                });
+        });
+    }
+
     saveDocument() {
         return new Promise((resolve, reject) => {
             if (!this.fileData) {
-                this.showToast('Error', 'No file data available to save.', 'error');
-                reject(new Error('No file data available to save'));
+                resolve(); // If there's no file data, simply resolve and move on
                 return;
             }
-
+    
+            // Proceed with file save logic
             const base64Data = this.fileData.split(',')[1];
             const binaryData = window.atob(base64Data);
             let folderName;
-
+    
             getCaseName({ caseId: this.bvCaseId })
                 .then((caseName) => {
                     folderName = `${caseName}/${this.record.Id}`;
-
                     return uploadFileToSharePoint({
                         filePath: folderName,
                         fileName: this.fileName,
