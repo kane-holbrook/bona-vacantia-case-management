@@ -123,4 +123,8 @@
             </div>
         </section>
     </template>
+
+    <template if:true={isConvertToPDFModalOpen}>
+        <c-convert-to-pdf content-document-id={contentDocumentId}></c-convert-to-pdf>
+    </template>
 </template>

@@ -1,6 +1,5 @@
 public class FileControllerGraph {
 
-    // Method to upload file to SharePoint
     @AuraEnabled(cacheable=false)
     public static String uploadFileToSharePoint(String filePath, String fileName, String fileContent, String documentType) {
         Map<String, String> settings = getSharePointSettings();
@@ -15,8 +14,17 @@ public class FileControllerGraph {
         req.setMethod('PUT');
         req.setHeader('Content-Type', 'application/octet-stream');
         req.setHeader('Accept', 'application/json');
-        req.setBody(fileContent);
-        
+    
+        // Check if fileContent is Base64 encoded by looking for non-Base64 characters
+        if (isBase64String(fileContent)) {
+            // If it is Base64 encoded, decode it to binary
+            Blob fileBlob = EncodingUtil.base64Decode(fileContent);
+            req.setBodyAsBlob(fileBlob);
+        } else {
+            // If it is not Base64 encoded, use the content directly
+            req.setBody(fileContent);
+        }
+    
         Http http = new Http();
         HttpResponse res = http.send(req);
         
@@ -35,6 +43,12 @@ public class FileControllerGraph {
             System.debug('File upload failed: ' + res.getStatus() + ' ' + res.getBody());
             return null;
         }
+    }
+    
+    private static Boolean isBase64String(String content) {
+        // Basic check for Base64 by validating if the content contains only Base64 characters
+        String base64Pattern = '^[a-zA-Z0-9+/]*={0,2}$';
+        return Pattern.matches(base64Pattern, content);
     }
 
     // Method to tag a document in SharePoint
@@ -227,12 +241,18 @@ public class FileControllerGraph {
                 }
                 return files;
             } else {
-                throw new CalloutException('Response does not contain expected "value" key.');
+                // Return an empty list if the "value" key is not found, indicating no files.
+                return new List<Map<String, Object>>();
             }
+        } else if (res.getStatusCode() == 404) {
+            // Handle the case where the folder does not exist (HTTP 404 Not Found)
+            System.debug('SharePoint folder does not exist: ' + folderPath);
+            return new List<Map<String, Object>>(); // Return an empty list
         } else {
             throw new CalloutException('Failed to fetch files: ' + res.getStatus() + ' ' + res.getBody());
         }
     }
+
 
     @AuraEnabled(cacheable=true)
     public static SHDocument__c getGraphFileDataById(String fileId) {

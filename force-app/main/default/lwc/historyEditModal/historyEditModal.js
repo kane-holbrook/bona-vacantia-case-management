@@ -50,6 +50,8 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
     @track originalRecord = {};
     @track originalDocumentId;
     @track isEmailHistory = false; // Track if it's an email history record
+    @track contentDocumentId;
+    @track isConvertToPDFModalOpen = false;
 
     // Email related fields
     @track emailMessageId;
@@ -283,9 +285,7 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
                 return;
             }
     
-            // Proceed with file save logic
-            const base64Data = this.fileData.split(',')[1];
-            const binaryData = window.atob(base64Data);
+            const base64Data = this.fileData.split(',')[1]; // Extract Base64 content
             let folderName;
     
             getCaseName({ caseId: this.bvCaseId })
@@ -294,14 +294,14 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
                     return uploadFileToSharePoint({
                         filePath: folderName,
                         fileName: this.fileName,
-                        fileContent: binaryData,
+                        fileContent: base64Data, // Pass the Base64 encoded content
                         documentType: this.documentType
                     });
                 })
                 .then((serverRelativeUrl) => {
                     this.serverRelativeURL = serverRelativeUrl;
                     this.showToast('Success', 'File uploaded successfully', 'success');
-                    return this.createSHDocumentRecord(this.record.Id, folderName);
+                    return this.createSHDocumentRecord(this.record.Id, folderName, serverRelativeUrl);
                 })
                 .then(() => {
                     refreshApex(this.wiredRelatedItemsResult);
@@ -315,11 +315,11 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
         });
     }
 
-    createSHDocumentRecord(historyRecordId, folderName) {
+    createSHDocumentRecord(historyRecordId, folderName, documentId) {
         const shDocumentFields = {
             [SHDOCUMENT_NAME_FIELD.fieldApiName]: this.fileName,
             [DOCUMENT_EXTENSION_FIELD.fieldApiName]: this.fileName.split('.').pop(),
-            [DOCUMENT_ID_FIELD.fieldApiName]: historyRecordId,
+            [DOCUMENT_ID_FIELD.fieldApiName]: documentId,
             [DOCUMENT_TYPE_FIELD.fieldApiName]: this.documentType,
             [DOCUMENT_FILE_SIZE_FIELD.fieldApiName]: this.fileSize,
             [DOCUMENT_CORRESPONDENCE_WITH_FIELD.fieldApiName]: this.correspondenceWith,
@@ -436,6 +436,18 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
     }
 
     handleConvertToPDF(relatedItemId) {
+        const selectedItem = this.relatedItems.find(item => item.Id === relatedItemId);
+
+        if (selectedItem) {
+            this.contentDocumentId = selectedItem.DocumentID__c;
+            this.isConvertToPDFModalOpen = true; // Open the modal with the PDF conversion component
+        } else {
+            this.showToast('Error', 'Document ID not found for this item.', 'error');
+        }
+    }
+
+    closeConvertToPDFModal() {
+        this.isConvertToPDFModalOpen = false;
     }
 
     handleDeleteRelatedItem(relatedItemId) {
