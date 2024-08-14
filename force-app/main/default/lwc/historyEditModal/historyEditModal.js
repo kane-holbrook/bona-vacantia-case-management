@@ -503,4 +503,23 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
     closeSubModal() {
         this.isSubModalOpen = false;
     }
+
+    get emailStatusMessage() {
+        switch(this.emailMessageStatus) {
+            case '0':
+                return 'New';
+            case '1':
+                return 'Read';
+            case '2':
+                return 'Replied';
+            case '3':
+                return 'Sent';
+            case '4':
+                return 'Forwarded';
+            case '5':
+                return 'Draft';
+            default:
+                return 'Unknown';
+        }
+    }
 }
