@@ -166,13 +166,15 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
     }
 
     handleViewEditEmailLog() {
-        this[NavigationMixin.Navigate]({
+        this[NavigationMixin.GenerateUrl]({
             type: 'standard__recordPage',
             attributes: {
                 recordId: this.emailMessageId,
                 objectApiName: 'EmailMessage',
                 actionName: 'view'
             }
+        }).then(url => {
+            window.open(url, '_blank');
         });
     }
 
