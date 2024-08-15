@@ -233,8 +233,13 @@ public class FileControllerGraph {
                 }
                 return files;
             } else {
-                throw new CalloutException('Response does not contain expected "value" key.');
+                // Return an empty list if the "value" key is not found, indicating no files.
+                return new List<Map<String, Object>>();
             }
+        } else if (res.getStatusCode() == 404) {
+            // Handle the case where the folder does not exist (HTTP 404 Not Found)
+            System.debug('SharePoint folder does not exist: ' + folderPath);
+            return new List<Map<String, Object>>(); // Return an empty list
         } else {
             throw new CalloutException('Failed to fetch files: ' + res.getStatus() + ' ' + res.getBody());
         }
