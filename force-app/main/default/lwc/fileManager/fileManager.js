@@ -8,6 +8,7 @@ import uploadFileToSharePoint from '@salesforce/apex/FileControllerGraph.uploadF
 import processFiles from '@salesforce/apex/FileControllerGraph.processFiles';
 import fetchFilesFromSharePoint from '@salesforce/apex/FileControllerGraph.fetchFilesFromSharePoint';
 import deleteSharepointFile from '@salesforce/apex/FileControllerGraph.deleteFileFromSharePoint';
+import { refreshApex } from '@salesforce/apex';
 
 export default class FileManager extends NavigationMixin(LightningElement) {
     @api recordId;
@@ -23,81 +24,77 @@ export default class FileManager extends NavigationMixin(LightningElement) {
     @track sharePointSiteUrl;
     @track sharePointDirectoryPath;
     fileToDelete = null;
-
+    wiredSettings;
+    wiredFiles;
+    
     @wire(CurrentPageReference) pageRef;
     @wire(getRecord, { recordId: '$recordId', fields: ['BV_Case__c.Name'] })
     record;
 
-    connectedCallback() {
-        setTimeout(() => {
-            this.fetchSharePointSettings();
-        }, 0);
+    @wire(getSharePointSettings)
+    wiredGetSharePointSettings({ error, data }) {
+        this.wiredSettings = data;
+        if (data) {
+            this.sharePointSiteUrl = data.SharePoint_Site_URL;
+            this.sharePointDirectoryPath = data.SharePoint_Directory_Path;
+            this.refreshFiles();
+        } else if (error) {
+            console.error('Error fetching SharePoint settings:', error);
+        }
     }
 
-    fetchSharePointSettings() {
-        getSharePointSettings()
-            .then(settings => {
-                this.sharePointSiteUrl = settings.SharePoint_Site_URL;
-                this.sharePointDirectoryPath = settings.SharePoint_Directory_Path;
-                this.fetchFilesSharepoint();
-            })
-            .catch(error => {
-                console.error('Error fetching SharePoint settings:', error);
+    @wire(fetchFilesFromSharePoint, { folderPath: '$bvCaseName', documentType: '$fileType' })
+    wiredFetchFiles(result) {
+        this.wiredFiles = result;
+        if (result.data) {
+            this.files = result.data.map(document => {
+                let fileExtensionType = 'unknown';
+                const extension = document.name.split('.').pop().toLowerCase();
+
+                switch (extension) {
+                    case 'pdf':
+                        fileExtensionType = 'pdf';
+                        break;
+                    case 'doc':
+                    case 'docx':
+                        fileExtensionType = 'word';
+                        break;
+                    case 'jpg':
+                    case 'jpeg':
+                    case 'png':
+                    case 'gif':
+                        fileExtensionType = 'image';
+                        break;
+                    case 'xls':
+                    case 'xlsx':
+                    case 'csv':
+                        fileExtensionType = 'excel';
+                        break;
+                    default:
+                        fileExtensionType = 'unknown';
+                        break;
+                }
+
+                return {
+                    Title: document.name,
+                    Id: document.id,
+                    ServerRelativeUrl: document.webUrl,
+                    fileExtensionType: fileExtensionType,
+                    isPdf: fileExtensionType === 'pdf',
+                    isWord: fileExtensionType === 'word',
+                    isImage: fileExtensionType === 'image',
+                    isExcel: fileExtensionType === 'excel',
+                    isUnknown: fileExtensionType === 'unknown',
+                    previewPath: document.thumbnailUrl,
+                };
             });
+        } else if (result.error) {
+            console.error("Error fetching SharePoint files", result.error);
+        }
     }
 
-    fetchFilesSharepoint() {
-        fetchFilesFromSharePoint({ folderPath: this.bvCaseName, documentType: this.fileType })
-            .then(result => {
-                this.files = result.map(document => {
-
-                    console.log('Files from sharepoint:', result);
-                    let fileExtensionType = 'unknown';
-                    // Extract file extension from document.Name
-                    const extension = document.name.split('.').pop().toLowerCase();
-        
-                    switch (extension) {
-                        case 'pdf':
-                            fileExtensionType = 'pdf';
-                            break;
-                        case 'doc':
-                        case 'docx':
-                            fileExtensionType = 'word';
-                            break;
-                        case 'jpg':
-                        case 'jpeg':
-                        case 'png':
-                        case 'gif':
-                            fileExtensionType = 'image';
-                            break;
-                        case 'xls':
-                        case 'xlsx':
-                        case 'csv':
-                            fileExtensionType = 'excel';
-                            break;
-                        default:
-                            fileExtensionType = 'unknown';
-                            break;
-                    }
-    
-                    return {
-                        // Create an object structure similar to the original one
-                        Title: document.name,
-                        Id: document.id,
-                        ServerRelativeUrl: document.webUrl,
-                        fileExtensionType: fileExtensionType,
-                        isPdf: fileExtensionType === 'pdf',
-                        isWord: fileExtensionType === 'word',
-                        isImage: fileExtensionType === 'image',
-                        isExcel: fileExtensionType === 'excel',
-                        isUnknown: fileExtensionType === 'unknown',
-                        previewPath: document.thumbnailUrl,
-                    };
-                });
-            })
-            .catch(error => {
-                console.error("Error fetching sharepoint files", error);
-            });
+    refreshFiles() {
+        refreshApex(this.wiredFiles);
     }
 
     handleUploadFinished(event) {
@@ -126,9 +123,6 @@ export default class FileManager extends NavigationMixin(LightningElement) {
             .then(base64DataArray => {
                 base64DataArray.forEach((base64Data, index) => {
                     const file = uploadedFiles[index];
-                    // Decode the base64 encoeded data
-                    const binaryData = window.atob(base64Data);
-
                     uploadFileToSharePoint({
                         filePath: this.bvCaseName,
                         fileName: file.name,
@@ -137,6 +131,7 @@ export default class FileManager extends NavigationMixin(LightningElement) {
                     })
                     .then(result => {
                         console.log('File uploaded to SharePoint:', result);
+                        this.refreshFiles(); // Refresh files after upload
                     })
                     .catch(error => {
                         console.error('Error uploading file to SharePoint:', error);
@@ -147,25 +142,12 @@ export default class FileManager extends NavigationMixin(LightningElement) {
                 console.error('Error processing files:', error);
             });
     }
-    
-    // Helper method to read file as base64
-    readFileAsBase64(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result.split(',')[1]); // Split to get base64 content
-            reader.onerror = reject;
-            reader.readAsDataURL(file);
-        });
-    }
 
     handleMenuAction(event) {
         const actionName = event.detail.value;
         const fileId = event.target.dataset.id;
         const doc = this.files.find(d => d.Title === fileId);
 
-        console.log('doc', doc);
-        console.log('fileId', fileId);
-        
         switch(actionName) {
             case 'view':
                 const previewPageUrl = doc.ServerRelativeUrl;
@@ -197,7 +179,7 @@ export default class FileManager extends NavigationMixin(LightningElement) {
         if (this.fileToDelete) {
             deleteSharepointFile({ filePath: this.bvCaseName, fileName: this.fileToDelete })
             .then(() => {
-                window.location.reload();
+                this.refreshFiles(); // Refresh files after deletion
             })
             .catch(error => {
                 console.error("Error deleting file", error);
@@ -231,8 +213,6 @@ export default class FileManager extends NavigationMixin(LightningElement) {
 
     get bvCaseName() {
         let caseName = getFieldValue(this.record.data, 'BV_Case__c.Name');
-        // Replace all occurrences of '/' with '_'
-
         if (caseName) {
             return caseName.replace(/\//g, '_');
         } else {

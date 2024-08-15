@@ -14,7 +14,7 @@ public class FileControllerGraph {
         req.setMethod('PUT');
         req.setHeader('Content-Type', 'application/octet-stream');
         req.setHeader('Accept', 'application/json');
-    
+        
         // Check if fileContent is Base64 encoded by looking for non-Base64 characters
         if (isBase64String(fileContent)) {
             // If it is Base64 encoded, decode it to binary
@@ -24,7 +24,7 @@ public class FileControllerGraph {
             // If it is not Base64 encoded, use the content directly
             req.setBody(fileContent);
         }
-    
+        
         Http http = new Http();
         HttpResponse res = http.send(req);
         
@@ -45,6 +45,12 @@ public class FileControllerGraph {
         }
     }
     
+    private static Boolean isBase64String(String content) {
+        // Basic check for Base64 by validating if the content contains only Base64 characters
+        String base64Pattern = '^[a-zA-Z0-9+/]*={0,2}$';
+        return Pattern.matches(base64Pattern, content);
+    }
+
     private static Boolean isBase64String(String content) {
         // Basic check for Base64 by validating if the content contains only Base64 characters
         String base64Pattern = '^[a-zA-Z0-9+/]*={0,2}$';
@@ -384,7 +390,6 @@ public class FileControllerGraph {
         ];
     
         if (contentDocumentLinks.isEmpty()) {
-            // Return false if no attachments were found
             return false;
         }
     
@@ -400,16 +405,13 @@ public class FileControllerGraph {
     
             String normalizedCaseName = getCaseName(caseId);
             String folderPath = normalizedCaseName + '/' + caseHistoryId;
-    
-            // Include the file extension in the filename
             String fileNameWithExtension = contentVersion.Title + '.' + contentVersion.FileExtension;
     
-            String base64Data = EncodingUtil.base64Encode(contentVersion.VersionData);
-            Blob decodedBlob = EncodingUtil.base64Decode(base64Data);
-            string decodedString = decodedBlob.toString();
+            // Base64 encode the file content to match the method signature
+            String base64FileContent = EncodingUtil.base64Encode(contentVersion.VersionData);
     
             String documentType = 'Email Attachment'; // Adjust as needed
-            String documentId = uploadFileToSharePoint(folderPath, fileNameWithExtension, decodedString, documentType);
+            String documentId = uploadFileToSharePoint(folderPath, fileNameWithExtension, base64FileContent, documentType);
     
             if (documentId != null) {
                 SHDocument__c shDocument = createSHDocumentRecord(caseHistoryId, contentVersion, documentId, normalizedCaseName);
@@ -418,10 +420,9 @@ public class FileControllerGraph {
         }
     
         if (!shDocumentsToInsert.isEmpty()) {
-            insert shDocumentsToInsert; // Insert all the SHDocument records at once
+            insert shDocumentsToInsert;
         }
     
-        // Return true if attachments were found and processed
         return true;
     }
     
@@ -451,6 +452,68 @@ public class FileControllerGraph {
             settingsMap.put('SharePoint_Directory_Path', settings.SharePoint_Directory_Path__c);
         }
         return settingsMap;
+    }
+
+    @AuraEnabled(cacheable=false)
+    public static Map<String, Object> uploadFileToSharePointCaseCreation(String filePath, String fileName, String fileContent, String documentType) {
+        Map<String, String> settings = getSharePointSettings();
+        String siteUrl = settings.get('SharePoint_Site_URL');
+        String directoryPath = settings.get('SharePoint_Directory_Path');
+        String siteId = getSiteId(siteUrl, directoryPath);
+        String encodedFileName = encodeFileName(fileName);
+        String uploadUrl = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/drive/root:/' + filePath + '/' + encodedFileName + ':/content';
+        
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint(uploadUrl);
+        req.setMethod('PUT');
+        req.setHeader('Content-Type', 'application/octet-stream');
+        req.setHeader('Accept', 'application/json');
+        
+        if (isBase64String(fileContent)) {
+            Blob fileBlob = EncodingUtil.base64Decode(fileContent);
+            req.setBodyAsBlob(fileBlob);
+        } else {
+            req.setBody(fileContent);
+        }
+        
+        Http http = new Http();
+        HttpResponse res = http.send(req);
+        
+        if (res.getStatusCode() == 201 || res.getStatusCode() == 200) {
+            System.debug('File uploaded successfully.');
+            
+            Map<String, Object> jsonResponse = (Map<String, Object>)JSON.deserializeUntyped(res.getBody());
+            String documentId = (String)jsonResponse.get('id');
+
+            System.JSON.serializePretty(jsonResponse);
+            
+            // Fetch listItem information
+            Map<String, String> listItemInfo = getListItemInfo(siteId, documentId);
+            String webUrl = (String)jsonResponse.get('webUrl');
+            
+            // Construct and return a structured response
+            Map<String, Object> response = new Map<String, Object>();
+            response.put('documentId', documentId);
+            response.put('webUrl', webUrl);
+            response.put('fileName', fileName);
+            response.put('fileSize', String.valueOf(fileContent.length()));
+            response.put('fileExtension', fileName.substringAfterLast('.'));
+            response.put('documentType', 'Generated Document');
+            
+            return response;
+        } else {
+            throw new AuraHandledException('File upload failed: ' + res.getStatus() + ' ' + res.getBody());
+        }
+    }
+
+    @AuraEnabled
+    public static SHDocument__c getSHDocumentByDocumentID(String documentId) {
+        try {
+            // Query for the SHDocument__c record using the DocumentID__c field
+            return [SELECT Id FROM SHDocument__c WHERE DocumentID__c = :documentId LIMIT 1];
+        } catch (Exception e) {
+            throw new AuraHandledException('Error finding SHDocument__c: ' + e.getMessage());
+        }
     }
 
     public void veryTemporaryTest(){
