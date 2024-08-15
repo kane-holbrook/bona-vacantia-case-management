@@ -9,6 +9,9 @@ import uploadFileToSharePoint from '@salesforce/apex/FileControllerGraph.uploadF
 import processFiles from '@salesforce/apex/FileControllerGraph.processFiles';
 import fetchFilesFromSharePoint from '@salesforce/apex/FileControllerGraph.fetchFilesFromSharePoint';
 import deleteSharepointFile from '@salesforce/apex/FileControllerGraph.deleteFileFromSharePoint';
+import getSiteId from '@salesforce/apex/FileControllerGraph.getSiteId';
+import getListItemInfo from '@salesforce/apex/FileControllerGraph.getListItemInfo';
+import { createRecord } from 'lightning/uiRecordApi';
 
 export default class FileUpload extends NavigationMixin(LightningElement) {
     @api recordId;
@@ -23,6 +26,8 @@ export default class FileUpload extends NavigationMixin(LightningElement) {
     @track files = [];
     @track sharePointSiteUrl;
     @track sharePointDirectoryPath;
+    @track caseHistoryId;
+    @track siteId;
     wiredFilesResult;
     wiredSettingsResult;
     fileToDelete = null;
@@ -126,23 +131,123 @@ export default class FileUpload extends NavigationMixin(LightningElement) {
                     const file = uploadedFiles[index];
                     const binaryData = window.atob(base64Data);
 
-                    uploadFileToSharePoint({
-                        filePath: this.bvCaseName,
-                        fileName: file.name,
-                        fileContent: binaryData,
-                        documentType: this.fileType
-                    })
-                    .then(result => {
-                        console.log('File uploaded to SharePoint:', result);
-                        return refreshApex(this.wiredFilesResult); // Refresh the file list
-                    })
-                    .catch(error => {
-                        console.error('Error uploading file to SharePoint:', error);
-                    });
+                    // Proceed with uploading the file to SharePoint
+                    this.uploadAndProcessFile(file.name, binaryData);
                 });
             })
             .catch(error => {
                 console.error('Error processing files:', error);
+            });
+    }
+
+    getSharePointSiteId() {
+        return getSiteId({
+            siteUrl: this.sharePointSiteUrl,
+            directoryPath: this.sharePointDirectoryPath
+        })
+        .then(siteId => {
+            return siteId;
+        })
+        .catch(error => {
+            console.error('Error retrieving SharePoint site ID:', error);
+            throw error;
+        });
+    }
+
+    uploadAndProcessFile(fileName, binaryData) {
+        // First, ensure we have the SharePoint site ID
+        this.getSharePointSiteId()
+            .then((siteId) => {
+                this.siteId = siteId;
+
+                // Upload the file to SharePoint with the binary content
+                return this.uploadFileToSharePoint(fileName, binaryData);
+            })
+            .then((sharePointDocumentId) => {
+                // After upload, retrieve list item information
+                return getListItemInfo({ siteId: this.siteId, itemId: sharePointDocumentId });
+            })
+            .then((listItemInfo) => {
+                // If no Case History exists, create one first
+                if (!this.caseHistoryId) {
+                    return this.createCaseHistory().then((caseHistoryId) => {
+                        this.caseHistoryId = caseHistoryId;
+                        return this.saveSHDocumentRecord(this.caseHistoryId, listItemInfo);
+                    });
+                } else {
+                    // Case History exists, save SHDocument directly
+                    return this.saveSHDocumentRecord(this.caseHistoryId, listItemInfo);
+                }
+            })
+            .then(() => {
+                // Refresh the file list or other UI components
+                return refreshApex(this.wiredFilesResult);
+            })
+            .catch(error => {
+                console.error('Error during file upload and processing:', error);
+            });
+    }
+
+    uploadFileToSharePoint(fileName, binaryData) {
+        return uploadFileToSharePoint({
+            filePath: this.bvCaseName,
+            fileName: fileName,
+            fileContent: binaryData,
+            documentType: this.fileType
+        })
+        .then(result => {
+            console.log('File uploaded to SharePoint:', result);
+            return result; // This is the SharePoint document ID
+        })
+        .catch(error => {
+            console.error('Error uploading file to SharePoint:', error);
+            throw error;
+        });
+    }
+
+    saveSHDocumentRecord(caseHistoryId, listItemInfo) {
+        const fields = {
+            Case_History__c: caseHistoryId,
+            DocumentID__c: listItemInfo.listItemId,
+            ServerRelativeURL__c: listItemInfo.webUrl,
+            Document_Name__c: listItemInfo.fileName,
+            FileSize__c: listItemInfo.fileSize,
+            DocumentExtension__c: listItemInfo.fileExtension,
+            DocumentType__c: this.fileType,
+            Name: listItemInfo.fileName
+        };
+
+        const recordInput = { apiName: 'SHDocument__c', fields };
+
+        return createRecord(recordInput)
+            .then((record) => {
+                console.log('SHDocument__c record created:', record.id);
+                return record.id;
+            })
+            .catch(error => {
+                console.error('Error creating SHDocument__c record:', error);
+                throw error;
+            });
+    }
+
+    createCaseHistory() {
+        const fields = {
+            BV_Case__c: this.recordId,
+            Action__c: 'Case Creation Document',
+            Date_Inserted__c: new Date(),
+            Last_updated__c: new Date()
+        };
+
+        const recordInput = { apiName: 'Case_History__c', fields };
+
+        return createRecord(recordInput)
+            .then((caseHistory) => {
+                console.log('Case_History__c record created:', caseHistory.id);
+                return caseHistory.id;
+            })
+            .catch(error => {
+                console.error('Error creating Case_History__c record:', error);
+                throw error;
             });
     }
 
@@ -219,8 +324,6 @@ export default class FileUpload extends NavigationMixin(LightningElement) {
 
     get bvCaseName() {
         let caseName = getFieldValue(this.record.data, 'BV_Case__c.Name');
-        // Replace all occurrences of '/' with '_'
-
         if (caseName) {
             return caseName.replace(/\//g, '_');
         } else {
