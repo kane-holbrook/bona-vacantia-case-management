@@ -433,6 +433,46 @@ public class FileControllerGraph {
         return settingsMap;
     }
 
+    @AuraEnabled(cacheable=false)
+    public static String uploadFileToSharePointCaseCreation(String filePath, String fileName, String fileContent, String documentType) {
+        Map<String, String> settings = getSharePointSettings();
+        String siteUrl = settings.get('SharePoint_Site_URL');
+        String directoryPath = settings.get('SharePoint_Directory_Path');
+        String siteId = getSiteId(siteUrl, directoryPath);
+        String encodedFileName = encodeFileName(fileName);
+        String uploadUrl = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/drive/root:/' + filePath + '/' + encodedFileName + ':/content';
+        
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint(uploadUrl);
+        req.setMethod('PUT');
+        req.setHeader('Content-Type', 'application/octet-stream');
+        req.setHeader('Accept', 'application/json');
+        req.setBody(fileContent);
+        
+        Http http = new Http();
+        HttpResponse res = http.send(req);
+        
+        if (res.getStatusCode() == 201 || res.getStatusCode() == 200) {
+            System.debug('File uploaded successfully.');
+            // Extract the ID from the response
+            Map<String, Object> jsonResponse = (Map<String, Object>)JSON.deserializeUntyped(res.getBody());
+            String documentId = (String)jsonResponse.get('id');
+            // Fetch listItem information
+            Map<String, String> listItemInfo = getListItemInfo(siteId, documentId);
+            String webUrl = (String)jsonResponse.get('webUrl');
+            listItemInfo.put('webUrl', webUrl);
+            listItemInfo.put('fileName', fileName);
+            listItemInfo.put('fileSize', String.valueOf(fileContent.length()));
+            listItemInfo.put('fileExtension', fileName.substringAfterLast('.'));
+            listItemInfo.put('documentType', 'Generated Document');
+
+            return JSON.serialize(listItemInfo);
+        } else {
+            System.debug('File upload failed: ' + res.getStatus() + ' ' + res.getBody());
+            return null;
+        }
+    }
+
     public void veryTemporaryTest(){
         integer i = 0;
         i = i + 1;
