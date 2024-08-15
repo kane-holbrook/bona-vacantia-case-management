@@ -505,6 +505,16 @@ public class FileControllerGraph {
         }
     }
 
+    @AuraEnabled
+    public static SHDocument__c getSHDocumentByDocumentID(String documentId) {
+        try {
+            // Query for the SHDocument__c record using the DocumentID__c field
+            return [SELECT Id FROM SHDocument__c WHERE DocumentID__c = :documentId LIMIT 1];
+        } catch (Exception e) {
+            throw new AuraHandledException('Error finding SHDocument__c: ' + e.getMessage());
+        }
+    }
+
     public void veryTemporaryTest(){
         integer i = 0;
         i = i + 1;

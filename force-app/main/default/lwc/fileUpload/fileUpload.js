@@ -8,6 +8,7 @@ import uploadFileToSharePointCaseCreation from '@salesforce/apex/FileControllerG
 import processFiles from '@salesforce/apex/FileControllerGraph.processFiles';
 import fetchFilesFromSharePoint from '@salesforce/apex/FileControllerGraph.fetchFilesFromSharePoint';
 import deleteSharepointFile from '@salesforce/apex/FileControllerGraph.deleteFileFromSharePoint';
+import getSHDocumentByDocumentID from '@salesforce/apex/FileControllerGraph.getSHDocumentByDocumentID';
 import { createRecord } from 'lightning/uiRecordApi';
 
 export default class FileUpload extends NavigationMixin(LightningElement) {
@@ -273,14 +274,30 @@ export default class FileUpload extends NavigationMixin(LightningElement) {
             const folderPath = `${this.bvCaseName}/${this.caseHistoryId}`; // Use caseHistoryId in the path
             deleteSharepointFile({ filePath: folderPath, fileName: this.fileToDelete })
                 .then(() => {
+                    // Remove the file from the list
+                    const deletedFile = this.files.find(file => file.Title === this.fileToDelete);
                     this.files = this.files.filter(file => file.Title !== this.fileToDelete);
     
+                    // Query and delete the SHDocument__c record associated with the file
+                    if (deletedFile) {
+                        this.deleteSHDocumentByDocumentID(deletedFile.Id) // Here we assume that the SharePoint document ID or another identifier is available in the deletedFile object.
+                            .then(() => {
+                                console.log('SHDocument__c record deleted successfully');
+                            })
+                            .catch(error => {
+                                console.error('Error deleting SHDocument__c record:', error);
+                            });
+                    }
+    
+                    // If all files are deleted, remove the case history
                     if (this.files.length === 0) {
-                        this.deleteCaseHistory().then(() => {
-                            console.log('Case history deleted as all files have been deleted.');
-                        }).catch(error => {
-                            console.error('Error deleting case history:', error);
-                        });
+                        this.deleteCaseHistory()
+                            .then(() => {
+                                console.log('Case history deleted as all files have been deleted.');
+                            })
+                            .catch(error => {
+                                console.error('Error deleting case history:', error);
+                            });
                     }
     
                     this.refreshFiles();  // Refresh the files after deletion
@@ -294,6 +311,21 @@ export default class FileUpload extends NavigationMixin(LightningElement) {
         }
     }
     
+    deleteSHDocumentByDocumentID(documentId) {
+        return getSHDocumentByDocumentID({ documentId }) // Apex method to query SHDocument__c by documentId (which should be a SharePoint document ID or another identifier)
+            .then(shDocumentRecord => {
+                if (shDocumentRecord && shDocumentRecord.Id) {
+                    // Delete the SHDocument__c record
+                    return deleteRecord(shDocumentRecord.Id);
+                } else {
+                    throw new Error('SHDocument__c record not found');
+                }
+            })
+            .catch(error => {
+                console.error('Error finding or deleting SHDocument__c record:', error);
+                throw error;
+            });
+    }
     
     deleteCaseHistory() {
         // Call your Apex method to delete the Case History record using the caseHistoryId
