@@ -384,7 +384,6 @@ public class FileControllerGraph {
         ];
     
         if (contentDocumentLinks.isEmpty()) {
-            // Return false if no attachments were found
             return false;
         }
     
@@ -400,16 +399,13 @@ public class FileControllerGraph {
     
             String normalizedCaseName = getCaseName(caseId);
             String folderPath = normalizedCaseName + '/' + caseHistoryId;
-    
-            // Include the file extension in the filename
             String fileNameWithExtension = contentVersion.Title + '.' + contentVersion.FileExtension;
     
-            String base64Data = EncodingUtil.base64Encode(contentVersion.VersionData);
-            Blob decodedBlob = EncodingUtil.base64Decode(base64Data);
-            string decodedString = decodedBlob.toString();
+            // Base64 encode the file content to match the method signature
+            String base64FileContent = EncodingUtil.base64Encode(contentVersion.VersionData);
     
             String documentType = 'Email Attachment'; // Adjust as needed
-            String documentId = uploadFileToSharePoint(folderPath, fileNameWithExtension, decodedString, documentType);
+            String documentId = uploadFileToSharePoint(folderPath, fileNameWithExtension, base64FileContent, documentType);
     
             if (documentId != null) {
                 SHDocument__c shDocument = createSHDocumentRecord(caseHistoryId, contentVersion, documentId, normalizedCaseName);
@@ -418,10 +414,9 @@ public class FileControllerGraph {
         }
     
         if (!shDocumentsToInsert.isEmpty()) {
-            insert shDocumentsToInsert; // Insert all the SHDocument records at once
+            insert shDocumentsToInsert;
         }
     
-        // Return true if attachments were found and processed
         return true;
     }
     
