@@ -533,10 +533,26 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
     }
 
     handleImport() {
+        this.clearDocumentFields();
         this.isSubModalOpen = true;
     }
 
-    handleViewEdit() {
+    handleViewEdit(relatedItemId) {
+        // Check if relatedItemId exists before proceeding
+        const selectedItem = this.relatedItems.find(item => item.Id === relatedItemId);
+        if (selectedItem) {
+            // Load document details if viewing/editing
+            this.fileName = selectedItem.Name;
+            this.fileSize = selectedItem.FileSize__c;
+            this.documentType = selectedItem.DocumentType__c;
+            this.correspondenceWith = selectedItem.Correspondence_With__c;
+            this.draft = selectedItem.Draft__c;
+            this.serverRelativeURL = selectedItem.ServerRelativeURL__c;
+            this.originalDocumentId = selectedItem.Id;
+        } else {
+            this.clearDocumentFields(); // Clear fields if creating a new document
+        }
+    
         this.isSubModalOpen = true;
     }
 
@@ -561,5 +577,16 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
             default:
                 return 'Unknown';
         }
+    }
+
+    clearDocumentFields() {
+        this.fileName = null;
+        this.fileData = null;
+        this.fileSize = null;
+        this.documentType = null;
+        this.correspondenceWith = null;
+        this.draft = null;
+        this.serverRelativeURL = null;
+        this.originalDocumentId = null;
     }
 }
