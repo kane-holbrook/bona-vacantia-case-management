@@ -15,7 +15,16 @@ public class FileControllerGraph {
         req.setMethod('PUT');
         req.setHeader('Content-Type', 'application/octet-stream');
         req.setHeader('Accept', 'application/json');
-        req.setBody(fileContent);
+        
+        // Check if fileContent is Base64 encoded by looking for non-Base64 characters
+        if (isBase64String(fileContent)) {
+            // If it is Base64 encoded, decode it to binary
+            Blob fileBlob = EncodingUtil.base64Decode(fileContent);
+            req.setBodyAsBlob(fileBlob);
+        } else {
+            // If it is not Base64 encoded, use the content directly
+            req.setBody(fileContent);
+        }
         
         Http http = new Http();
         HttpResponse res = http.send(req);
