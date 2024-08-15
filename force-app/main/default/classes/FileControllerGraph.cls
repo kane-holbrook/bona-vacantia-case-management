@@ -454,7 +454,7 @@ public class FileControllerGraph {
     }
 
     @AuraEnabled(cacheable=false)
-    public static String uploadFileToSharePointCaseCreation(String filePath, String fileName, String fileContent, String documentType) {
+    public static Map<String, Object> uploadFileToSharePointCaseCreation(String filePath, String fileName, String fileContent, String documentType) {
         Map<String, String> settings = getSharePointSettings();
         String siteUrl = settings.get('SharePoint_Site_URL');
         String directoryPath = settings.get('SharePoint_Directory_Path');
@@ -468,13 +468,10 @@ public class FileControllerGraph {
         req.setHeader('Content-Type', 'application/octet-stream');
         req.setHeader('Accept', 'application/json');
         
-        // Check if fileContent is Base64 encoded by looking for non-Base64 characters
         if (isBase64String(fileContent)) {
-            // If it is Base64 encoded, decode it to binary
             Blob fileBlob = EncodingUtil.base64Decode(fileContent);
             req.setBodyAsBlob(fileBlob);
         } else {
-            // If it is not Base64 encoded, use the content directly
             req.setBody(fileContent);
         }
         
@@ -483,22 +480,28 @@ public class FileControllerGraph {
         
         if (res.getStatusCode() == 201 || res.getStatusCode() == 200) {
             System.debug('File uploaded successfully.');
-            // Extract the ID from the response
+            
             Map<String, Object> jsonResponse = (Map<String, Object>)JSON.deserializeUntyped(res.getBody());
             String documentId = (String)jsonResponse.get('id');
+
+            System.JSON.serializePretty(jsonResponse);
+            
             // Fetch listItem information
             Map<String, String> listItemInfo = getListItemInfo(siteId, documentId);
             String webUrl = (String)jsonResponse.get('webUrl');
-            listItemInfo.put('webUrl', webUrl);
-            listItemInfo.put('fileName', fileName);
-            listItemInfo.put('fileSize', String.valueOf(fileContent.length()));
-            listItemInfo.put('fileExtension', fileName.substringAfterLast('.'));
-            listItemInfo.put('documentType', 'Generated Document');
-
-            return JSON.serialize(listItemInfo);
+            
+            // Construct and return a structured response
+            Map<String, Object> response = new Map<String, Object>();
+            response.put('documentId', documentId);
+            response.put('webUrl', webUrl);
+            response.put('fileName', fileName);
+            response.put('fileSize', String.valueOf(fileContent.length()));
+            response.put('fileExtension', fileName.substringAfterLast('.'));
+            response.put('documentType', 'Generated Document');
+            
+            return response;
         } else {
-            System.debug('File upload failed: ' + res.getStatus() + ' ' + res.getBody());
-            return null;
+            throw new AuraHandledException('File upload failed: ' + res.getStatus() + ' ' + res.getBody());
         }
     }
 

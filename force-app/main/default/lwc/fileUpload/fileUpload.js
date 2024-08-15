@@ -4,7 +4,7 @@ import { refreshApex } from '@salesforce/apex';
 import { NavigationMixin, CurrentPageReference } from 'lightning/navigation';
 import LightningConfirm from 'lightning/confirm';
 import getSharePointSettings from '@salesforce/apex/FileControllerGraph.getSharePointSettings';
-import uploadFileToSharePoint from '@salesforce/apex/FileControllerGraph.uploadFileToSharePoint';
+import uploadFileToSharePointCaseCreation from '@salesforce/apex/FileControllerGraph.uploadFileToSharePointCaseCreation';
 import processFiles from '@salesforce/apex/FileControllerGraph.processFiles';
 import fetchFilesFromSharePoint from '@salesforce/apex/FileControllerGraph.fetchFilesFromSharePoint';
 import deleteSharepointFile from '@salesforce/apex/FileControllerGraph.deleteFileFromSharePoint';
@@ -126,10 +126,10 @@ export default class FileUpload extends NavigationMixin(LightningElement) {
 
         processFiles({ documentIds })
             .then(base64DataArray => {
-                // Upload all files first
+                // Upload all files first using the new method
                 return Promise.all(base64DataArray.map((base64Data, index) => {
                     const file = uploadedFiles[index];
-                    return uploadFileToSharePoint({
+                    return uploadFileToSharePointCaseCreation({
                         filePath: this.bvCaseName,
                         fileName: file.name,
                         fileContent: base64Data,
@@ -137,43 +137,58 @@ export default class FileUpload extends NavigationMixin(LightningElement) {
                     });
                 }));
             })
-            .then(() => {
-                // Refresh the files after successful upload
-                return this.refreshFiles();
+            .then((responses) => {
+                // Process the returned structured responses and update the files array accordingly
+                console.log('responses', responses);
+                responses.forEach(response => {
+                    const newFile = {
+                        Title: response.fileName,
+                        Id: response.documentId,
+                        ServerRelativeUrl: response.webUrl,
+                        fileExtensionType: response.fileExtension.toLowerCase(),
+                        previewPath: response.webUrl // Assuming preview path is the same as webUrl
+                    };
+                    this.files.push(newFile);
+                    console.log('files:', this.files);
+                });
+                // Process the returned responses and directly pass them to createHistoryAndSHDocument
+                return this.createHistoryAndSHDocument(responses);
             })
             .then(() => {
-                // Now handle creating the case history and SHDocument records
-                return this.createHistoryAndSHDocument(uploadedFiles);
+                return refreshApex(this.wiredFiles); // Trigger a refresh after processing files
             })
             .catch(error => {
                 console.error('Error during file processing, uploading, or post-upload actions:', error);
             });
     }
 
-    createHistoryAndSHDocument(uploadedFiles) {
-        const createRecords = uploadedFiles.map(file => {
+    createHistoryAndSHDocument(uploadResponses) {
+        const createRecords = uploadResponses.map(response => {
             return this.createCaseHistory().then(caseHistoryId => {
-                return this.saveSHDocumentRecord(caseHistoryId, file);
+                return this.saveSHDocumentRecord(caseHistoryId, response);
             });
         });
-
+    
         return Promise.all(createRecords);
     }
 
-    saveSHDocumentRecord(caseHistoryId, file) {
+    saveSHDocumentRecord(caseHistoryId, uploadResponse) {
+        console.log('uploadResponse', uploadResponse);
+        
+        // Extract necessary fields from uploadResponse for SHDocument__c creation
         const fields = {
             Case_History__c: caseHistoryId,
-            DocumentID__c: file.documentId, // Assuming this is available after upload
-            ServerRelativeURL__c: file.webUrl, // Assuming this is part of the response
-            Document_Name__c: file.name,
-            FileSize__c: file.size,
-            DocumentExtension__c: file.extension,
+            DocumentID__c: uploadResponse.documentId, // From uploadFileToSharePointCaseCreation response
+            ServerRelativeURL__c: uploadResponse.webUrl, // From uploadFileToSharePointCaseCreation response
+            Document_Name__c: uploadResponse.fileName, // From uploadFileToSharePointCaseCreation response
+            FileSize__c: uploadResponse.fileSize, // Assuming fileSize comes from the response
+            DocumentExtension__c: uploadResponse.fileExtension.toLowerCase(), // From response
             DocumentType__c: this.fileType,
-            Name: file.name
+            Name: uploadResponse.fileName // From the response
         };
-
+    
         const recordInput = { apiName: 'SHDocument__c', fields };
-
+    
         return createRecord(recordInput)
             .then((record) => {
                 console.log('SHDocument__c record created:', record.id);
@@ -184,6 +199,7 @@ export default class FileUpload extends NavigationMixin(LightningElement) {
                 throw error;
             });
     }
+    
 
     createCaseHistory() {
         const fields = {
