@@ -269,6 +269,15 @@ export default class FileUpload extends NavigationMixin(LightningElement) {
         }
     }
 
+    handlePreview() {
+        const fileId = event.target.dataset.id;
+        const doc = this.files.find(d => d.Title === fileId);
+        
+        const previewPageUrl = doc.ServerRelativeUrl;
+
+        window.open(previewPageUrl, '_blank');
+    }
+
     get hasReachedMaxFiles() {
         return this.maxFiles > 0 && this.files.length >= this.maxFiles;
     }
