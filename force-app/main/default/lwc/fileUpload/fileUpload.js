@@ -3,9 +3,8 @@ import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import { refreshApex } from '@salesforce/apex';
 import { NavigationMixin, CurrentPageReference } from 'lightning/navigation';
 import LightningConfirm from 'lightning/confirm';
-import { fireEvent } from 'c/pubsub';
 import getSharePointSettings from '@salesforce/apex/FileControllerGraph.getSharePointSettings';
-import uploadFileToSharePointCaseCreation from '@salesforce/apex/FileControllerGraph.uploadFileToSharePointCaseCreation';
+import uploadFileToSharePoint from '@salesforce/apex/FileControllerGraph.uploadFileToSharePoint';
 import processFiles from '@salesforce/apex/FileControllerGraph.processFiles';
 import fetchFilesFromSharePoint from '@salesforce/apex/FileControllerGraph.fetchFilesFromSharePoint';
 import deleteSharepointFile from '@salesforce/apex/FileControllerGraph.deleteFileFromSharePoint';
@@ -25,79 +24,82 @@ export default class FileUpload extends NavigationMixin(LightningElement) {
     @track sharePointSiteUrl;
     @track sharePointDirectoryPath;
     @track caseHistoryId;
-    wiredFilesResult;
-    wiredSettingsResult;
     fileToDelete = null;
+    wiredFiles;
+    wiredSettings;
 
     @wire(CurrentPageReference) pageRef;
     @wire(getRecord, { recordId: '$recordId', fields: ['BV_Case__c.Name'] })
     record;
 
-    // Wire the method for SharePoint settings
     @wire(getSharePointSettings)
-    wiredGetSharePointSettings(result) {
-        this.wiredSettingsResult = result;
-
-        if (result.data) {
-            const settings = result.data;
-            this.sharePointSiteUrl = settings.SharePoint_Site_URL;
-            this.sharePointDirectoryPath = settings.SharePoint_Directory_Path;
-            refreshApex(this.wiredFilesResult); // Refresh files data once settings are fetched
-        } else if (result.error) {
-            console.error('Error fetching SharePoint settings:', result.error);
+    wiredGetSharePointSettings({ error, data }) {
+        this.wiredSettings = data;
+        if (data) {
+            this.sharePointSiteUrl = data.SharePoint_Site_URL;
+            this.sharePointDirectoryPath = data.SharePoint_Directory_Path;
+            this.refreshFiles(); // Ensure files are refreshed after settings are fetched
+        } else if (error) {
+            console.error('Error fetching SharePoint settings:', error);
         }
     }
 
-    // Wire the method to fetch files from SharePoint
     @wire(fetchFilesFromSharePoint, { folderPath: '$bvCaseName', documentType: '$fileType' })
     wiredFetchFiles(result) {
-        this.wiredFilesResult = result;
-
+        this.wiredFiles = result;
         if (result.data) {
-            this.files = result.data.map(document => {
-                let fileExtensionType = 'unknown';
-                const extension = document.name.split('.').pop().toLowerCase();
-
-                switch (extension) {
-                    case 'pdf':
-                        fileExtensionType = 'pdf';
-                        break;
-                    case 'doc':
-                    case 'docx':
-                        fileExtensionType = 'word';
-                        break;
-                    case 'jpg':
-                    case 'jpeg':
-                    case 'png':
-                    case 'gif':
-                        fileExtensionType = 'image';
-                        break;
-                    case 'xls':
-                    case 'xlsx':
-                    case 'csv':
-                        fileExtensionType = 'excel';
-                        break;
-                    default:
-                        fileExtensionType = 'unknown';
-                        break;
-                }
-
-                return {
-                    Title: document.name,
-                    Id: document.id,
-                    ServerRelativeUrl: document.webUrl,
-                    fileExtensionType: fileExtensionType,
-                    isPdf: fileExtensionType === 'pdf',
-                    isWord: fileExtensionType === 'word',
-                    isImage: fileExtensionType === 'image',
-                    isExcel: fileExtensionType === 'excel',
-                    isUnknown: fileExtensionType === 'unknown',
-                    previewPath: document.thumbnailUrl,
-                };
-            });
+            this.files = this.processDocuments(result.data);
         } else if (result.error) {
-            console.error("Error fetching sharepoint files", result.error);
+            console.error("Error fetching SharePoint files", result.error);
         }
+    }
+
+    processDocuments(documents) {
+        return documents.map(document => {
+            let fileExtensionType = 'unknown';
+            const extension = document.name.split('.').pop().toLowerCase();
+
+            switch (extension) {
+                case 'pdf':
+                    fileExtensionType = 'pdf';
+                    break;
+                case 'doc':
+                case 'docx':
+                    fileExtensionType = 'word';
+                    break;
+                case 'jpg':
+                case 'jpeg':
+                case 'png':
+                case 'gif':
+                    fileExtensionType = 'image';
+                    break;
+                case 'xls':
+                case 'xlsx':
+                case 'csv':
+                    fileExtensionType = 'excel';
+                    break;
+                default:
+                    fileExtensionType = 'unknown';
+                    break;
+            }
+
+            return {
+                Title: document.name,
+                Id: document.id,
+                ServerRelativeUrl: document.webUrl,
+                fileExtensionType: fileExtensionType,
+                isPdf: fileExtensionType === 'pdf',
+                isWord: fileExtensionType === 'word',
+                isImage: fileExtensionType === 'image',
+                isExcel: fileExtensionType === 'excel',
+                isUnknown: fileExtensionType === 'unknown',
+                previewPath: document.thumbnailUrl,
+            };
+        });
+    }
+
+    refreshFiles() {
+        refreshApex(this.wiredFiles); // Ensures files are refreshed whenever required
     }
 
     handleUploadFinished(event) {
@@ -124,61 +126,50 @@ export default class FileUpload extends NavigationMixin(LightningElement) {
 
         processFiles({ documentIds })
             .then(base64DataArray => {
-                base64DataArray.forEach((base64Data, index) => {
+                // Upload all files first
+                return Promise.all(base64DataArray.map((base64Data, index) => {
                     const file = uploadedFiles[index];
-                    const binaryData = window.atob(base64Data);
-
-                    // Proceed with uploading the file to SharePoint
-                    this.uploadFileToSharePoint(file.name, base64Data);
-                });
+                    return uploadFileToSharePoint({
+                        filePath: this.bvCaseName,
+                        fileName: file.name,
+                        fileContent: base64Data,
+                        documentType: this.fileType
+                    });
+                }));
+            })
+            .then(() => {
+                // Refresh the files after successful upload
+                return this.refreshFiles();
+            })
+            .then(() => {
+                // Now handle creating the case history and SHDocument records
+                return this.createHistoryAndSHDocument(uploadedFiles);
             })
             .catch(error => {
-                console.error('Error processing files:', error);
+                console.error('Error during file processing, uploading, or post-upload actions:', error);
             });
     }
 
-    uploadFileToSharePoint(fileName, binaryData) {
-        return uploadFileToSharePointCaseCreation({
-            filePath: this.bvCaseName,
-            fileName: fileName,
-            fileContent: binaryData,
-            documentType: this.fileType
-        })
-        .then(result => {
-            const listItemInfo = JSON.parse(result);
-
-            console.log('File uploaded and processed:', listItemInfo);
-
-            // If no Case History exists, create one first
-            if (!this.caseHistoryId) {
-                return this.createCaseHistory().then((caseHistoryId) => {
-                    this.caseHistoryId = caseHistoryId;
-                    return this.saveSHDocumentRecord(this.caseHistoryId, listItemInfo);
-                });
-            } else {
-                // Case History exists, save SHDocument directly
-                return this.saveSHDocumentRecord(this.caseHistoryId, listItemInfo);
-            }
-        })
-        .then(() => {
-            // Refresh the file list or other UI components
-            return refreshApex(this.wiredFilesResult);
-        })
-        .catch(error => {
-            console.error('Error during file upload and processing:', error);
+    createHistoryAndSHDocument(uploadedFiles) {
+        const createRecords = uploadedFiles.map(file => {
+            return this.createCaseHistory().then(caseHistoryId => {
+                return this.saveSHDocumentRecord(caseHistoryId, file);
+            });
         });
+
+        return Promise.all(createRecords);
     }
 
-    saveSHDocumentRecord(caseHistoryId, listItemInfo) {
+    saveSHDocumentRecord(caseHistoryId, file) {
         const fields = {
             Case_History__c: caseHistoryId,
-            DocumentID__c: listItemInfo.listItemId,
-            ServerRelativeURL__c: listItemInfo.webUrl,
-            Document_Name__c: listItemInfo.fileName,
-            FileSize__c: listItemInfo.fileSize,
-            DocumentExtension__c: listItemInfo.fileExtension,
+            DocumentID__c: file.documentId, // Assuming this is available after upload
+            ServerRelativeURL__c: file.webUrl, // Assuming this is part of the response
+            Document_Name__c: file.name,
+            FileSize__c: file.size,
+            DocumentExtension__c: file.extension,
             DocumentType__c: this.fileType,
-            Name: listItemInfo.fileName
+            Name: file.name
         };
 
         const recordInput = { apiName: 'SHDocument__c', fields };
@@ -251,7 +242,7 @@ export default class FileUpload extends NavigationMixin(LightningElement) {
         if (this.fileToDelete) {
             deleteSharepointFile({ filePath: this.bvCaseName, fileName: this.fileToDelete })
             .then(() => {
-                return refreshApex(this.wiredFilesResult); // Refresh the file list
+                this.refreshFiles(); // Refresh the files after deletion
             })
             .catch(error => {
                 console.error("Error deleting file", error);
@@ -262,21 +253,8 @@ export default class FileUpload extends NavigationMixin(LightningElement) {
         }
     }
 
-    handlePreview() {
-        const fileId = event.target.dataset.id;
-        const doc = this.files.find(d => d.Title === fileId);
-        
-        const previewPageUrl = doc.ServerRelativeUrl;
-
-        window.open(previewPageUrl, '_blank');
-    }
-
     get hasReachedMaxFiles() {
-        if (this.maxFiles <= 0) {
-            // No limit specified
-            return false;
-        }
-        return this.files.length >= this.maxFiles;
+        return this.maxFiles > 0 && this.files.length >= this.maxFiles;
     }
 
     get fileClass() {
@@ -285,10 +263,6 @@ export default class FileUpload extends NavigationMixin(LightningElement) {
 
     get bvCaseName() {
         let caseName = getFieldValue(this.record.data, 'BV_Case__c.Name');
-        if (caseName) {
-            return caseName.replace(/\//g, '_');
-        } else {
-            return '';
-        }
+        return caseName ? caseName.replace(/\//g, '_') : '';
     }
 }
