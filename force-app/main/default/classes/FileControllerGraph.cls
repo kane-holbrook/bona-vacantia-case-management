@@ -37,6 +37,12 @@ public class FileControllerGraph {
         }
     }
 
+    private static Boolean isBase64String(String content) {
+        // Basic check for Base64 by validating if the content contains only Base64 characters
+        String base64Pattern = '^[a-zA-Z0-9+/]*={0,2}$';
+        return Pattern.matches(base64Pattern, content);
+    }
+
     // Method to tag a document in SharePoint
     private static void tagDocument(String siteId, String listId, String listItemId, String fileName, String documentType) {
         String tagUrl = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/lists/' + listId + '/items/' + listItemId + '/fields';
@@ -447,7 +453,16 @@ public class FileControllerGraph {
         req.setMethod('PUT');
         req.setHeader('Content-Type', 'application/octet-stream');
         req.setHeader('Accept', 'application/json');
-        req.setBody(fileContent);
+        
+        // Check if fileContent is Base64 encoded by looking for non-Base64 characters
+        if (isBase64String(fileContent)) {
+            // If it is Base64 encoded, decode it to binary
+            Blob fileBlob = EncodingUtil.base64Decode(fileContent);
+            req.setBodyAsBlob(fileBlob);
+        } else {
+            // If it is not Base64 encoded, use the content directly
+            req.setBody(fileContent);
+        }
         
         Http http = new Http();
         HttpResponse res = http.send(req);
