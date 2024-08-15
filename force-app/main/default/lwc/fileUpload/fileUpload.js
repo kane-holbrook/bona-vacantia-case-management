@@ -129,7 +129,7 @@ export default class FileUpload extends NavigationMixin(LightningElement) {
                     const binaryData = window.atob(base64Data);
 
                     // Proceed with uploading the file to SharePoint
-                    this.uploadFileToSharePoint(file.name, binaryData);
+                    this.uploadFileToSharePoint(file.name, base64Data);
                 });
             })
             .catch(error => {
