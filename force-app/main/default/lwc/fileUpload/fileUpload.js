@@ -104,16 +104,18 @@ export default class FileUpload extends NavigationMixin(LightningElement) {
 
     handleUploadFinished(event) {
         const uploadedFiles = event.detail.files;
-
+    
+        // Check if the maximum number of files is exceeded
         if (this.maxFiles > 0 && (this.files.length + uploadedFiles.length) > this.maxFiles) {
             console.error(`Cannot upload. The maximum number of files (${this.maxFiles}) would be exceeded.`);
             return;
         }
-
+    
+        // Validate the file extension if whitelist is provided
         const allowedExtensions = this.fileExtensionsWhitelist
             ? this.fileExtensionsWhitelist.split(',').map(ext => ext.trim().toLowerCase())
             : null;
-
+    
         for (let file of uploadedFiles) {
             const fileExtension = file.name.split('.').pop().toLowerCase();
             if (allowedExtensions && !allowedExtensions.includes(fileExtension)) {
@@ -121,60 +123,73 @@ export default class FileUpload extends NavigationMixin(LightningElement) {
                 return;
             }
         }
-
-        const documentIds = uploadedFiles.map(file => file.documentId);
-
-        processFiles({ documentIds })
-            .then(base64DataArray => {
-                // Upload all files first using the new method
-                return Promise.all(base64DataArray.map((base64Data, index) => {
-                    const file = uploadedFiles[index];
-                    return uploadFileToSharePointCaseCreation({
-                        filePath: this.bvCaseName,
-                        fileName: file.name,
-                        fileContent: base64Data,
-                        documentType: this.fileType
+    
+        // If the caseHistoryId is already set, use the existing record for further uploads
+        const caseHistoryPromise = this.caseHistoryId
+            ? Promise.resolve(this.caseHistoryId)
+            : this.createCaseHistory();
+    
+        caseHistoryPromise
+            .then(caseHistoryId => {
+                // Store the Case History ID (if it's newly created, it will be assigned here)
+                this.caseHistoryId = caseHistoryId;
+    
+                // Prepare the folder path using bvcaseid/historyrecordid format
+                const folderPath = `${this.bvCaseName}/${this.caseHistoryId}`;
+    
+                // Process and upload the files
+                const documentIds = uploadedFiles.map(file => file.documentId);
+    
+                // Convert and upload files to SharePoint using the created history folder
+                return processFiles({ documentIds })
+                    .then(base64DataArray => {
+                        return Promise.all(base64DataArray.map((base64Data, index) => {
+                            const file = uploadedFiles[index];
+                            return uploadFileToSharePointCaseCreation({
+                                filePath: folderPath,  // Use the folder path including historyRecordId
+                                fileName: file.name,
+                                fileContent: base64Data,
+                                documentType: this.fileType
+                            });
+                        }));
                     });
-                }));
             })
-            .then((responses) => {
-                // Process the returned structured responses and update the files array accordingly
-                console.log('responses', responses);
+            .then(responses => {
+                // Handle the uploaded files and save SHDocument records with the existing or new caseHistoryId
                 responses.forEach(response => {
                     const newFile = {
                         Title: response.fileName,
                         Id: response.documentId,
                         ServerRelativeUrl: response.webUrl,
                         fileExtensionType: response.fileExtension.toLowerCase(),
-                        previewPath: response.webUrl // Assuming preview path is the same as webUrl
+                        previewPath: response.webUrl
                     };
                     this.files.push(newFile);
-                    console.log('files:', this.files);
                 });
-                // Process the returned responses and directly pass them to createHistoryAndSHDocument
+    
+                // Save SHDocument records using the existing or newly created caseHistoryId
                 return this.createHistoryAndSHDocument(responses);
             })
             .then(() => {
-                return refreshApex(this.wiredFiles); // Trigger a refresh after processing files
+                return refreshApex(this.wiredFiles);  // Refresh the files after upload
             })
             .catch(error => {
                 console.error('Error during file processing, uploading, or post-upload actions:', error);
             });
     }
-
+    
     createHistoryAndSHDocument(uploadResponses) {
+        // Use the existing caseHistoryId to create SHDocument records
         const createRecords = uploadResponses.map(response => {
-            return this.createCaseHistory().then(caseHistoryId => {
-                return this.saveSHDocumentRecord(caseHistoryId, response);
-            });
+            return this.saveSHDocumentRecord(this.caseHistoryId, response); // Pass the already created caseHistoryId
         });
     
         return Promise.all(createRecords);
     }
-
+    
     saveSHDocumentRecord(caseHistoryId, uploadResponse) {
         console.log('uploadResponse', uploadResponse);
-        
+    
         // Extract necessary fields from uploadResponse for SHDocument__c creation
         const fields = {
             Case_History__c: caseHistoryId,
@@ -200,7 +215,6 @@ export default class FileUpload extends NavigationMixin(LightningElement) {
             });
     }
     
-
     createCaseHistory() {
         const fields = {
             BV_Case__c: this.recordId,
@@ -208,9 +222,9 @@ export default class FileUpload extends NavigationMixin(LightningElement) {
             Date_Inserted__c: new Date(),
             Last_updated__c: new Date()
         };
-
+    
         const recordInput = { apiName: 'Case_History__c', fields };
-
+    
         return createRecord(recordInput)
             .then((caseHistory) => {
                 console.log('Case_History__c record created:', caseHistory.id);
@@ -256,17 +270,42 @@ export default class FileUpload extends NavigationMixin(LightningElement) {
 
     confirmSharepointDeleteFile() {
         if (this.fileToDelete) {
-            deleteSharepointFile({ filePath: this.bvCaseName, fileName: this.fileToDelete })
+            const folderPath = `${this.bvCaseName}/${this.caseHistoryId}`; // Use caseHistoryId in the path
+            deleteSharepointFile({ filePath: folderPath, fileName: this.fileToDelete })
+                .then(() => {
+                    this.files = this.files.filter(file => file.Title !== this.fileToDelete);
+    
+                    if (this.files.length === 0) {
+                        this.deleteCaseHistory().then(() => {
+                            console.log('Case history deleted as all files have been deleted.');
+                        }).catch(error => {
+                            console.error('Error deleting case history:', error);
+                        });
+                    }
+    
+                    this.refreshFiles();  // Refresh the files after deletion
+                })
+                .catch(error => {
+                    console.error("Error deleting file", error);
+                })
+                .finally(() => {
+                    this.fileToDelete = null;
+                });
+        }
+    }
+    
+    
+    deleteCaseHistory() {
+        // Call your Apex method to delete the Case History record using the caseHistoryId
+        return deleteRecord({ recordId: this.caseHistoryId })
             .then(() => {
-                this.refreshFiles(); // Refresh the files after deletion
+                console.log('Case_History__c record deleted successfully');
+                this.caseHistoryId = null; // Clear the caseHistoryId after deletion
             })
             .catch(error => {
-                console.error("Error deleting file", error);
-            })
-            .finally(() => {
-                this.fileToDelete = null;
+                console.error('Error deleting Case_History__c record:', error);
+                throw error;
             });
-        }
     }
 
     handlePreview() {
