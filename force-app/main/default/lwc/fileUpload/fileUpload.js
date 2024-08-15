@@ -1,5 +1,5 @@
 import { LightningElement, track, api, wire } from 'lwc';
-import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
+import { getRecord, getFieldValue, deleteRecord } from 'lightning/uiRecordApi';
 import { refreshApex } from '@salesforce/apex';
 import { NavigationMixin, CurrentPageReference } from 'lightning/navigation';
 import LightningConfirm from 'lightning/confirm';
@@ -297,7 +297,7 @@ export default class FileUpload extends NavigationMixin(LightningElement) {
     
     deleteCaseHistory() {
         // Call your Apex method to delete the Case History record using the caseHistoryId
-        return deleteRecord({ recordId: this.caseHistoryId })
+        return deleteRecord(this.caseHistoryId)
             .then(() => {
                 console.log('Case_History__c record deleted successfully');
                 this.caseHistoryId = null; // Clear the caseHistoryId after deletion
