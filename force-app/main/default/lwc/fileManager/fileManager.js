@@ -132,7 +132,7 @@ export default class FileManager extends NavigationMixin(LightningElement) {
                     uploadFileToSharePoint({
                         filePath: this.bvCaseName,
                         fileName: file.name,
-                        fileContent: binaryData,
+                        fileContent: base64Data,
                         documentType: this.fileType
                     })
                     .then(result => {
