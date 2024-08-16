@@ -172,12 +172,26 @@ public class FileControllerGraph {
 
     @AuraEnabled(cacheable=true)
     public static List<Map<String, Object>> fetchAllFilesFromFolder(String folderPath) {
+        // Recursive list to store all files and subfolders
+        List<Map<String, Object>> allItems = new List<Map<String, Object>>();
+    
+        // Call the recursive helper method
+        fetchFilesRecursively(folderPath, allItems);
+        
+        return allItems;
+    }
+    
+    private static void fetchFilesRecursively(String folderPath, List<Map<String, Object>> allItems) {
+        // Settings and base URL
         Map<String, String> settings = getSharePointSettings();
         String siteUrl = settings.get('SharePoint_Site_URL');
         String directoryPath = settings.get('SharePoint_Directory_Path');
         String siteId = getSiteId(siteUrl, directoryPath);
+        
+        // Construct the folder URL
         String folderUrl = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/drive/root:/' + folderPath + ':/children?$expand=listItem($expand=fields)';
         
+        // HTTP request to fetch files and folders
         HttpRequest req = new HttpRequest();
         req.setEndpoint(folderUrl);
         req.setMethod('GET');
@@ -186,15 +200,26 @@ public class FileControllerGraph {
         Http http = new Http();
         HttpResponse res = http.send(req);
         
+        // Check for successful response
         if (res.getStatusCode() == 200) {
             Map<String, Object> result = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
             if (result.containsKey('value')) {
                 List<Object> rawFiles = (List<Object>) result.get('value');
-                List<Map<String, Object>> files = new List<Map<String, Object>>();
+                
                 for (Object rawFile : rawFiles) {
-                    files.add((Map<String, Object>) rawFile);
+                    Map<String, Object> fileOrFolder = (Map<String, Object>) rawFile;
+                    
+                    // Add file or folder to the allItems list
+                    allItems.add(fileOrFolder);
+                    
+                    // Check if the item is a folder (by checking the presence of the "folder" key)
+                    if (fileOrFolder.containsKey('folder')) {
+                        // If it's a folder, recursively fetch its contents
+                        String folderName = (String) fileOrFolder.get('name');
+                        String newFolderPath = folderPath + '/' + folderName;
+                        fetchFilesRecursively(newFolderPath, allItems);
+                    }
                 }
-                return files;
             } else {
                 throw new CalloutException('Response does not contain expected "value" key.');
             }
