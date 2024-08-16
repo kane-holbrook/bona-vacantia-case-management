@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>61.0</apiVersion>
+    <environments>Default</environments>
+    <interviewLabel>E3D Quoted shares ARC (ARC-E3D) {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>E3D Quoted shares ARC (ARC-E3D)</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <screens>
+        <name>Enter_Cash_entitlement_from_Buy_Out_amount</name>
+        <label>Enter Cash entitlement from Buy Out amount</label>
+        <locationX>176</locationX>
+        <locationY>242</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>Enter_Cash_entitlement_from_Buy_Out_amount1</name>
+            <dataType>Currency</dataType>
+            <fieldText>Enter Cash entitlement from Buy Out amount</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+            <scale>0</scale>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Enter_Dividend_from_shares_amount</name>
+        <label>Enter Dividend from shares amount</label>
+        <locationX>176</locationX>
+        <locationY>134</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Enter_Cash_entitlement_from_Buy_Out_amount</targetReference>
+        </connector>
+        <fields>
+            <name>Enter_Dividend_from_shares_amount1</name>
+            <dataType>Currency</dataType>
+            <fieldText>Enter Dividend from shares amount</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+            <scale>0</scale>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Enter_Dividend_from_shares_amount</targetReference>
+        </connector>
+    </start>
+    <status>Draft</status>
+</Flow>

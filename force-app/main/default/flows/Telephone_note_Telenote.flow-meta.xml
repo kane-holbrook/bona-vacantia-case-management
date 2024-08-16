@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>61.0</apiVersion>
+    <choices>
+        <name>Telephone_call_made</name>
+        <choiceText>Telephone call made</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Telephone call made</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Telephone_call_received</name>
+        <choiceText>Telephone call received</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Telephone call received</stringValue>
+        </value>
+    </choices>
+    <decisions>
+        <name>Note_refers_to2</name>
+        <label>Note refers to?</label>
+        <locationX>314</locationX>
+        <locationY>242</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Selected_Telephone_call_received</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Note_refers_to1</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Telephone_call_received</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Enter_name_of_person_calling_you</targetReference>
+            </connector>
+            <label>Selected Telephone call received</label>
+        </rules>
+        <rules>
+            <name>Selected_Telephone_call_made</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Note_refers_to1</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Telephone_call_made</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Enter_name_of_person_you_called</targetReference>
+            </connector>
+            <label>Selected Telephone call made</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <interviewLabel>Telephone note (Telenote) {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Telephone note (Telenote)</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <screens>
+        <name>Enter_name_of_person_calling_you</name>
+        <label>Enter name of person calling you</label>
+        <locationX>50</locationX>
+        <locationY>350</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>Enter_name_of_person_calling_you1</name>
+            <dataType>String</dataType>
+            <fieldText>Enter name of person calling you</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Enter_name_of_person_you_called</name>
+        <label>Enter name of person you called</label>
+        <locationX>314</locationX>
+        <locationY>350</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>Enter_name_of_person_you_called2</name>
+            <dataType>String</dataType>
+            <fieldText>Enter name of person you called</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Note_refers_to</name>
+        <label>Note refers to?</label>
+        <locationX>314</locationX>
+        <locationY>134</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Note_refers_to2</targetReference>
+        </connector>
+        <fields>
+            <name>Note_refers_to1</name>
+            <choiceReferences>Telephone_call_received</choiceReferences>
+            <choiceReferences>Telephone_call_made</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Note refers to?</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <start>
+        <locationX>188</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Note_refers_to</targetReference>
+        </connector>
+    </start>
+    <status>Draft</status>
+</Flow>

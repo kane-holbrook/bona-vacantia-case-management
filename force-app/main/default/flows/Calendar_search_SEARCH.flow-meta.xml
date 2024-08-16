@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>61.0</apiVersion>
+    <choices>
+        <name>Existing_grant_to_this_estate</name>
+        <choiceText>Existing grant to this estate</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Existing grant to this estate</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Existing_TSol_grant_to_this_estate</name>
+        <choiceText>Existing TSol grant to this estate</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Existing TSol grant to this estate</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Other_Name</name>
+        <choiceText>Other Name</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Other Name</stringValue>
+        </value>
+    </choices>
+    <decisions>
+        <name>Please_select_what_grant_you_are_requesting2</name>
+        <label>Please select what grant you are requesting</label>
+        <locationX>182</locationX>
+        <locationY>242</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Selected_Existing_grant_to_this_estate2</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Please_select_what_grant_you_are_requesting1</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Existing_grant_to_this_estate</elementReference>
+                </rightValue>
+            </conditions>
+            <label>Selected Existing grant to this estate</label>
+        </rules>
+        <rules>
+            <name>Selected_Other_Name</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Please_select_what_grant_you_are_requesting1</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Other_Name</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Enter_full_name_of_person_whose_grant_you_are_searching_for</targetReference>
+            </connector>
+            <label>Selected Other Name</label>
+        </rules>
+        <rules>
+            <name>SelectedExistingTSolgranttothisestate</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Please_select_what_grant_you_are_requesting1</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Existing_TSol_grant_to_this_estate</elementReference>
+                </rightValue>
+            </conditions>
+            <label>Selected Existing TSol grant to this estate</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <interviewLabel>Calendar search (SEARCH) {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Calendar search (SEARCH)</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <screens>
+        <name>Enter_date_of_death</name>
+        <label>Enter date of death</label>
+        <locationX>50</locationX>
+        <locationY>566</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>Enter_date_of_death2</name>
+            <dataType>Date</dataType>
+            <fieldText>Enter date of death</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Enter_full_name_of_person_whose_grant_you_are_searching_for</name>
+        <label>Enter full name of person whose grant you are searching for</label>
+        <locationX>50</locationX>
+        <locationY>350</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Enter_last_known_address</targetReference>
+        </connector>
+        <fields>
+            <name>Enter_full_name_of_person_whose_grant_you_are_searching_for2</name>
+            <dataType>String</dataType>
+            <fieldText>Enter full name of person whose grant you are searching for</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Enter_last_known_address</name>
+        <label>Enter last known address</label>
+        <locationX>50</locationX>
+        <locationY>458</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Enter_date_of_death</targetReference>
+        </connector>
+        <fields>
+            <name>Enter_last_known_address2</name>
+            <extensionName>flowruntime:address</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>addressLabel</name>
+                <value>
+                    <stringValue>Address</stringValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Please_select_what_grant_you_are_requesting</name>
+        <label>Please select what grant you are requesting</label>
+        <locationX>182</locationX>
+        <locationY>134</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Please_select_what_grant_you_are_requesting2</targetReference>
+        </connector>
+        <fields>
+            <name>Please_select_what_grant_you_are_requesting1</name>
+            <choiceReferences>Existing_grant_to_this_estate</choiceReferences>
+            <choiceReferences>Other_Name</choiceReferences>
+            <choiceReferences>Existing_TSol_grant_to_this_estate</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Please select what grant you are requesting</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <start>
+        <locationX>56</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Please_select_what_grant_you_are_requesting</targetReference>
+        </connector>
+    </start>
+    <status>Draft</status>
+</Flow>

@@ -1,0 +1,485 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>61.0</apiVersion>
+    <choices>
+        <name>District_Valuer</name>
+        <choiceText>District Valuer</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>District Valuer</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Estate_Agents</name>
+        <choiceText>Estate Agents</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Estate Agents</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>EstateAgents</name>
+        <choiceText>Estate Agents</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Estate Agents</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>OK</name>
+        <choiceText>OK</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>OK</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Part</name>
+        <choiceText>Part</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Part</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Treasury_Solicito</name>
+        <choiceText>Treasury Solicito</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Treasury Solicito</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Treasury_Solicitor</name>
+        <choiceText>Treasury Solicitor</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Treasury Solicitor</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Whole</name>
+        <choiceText>Whole</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Whole</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>X400</name>
+        <choiceText>400</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>400</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>X500</name>
+        <choiceText>500</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>500</stringValue>
+        </value>
+    </choices>
+    <decisions>
+        <name>Confirm_whether_tender_is_being_conducted_by2</name>
+        <label>Confirm whether tender is being conducted by</label>
+        <locationX>446</locationX>
+        <locationY>566</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Selected_Treasury_Solicitor</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Confirm_whether_tender_is_being_conducted_by1</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Treasury_Solicitor</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Insert_closing_date_for_receipt_of_tenders</targetReference>
+            </connector>
+            <label>Selected Treasury Solicitor</label>
+        </rules>
+        <rules>
+            <name>Selected_Estate_Agents</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Confirm_whether_tender_is_being_conducted_by1</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>EstateAgents</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Insert_name_of_Estate_Agents</targetReference>
+            </connector>
+            <label>Selected Estate Agents</label>
+        </rules>
+        <rules>
+            <name>Selected_District_Valuer</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Confirm_whether_tender_is_being_conducted_by1</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>District_Valuer</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Copy_2_of_Insert_minimum_offer_acceptable</targetReference>
+            </connector>
+            <label>Selected District Valuer</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <interviewLabel>Tender Form (BVC25) {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Tender Form (BVC25)</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <screens>
+        <name>Confirm_is_sale_one_of</name>
+        <label>Confirm is sale one of</label>
+        <locationX>446</locationX>
+        <locationY>350</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Confirm_whether_tender_is_being_conducted_by</targetReference>
+        </connector>
+        <fields>
+            <name>Confirm_is_sale_one_of1</name>
+            <choiceReferences>Whole</choiceReferences>
+            <choiceReferences>Part</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Confirm is sale one of</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Confirm_whether_tender_is_being_conducted_by</name>
+        <label>Confirm whether tender is being conducted by</label>
+        <locationX>446</locationX>
+        <locationY>458</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Confirm_whether_tender_is_being_conducted_by2</targetReference>
+        </connector>
+        <fields>
+            <name>Confirm_whether_tender_is_being_conducted_by1</name>
+            <choiceReferences>Treasury_Solicitor</choiceReferences>
+            <choiceReferences>EstateAgents</choiceReferences>
+            <choiceReferences>District_Valuer</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Confirm whether tender is being conducted by</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Copy_1_of_Insert_contact_name_for_envelope_containing_tender_offers</name>
+        <label>Copy 1 of Insert contact name for envelope containing tender offers</label>
+        <locationX>314</locationX>
+        <locationY>890</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Copy_1_of_Remember_to_prepare_Heads_of_Terms_and_attach_to_Tender_Document</targetReference>
+        </connector>
+        <fields>
+            <name>Copy_1_of_Insert_contact_name_for_envelope_containing_tender_offers1</name>
+            <dataType>String</dataType>
+            <fieldText>Insert contact name for envelope containing tender offers</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Copy_1_of_Insert_minimum_offer_acceptable</name>
+        <label>Copy 1 of Insert minimum offer acceptable £</label>
+        <locationX>314</locationX>
+        <locationY>782</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Copy_1_of_Insert_contact_name_for_envelope_containing_tender_offers</targetReference>
+        </connector>
+        <fields>
+            <name>Copy_1_of_Insert_minimum_offer_acceptable1</name>
+            <dataType>Currency</dataType>
+            <fieldText>Insert minimum offer acceptable £</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+            <scale>0</scale>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Copy_1_of_Remember_to_prepare_Heads_of_Terms_and_attach_to_Tender_Document</name>
+        <label>Copy 1 of Remember to prepare Heads of Terms and attach to Tender Document</label>
+        <locationX>314</locationX>
+        <locationY>998</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>Copy_1_of_Remember_to_prepare_Heads_of_Terms_and_attach_to_Tender_Document1</name>
+            <choiceReferences>OK</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Remember to prepare Heads of Terms and attach to Tender Document</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Copy_2_of_Insert_contact_name_for_envelope_containing_tender_offers</name>
+        <label>Copy 2 of Insert contact name for envelope containing tender offers</label>
+        <locationX>578</locationX>
+        <locationY>782</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Copy_2_of_Remember_to_prepare_Heads_of_Terms_and_attach_to_Tender_Document</targetReference>
+        </connector>
+        <fields>
+            <name>Copy_2_of_Insert_contact_name_for_envelope_containing_tender_offers1</name>
+            <dataType>String</dataType>
+            <fieldText>Insert contact name for envelope containing tender offers</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Copy_2_of_Insert_minimum_offer_acceptable</name>
+        <label>Copy 2 of Insert minimum offer acceptable £</label>
+        <locationX>578</locationX>
+        <locationY>674</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Copy_2_of_Insert_contact_name_for_envelope_containing_tender_offers</targetReference>
+        </connector>
+        <fields>
+            <name>Copy_2_of_Insert_minimum_offer_acceptable1</name>
+            <dataType>Currency</dataType>
+            <fieldText>Insert minimum offer acceptable £</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+            <scale>0</scale>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Copy_2_of_Remember_to_prepare_Heads_of_Terms_and_attach_to_Tender_Document</name>
+        <label>Copy 2 of Remember to prepare Heads of Terms and attach to Tender Document</label>
+        <locationX>578</locationX>
+        <locationY>890</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>Copy_2_of_Remember_to_prepare_Heads_of_Terms_and_attach_to_Tender_Document1</name>
+            <choiceReferences>OK</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Remember to prepare Heads of Terms and attach to Tender Document</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Insert_closing_date_for_receipt_of_tenders</name>
+        <label>Insert closing date for receipt of tenders</label>
+        <locationX>50</locationX>
+        <locationY>674</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Insert_minimum_offer_acceptable</targetReference>
+        </connector>
+        <fields>
+            <name>Insert_closing_date_for_receipt_of_tenders1</name>
+            <dataType>Date</dataType>
+            <fieldText>Insert closing date for receipt of tenders</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Insert_colour_used_to_show_land_on_the_attached_plan</name>
+        <label>Insert colour used to show land on the attached plan</label>
+        <locationX>446</locationX>
+        <locationY>242</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Confirm_is_sale_one_of</targetReference>
+        </connector>
+        <fields>
+            <name>Insert_colour_used_to_show_land_on_the_attached_plan1</name>
+            <dataType>String</dataType>
+            <fieldText>Insert colour used to show land on the attached plan</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Insert_contact_name_for_envelope_containing_tender_offers</name>
+        <label>Insert contact name for envelope containing tender offers</label>
+        <locationX>50</locationX>
+        <locationY>890</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Remember_to_prepare_Heads_of_Terms_and_attach_to_Tender_Document</targetReference>
+        </connector>
+        <fields>
+            <name>Insert_contact_name_for_envelope_containing_tender_offers1</name>
+            <dataType>String</dataType>
+            <fieldText>Insert contact name for envelope containing tender offers</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Insert_minimum_offer_acceptable</name>
+        <label>Insert minimum offer acceptable £</label>
+        <locationX>50</locationX>
+        <locationY>782</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Insert_contact_name_for_envelope_containing_tender_offers</targetReference>
+        </connector>
+        <fields>
+            <name>Insert_minimum_offer_acceptable1</name>
+            <dataType>Currency</dataType>
+            <fieldText>Insert minimum offer acceptable £</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+            <scale>0</scale>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Insert_name_of_Estate_Agents</name>
+        <label>Insert name of Estate Agents</label>
+        <locationX>314</locationX>
+        <locationY>674</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Copy_1_of_Insert_minimum_offer_acceptable</targetReference>
+        </connector>
+        <fields>
+            <name>Insert_name_of_Estate_Agents1</name>
+            <dataType>String</dataType>
+            <fieldText>Insert name of Estate Agents</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Remember_to_prepare_Heads_of_Terms_and_attach_to_Tender_Document</name>
+        <label>Remember to prepare Heads of Terms and attach to Tender Document</label>
+        <locationX>50</locationX>
+        <locationY>998</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>Remember_to_prepare_Heads_of_Terms_and_attach_to_Tender_Document1</name>
+            <choiceReferences>OK</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Remember to prepare Heads of Terms and attach to Tender Document</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Select_TSol_costs</name>
+        <label>Select TSol costs £</label>
+        <locationX>446</locationX>
+        <locationY>134</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Insert_colour_used_to_show_land_on_the_attached_plan</targetReference>
+        </connector>
+        <fields>
+            <name>Select_TSol_costs1</name>
+            <choiceReferences>X400</choiceReferences>
+            <choiceReferences>X500</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Select TSol costs £</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <start>
+        <locationX>320</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Select_TSol_costs</targetReference>
+        </connector>
+    </start>
+    <status>Draft</status>
+</Flow>

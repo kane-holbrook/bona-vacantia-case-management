@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>61.0</apiVersion>
+    <choices>
+        <name>Section_1012_Companies_Act_2006</name>
+        <choiceText>Section 1012 Companies Act 2006</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Section 1012 Companies Act 2006</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>X354_Companies_Act_1948</name>
+        <choiceText>354 Companies Act 1948</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>354 Companies Act 1948</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>X654_Companies_Act_1985</name>
+        <choiceText>654 Companies Act 1985</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>654 Companies Act 1985</stringValue>
+        </value>
+    </choices>
+    <environments>Default</environments>
+    <interviewLabel>DS12009 (DS12008) {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>DS12009 (DS12008)</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <screens>
+        <name>Company_Details</name>
+        <label>Company Details</label>
+        <locationX>176</locationX>
+        <locationY>350</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>Company_Details_Section1</name>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>Company_Details_Section1_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <name>COM11</name>
+                    <dataType>String</dataType>
+                    <fieldText>Section of Act</fieldText>
+                    <fieldType>InputField</fieldType>
+                    <isRequired>false</isRequired>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>12</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithoutHeader</regionContainerType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Enter_date_of_Charge_or_Mortgage</name>
+        <label>Enter date of Charge or Mortgage</label>
+        <locationX>176</locationX>
+        <locationY>134</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Select_Vesting_Section</targetReference>
+        </connector>
+        <fields>
+            <name>Enter_date_of_Charge_or_Mortgage1</name>
+            <dataType>Date</dataType>
+            <fieldText>Enter date of Charge or Mortgage</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Select_Vesting_Section</name>
+        <label>Select Vesting Section</label>
+        <locationX>176</locationX>
+        <locationY>242</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Company_Details</targetReference>
+        </connector>
+        <fields>
+            <name>Select_Vesting_Section1</name>
+            <choiceReferences>Section_1012_Companies_Act_2006</choiceReferences>
+            <choiceReferences>X654_Companies_Act_1985</choiceReferences>
+            <choiceReferences>X354_Companies_Act_1948</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Select Vesting Section</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Enter_date_of_Charge_or_Mortgage</targetReference>
+        </connector>
+    </start>
+    <status>Draft</status>
+</Flow>

@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>61.0</apiVersion>
+    <choices>
+        <name>No</name>
+        <choiceText>No</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>No</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Yes</name>
+        <choiceText>Yes</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Yes</stringValue>
+        </value>
+    </choices>
+    <decisions>
+        <name>Copy_2_of_Nominal_face_value_of_each_stock_is_1_00</name>
+        <label>Copy 2 of Nominal face value of each stock is £1:00?</label>
+        <locationX>754</locationX>
+        <locationY>566</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Copy_1_of_Selected_Yes</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Copy_1_of_Nominal_face_value_of_each_stock_is1</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Yes</elementReference>
+                </rightValue>
+            </conditions>
+            <label>Copy 1 of Selected Yes</label>
+        </rules>
+        <rules>
+            <name>Copy_1_of_Selected_No</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Copy_1_of_Nominal_face_value_of_each_stock_is1</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>No</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Copy_1_of_Enter_nominal_face_value_of_stock</targetReference>
+            </connector>
+            <label>Copy 1 of Selected No</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Nominal_face_value_of_each_stock_is3</name>
+        <label>Nominal face value of each stock is £1:00?</label>
+        <locationX>50</locationX>
+        <locationY>458</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Selected_Yes3</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Nominal_face_value_of_each_stock_is1</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Yes</elementReference>
+                </rightValue>
+            </conditions>
+            <label>Selected Yes</label>
+        </rules>
+        <rules>
+            <name>Selected_No3</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Nominal_face_value_of_each_stock_is1</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>No</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Enter_nominal_face_value_of_stock</targetReference>
+            </connector>
+            <label>Selected No</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Stock_is_Ordinary_Shares2</name>
+        <label>Stock is Ordinary Shares</label>
+        <locationX>622</locationX>
+        <locationY>242</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Selected_Yes</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Stock_is_Ordinary_Shares1</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Yes</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Nominal_face_value_of_each_stock_is</targetReference>
+            </connector>
+            <label>Selected Yes</label>
+        </rules>
+        <rules>
+            <name>Selected_No</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Stock_is_Ordinary_Shares1</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>No</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Enter_details_of_the_stock</targetReference>
+            </connector>
+            <label>Selected No</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <interviewLabel>Shares Indemnity (IND01) {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Shares Indemnity (IND01)</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <screens>
+        <name>Copy_1_of_Enter_nominal_face_value_of_stock</name>
+        <label>Copy 1 of Enter nominal face value of stock £</label>
+        <locationX>754</locationX>
+        <locationY>674</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>Copy_1_of_Enter_nominal_face_value_of_stock1</name>
+            <dataType>Currency</dataType>
+            <fieldText>Enter nominal face value of stock £</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+            <scale>0</scale>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Copy_1_of_Nominal_face_value_of_each_stock_is_1_00</name>
+        <label>Copy 1 of Nominal face value of each stock is £1:00?</label>
+        <locationX>754</locationX>
+        <locationY>458</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Copy_2_of_Nominal_face_value_of_each_stock_is_1_00</targetReference>
+        </connector>
+        <fields>
+            <name>Copy_1_of_Nominal_face_value_of_each_stock_is1</name>
+            <choiceReferences>Yes</choiceReferences>
+            <choiceReferences>No</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Nominal face value of each stock is £1:00?</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Enter_details_of_the_stock</name>
+        <label>Enter details of the stock</label>
+        <locationX>754</locationX>
+        <locationY>350</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Copy_1_of_Nominal_face_value_of_each_stock_is_1_00</targetReference>
+        </connector>
+        <fields>
+            <name>Enter_details_of_the_stock1</name>
+            <dataType>Currency</dataType>
+            <fieldText>Enter details of the stock</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+            <scale>0</scale>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Enter_nominal_face_value_of_stock</name>
+        <label>Enter nominal face value of stock £</label>
+        <locationX>50</locationX>
+        <locationY>566</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>Enter_nominal_face_value_of_stock1</name>
+            <dataType>Currency</dataType>
+            <fieldText>Enter nominal face value of stock £</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+            <scale>0</scale>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Nominal_face_value_of_each_stock_is</name>
+        <label>Nominal face value of each stock is £1:00?</label>
+        <locationX>50</locationX>
+        <locationY>350</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Nominal_face_value_of_each_stock_is3</targetReference>
+        </connector>
+        <fields>
+            <name>Nominal_face_value_of_each_stock_is1</name>
+            <choiceReferences>Yes</choiceReferences>
+            <choiceReferences>No</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Nominal face value of each stock is £1:00?</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Stock_is_Ordinary_Shares</name>
+        <label>Stock is Ordinary Shares</label>
+        <locationX>622</locationX>
+        <locationY>134</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Stock_is_Ordinary_Shares2</targetReference>
+        </connector>
+        <fields>
+            <name>Stock_is_Ordinary_Shares1</name>
+            <choiceReferences>Yes</choiceReferences>
+            <choiceReferences>No</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Stock is Ordinary Shares</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <start>
+        <locationX>496</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Stock_is_Ordinary_Shares</targetReference>
+        </connector>
+    </start>
+    <status>Draft</status>
+</Flow>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>61.0</apiVersion>
+    <environments>Default</environments>
+    <interviewLabel>E5A &amp; E5B. Land ARC (ARC-E5A&amp;B) {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>E5A &amp; E5B. Land ARC (ARC-E5A&amp;B)</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <screens>
+        <name>Enter_Amount</name>
+        <label>Enter Amount</label>
+        <locationX>176</locationX>
+        <locationY>242</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>Enter_Amount1</name>
+            <dataType>Currency</dataType>
+            <fieldText>Enter Amount</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+            <scale>0</scale>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Enter_first_line_of_address_or_brief_description_e_g_Land_of_Heanor</name>
+        <label>Enter first line of address, or brief description, e.g. Land of Heanor</label>
+        <locationX>176</locationX>
+        <locationY>134</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Enter_Amount</targetReference>
+        </connector>
+        <fields>
+            <name>Enter_first_line_of_address_or_brief_description_e_g_Land_of_Heanor1</name>
+            <dataType>String</dataType>
+            <fieldText>Enter first line of address, or brief description, e.g. Land of Heanor</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Enter_first_line_of_address_or_brief_description_e_g_Land_of_Heanor</targetReference>
+        </connector>
+    </start>
+    <status>Draft</status>
+</Flow>

@@ -1,0 +1,997 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>61.0</apiVersion>
+    <choices>
+        <name>Adjoining_owner</name>
+        <choiceText>Adjoining owner</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Adjoining owner</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Bankers_draft</name>
+        <choiceText>Bankers draft</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Bankers draft</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Client_account_cheque_or_bankers_draft</name>
+        <choiceText>Client account cheque or bankers draft</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Client account cheque or bankers draft</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Lessees</name>
+        <choiceText>Lessers</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <elementReference>Lessees</elementReference>
+        </value>
+    </choices>
+    <choices>
+        <name>Management_company</name>
+        <choiceText>Management company</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Management company</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Missing</name>
+        <choiceText>Missing</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Missing</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>No</name>
+        <choiceText>No</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>No</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>None_specified</name>
+        <choiceText>None specified</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>None specified</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>OK</name>
+        <choiceText>OK</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>OK</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Other</name>
+        <choiceText>Other</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Other</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Purchaser</name>
+        <choiceText>Purchaser</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Purchaser</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Replying_to_solicitors</name>
+        <choiceText>Replying to solicitors</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Replying to solicitors</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Replyingto_solicitors</name>
+        <choiceText>Replying to solicitors</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Replying to solicitors</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Telegraphic_transfer_or_bankers_draft</name>
+        <choiceText>Telegraphic transfer or bankers draft</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Telegraphic transfer or bankers draft</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>TSol</name>
+        <choiceText>TSol</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>TSol</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>writing_first_letter_to_solicitors</name>
+        <choiceText>writing first letter to solicitors</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>writing first letter to solicitors</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Writing_further_to_holding_letter</name>
+        <choiceText>Writing further to holding letter</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Writing further to holding letter</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Writingfirst_letter_to_solicitors</name>
+        <choiceText>Writing first letter to solicitors</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Writing first letter to solicitors</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Yes</name>
+        <choiceText>Yes</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Yes</stringValue>
+        </value>
+    </choices>
+    <decisions>
+        <name>Are_you2</name>
+        <label>Are you:</label>
+        <locationX>314</locationX>
+        <locationY>350</locationY>
+        <defaultConnector>
+            <targetReference>Purchaser_is</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>SelectedWriting_first_letter_to_solicitors2</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Are_you1</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>writing_first_letter_to_solicitors</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Purchaser_is</targetReference>
+            </connector>
+            <label>Selected Writing first letter to solicitors</label>
+        </rules>
+        <rules>
+            <name>Selected_Replying_to_solicitors2</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Are_you1</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Replyingto_solicitors</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Insert_date_of_letter_received</targetReference>
+            </connector>
+            <label>Selected Replying to solicitors</label>
+        </rules>
+        <rules>
+            <name>Selected_Writing_further_to_holding_letter2</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Are_you1</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Writing_further_to_holding_letter</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Insert_date_of_your_holding_letter</targetReference>
+            </connector>
+            <label>Selected Writing further to holding letter</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Company_search_fees3</name>
+        <label>Company search fees?</label>
+        <locationX>314</locationX>
+        <locationY>1790</locationY>
+        <defaultConnector>
+            <targetReference>Registry_fees4</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Selected_Yes3</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Company_search_fees1</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Yes</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Enter_amount_of_company_search_fees</targetReference>
+            </connector>
+            <label>Selected Yes</label>
+        </rules>
+        <rules>
+            <name>Selected_No3</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Company_search_fees1</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>No</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Copy_1_of_Registry_fees</targetReference>
+            </connector>
+            <label>Selected No</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Disclaimer_date_passed5</name>
+        <label>Disclaimer date passed?</label>
+        <locationX>314</locationX>
+        <locationY>2930</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Selected_Yes5</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Disclaimer_date_passed1</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Yes</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Is_one_of_the_purchasing_lessees_a_limited_company</targetReference>
+            </connector>
+            <label>Selected Yes</label>
+        </rules>
+        <rules>
+            <name>Selected_No5</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Disclaimer_date_passed1</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>No</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Insert_disclaimer_date</targetReference>
+            </connector>
+            <label>Selected No</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>District_Valuer_fees2</name>
+        <label>District Valuer fees?</label>
+        <locationX>314</locationX>
+        <locationY>1382</locationY>
+        <defaultConnector>
+            <targetReference>Company_search_fees3</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Selected_Yes2</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>District_Valuer_fees1</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Yes</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Enter_amount_of_DV_fees</targetReference>
+            </connector>
+            <label>Selected Yes</label>
+        </rules>
+        <rules>
+            <name>Selected_No2</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>District_Valuer_fees1</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>No</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Copy_1_of_Company_search_fees</targetReference>
+            </connector>
+            <label>Selected No</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Registry_fees4</name>
+        <label>Registry fees?</label>
+        <locationX>314</locationX>
+        <locationY>2198</locationY>
+        <defaultConnector>
+            <targetReference>Where_is_are_the_Land_Charge_Certificate_title_deeds</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Selected_Yes4</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Registry_fees1</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Yes</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Enter_amount_of_Registry_fees</targetReference>
+            </connector>
+            <label>Selected Yes</label>
+        </rules>
+        <rules>
+            <name>Selected_No4</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Registry_fees1</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>No</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Copy_1_of_Enter_details_of_root_of_title_etc_enclosed</targetReference>
+            </connector>
+            <label>Selected No</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Will_costs_differ_from_500_plus_20_VAT_standard2</name>
+        <label>Will costs differ from £500 plus 20% VAT standard?</label>
+        <locationX>314</locationX>
+        <locationY>866</locationY>
+        <defaultConnector>
+            <targetReference>District_Valuer_fees</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Selected_Yes</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Will_costs_differ_from_500_plus_20_VAT_standard1</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Yes</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Enter_amount_of_costs_inclusive_of_VAT</targetReference>
+            </connector>
+            <label>Selected Yes</label>
+        </rules>
+        <rules>
+            <name>Selected_No</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Will_costs_differ_from_500_plus_20_VAT_standard1</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>No</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Copy_1_of_PLEASE_DETAIL_DISBURSEMENTS_AS_PER_FOLLOWING_QUESTIONS</targetReference>
+            </connector>
+            <label>Selected No</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <interviewLabel>Opening / follow up to holding (Sale of WHOLE) ( {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Opening / follow up to holding (Sale of WHOLE) (OPENG1)</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <screens>
+        <name>Are_you</name>
+        <label>Are you:</label>
+        <locationX>314</locationX>
+        <locationY>242</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Are_you2</targetReference>
+        </connector>
+        <fields>
+            <name>Are_you1</name>
+            <choiceReferences>Writingfirst_letter_to_solicitors</choiceReferences>
+            <choiceReferences>Replyingto_solicitors</choiceReferences>
+            <choiceReferences>Writing_further_to_holding_letter</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Are you:</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Choose_payment_options</name>
+        <label>Choose payment options</label>
+        <locationX>314</locationX>
+        <locationY>2714</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Disclaimer_date_passed</targetReference>
+        </connector>
+        <fields>
+            <name>Choose_payment_options1</name>
+            <choiceReferences>Bankers_draft</choiceReferences>
+            <choiceReferences>Client_account_cheque_or_bankers_draft</choiceReferences>
+            <choiceReferences>Telegraphic_transfer_or_bankers_draft</choiceReferences>
+            <choiceReferences>None_specified</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Choose payment options</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Company_search_fees</name>
+        <label>Company search fees?</label>
+        <locationX>50</locationX>
+        <locationY>1598</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Company_search_fees3</targetReference>
+        </connector>
+        <fields>
+            <name>Company_search_fees1</name>
+            <choiceReferences>Yes</choiceReferences>
+            <choiceReferences>No</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Company search fees?</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Confirm_Solicitors_reference</name>
+        <label>Confirm Solicitors reference</label>
+        <locationX>314</locationX>
+        <locationY>134</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Are_you</targetReference>
+        </connector>
+        <fields>
+            <name>Confirm_Solicitors_reference1</name>
+            <choiceReferences>OK</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Confirm Solicitors reference</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Copy_1_of_Company_search_fees</name>
+        <label>Copy 1 of Company search fees?</label>
+        <locationX>314</locationX>
+        <locationY>1490</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Company_search_fees3</targetReference>
+        </connector>
+        <fields>
+            <name>Copy_1_of_Company_search_fees1</name>
+            <choiceReferences>Yes</choiceReferences>
+            <choiceReferences>No</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Company search fees?</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Copy_1_of_Enter_details_of_root_of_title_etc_enclosed</name>
+        <label>Copy 1 of Enter details of root of title etc. enclosed</label>
+        <locationX>314</locationX>
+        <locationY>2306</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Where_is_are_the_Land_Charge_Certificate_title_deeds</targetReference>
+        </connector>
+        <fields>
+            <name>Copy_1_of_Enter_details_of_root_of_title_etc_enclosed1</name>
+            <fieldText>Enter details of root of title etc. enclosed</fieldText>
+            <fieldType>LargeTextArea</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Copy_1_of_Is_one_of_the_purchasing_lessees_a_limited_company</name>
+        <label>Copy 1 of Is one of the purchasing lessees a limited company?</label>
+        <locationX>314</locationX>
+        <locationY>3146</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>Copy_1_of_Is_one_of_the_purchasing_lessees_a_limited_company6</name>
+            <choiceReferences>Yes</choiceReferences>
+            <choiceReferences>No</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Is one of the purchasing lessees a limited company?</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Copy_1_of_PLEASE_DETAIL_DISBURSEMENTS_AS_PER_FOLLOWING_QUESTIONS</name>
+        <label>Copy 1 of PLEASE DETAIL DISBURSEMENTS AS PER FOLLOWING QUESTIONS.</label>
+        <locationX>314</locationX>
+        <locationY>974</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>District_Valuer_fees</targetReference>
+        </connector>
+        <fields>
+            <name>Copy_1_of_PLEASE_DETAIL_DISBURSEMENTS_AS_PER_FOLLOWING_QUESTIONS1</name>
+            <choiceReferences>OK</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>PLEASE DETAIL DISBURSEMENTS AS PER FOLLOWING QUESTIONS.</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Copy_1_of_Registry_fees</name>
+        <label>Copy 1 of Registry fees?</label>
+        <locationX>314</locationX>
+        <locationY>1898</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Registry_fees4</targetReference>
+        </connector>
+        <fields>
+            <name>Copy_1_of_Registry_fees1</name>
+            <choiceReferences>Yes</choiceReferences>
+            <choiceReferences>No</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Registry fees?</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Disclaimer_date_passed</name>
+        <label>Disclaimer date passed?</label>
+        <locationX>314</locationX>
+        <locationY>2822</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Disclaimer_date_passed5</targetReference>
+        </connector>
+        <fields>
+            <name>Disclaimer_date_passed1</name>
+            <choiceReferences>Yes</choiceReferences>
+            <choiceReferences>No</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Disclaimer date passed?</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>District_Valuer_fees</name>
+        <label>District Valuer fees?</label>
+        <locationX>314</locationX>
+        <locationY>1274</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>District_Valuer_fees2</targetReference>
+        </connector>
+        <fields>
+            <name>District_Valuer_fees1</name>
+            <choiceReferences>Yes</choiceReferences>
+            <choiceReferences>No</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>District Valuer fees?</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Enter_amount_of_company_search_fees</name>
+        <label>Enter amount of company search fees £</label>
+        <locationX>50</locationX>
+        <locationY>1898</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Registry_fees</targetReference>
+        </connector>
+        <fields>
+            <name>Enter_amount_of_company_search_fees1</name>
+            <dataType>Currency</dataType>
+            <fieldText>Enter amount of company search fees £</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+            <scale>0</scale>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Enter_amount_of_costs_inclusive_of_VAT</name>
+        <label>Enter amount of costs inclusive of VAT£</label>
+        <locationX>50</locationX>
+        <locationY>974</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>PLEASE_DETAIL_DISBURSEMENTS_AS_PER_FOLLOWING_QUESTIONS</targetReference>
+        </connector>
+        <fields>
+            <name>Enter_amount_of_costs_inclusive_of_VAT1</name>
+            <dataType>Currency</dataType>
+            <fieldText>Enter amount of costs inclusive of VAT£</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+            <scale>0</scale>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Enter_amount_of_DV_fees</name>
+        <label>Enter amount of DV fees £</label>
+        <locationX>50</locationX>
+        <locationY>1490</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Company_search_fees</targetReference>
+        </connector>
+        <fields>
+            <name>Enter_amount_of_DV_fees1</name>
+            <dataType>Currency</dataType>
+            <fieldText>Enter amount of DV fees £</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+            <scale>0</scale>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Enter_amount_of_Registry_fees</name>
+        <label>Enter amount of Registry  fees £</label>
+        <locationX>50</locationX>
+        <locationY>2306</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Enter_details_of_root_of_title_etc_enclosed</targetReference>
+        </connector>
+        <fields>
+            <name>Enter_amount_of_Registry_fees1</name>
+            <dataType>Currency</dataType>
+            <fieldText>Enter amount of Registry  fees £</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+            <scale>0</scale>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Enter_details_of_root_of_title_etc_enclosed</name>
+        <label>Enter details of root of title etc. enclosed</label>
+        <locationX>50</locationX>
+        <locationY>2414</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Where_is_are_the_Land_Charge_Certificate_title_deeds</targetReference>
+        </connector>
+        <fields>
+            <name>Enter_details_of_root_of_title_etc_enclosed1</name>
+            <fieldText>Enter details of root of title etc. enclosed</fieldText>
+            <fieldType>LargeTextArea</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Insert_date_of_letter_received</name>
+        <label>Insert date of letter received</label>
+        <locationX>138</locationX>
+        <locationY>458</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Purchaser_is</targetReference>
+        </connector>
+        <fields>
+            <name>Insert_date_of_letter_received1</name>
+            <dataType>Date</dataType>
+            <fieldText>Insert date of letter received</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Insert_date_of_your_holding_letter</name>
+        <label>Insert date of your holding letter</label>
+        <locationX>402</locationX>
+        <locationY>458</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Purchaser_is</targetReference>
+        </connector>
+        <fields>
+            <name>Insert_date_of_your_holding_letter1</name>
+            <dataType>Date</dataType>
+            <fieldText>Insert date of your holding letter</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Insert_disclaimer_date</name>
+        <label>Insert disclaimer date</label>
+        <locationX>314</locationX>
+        <locationY>3038</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Copy_1_of_Is_one_of_the_purchasing_lessees_a_limited_company</targetReference>
+        </connector>
+        <fields>
+            <name>Insert_disclaimer_date1</name>
+            <dataType>Date</dataType>
+            <fieldText>Insert disclaimer date</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Is_one_of_the_purchasing_lessees_a_limited_company</name>
+        <label>Is one of the purchasing lessees a limited company?</label>
+        <locationX>50</locationX>
+        <locationY>3038</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>Is_one_of_the_purchasing_lessees_a_limited_company6</name>
+            <choiceReferences>Yes</choiceReferences>
+            <choiceReferences>No</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Is one of the purchasing lessees a limited company?</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>PLEASE_DETAIL_DISBURSEMENTS_AS_PER_FOLLOWING_QUESTIONS</name>
+        <label>PLEASE DETAIL DISBURSEMENTS AS PER FOLLOWING QUESTIONS.</label>
+        <locationX>50</locationX>
+        <locationY>1082</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>District_Valuer_fees</targetReference>
+        </connector>
+        <fields>
+            <name>PLEASE_DETAIL_DISBURSEMENTS_AS_PER_FOLLOWING_QUESTIONS1</name>
+            <choiceReferences>OK</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>PLEASE DETAIL DISBURSEMENTS AS PER FOLLOWING QUESTIONS.</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Purchaser_is</name>
+        <label>Purchaser is?</label>
+        <locationX>314</locationX>
+        <locationY>650</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Will_costs_differ_from_500_plus_20_VAT_standard</targetReference>
+        </connector>
+        <fields>
+            <name>Purchaser_is1</name>
+            <choiceReferences>Lessees</choiceReferences>
+            <choiceReferences>Management_company</choiceReferences>
+            <choiceReferences>Adjoining_owner</choiceReferences>
+            <choiceReferences>Other</choiceReferences>
+            <dataType>String</dataType>
+            <defaultValue>
+                <stringValue>Management company</stringValue>
+            </defaultValue>
+            <fieldText>Purchaser is?</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Registry_fees</name>
+        <label>Registry fees?</label>
+        <locationX>50</locationX>
+        <locationY>2006</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Registry_fees4</targetReference>
+        </connector>
+        <fields>
+            <name>Registry_fees1</name>
+            <choiceReferences>Yes</choiceReferences>
+            <choiceReferences>No</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Registry fees?</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Where_is_are_the_Land_Charge_Certificate_title_deeds</name>
+        <label>Where is/are the Land/Charge Certificate/title deeds?</label>
+        <locationX>314</locationX>
+        <locationY>2606</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Choose_payment_options</targetReference>
+        </connector>
+        <fields>
+            <name>Where_is_are_the_Land_Charge_Certificate_title_deeds1</name>
+            <choiceReferences>TSol</choiceReferences>
+            <choiceReferences>Purchaser</choiceReferences>
+            <choiceReferences>Missing</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Where is/are the Land/Charge Certificate/title deeds?</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Will_costs_differ_from_500_plus_20_VAT_standard</name>
+        <label>Will costs differ from £500 plus 20% VAT standard?</label>
+        <locationX>314</locationX>
+        <locationY>758</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Will_costs_differ_from_500_plus_20_VAT_standard2</targetReference>
+        </connector>
+        <fields>
+            <name>Will_costs_differ_from_500_plus_20_VAT_standard1</name>
+            <choiceReferences>Yes</choiceReferences>
+            <choiceReferences>No</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Will costs differ from £500 plus 20% VAT standard?</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <start>
+        <locationX>188</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Confirm_Solicitors_reference</targetReference>
+        </connector>
+    </start>
+    <status>Draft</status>
+</Flow>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>61.0</apiVersion>
+    <choices>
+        <name>X1985</name>
+        <choiceText>1985</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>1985</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>X2006</name>
+        <choiceText>2006</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>2006</stringValue>
+        </value>
+    </choices>
+    <environments>Default</environments>
+    <interviewLabel>Instructions to Counsel (COUNSEL1) {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Instructions to Counsel (COUNSEL1)</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <screens>
+        <name>Insert_deadline_date_for_receipt_of_Counsels_advice</name>
+        <label>Insert deadline date for receipt of Counsels advice</label>
+        <locationX>176</locationX>
+        <locationY>350</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>Insert_deadline_date_for_receipt_of_Counsels_advice1</name>
+            <dataType>Date</dataType>
+            <fieldText>Insert deadline date for receipt of Counsels advice</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Insert_short_outline_of_the_matter_on_which_you_are_seeking_Counsels_opinion</name>
+        <label>Insert short outline of the matter on which you are seeking Counsels opinion</label>
+        <locationX>176</locationX>
+        <locationY>242</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Insert_deadline_date_for_receipt_of_Counsels_advice</targetReference>
+        </connector>
+        <fields>
+            <name>Insert_short_outline_of_the_matter_on_which_you_are_seeking_Counsels_opinion1</name>
+            <fieldText>Insert short outline of the matter on which you are seeking Counsels opinion</fieldText>
+            <fieldType>LargeTextArea</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Select_Companies_Act</name>
+        <label>Select Companies Act</label>
+        <locationX>176</locationX>
+        <locationY>134</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Insert_short_outline_of_the_matter_on_which_you_are_seeking_Counsels_opinion</targetReference>
+        </connector>
+        <fields>
+            <name>Select_Companies_Act1</name>
+            <choiceReferences>X1985</choiceReferences>
+            <choiceReferences>X2006</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Select Companies Act</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Select_Companies_Act</targetReference>
+        </connector>
+    </start>
+    <status>Draft</status>
+</Flow>

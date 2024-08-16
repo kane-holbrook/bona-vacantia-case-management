@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>61.0</apiVersion>
+    <choices>
+        <name>Company_restored</name>
+        <choiceText>Company restored</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Company restored</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Discharging_a_charge</name>
+        <choiceText>Discharging a charge</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Discharging a charge</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Discretionary_payment</name>
+        <choiceText>Discretionary payment</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Discretionary payment</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Informant</name>
+        <choiceText>Informant</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Informant</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Land_or_property_sale</name>
+        <choiceText>Land or property sale</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Land or property sale</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Other_Addressee</name>
+        <choiceText>Other Addressee</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Other Addressee</stringValue>
+        </value>
+    </choices>
+    <decisions>
+        <name>Please_choose_addressee2</name>
+        <label>Please choose addressee</label>
+        <locationX>176</locationX>
+        <locationY>350</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Selected_Informant</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Please_choose_addressee1</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Informant</elementReference>
+                </rightValue>
+            </conditions>
+            <label>Selected Informant</label>
+        </rules>
+        <rules>
+            <name>Selected_Other_Addressee</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Please_choose_addressee1</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Other_Addressee</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Other_Addresses3</targetReference>
+            </connector>
+            <label>Selected Other Addressee</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <interviewLabel>Requesting solicitors for ID when acting for other (ML3) {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Requesting solicitors for ID when acting for other (ML3)</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <screens>
+        <name>Other_Addresses3</name>
+        <label>Other Addresses</label>
+        <locationX>176</locationX>
+        <locationY>458</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>Other_Addresses3_Section1</name>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>Other_Addresses3_Section1_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <name>OAD01</name>
+                    <dataType>String</dataType>
+                    <fieldText>Other Addresses</fieldText>
+                    <fieldType>InputField</fieldType>
+                    <isRequired>false</isRequired>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>6</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <fields>
+                <name>Other_Addresses3_Section1_Column2</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <name>OAD09</name>
+                    <dataType>String</dataType>
+                    <fieldText>Reference</fieldText>
+                    <fieldType>InputField</fieldType>
+                    <isRequired>false</isRequired>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>6</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithoutHeader</regionContainerType>
+        </fields>
+        <fields>
+            <name>OAD02</name>
+            <extensionName>flowruntime:address</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>addressLabel</name>
+                <value>
+                    <stringValue>Address</stringValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Please_choose_addressee</name>
+        <label>Please choose addressee</label>
+        <locationX>176</locationX>
+        <locationY>242</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Please_choose_addressee2</targetReference>
+        </connector>
+        <fields>
+            <name>Please_choose_addressee1</name>
+            <choiceReferences>Informant</choiceReferences>
+            <choiceReferences>Other_Addressee</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Please choose addressee</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Select_transaction_type</name>
+        <label>Select transaction type</label>
+        <locationX>176</locationX>
+        <locationY>134</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Please_choose_addressee</targetReference>
+        </connector>
+        <fields>
+            <name>Select_transaction_type1</name>
+            <choiceReferences>Land_or_property_sale</choiceReferences>
+            <choiceReferences>Company_restored</choiceReferences>
+            <choiceReferences>Discretionary_payment</choiceReferences>
+            <choiceReferences>Discharging_a_charge</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Select transaction type</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Select_transaction_type</targetReference>
+        </connector>
+    </start>
+    <status>Draft</status>
+</Flow>

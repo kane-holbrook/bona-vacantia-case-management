@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>61.0</apiVersion>
+    <environments>Default</environments>
+    <interviewLabel>Probate summary IHT421 (formerly D18) (IHT421) {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Probate summary IHT421 (formerly D18) (IHT421)</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <screens>
+        <name>Enter_amount_in_liabilities</name>
+        <label>Enter amount in liabilities</label>
+        <locationX>176</locationX>
+        <locationY>350</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>Enter_amount_in_liabilities1</name>
+            <dataType>Currency</dataType>
+            <fieldText>Enter amount in liabilities</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+            <scale>0</scale>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Enter_amount_of_estate_in_the_UK_before_deductions</name>
+        <label>Enter amount of estate in the UK before deductions</label>
+        <locationX>176</locationX>
+        <locationY>134</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Enter_amount_of_joint_assets_passing_by_survivorship</targetReference>
+        </connector>
+        <fields>
+            <name>Enter_amount_of_estate_in_the_UK_before_deductions1</name>
+            <dataType>Currency</dataType>
+            <fieldText>Enter amount of estate in the UK before deductions</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+            <scale>0</scale>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Enter_amount_of_joint_assets_passing_by_survivorship</name>
+        <label>Enter amount of joint assets passing by survivorship</label>
+        <locationX>176</locationX>
+        <locationY>242</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Enter_amount_in_liabilities</targetReference>
+        </connector>
+        <fields>
+            <name>Enter_amount_of_joint_assets_passing_by_survivorship1</name>
+            <dataType>Currency</dataType>
+            <fieldText>Enter amount of joint assets passing by survivorship</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+            <scale>0</scale>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Enter_amount_of_estate_in_the_UK_before_deductions</targetReference>
+        </connector>
+    </start>
+    <status>Draft</status>
+</Flow>

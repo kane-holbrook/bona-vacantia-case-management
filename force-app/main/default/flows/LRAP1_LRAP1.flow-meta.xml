@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>61.0</apiVersion>
+    <choices>
+        <name>Common_Law</name>
+        <choiceText>Common Law</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Common Law</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Section_1013_of_the_Companies_Act_2006</name>
+        <choiceText>Section 1013 of the Companies Act 2006</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Section 1013 of the Companies Act 2006</stringValue>
+        </value>
+    </choices>
+    <environments>Default</environments>
+    <interviewLabel>LRAP1 (LRAP1) {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>LRAP1 (LRAP1)</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <screens>
+        <name>Select_disclaimer_power</name>
+        <label>Select disclaimer power</label>
+        <locationX>176</locationX>
+        <locationY>134</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>Select_disclaimer_power1</name>
+            <choiceReferences>Section_1013_of_the_Companies_Act_2006</choiceReferences>
+            <choiceReferences>Common_Law</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Select disclaimer power</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Select_disclaimer_power</targetReference>
+        </connector>
+    </start>
+    <status>Draft</status>
+</Flow>

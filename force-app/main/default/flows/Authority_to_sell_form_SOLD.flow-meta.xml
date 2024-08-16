@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>61.0</apiVersion>
+    <choices>
+        <name>Already_disclaimed</name>
+        <choiceText>Already disclaimed</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Already disclaimed</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Already_Sold</name>
+        <choiceText>Already Sold</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Already Sold</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Best_offer_received</name>
+        <choiceText>Best offer received</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Best offer received</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Conditional_On_Planning</name>
+        <choiceText>Conditional On Planning</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Conditional On Planning</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Minimum_consideration_for_sale_of_land</name>
+        <choiceText>Minimum consideration for sale of land</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>minimum consideration for sale of land</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>No_as_sale_of_whole</name>
+        <choiceText>No as sale of whole</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>No as sale of whole</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>None</name>
+        <choiceText>None</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>None</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>OK</name>
+        <choiceText>OK</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>OK</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Other</name>
+        <choiceText>Other</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Other</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Overage</name>
+        <choiceText>Overage</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Overage</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Restrictive_Covenant</name>
+        <choiceText>Restrictive Covenant</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Restrictive Covenant</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Sum_recommended_by_the_DV</name>
+        <choiceText>Sum recommended by the DV</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Sum recommended by the DV</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>To_be_disclaimed</name>
+        <choiceText>To be disclaimed</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>To be disclaimed</stringValue>
+        </value>
+    </choices>
+    <decisions>
+        <name>Price_and_conditions_based_on2</name>
+        <label>Price and conditions based on?</label>
+        <locationX>176</locationX>
+        <locationY>674</locationY>
+        <defaultConnector>
+            <targetReference>Add_further_comments_as_required_before_printing</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Selected_Minimum_consideration_for_sale_of_land</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Price_and_conditions_based_on1</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Minimum_consideration_for_sale_of_land</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Add_further_comments_as_required_before_printing</targetReference>
+            </connector>
+            <label>Selected Minimum consideration for sale of land</label>
+        </rules>
+        <rules>
+            <name>Selected_Sum_recommended_by_the_DV</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Price_and_conditions_based_on1</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Sum_recommended_by_the_DV</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Add_further_comments_as_required_before_printing</targetReference>
+            </connector>
+            <label>Selected Sum recommended by the DV</label>
+        </rules>
+        <rules>
+            <name>Selected_Best_offer_received</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Price_and_conditions_based_on1</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Best_offer_received</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Add_further_comments_as_required_before_printing</targetReference>
+            </connector>
+            <label>Selected Best offer received</label>
+        </rules>
+        <rules>
+            <name>Selected_Other</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Price_and_conditions_based_on1</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Other</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Enter_details_of_other_grounds_for_the_price_and_conditions_in_the_offer</targetReference>
+            </connector>
+            <label>Selected Other</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <interviewLabel>Authority to sell form (SOLD) {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Authority to sell form (SOLD)</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <screens>
+        <name>Add_further_comments_as_required_before_printing</name>
+        <label>Add further comments as required before printing</label>
+        <locationX>176</locationX>
+        <locationY>974</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Enter_name_of_purchaser</targetReference>
+        </connector>
+        <fields>
+            <name>Add_further_comments_as_required_before_printing1</name>
+            <choiceReferences>OK</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Add further comments as required before printing</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Any_other_Land_In_Title</name>
+        <label>Any other Land In Title?</label>
+        <locationX>176</locationX>
+        <locationY>458</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Price_and_conditions_based_on</targetReference>
+        </connector>
+        <fields>
+            <name>Any_other_Land_In_Title1</name>
+            <choiceReferences>No_as_sale_of_whole</choiceReferences>
+            <choiceReferences>Already_disclaimed</choiceReferences>
+            <choiceReferences>To_be_disclaimed</choiceReferences>
+            <choiceReferences>Already_Sold</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Any other Land In Title?</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Any_Special_Conditions</name>
+        <label>Any Special Conditions?</label>
+        <locationX>176</locationX>
+        <locationY>350</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Any_other_Land_In_Title</targetReference>
+        </connector>
+        <fields>
+            <name>Any_Special_Conditions1</name>
+            <choiceReferences>None</choiceReferences>
+            <choiceReferences>Overage</choiceReferences>
+            <choiceReferences>Restrictive_Covenant</choiceReferences>
+            <choiceReferences>Conditional_On_Planning</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Any Special Conditions?</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Enter_details_of_other_grounds_for_the_price_and_conditions_in_the_offer</name>
+        <label>Enter details of other grounds for the price and conditions in the offer</label>
+        <locationX>308</locationX>
+        <locationY>782</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Add_further_comments_as_required_before_printing</targetReference>
+        </connector>
+        <fields>
+            <name>Enter_details_of_other_grounds_for_the_price_and_conditions_in_the_offer1</name>
+            <fieldText>Enter details of other grounds for the price and conditions in the offer</fieldText>
+            <fieldType>LargeTextArea</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Enter_name_of_purchaser</name>
+        <label>Enter name of purchaser</label>
+        <locationX>176</locationX>
+        <locationY>1082</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>Enter_name_of_purchaser1</name>
+            <dataType>String</dataType>
+            <fieldText>Enter name of purchaser</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Please_enter_name_of_Line_Manager</name>
+        <label>Please enter name of Line Manager</label>
+        <locationX>176</locationX>
+        <locationY>134</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Property_Land</targetReference>
+        </connector>
+        <fields>
+            <name>Please_enter_name_of_Line_Manager1</name>
+            <dataType>String</dataType>
+            <fieldText>Please enter name of Line Manager</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Price_and_conditions_based_on</name>
+        <label>Price and conditions based on?</label>
+        <locationX>176</locationX>
+        <locationY>566</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Price_and_conditions_based_on2</targetReference>
+        </connector>
+        <fields>
+            <name>Price_and_conditions_based_on1</name>
+            <choiceReferences>Minimum_consideration_for_sale_of_land</choiceReferences>
+            <choiceReferences>Sum_recommended_by_the_DV</choiceReferences>
+            <choiceReferences>Best_offer_received</choiceReferences>
+            <choiceReferences>Other</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Price and conditions based on?</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Property_Land</name>
+        <label>Property / Land</label>
+        <locationX>176</locationX>
+        <locationY>242</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Any_Special_Conditions</targetReference>
+        </connector>
+        <fields>
+            <name>Property_Land_Section1</name>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>Property_Land_Section1_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <name>ASS08</name>
+                    <dataType>String</dataType>
+                    <fieldText>Sale Price</fieldText>
+                    <fieldType>InputField</fieldType>
+                    <isRequired>false</isRequired>
+                </fields>
+                <fields>
+                    <name>ASS09</name>
+                    <dataType>String</dataType>
+                    <fieldText>TS Costs</fieldText>
+                    <fieldType>InputField</fieldType>
+                    <isRequired>false</isRequired>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>12</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithoutHeader</regionContainerType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Please_enter_name_of_Line_Manager</targetReference>
+        </connector>
+    </start>
+    <status>Draft</status>
+</Flow>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>61.0</apiVersion>
+    <environments>Default</environments>
+    <interviewLabel>Share Buyback agreement (BUY_BACK) {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Share Buyback agreement (BUY_BACK)</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <screens>
+        <name>Confirm_amount_of_disbursements_to_be_recovered</name>
+        <label>Confirm amount of disbursements to be recovered £:</label>
+        <locationX>176</locationX>
+        <locationY>350</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Insert_company_number_of_the_issuing_company</targetReference>
+        </connector>
+        <fields>
+            <name>Confirm_amount_of_disbursements_to_be_recovered1</name>
+            <dataType>Currency</dataType>
+            <fieldText>Confirm amount of disbursements to be recovered £:</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+            <scale>0</scale>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Insert_address_of_registered_office_of_purchaser</name>
+        <label>Insert address of registered office of purchaser</label>
+        <locationX>176</locationX>
+        <locationY>134</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Stocks_Shares</targetReference>
+        </connector>
+        <fields>
+            <name>Insert_address_of_registered_office_of_purchaser1</name>
+            <dataType>String</dataType>
+            <fieldText>Insert address of registered office of purchaser</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Insert_company_number_of_the_issuing_company</name>
+        <label>Insert company number of the issuing company</label>
+        <locationX>176</locationX>
+        <locationY>458</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>Insert_company_number_of_the_issuing_company1</name>
+            <dataType>String</dataType>
+            <fieldText>Insert company number of the issuing company</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Stocks_Shares</name>
+        <label>Stocks / Shares</label>
+        <locationX>176</locationX>
+        <locationY>242</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Confirm_amount_of_disbursements_to_be_recovered</targetReference>
+        </connector>
+        <fields>
+            <name>Stocks_Shares_Section1</name>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>Stocks_Shares_Section1_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <name>StocksShares</name>
+                    <dataType>Currency</dataType>
+                    <fieldText>Stocks / Shares</fieldText>
+                    <fieldType>InputField</fieldType>
+                    <isRequired>false</isRequired>
+                    <scale>0</scale>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>12</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithoutHeader</regionContainerType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Insert_address_of_registered_office_of_purchaser</targetReference>
+        </connector>
+    </start>
+    <status>Draft</status>
+</Flow>

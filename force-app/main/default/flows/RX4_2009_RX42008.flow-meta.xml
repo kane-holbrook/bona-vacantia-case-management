@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>61.0</apiVersion>
+    <environments>Default</environments>
+    <interviewLabel>RX4 2009 (RX42008) {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>RX4 2009 (RX42008)</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <screens>
+        <name>Enter_name_of_local_authority_serving_the_property</name>
+        <label>Enter name of local authority serving the property</label>
+        <locationX>176</locationX>
+        <locationY>134</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Insert_the_date_of_the_TSol_Restriction_to_be_removed</targetReference>
+        </connector>
+        <fields>
+            <name>Enter_name_of_local_authority_serving_the_property1</name>
+            <dataType>String</dataType>
+            <fieldText>Enter name of local authority serving the property</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Insert_the_date_of_the_TSol_Restriction_to_be_removed</name>
+        <label>Insert the date of the TSol Restriction to be removed</label>
+        <locationX>176</locationX>
+        <locationY>242</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>Insert_the_date_of_the_TSol_Restriction_to_be_removed1</name>
+            <dataType>Date</dataType>
+            <fieldText>Insert the date of the TSol Restriction to be removed</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Enter_name_of_local_authority_serving_the_property</targetReference>
+        </connector>
+    </start>
+    <status>Draft</status>
+</Flow>

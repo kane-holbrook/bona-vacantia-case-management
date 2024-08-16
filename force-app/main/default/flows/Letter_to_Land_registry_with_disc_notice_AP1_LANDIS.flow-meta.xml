@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>61.0</apiVersion>
+    <choices>
+        <name>Burges_Salmon</name>
+        <choiceText>Burges Salmon</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Burges Salmon</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Croydon</name>
+        <choiceText>Croydon</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Croydon</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Farrer</name>
+        <choiceText>Farrer</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Farrer</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Other</name>
+        <choiceText>Other</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Other</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Section_1013_of_the_Companies_Act_2006</name>
+        <choiceText>Section 1013 of the Companies Act 2006</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Section 1013 of the Companies Act 2006</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Section_656_of_the_Companies_Act_1985</name>
+        <choiceText>Section 656 of the Companies Act 1985</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Section 656 of the Companies Act 1985</stringValue>
+        </value>
+    </choices>
+    <environments>Default</environments>
+    <interviewLabel>Letter to Land registry with disc notice + AP1 (LANDIS) {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Letter to Land registry with disc notice + AP1 (LANDIS)</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <screens>
+        <name>Select_disclaimer_power</name>
+        <label>Select disclaimer power</label>
+        <locationX>176</locationX>
+        <locationY>134</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Select_which_Land_Registry</targetReference>
+        </connector>
+        <fields>
+            <name>Select_disclaimer_power1</name>
+            <choiceReferences>Section_1013_of_the_Companies_Act_2006</choiceReferences>
+            <choiceReferences>Section_656_of_the_Companies_Act_1985</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Select disclaimer power</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Select_which_Land_Registry</name>
+        <label>Select which Land Registry</label>
+        <locationX>176</locationX>
+        <locationY>242</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>Select_which_Land_Registry1</name>
+            <choiceReferences>Croydon</choiceReferences>
+            <choiceReferences>Other</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Select which Land Registry</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Select_disclaimer_power</targetReference>
+        </connector>
+    </start>
+    <status>Draft</status>
+</Flow>
