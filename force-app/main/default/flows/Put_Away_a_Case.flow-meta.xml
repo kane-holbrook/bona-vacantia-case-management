@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>61.0</apiVersion>
+    <choices>
+        <name>A_SRA_Intestate</name>
+        <choiceText>A - SRA Intestate</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>A - SRA Intestate</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>B_Freehold_Leasehold_Property</name>
+        <choiceText>B - Freehold/Leasehold Property</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>B - Freehold/Leasehold Property</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>C1_Net_Estate_over_15_000</name>
+        <choiceText>C1 - Net Estate over £15,000</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>C1 - Net Estate over £15,000</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>C2_Net_Estate_over_15_000_n</name>
+        <choiceText>C2 - Net Estate over £15,000 n</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>C2 - Net Estate over £15,000 n</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>C4_Net_Estate_over_15_000_collection</name>
+        <choiceText>C4 - Net Estate over £15,000 collection</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>C4 - Net Estate over £15,000 collection</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>C_Net_Estate_less_than_5000_pre</name>
+        <choiceText>C - Net Estate less than £5000 (pre)</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>C - Net Estate less than £5000 (pre)</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>C_Net_Estate_over_5000_pre_January</name>
+        <choiceText>C - Net Estate over £5000 (pre January)</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>C - Net Estate over £5000 (pre January)</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>D1_net_Estate_under_5000</name>
+        <choiceText>D1 - net Estate under £5000</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>D1 - net Estate under £5000</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>D2_Net_Estate_over_5000_under</name>
+        <choiceText>D2 - Net Estate over £5000 &amp; under</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>D2 - Net Estate over £5000 &amp; under</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>D3_Net_Estate_under_15_000</name>
+        <choiceText>D3 - Net Estate under £15,000</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>D3 - Net Estate under £15,000</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>D4_Net_Estate_Under_15k_collection</name>
+        <choiceText>D4 - Net Estate Under £15k - collection</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>D4 - Net Estate Under £15k - collection</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>F_Collect</name>
+        <choiceText>F - Collect</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>F - Collect</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>G_General</name>
+        <choiceText>G - General</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>G - General</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Inheritance_Act_claim</name>
+        <choiceText>Inheritance Act claim</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Inheritance Act claim</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Insolvent_NI</name>
+        <choiceText>Insolvent/NI</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Insolvent/NI</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>J_Freedom_of_Information_Request</name>
+        <choiceText>J - Freedom of Information Request</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>J - Freedom of Information Request</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Kin_located</name>
+        <choiceText>Kin located</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Kin located</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>L_Limitation_Period_Cases</name>
+        <choiceText>L - Limitation Period Cases</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>L - Limitation Period Cases</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>M_Costs_Case</name>
+        <choiceText>M - Costs Case</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>M - Costs Case</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>NE_Northern_Ireland</name>
+        <choiceText>NE - Northern Ireland</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>NE - Northern Ireland</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>No</name>
+        <choiceText>No</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>No</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>None_of_the_above</name>
+        <choiceText>None of the above</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>None of the above</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Ok</name>
+        <choiceText>Ok</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Ok</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>P_Pre_1997_Case</name>
+        <choiceText>P - Pre-1997 Case</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>P - Pre-1997 Case</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Q_Query</name>
+        <choiceText>Q - Query</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Q - Query</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>R_BV_Registry_queries</name>
+        <choiceText>R - BV Registry queries</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>R - BV Registry queries</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Will_located</name>
+        <choiceText>Will located</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Will located</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>X1</name>
+        <choiceText>1</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>1</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>X2</name>
+        <choiceText>2</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>2</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>X30</name>
+        <choiceText>30</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>30</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>X6</name>
+        <choiceText>6</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>6</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Y_Kin_Claim</name>
+        <choiceText>Y - Kin Claim</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Y - Kin Claim</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>YA_Reopened_Other</name>
+        <choiceText>YA - Reopened Other</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>YA - Reopened Other</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Yes</name>
+        <choiceText>Yes</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Yes</stringValue>
+        </value>
+    </choices>
+    <environments>Default</environments>
+    <interviewLabel>Put Away a Case {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Put Away a Case</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <screens>
+        <name>Case_Summary</name>
+        <label>Case Summary</label>
+        <locationX>176</locationX>
+        <locationY>458</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Please_confirm_one_of_the_following</targetReference>
+        </connector>
+        <fields>
+            <name>Case_Type</name>
+            <choiceReferences>R_BV_Registry_queries</choiceReferences>
+            <choiceReferences>B_Freehold_Leasehold_Property</choiceReferences>
+            <choiceReferences>C_Net_Estate_over_5000_pre_January</choiceReferences>
+            <choiceReferences>C_Net_Estate_less_than_5000_pre</choiceReferences>
+            <choiceReferences>A_SRA_Intestate</choiceReferences>
+            <choiceReferences>Q_Query</choiceReferences>
+            <choiceReferences>G_General</choiceReferences>
+            <choiceReferences>NE_Northern_Ireland</choiceReferences>
+            <choiceReferences>Y_Kin_Claim</choiceReferences>
+            <choiceReferences>F_Collect</choiceReferences>
+            <choiceReferences>M_Costs_Case</choiceReferences>
+            <choiceReferences>L_Limitation_Period_Cases</choiceReferences>
+            <choiceReferences>D1_net_Estate_under_5000</choiceReferences>
+            <choiceReferences>D2_Net_Estate_over_5000_under</choiceReferences>
+            <choiceReferences>C1_Net_Estate_over_15_000</choiceReferences>
+            <choiceReferences>J_Freedom_of_Information_Request</choiceReferences>
+            <choiceReferences>YA_Reopened_Other</choiceReferences>
+            <choiceReferences>D3_Net_Estate_under_15_000</choiceReferences>
+            <choiceReferences>P_Pre_1997_Case</choiceReferences>
+            <choiceReferences>D4_Net_Estate_Under_15k_collection</choiceReferences>
+            <choiceReferences>C2_Net_Estate_over_15_000_n</choiceReferences>
+            <choiceReferences>C4_Net_Estate_over_15_000_collection</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Case Type</fieldText>
+            <fieldType>DropdownBox</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Document_Production_Message</name>
+        <label>Document Production Message</label>
+        <locationX>176</locationX>
+        <locationY>350</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Case_Summary</targetReference>
+        </connector>
+        <fields>
+            <name>Please_ensure_case_category_is_correct</name>
+            <choiceReferences>Ok</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Please ensure case category is correct</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Please_confirm_one_of_the_following</name>
+        <label>Please confirm one of the following:</label>
+        <locationX>176</locationX>
+        <locationY>566</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>Select_one_of_the_following</name>
+            <choiceReferences>Kin_located</choiceReferences>
+            <choiceReferences>Will_located</choiceReferences>
+            <choiceReferences>Insolvent_NI</choiceReferences>
+            <choiceReferences>Inheritance_Act_claim</choiceReferences>
+            <choiceReferences>None_of_the_above</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Select one of the following:</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Please_record_years_to_be_retained</name>
+        <label>Please record years to be retained</label>
+        <locationX>176</locationX>
+        <locationY>242</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Document_Production_Message</targetReference>
+        </connector>
+        <fields>
+            <name>Please_record_years_to_be_retained_select</name>
+            <choiceReferences>X1</choiceReferences>
+            <choiceReferences>X2</choiceReferences>
+            <choiceReferences>X6</choiceReferences>
+            <choiceReferences>X30</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Please record years to be retained</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Question</name>
+        <label>Question</label>
+        <locationX>176</locationX>
+        <locationY>134</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Please_record_years_to_be_retained</targetReference>
+        </connector>
+        <fields>
+            <name>Are_you_sure_this_case_is_to_be_Put_Away</name>
+            <choiceReferences>Yes</choiceReferences>
+            <choiceReferences>No</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Are you sure this case is to be Put Away</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Question</targetReference>
+        </connector>
+    </start>
+    <status>Draft</status>
+</Flow>
