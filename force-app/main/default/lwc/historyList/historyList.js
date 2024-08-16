@@ -27,7 +27,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     @track sortedBy = 'Date_Inserted__c';
     @track selectedHistoryType = 'allHistory';  // Default selection
     @track currentUserId;  // To store the current user's ID
-    @track selectedRecordDetails = 'There are no history notes for this case.';  // New track property to store Details__c value
+    @track selectedRecordDetails = '';
     @track sharePointSiteUrl;
     @track sharePointDirectoryPath;
     @track sortedByPriority = false;
@@ -372,7 +372,13 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     handleRowClick(event) {
         const itemId = event.currentTarget.dataset.id;
         const record = this.historyItems.find(item => item.Id === itemId);
-        this.selectedRecordDetails = record ? record.Details__c : 'There are no history notes for this case.';
+        
+        // Set the selected record details and precompute the alternative text
+        if (record && record.Details__c) {
+            this.selectedRecordDetails = record.Details__c;
+        } else {
+            this.selectedRecordDetails = 'There are no history notes for this record.';
+        }
     }
 
     get sortedByText() {
