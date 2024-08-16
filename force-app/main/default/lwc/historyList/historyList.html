@@ -29,9 +29,9 @@
                     {filteredHistoryItems.length} items - {sortedByText} - Updated {lastUpdated}
                 </div>
                 <div class="slds-col slds-size_1-of-2 slds-grid slds-wrap slds-grid_align-end">
-                    <lightning-input type="text" placeholder="Search history" variant="label-hidden" class="slds-m-bottom_small slds-col slds-size_1-of-3" onchange={handleSearchInputChange}></lightning-input>
-                    <lightning-input type="date" placeholder="From" variant="label-hidden" class="slds-m-bottom_small slds-col slds-size_1-of-3" onchange={handleDateFilterChange} data-filter="from"></lightning-input>
-                    <lightning-input type="date" placeholder="To" variant="label-hidden" class="slds-m-bottom_small slds-col slds-size_1-of-3" onchange={handleDateFilterChange} data-filter="to"></lightning-input>
+                    <lightning-input type="text" placeholder="Search history" variant="label-hidden" class="slds-m-bottom_small slds-m-right_small slds-col slds-size_1-of-3" onchange={handleSearchInputChange}></lightning-input>
+                    <lightning-input type="date" placeholder="From" variant="label-hidden" class="slds-m-bottom_small slds-m-right_small slds-col slds-size_1-of-4" onchange={handleDateFilterChange} data-filter="from"></lightning-input>
+                    <lightning-input type="date" placeholder="To" variant="label-hidden" class="slds-m-bottom_small slds-col slds-size_1-of-4" onchange={handleDateFilterChange} data-filter="to"></lightning-input>
                 </div>
             </div>
             <template if:false={filteredHistoryItems.length}>
