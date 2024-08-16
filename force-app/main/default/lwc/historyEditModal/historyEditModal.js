@@ -50,6 +50,8 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
     @track originalRecord = {};
     @track originalDocumentId;
     @track isEmailHistory = false; // Track if it's an email history record
+    @track contentDocumentId;
+    @track isConvertToPDFModalOpen = false;
 
     // Email related fields
     @track emailMessageId;
@@ -166,13 +168,15 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
     }
 
     handleViewEditEmailLog() {
-        this[NavigationMixin.Navigate]({
+        this[NavigationMixin.GenerateUrl]({
             type: 'standard__recordPage',
             attributes: {
                 recordId: this.emailMessageId,
                 objectApiName: 'EmailMessage',
                 actionName: 'view'
             }
+        }).then(url => {
+            window.open(url, '_blank');
         });
     }
 
@@ -231,15 +235,19 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
 
     handleSave() {
         const parentRecordId = this.bvCaseId;
-
+    
         this.saveRecord(parentRecordId)
             .then(() => {
-                if (this.fileName) {
-                    return this.saveDocument();
+                if (this.fileName && this.fileData) {
+                    return this.saveDocument(); // Only save document if file data exists
+                } else if (this.originalDocumentId) {
+                    // Update the SHDocument record with new metadata (even without file data)
+                    return this.updateSHDocumentRecord();
                 }
             })
             .then(() => {
                 this.fileName = null;
+                this.fileData = null; // Clear file data after saving
             })
             .catch(error => {
                 console.log('Error saving record or uploading document', error);
@@ -247,33 +255,53 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
             });
     }
 
+    updateSHDocumentRecord() {
+        return new Promise((resolve, reject) => {
+            const fields = {};
+            fields[ID_FIELD.fieldApiName] = this.originalDocumentId; // Ensure you use the correct field for the record ID
+            fields[DOCUMENT_TYPE_FIELD.fieldApiName] = this.documentType;
+            fields[DOCUMENT_CORRESPONDENCE_WITH_FIELD.fieldApiName] = this.correspondenceWith;
+            fields[DOCUMENT_DRAFT_FIELD.fieldApiName] = this.draft;
+    
+            updateRecord({ fields })
+                .then(() => {
+                    this.showToast('Success', 'Document metadata updated successfully', 'success');
+                    refreshApex(this.wiredRelatedItemsResult);
+                    this.closeSubModal();
+                    resolve();
+                })
+                .catch(error => {
+                    console.error('Error updating SHDocument record:', error);
+                    this.showToast('Error', 'Error updating document metadata: ' + error.body.message, 'error');
+                    reject(error);
+                });
+        });
+    }
+
     saveDocument() {
         return new Promise((resolve, reject) => {
             if (!this.fileData) {
-                this.showToast('Error', 'No file data available to save.', 'error');
-                reject(new Error('No file data available to save'));
+                resolve(); // If there's no file data, simply resolve and move on
                 return;
             }
-
-            const base64Data = this.fileData.split(',')[1];
-            const binaryData = window.atob(base64Data);
+    
+            const base64Data = this.fileData.split(',')[1]; // Extract Base64 content
             let folderName;
-
+    
             getCaseName({ caseId: this.bvCaseId })
                 .then((caseName) => {
                     folderName = `${caseName}/${this.record.Id}`;
-
                     return uploadFileToSharePoint({
                         filePath: folderName,
                         fileName: this.fileName,
-                        fileContent: binaryData,
+                        fileContent: base64Data, // Pass the Base64 encoded content
                         documentType: this.documentType
                     });
                 })
                 .then((serverRelativeUrl) => {
                     this.serverRelativeURL = serverRelativeUrl;
                     this.showToast('Success', 'File uploaded successfully', 'success');
-                    return this.createSHDocumentRecord(this.record.Id, folderName);
+                    return this.createSHDocumentRecord(this.record.Id, folderName, serverRelativeUrl);
                 })
                 .then(() => {
                     refreshApex(this.wiredRelatedItemsResult);
@@ -287,11 +315,11 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
         });
     }
 
-    createSHDocumentRecord(historyRecordId, folderName) {
+    createSHDocumentRecord(historyRecordId, folderName, documentId) {
         const shDocumentFields = {
             [SHDOCUMENT_NAME_FIELD.fieldApiName]: this.fileName,
             [DOCUMENT_EXTENSION_FIELD.fieldApiName]: this.fileName.split('.').pop(),
-            [DOCUMENT_ID_FIELD.fieldApiName]: historyRecordId,
+            [DOCUMENT_ID_FIELD.fieldApiName]: documentId,
             [DOCUMENT_TYPE_FIELD.fieldApiName]: this.documentType,
             [DOCUMENT_FILE_SIZE_FIELD.fieldApiName]: this.fileSize,
             [DOCUMENT_CORRESPONDENCE_WITH_FIELD.fieldApiName]: this.correspondenceWith,
@@ -372,64 +400,91 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
     }
 
     handleRowAction(event) {
-        const actionName = event.detail.action.name;
-        const row = event.detail.row;
-        if (actionName === 'delete') {
-            this.handleDeleteRelatedItem(row.Id);
-        } else if (actionName === 'viewEdit') {
-            this.handleViewEditRelatedItem(row);
+        const actionName = event.detail.value;
+        const relatedItemId = event.target.dataset.id;
+    
+        console.log('Action:', actionName, 'Related Item Id:', relatedItemId);
+    
+        if (actionName === 'viewEditFile') {
+            this.handleViewEditFile(relatedItemId);
+        } else if (actionName === 'viewEditDetails') {
+            this.handleViewEditRelatedItem(relatedItemId);
+        } else if (actionName === 'convertToPDF') {
+            this.handleConvertToPDF(relatedItemId);
+        } else if (actionName === 'delete') {
+            this.handleDeleteRelatedItem(relatedItemId);
+        }
+    }
+    
+    handleViewEditFile(relatedItemId) {
+        const selectedItem = this.relatedItems.find(item => item.Id === relatedItemId);
+        if (selectedItem && selectedItem.ServerRelativeURL__c) {
+            let serverRelativeURL = selectedItem.ServerRelativeURL__c;
+    
+            // Check if serverRelativeURL already contains a full URL (starts with http or https)
+            let url = serverRelativeURL.startsWith('http') ? serverRelativeURL : `${this.sharePointSiteUrl}/${serverRelativeURL}`;
+    
+            console.log('serverRelativeURL', url);
+            if (url) {
+                window.open(url, '_blank');
+            } else {
+                this.showToast('Error', 'No URL found for this item.', 'error');
+            }
+        } else {
+            this.showToast('Error', 'File URL not found.', 'error');
         }
     }
 
-    handleDeleteRelatedItem(relatedItemId) {
-        getSHDocuments({ parentId: this.record.Id })
-            .then(result => {
-                const relatedItem = result.find(item => item.Id === relatedItemId);
-                if (relatedItem) {
-                    const { ServerRelativeURL__c: serverRelativeURL, Name: fileName } = relatedItem;
+    handleConvertToPDF(relatedItemId) {
+        const selectedItem = this.relatedItems.find(item => item.Id === relatedItemId);
 
-                    const urlParts = serverRelativeURL.split('/Shared%20Documents/');
-                    let relativePath = urlParts.length > 1 ? urlParts[1] : serverRelativeURL;
-
-                    if (relativePath.endsWith(fileName)) {
-                        relativePath = relativePath.slice(0, -fileName.length - 1);
-                    }
-
-                    deleteSharepointFile({ filePath: relativePath, fileName })
-                        .then(() => {
-                            deleteRecord(relatedItemId)
-                                .then(() => {
-                                    this.showToast('Success', 'Related item and SharePoint file deleted successfully', 'success');
-                                    refreshApex(this.wiredRelatedItemsResult);
-                                })
-                                .catch(error => {
-                                    console.error('Error deleting related item:', error);
-                                    this.showToast('Error', 'Error deleting related item', 'error');
-                                });
-                        })
-                        .catch(error => {
-                            console.error('Error deleting SharePoint file:', error);
-                            this.showToast('Error', 'Error deleting SharePoint file', 'error');
-                        });
-                } else {
-                    this.showToast('Error', 'Related item not found', 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching related items:', error);
-                this.showToast('Error', 'Error fetching related items', 'error');
-            });
+        if (selectedItem) {
+            this.contentDocumentId = selectedItem.DocumentID__c;
+            this.isConvertToPDFModalOpen = true; // Open the modal with the PDF conversion component
+        } else {
+            this.showToast('Error', 'Document ID not found for this item.', 'error');
+        }
     }
 
-    handleViewEditRelatedItem(relatedItem) {
-        this.fileName = relatedItem.Name;
-        this.fileSize = relatedItem.FileSize__c;
-        this.fileData = relatedItem.FileContent__c;
-        this.documentType = relatedItem.DocumentType__c;
-        this.correspondenceWith = relatedItem.Correspondence_With__c;
-        this.draft = relatedItem.Draft__c;
-        this.serverRelativeURL = relatedItem.ServerRelativeURL__c;
-        this.isSubModalOpen = true;
+    closeConvertToPDFModal() {
+        this.isConvertToPDFModalOpen = false;
+    }
+
+    handleDeleteRelatedItem(relatedItemId) {
+        const selectedItem = this.relatedItems.find(item => item.Id === relatedItemId);
+        if (selectedItem) {
+            const serverRelativeURL = selectedItem.ServerRelativeURL__c;
+            const fileName = selectedItem.Name;
+
+            deleteSharepointFile({ filePath: serverRelativeURL, fileName })
+                .then(() => {
+                    deleteRecord(relatedItemId)
+                        .then(() => {
+                            this.showToast('Success', 'Document deleted successfully', 'success');
+                            refreshApex(this.wiredRelatedItemsResult); // Refresh the list of related items
+                        })
+                        .catch(error => {
+                            this.showToast('Error', 'Error deleting document record', 'error');
+                        });
+                })
+                .catch(error => {
+                    this.showToast('Error', 'Error deleting file from SharePoint', 'error');
+                });
+        }
+    }
+
+    handleViewEditRelatedItem(relatedItemId) {
+        const selectedItem = this.relatedItems.find(item => item.Id === relatedItemId);
+        if (selectedItem) {
+            this.fileName = selectedItem.Name;
+            this.fileSize = selectedItem.FileSize__c;
+            this.documentType = selectedItem.DocumentType__c;
+            this.correspondenceWith = selectedItem.Correspondence_With__c;
+            this.draft = selectedItem.Draft__c;
+            this.serverRelativeURL = selectedItem.ServerRelativeURL__c;
+
+            this.isSubModalOpen = true; // Open the modal to view/edit the item
+        }
     }
 
     closeModal() {
@@ -478,14 +533,60 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
     }
 
     handleImport() {
+        this.clearDocumentFields();
         this.isSubModalOpen = true;
     }
 
-    handleViewEdit() {
+    handleViewEdit(relatedItemId) {
+        // Check if relatedItemId exists before proceeding
+        const selectedItem = this.relatedItems.find(item => item.Id === relatedItemId);
+        if (selectedItem) {
+            // Load document details if viewing/editing
+            this.fileName = selectedItem.Name;
+            this.fileSize = selectedItem.FileSize__c;
+            this.documentType = selectedItem.DocumentType__c;
+            this.correspondenceWith = selectedItem.Correspondence_With__c;
+            this.draft = selectedItem.Draft__c;
+            this.serverRelativeURL = selectedItem.ServerRelativeURL__c;
+            this.originalDocumentId = selectedItem.Id;
+        } else {
+            this.clearDocumentFields(); // Clear fields if creating a new document
+        }
+    
         this.isSubModalOpen = true;
     }
 
     closeSubModal() {
         this.isSubModalOpen = false;
+    }
+
+    get emailStatusMessage() {
+        switch(this.emailMessageStatus) {
+            case '0':
+                return 'New';
+            case '1':
+                return 'Read';
+            case '2':
+                return 'Replied';
+            case '3':
+                return 'Sent';
+            case '4':
+                return 'Forwarded';
+            case '5':
+                return 'Draft';
+            default:
+                return 'Unknown';
+        }
+    }
+
+    clearDocumentFields() {
+        this.fileName = null;
+        this.fileData = null;
+        this.fileSize = null;
+        this.documentType = null;
+        this.correspondenceWith = null;
+        this.draft = null;
+        this.serverRelativeURL = null;
+        this.originalDocumentId = null;
     }
 }

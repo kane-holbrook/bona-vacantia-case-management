@@ -1,6 +1,5 @@
 public class FileControllerGraph {
 
-    // Method to upload file to SharePoint
     @AuraEnabled(cacheable=false)
     public static String uploadFileToSharePoint(String filePath, String fileName, String fileContent, String documentType) {
         Map<String, String> settings = getSharePointSettings();
@@ -44,6 +43,12 @@ public class FileControllerGraph {
             System.debug('File upload failed: ' + res.getStatus() + ' ' + res.getBody());
             return null;
         }
+    }
+    
+    private static Boolean isBase64String(String content) {
+        // Basic check for Base64 by validating if the content contains only Base64 characters
+        String base64Pattern = '^[a-zA-Z0-9+/]*={0,2}$';
+        return Pattern.matches(base64Pattern, content);
     }
 
     private static Boolean isBase64String(String content) {
@@ -253,6 +258,7 @@ public class FileControllerGraph {
             throw new CalloutException('Failed to fetch files: ' + res.getStatus() + ' ' + res.getBody());
         }
     }
+
 
     @AuraEnabled(cacheable=true)
     public static SHDocument__c getGraphFileDataById(String fileId) {

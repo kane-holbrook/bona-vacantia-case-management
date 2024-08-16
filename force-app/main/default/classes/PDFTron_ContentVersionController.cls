@@ -150,6 +150,7 @@ public with sharing class PDFTron_ContentVersionController {
                 listItemInfo.put('fileSize', String.valueOf(fileContent.size()));
                 listItemInfo.put('fileExtension', fileName.substringAfterLast('.'));
                 listItemInfo.put('documentType', 'Generated Document');
+                listItemInfo.put('documentId', documentId);
     
                 // Save the SHDocument__c record
                 String shDocumentId = saveSHDocumentRecord(historyRecordId, listItemInfo);
@@ -172,7 +173,7 @@ public with sharing class PDFTron_ContentVersionController {
             // Create a new SHDocument__c record
             SHDocument__c shDocument = new SHDocument__c();
             shDocument.Case_History__c = historyRecordId;
-            shDocument.DocumentID__c = listItemInfo.get('listItemId');
+            shDocument.DocumentID__c = listItemInfo.get('documentId');
             shDocument.ServerRelativeURL__c = listItemInfo.get('webUrl');
             shDocument.Document_Name__c = listItemInfo.get('fileName');
             shDocument.FileSize__c = Integer.valueOf(listItemInfo.get('fileSize'));

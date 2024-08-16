@@ -2,9 +2,9 @@ import { LightningElement, track, api } from 'lwc';
 
 export default class HistoryDocumentModal extends LightningElement {
     @api fileName;
-    @track documentType;
-    @track correspondenceWith;
-    @track draft;
+    @api documentType;
+    @api correspondenceWith;
+    @api draft;
     @track fileData;
     @track fileSize;
 
@@ -28,12 +28,6 @@ export default class HistoryDocumentModal extends LightningElement {
         { label: 'No', value: 'No' },
         { label: 'Not applicable', value: 'Not applicable' }
     ];
-
-    connectedCallback() {
-        this.documentType = this.initialDocumentType;
-        this.correspondenceWith = this.initialCorrespondenceWith;
-        this.draft = this.initialDraft;
-    }
 
     handleFileChange(event) {
         const file = event.target.files[0];
