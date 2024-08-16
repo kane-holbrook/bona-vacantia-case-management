@@ -10,7 +10,6 @@ export default class HistoryDocumentModal extends LightningElement {
 
     documentTypeOptions = [
         { label: 'Letter', value: 'Letter' },
-        { label: 'Email', value: 'Email' },
         { label: 'Pleadings', value: 'Pleadings' },
         { label: 'FOI request', value: 'FOI request' },
         { label: 'Office copy entries', value: 'Office copy entries' },
