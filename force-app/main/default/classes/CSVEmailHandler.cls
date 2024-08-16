@@ -29,13 +29,16 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
             
             // Parse the CSV and create cases
             List<String> errorMessages = new List<String>();
+            List<String> duplicateInCSV = new List<String>();  // Declare duplicateInCSV here
             List<BV_Case__c> casesToCreate = parseCSV(csvContent, errorMessages);
             List<String> notInJurisdiction = new List<String>();
             List<String> consultFCo = new List<String>();
             List<String> acceptedCompanies = new List<String>();
+            List<String> existingCasesList = new List<String>();
+            Set<String> companyNumbersInCSV = new Set<String>();
 
             if (errorMessages.isEmpty() && !casesToCreate.isEmpty()) {
-                // Check for duplicates
+                // Check for duplicates in the system
                 Set<String> existingCompanyNumbers = getExistingCompanyNumbers(casesToCreate);
                 List<BV_Case__c> casesToInsert = new List<BV_Case__c>();
 
@@ -43,22 +46,46 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
                     String paddedCompanyNumber = padCompanyNumber(caseRecord.Company_No__c);
                     caseRecord.Company_No__c = paddedCompanyNumber;
                     
-                    if (existingCompanyNumbers.contains(paddedCompanyNumber)) {
-                        errorMessages.add('Duplicate company number found: ' + paddedCompanyNumber + ' - Company Name: ' + caseRecord.Name);
+                    // Check for duplicate within CSV only if jurisdiction check passes
+                    if (companyNumbersInCSV.contains(caseRecord.Company_No__c)) {
+                        Integer jurisdictionStatus = handleJurisdictionCheck(fetchPostCode(caseRecord.Company_No__c));
+                        
+                        if (jurisdictionStatus == 1) {
+                            duplicateInCSV.add('Company Number: ' + caseRecord.Company_No__c + ' - Company Name: ' + caseRecord.Name 
+                                + ' - Date of Dissolution: ' + caseRecord.Date_Dissolved__c.format() + ' - Reference Number: ' + caseRecord.Rm_Reference__c 
+                                + ' - Date Monies Transferred: ' + caseRecord.Date_Received__c.format() + ' - Amount to be transferred: ' + caseRecord.Amount_Collected__c);
+                        }
                         continue;
                     }
+                
+                    companyNumbersInCSV.add(caseRecord.Company_No__c);
+                
+                    if (existingCompanyNumbers.contains(paddedCompanyNumber)) {
+                        existingCasesList.add('Company Number: ' + caseRecord.Company_No__c + ' - Company Name: ' + caseRecord.Name 
+                            + ' - Date of Dissolution: ' + caseRecord.Date_Dissolved__c.format() + ' - Reference Number: ' + caseRecord.Rm_Reference__c 
+                            + ' - Date Monies Transferred: ' + caseRecord.Date_Received__c.format() + ' - Amount to be transferred: ' + caseRecord.Amount_Collected__c);
+                        continue;
+                    }
+                
                     String postalCode = fetchPostCode(caseRecord.Company_No__c);
                     Integer jurisdictionStatus = handleJurisdictionCheck(postalCode);
-
+                
                     if (jurisdictionStatus == 1) {
                         casesToInsert.add(caseRecord);
-                        acceptedCompanies.add(caseRecord.Company_No__c + ' - ' + caseRecord.Name);
+                        acceptedCompanies.add('Company Number: ' + caseRecord.Company_No__c + ' - Company Name: ' + caseRecord.Name 
+                            + ' - Date of Dissolution: ' + caseRecord.Date_Dissolved__c.format() + ' - Reference Number: ' + caseRecord.Rm_Reference__c 
+                            + ' - Date Monies Transferred: ' + caseRecord.Date_Received__c.format() + ' - Amount to be transferred: ' + caseRecord.Amount_Collected__c);
                     } else if (jurisdictionStatus == 2) {
-                        consultFCo.add(caseRecord.Company_No__c + ' - ' + caseRecord.Name);
+                        consultFCo.add('Company Number: ' + caseRecord.Company_No__c + ' - Company Name: ' + caseRecord.Name 
+                            + ' - Date of Dissolution: ' + caseRecord.Date_Dissolved__c.format() + ' - Reference Number: ' + caseRecord.Rm_Reference__c 
+                            + ' - Date Monies Transferred: ' + caseRecord.Date_Received__c.format() + ' - Amount to be transferred: ' + caseRecord.Amount_Collected__c);
                     } else if (jurisdictionStatus == 3) {
-                        notInJurisdiction.add(caseRecord.Company_No__c + ' - ' + caseRecord.Name);
+                        notInJurisdiction.add('Company Number: ' + caseRecord.Company_No__c + ' - Company Name: ' + caseRecord.Name 
+                            + ' - Date of Dissolution: ' + caseRecord.Date_Dissolved__c.format() + ' - Reference Number: ' + caseRecord.Rm_Reference__c 
+                            + ' - Date Monies Transferred: ' + caseRecord.Date_Received__c.format() + ' - Amount to be transferred: ' + caseRecord.Amount_Collected__c);
                     }
                 }
+                
 
                 if(!errorMessages.isEmpty()) {
                     sendErrorEmail(email.fromAddress, errorMessages);
@@ -68,8 +95,10 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
                     insert casesToInsert; // Insert the cases if they are within jurisdiction
                 }
 
-                sendJurisdictionEmail(email.fromAddress, notInJurisdiction, consultFCo, acceptedCompanies, !casesToInsert.isEmpty());
+                sendJurisdictionEmail(email.fromAddress, notInJurisdiction, consultFCo, acceptedCompanies, existingCasesList, duplicateInCSV, !casesToInsert.isEmpty());
             } else {
+                System.debug('Error messages: ' + errorMessages);
+                System.debug(errorMessages.size());
                 sendErrorEmail(email.fromAddress, errorMessages);
                 result.success = false;
                 return result;
@@ -86,71 +115,63 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
     private List<BV_Case__c> parseCSV(String csvContent, List<String> errorMessages) {
         List<BV_Case__c> cases = new List<BV_Case__c>();
         List<String> csvLines = csvContent.split('\n');
-        Set<String> companyNumbersInCSV = new Set<String>();
-
+        
         if (csvLines.size() <= 1) {
             errorMessages.add('CSV does not contain any data rows after the header.');
             return cases;
         }
-
+    
         // Check the headers
         if (!validateCSVHeaders(csvLines[0], errorMessages)) {
             return cases;
         }
-
+    
         for (Integer i = 1; i < csvLines.size(); i++) {
             String line = csvLines[i];
             List<String> columns = parseCSVLine(line);
-
+    
             if (columns.size() == 6) {
                 BV_Case__c caseRecord = new BV_Case__c();
                 Boolean isValid = true;
-
+    
                 for (Integer j = 0; j < columns.size(); j++) {
-                    if (columns[j].trim() == '' || columns[j].trim() == null){
+                    if (columns[j].trim() == '' || columns[j].trim() == null) {
                         errorMessages.add('Row ' + i + ': Missing value in column ' + (j + 1));
                         isValid = false;
                     }
                 }
-                
+    
                 caseRecord.Company_No__c = padCompanyNumber(columns[0]);
-
+                caseRecord.Name = columns[3].toUpperCase(); 
+    
                 if (!isCompanyNumberValid(caseRecord.Company_No__c)) {
                     errorMessages.add('Row ' + i + ': Company number not found in the Companies House: ' + caseRecord.Company_No__c);
                     isValid = false;
                 }
-
-                if (companyNumbersInCSV.contains(caseRecord.Company_No__c)) {
-                    errorMessages.add('Row ' + i + ': Duplicate company number found within CSV: ' + caseRecord.Company_No__c);
-                    isValid = false;
-                } else {
-                    companyNumbersInCSV.add(caseRecord.Company_No__c);
-                }
-
+    
                 try {
                     caseRecord.Date_Dissolved__c = Date.valueOf(columns[1]);
                 } catch (Exception e) {
                     errorMessages.add('Row ' + i + ': Error converting Date_Dissolved__c to Date: ' + columns[1]);
                     isValid = false;
                 }
-
+    
                 caseRecord.Rm_Reference__c = columns[2];
-                caseRecord.Case_Name__c = columns[3].toUpperCase();
-                caseRecord.Name = columns[3].toUpperCase();
-
+                caseRecord.Case_Name__c = caseRecord.Name;
+    
                 String apiCompanyName = fetchCompanyName(caseRecord.Company_No__c);
                 if (!caseRecord.Name.equals(apiCompanyName)) {
                     errorMessages.add('Row ' + i + ': Company name mismatch. Company Name in the CSV: ' + caseRecord.Name + ' - Company Name in Company House: ' + apiCompanyName);
                     isValid = false;
                 }
-
+    
                 try {
                     caseRecord.Date_Received__c = Date.valueOf(columns[4]);
                 } catch (Exception e) {
                     errorMessages.add('Row ' + i + ': Error converting Date_Received__c to Date: ' + columns[4]);
                     isValid = false;
                 }
-
+    
                 try {
                     String amountCollected = columns[5].trim().replace(',', '');
                     caseRecord.Amount_Collected__c = Decimal.valueOf(amountCollected);
@@ -158,9 +179,9 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
                     errorMessages.add('Row ' + i + ': Error converting Amount_Collected__c to Decimal: ' + columns[5]);
                     isValid = false;
                 }
-
+    
                 caseRecord.Stage__c = 'Advertising';
-
+    
                 if (isValid) {
                     cases.add(caseRecord);
                 }
@@ -168,9 +189,10 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
                 errorMessages.add('Row ' + i + ': CSV line does not have the expected number of columns: ' + line);
             }
         }
-
+    
         return cases;
     }
+    
 
     // Validate CSV headers
     private Boolean validateCSVHeaders(String headerLine, List<String> errorMessages) {
@@ -337,7 +359,7 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
     }
 
     // Send a jurisdiction email
-    private void sendJurisdictionEmail(String toAddress, List<String> notInJurisdiction, List<String> consultFCo, List<String> acceptedCompanies, Boolean casesInserted) {
+    private void sendJurisdictionEmail(String toAddress, List<String> notInJurisdiction, List<String> consultFCo, List<String> acceptedCompanies, List<String> existingCasesList, List<String> duplicateInCSV, Boolean casesInserted) {
         String subject = 'CSV Jurisdiction Results';
         String body = 'The CSV file has been processed. Please see the results below:\n\n';
 
@@ -351,6 +373,14 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
 
         if (!consultFCo.isEmpty()) {
             body += 'The following companies may or may not be within the jurisdiction of the Duchy of Lancaster. Please consult F&Co:\n' + String.join(consultFCo, '\n') + '\n\n';
+        }
+
+        if (!existingCasesList.isEmpty()) {
+            body += 'The following companies already exist as cases and were not processed:\n' + String.join(existingCasesList, '\n') + '\n\n';
+        }
+
+        if (!duplicateInCSV.isEmpty()) {
+            body += 'The following companies are duplicates within the CSV and must be added manually:\n' + String.join(duplicateInCSV, '\n') + '\n\n';
         }
 
         Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
