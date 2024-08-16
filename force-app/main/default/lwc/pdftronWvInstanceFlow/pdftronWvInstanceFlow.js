@@ -84,16 +84,24 @@ export default class PdftronWvInstanceFlow extends LightningElement {
             flowDataArray.forEach(item => {
                 const [key, value] = item.split(':');
                 if (key && value) {
-                    this.mapping[key.trim()] = value.trim();
+                    let trimmedValue = value.trim().toLowerCase();
+    
+                    // Convert to boolean if applicable
+                    if (trimmedValue === 'true') {
+                        this.mapping[key.trim()] = true;
+                    } else if (trimmedValue === 'false') {
+                        this.mapping[key.trim()] = false;
+                    } else {
+                        // Otherwise, treat as string
+                        this.mapping[key.trim()] = value.trim();
+                    }
                 }
             });
         }
-
+    
         // Add default values for specific placeholders
         this.mapping.currentDate = this.getCurrentDateFormatted();
-        // this.mapping.caseReference = this.recordId;
-        // this.mapping.caseName = this.bvCaseName;
-
+    
         console.log('Processed flowData:', this.mapping);
     }
 
