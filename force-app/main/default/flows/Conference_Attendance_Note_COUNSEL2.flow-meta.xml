@@ -107,6 +107,12 @@
             </value>
         </inputAssignments>
         <inputAssignments>
+            <field>Case_Officer__c</field>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
             <field>Date_Inserted__c</field>
             <value>
                 <elementReference>$Flow.CurrentDate</elementReference>
