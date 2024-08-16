@@ -72,4 +72,18 @@ public with sharing class HistoryController {
     public static Id getCurrentUserId() {
         return UserInfo.getUserId();
     }
+
+    // Method to get the owner of the BV Case
+    @AuraEnabled
+    public static Id getCaseOwnerId(Id caseId) {
+        BV_Case__c caseRecord = [SELECT OwnerId FROM BV_Case__c WHERE Id = :caseId LIMIT 1];
+        return caseRecord.OwnerId;
+    }
+
+    @AuraEnabled
+    public static String getTaskOwnerId(Id taskId) {
+        BV_Task__c task = [SELECT Assigned_To__c FROM BV_Task__c WHERE Id = :taskId LIMIT 1];
+        return task.Assigned_To__c;
+    }
+
 }
