@@ -51,12 +51,6 @@ public class FileControllerGraph {
         return Pattern.matches(base64Pattern, content);
     }
 
-    private static Boolean isBase64String(String content) {
-        // Basic check for Base64 by validating if the content contains only Base64 characters
-        String base64Pattern = '^[a-zA-Z0-9+/]*={0,2}$';
-        return Pattern.matches(base64Pattern, content);
-    }
-
     // Method to tag a document in SharePoint
     private static void tagDocument(String siteId, String listId, String listItemId, String fileName, String documentType) {
         String tagUrl = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/lists/' + listId + '/items/' + listItemId + '/fields';

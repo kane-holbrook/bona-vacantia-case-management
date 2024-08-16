@@ -52,66 +52,56 @@ export default class FileLibrary extends LightningElement {
     @track sharePointSiteUrl;
     @track sharePointDirectoryPath;
 
+    // Wired getRecord to fetch the BV_Case__c record's Name
     @wire(getRecord, { recordId: '$recordId', fields: FIELDS })
     record;
 
+    // Compute case name from record
     get bvCaseName() {
         let caseName = getFieldValue(this.record.data, 'BV_Case__c.Name');
-        // Replace all occurrences of '/' with '_'
-        return caseName.replace(/\//g, '_');
+        return caseName ? caseName.replace(/\//g, '_') : '';
     }
 
-    connectedCallback() {
-        this.fetchSharePointSettings();
+    // Wire Apex method to get SharePoint settings
+    @wire(getSharePointSettings)
+    wiredSharePointSettings({ error, data }) {
+        if (data) {
+            this.sharePointSiteUrl = data.SharePoint_Site_URL;
+            this.sharePointDirectoryPath = data.SharePoint_Directory_Path;
+        } else if (error) {
+            this.isLoading = false;
+            console.error('Error fetching SharePoint settings:', error);
+        }
     }
 
-    fetchSharePointSettings() {
-        this.isLoading = true;
-        getSharePointSettings()
-            .then(settings => {
-                this.sharePointSiteUrl = settings.SharePoint_Site_URL;
-                this.sharePointDirectoryPath = settings.SharePoint_Directory_Path;
-                setTimeout(() => {
-                    this.fetchDocuments();
-                }, 1000);
-            })
-            .catch(error => {
-                this.isLoading = false;
-                console.error('Error fetching SharePoint settings:', error);
-            });
-    }
-
-    fetchDocuments() {
-        const caseFolderPath = this.bvCaseName; // only the case folder path
-
-        fetchAllFilesFromFolder({ folderPath: caseFolderPath })
-            .then(result => {
-                this.documents = result
-                    .filter(doc => doc.file) // Only include documents that are files
-                    .map(doc => {
-                        const fields = doc.listItem.fields;
-                        const fileName = fields.LinkFilename;
-                        const fileExtension = fileName.split('.').pop().toLowerCase();
-                        // Return the document with the added previewUrl property and extracted fields
-                        return {
-                            ...doc,
-                            Name: fileName,
-                            DocumentType: fields.DocumentType || 'Not set',
-                            DocumentExtension: fileExtension,
-                            Created_Time: fields.Created,
-                            previewUrl: doc.webUrl,
-                        };
-                    });
-                this.totalRecords = this.documents.length;
-                this.generateFilterOptions(); // Generate the filter options based on the documents
-                this.applyFilters(); // Apply any existing filters and paginate
-                this.isLoading = false;
-                console.log('SharePoint documents:', this.documents);
-            })
-            .catch(error => {
-                this.isLoading = false;
-                console.error('Error fetching SharePoint documents:', error);
-            });
+    // Wire Apex method to fetch documents from SharePoint folder
+    @wire(fetchAllFilesFromFolder, { folderPath: '$bvCaseName' })
+    wiredDocuments({ error, data }) {
+        if (data) {
+            this.documents = data
+                .filter(doc => doc.file) // Only include documents that are files
+                .map(doc => {
+                    const fields = doc.listItem.fields;
+                    const fileName = fields.LinkFilename;
+                    const fileExtension = fileName.split('.').pop().toLowerCase();
+                    // Return the document with the added previewUrl property and extracted fields
+                    return {
+                        ...doc,
+                        Name: fileName,
+                        DocumentType: fields.DocumentType || 'Not set',
+                        DocumentExtension: fileExtension,
+                        Created_Time: fields.Created,
+                        previewUrl: doc.webUrl,
+                    };
+                });
+            this.totalRecords = this.documents.length;
+            this.generateFilterOptions(); // Generate the filter options based on the documents
+            this.applyFilters(); // Apply any existing filters and paginate
+            this.isLoading = false;
+        } else if (error) {
+            this.isLoading = false;
+            console.error('Error fetching SharePoint documents:', error);
+        }
     }
 
     handleSearch(event) {
