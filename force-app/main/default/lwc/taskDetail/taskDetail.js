@@ -3,6 +3,7 @@ import { getRecord, getFieldValue, updateRecord } from 'lightning/uiRecordApi';
 import { refreshApex } from '@salesforce/apex';
 import getUserNames from '@salesforce/apex/HistoryController.getUserNames';
 import getSubTasks from '@salesforce/apex/TaskController.getSubTasks';
+import fetchFilesByIds from '@salesforce/apex/fileControllerGraph.fetchFilesByIds';
 import TASK_ID_FIELD from '@salesforce/schema/BV_Task__c.Id';
 import TASK_NAME_FIELD from '@salesforce/schema/BV_Task__c.Name';
 import TASK_PARENT_FIELD from '@salesforce/schema/BV_Task__c.Parent_Task__c';
@@ -17,6 +18,7 @@ import TASK_DESCRIPTION_FIELD from '@salesforce/schema/BV_Task__c.Description__c
 import TASK_DATE_INSERTED_FIELD from '@salesforce/schema/BV_Task__c.Date_Inserted__c';
 import TASK_GROUP_CODE_FIELD from '@salesforce/schema/BV_Task__c.Group_Code__c';
 import TASK_OTHER_PARTY_FIELD from '@salesforce/schema/BV_Task__c.Other_party__c';
+import TASK_TEMPLATES_FIELD from '@salesforce/schema/BV_Task__c.Templates__c';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 export default class TaskDetail extends LightningElement {
@@ -35,6 +37,8 @@ export default class TaskDetail extends LightningElement {
     @track createSubTask = false;
     @track isParentTask = false;
     @track taskDeleteMarkedComplete = false;
+    @track templates = [];
+    @track selectedTemplate = '';
     currentSubTaskId; // Added this to track current sub-task ID
     parentTaskId;
     editTaskState; // Added this to track current task ID
@@ -101,6 +105,50 @@ export default class TaskDetail extends LightningElement {
                 })
             );
         }
+    }
+
+    @wire(getRecord, { recordId: '$recordId', fields: [TASK_TEMPLATES_FIELD] })
+    wiredTask({ error, data }) {
+        if (data) {
+            const templateIds = getFieldValue(data, TASK_TEMPLATES_FIELD);
+            if (templateIds) {
+                this.fetchTemplates(templateIds);
+            }
+        } else if (error) {
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Error loading task templates',
+                    message: error.body.message,
+                    variant: 'error'
+                })
+            );
+        }
+    }
+
+    fetchTemplates(templateIds) {
+        fetchFilesByIds({ itemIds: templateIds })
+            .then(result => {
+                console.log('Templates:', result);
+    
+                // Ensure the result is valid and map it to the appropriate format
+                if (result && Array.isArray(result)) {
+                    this.templates = result.map(file => ({
+                        label: file.name || 'Unnamed File',
+                        value: file.id
+                    }));
+                } else {
+                    this.templates = [];
+                }
+            })
+            .catch(error => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Error fetching templates',
+                        message: error.body.message,
+                        variant: 'error',
+                    })
+                );
+            });
     }
 
     calculateWaitingPeriod(dateInserted, dueDate) {
@@ -245,6 +293,14 @@ export default class TaskDetail extends LightningElement {
 
     get hasSubTasks() {
         return this.subTasks.length > 0;
+    }
+
+    handleTemplateChange(event) {
+        this.selectedTemplate = event.detail.value;
+    }
+
+    get hasTemplates() {
+        return this.templates && this.templates.length > 0;
     }
 
     onEditSubTask(event) {

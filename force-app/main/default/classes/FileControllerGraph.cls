@@ -229,6 +229,107 @@ public class FileControllerGraph {
     }
 
     @AuraEnabled(cacheable=true)
+    public static List<Map<String, Object>> fetchFilesByIds(String itemIds) {
+        // List to store all files
+        List<Map<String, Object>> allItems = new List<Map<String, Object>>();
+    
+        // Split the itemIds string into individual IDs
+        List<String> idsList = itemIds.split(';');
+    
+        // Iterate through each ID and fetch corresponding document
+        for (String itemId : idsList) {
+            // Skip if itemId is null or empty
+            if (String.isBlank(itemId)) {
+                System.debug('Skipping null or blank itemId');
+                continue;
+            }
+    
+            fetchFileByListItemId(itemId, allItems);
+        }
+    
+        return allItems;
+    }
+    
+    private static void fetchFileByListItemId(String listItemId, List<Map<String, Object>> allItems) {
+        // Settings and base URL
+        Map<String, String> settings = getSharePointSettings();
+        String siteUrl = settings.get('SharePoint_Site_URL');
+        String siteId = getSiteId(siteUrl, settings.get('SharePoint_Directory_Path'));
+        String listName = 'Documents';  // Assuming you have a list named 'Documents'
+    
+        // Construct the URL to fetch the list item by list item ID
+        String listItemUrl = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/lists/' + listName + '/items/' + listItemId;
+    
+        // HTTP request to fetch the list item
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint(listItemUrl);
+        req.setMethod('GET');
+        req.setHeader('Accept', 'application/json');
+    
+        Http http = new Http();
+        HttpResponse res = http.send(req);
+    
+        // Check for successful response
+        if (res.getStatusCode() == 200) {
+            Map<String, Object> listItemData = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
+    
+            // Debug the structure to ensure you're accessing the correct data
+            System.debug('listItemData: ' + JSON.serializePretty(listItemData));
+    
+            // Check if 'File' is present in the response before accessing it
+            if (listItemData != null && listItemData.containsKey('File')) {
+                Map<String, Object> fileDetails = (Map<String, Object>) listItemData.get('File');
+    
+                // Further null checks if needed
+                if (fileDetails != null && fileDetails.containsKey('Id')) {
+                    String fileId = (String) fileDetails.get('Id');
+    
+                    // Fetch the file by its ID
+                    fetchFileByFileId(fileId, allItems);
+                } else {
+                    System.debug('File details or File ID is missing for listItemId: ' + listItemId);
+                }
+            } else {
+                System.debug('No File data present in listItemData for listItemId: ' + listItemId);
+            }
+        } else {
+            throw new CalloutException('Failed to fetch list item with ID ' + listItemId + ': ' + res.getStatus() + ' ' + res.getBody());
+        }
+    }
+    
+    private static void fetchFileByFileName(String fileName, List<Map<String, Object>> allItems) {
+        // Settings and base URL
+        Map<String, String> settings = getSharePointSettings();
+        String siteUrl = settings.get('SharePoint_Site_URL');
+        String siteId = getSiteId(siteUrl, settings.get('SharePoint_Directory_Path'));
+        String folderPath = 'Templates';  // Assuming files are in the Templates folder
+    
+        // Construct the URL to fetch the file by its path in the drive
+        String fileUrl = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/drive/root:/' + folderPath + '/' + fileName;
+    
+        // HTTP request to fetch the file
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint(fileUrl);
+        req.setMethod('GET');
+        req.setHeader('Accept', 'application/json');
+    
+        Http http = new Http();
+        HttpResponse res = http.send(req);
+    
+        // Check for successful response
+        if (res.getStatusCode() == 200) {
+            Map<String, Object> fileData = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
+
+            System.debug(JSON.serializePretty(fileData));
+            
+            // Add file data to the allItems list
+            allItems.add(fileData);
+        } else {
+            throw new CalloutException('Failed to fetch file with name ' + fileName + ': ' + res.getStatus() + ' ' + res.getBody());
+        }
+    }
+
+    @AuraEnabled(cacheable=true)
     public static List<Map<String, Object>> fetchFilesFromSharePoint(String folderPath, String documentType) {
         Map<String, String> settings = getSharePointSettings();
         String siteUrl = settings.get('SharePoint_Site_URL');
