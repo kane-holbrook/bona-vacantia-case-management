@@ -25,6 +25,11 @@ export default class GenerateDocumentFlow extends LightningElement {
     connectedCallback() {
         this.caseId = getRecordId();
         this.fetchSharePointSettings();
+
+        // Automatically proceed if document ID and type are already provided
+        if (this.selectedDocumentId && this.selectedDocumentType) {
+            this.autoNavigateToNextStep();
+        }
     }
 
     @wire(CurrentPageReference) pageRef;
@@ -122,6 +127,14 @@ export default class GenerateDocumentFlow extends LightningElement {
             }
         } else {
             alert('Please select a document.');
+        }
+    }
+
+    autoNavigateToNextStep() {
+        // Check if the "NEXT" action is available and trigger it
+        if (this.availableActions.includes('NEXT')) {
+            const navigateNextEvent = new FlowNavigationNextEvent();
+            this.dispatchEvent(navigateNextEvent);
         }
     }
 }

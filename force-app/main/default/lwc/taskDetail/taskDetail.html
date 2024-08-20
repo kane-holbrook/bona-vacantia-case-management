@@ -134,7 +134,11 @@
     </article>
 
     <template if:true={isPdftronOpen}>
-        <c-pdftron-wv-instance-flow selected-document-id={selectedTemplate} onclose={handlePdftronClose}></c-pdftron-wv-instance-flow>
+        <lightning-flow
+            flow-api-name="Generate_a_document"
+            onstatuschange={handleFlowStatusChange}
+            flow-input-variables={flowInputs}>
+        </lightning-flow>
     </template>
 
     <template if:true={editSubTask}>

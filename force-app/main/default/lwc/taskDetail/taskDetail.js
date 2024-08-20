@@ -40,6 +40,8 @@ export default class TaskDetail extends LightningElement {
     @track templates = [];
     @track isPdftronOpen = false;
     @track selectedTemplate = '';
+    @track selectedDocumentType = '';  // Holds the document type
+    @track flowInputs = [];  // Array to store input variables for the flow
     currentSubTaskId; // Added this to track current sub-task ID
     parentTaskId;
     editTaskState; // Added this to track current task ID
@@ -297,11 +299,47 @@ export default class TaskDetail extends LightningElement {
     }
 
     handleTemplateChange(event) {
+        // Set the selected template (document ID)
         this.selectedTemplate = event.detail.value;
+
+        // Find the selected file in the templates list
+        const selectedFile = this.templates.find(file => file.value === this.selectedTemplate);
+
+        if (selectedFile) {
+            // Extract the file name and remove the extension (assuming it's after the last dot)
+            const fileNameWithoutExtension = selectedFile.label.split('.').slice(0, -1).join('.');
+
+            // Convert the file name to uppercase and set it as the document type
+            this.selectedDocumentType = fileNameWithoutExtension.toUpperCase();
+        }
+
+        // Prepare the flow input variables
+        this.flowInputs = [
+            {
+                name: 'selectedDocumentId',
+                type: 'String',
+                value: this.selectedTemplate
+            },
+            {
+                name: 'selectedDocumentType',
+                type: 'String',
+                value: this.selectedDocumentType
+            }
+        ];
+
+        // Show the flow (optional depending on your use case)
+        this.isFlowVisible = true;
     }
 
     handleProceedToGenerate() {
         this.isPdftronOpen = true;
+    }
+
+    handleFlowStatusChange(event) {
+        if (event.detail.status === 'FINISHED') {
+            // Handle flow completion
+            this.isPdftronOpen = false;
+        }
     }
 
     handlePdftronClose() {
