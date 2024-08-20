@@ -38,7 +38,7 @@ export default class TaskDetail extends LightningElement {
     @track isParentTask = false;
     @track taskDeleteMarkedComplete = false;
     @track templates = [];
-    @track isPdftronOpen = false;
+    @track isFlowModalOpen = false;
     @track selectedTemplate = '';
     @track selectedDocumentType = '';  // Holds the document type
     @track flowInputs = [];  // Array to store input variables for the flow
@@ -326,24 +326,22 @@ export default class TaskDetail extends LightningElement {
                 value: this.selectedDocumentType
             }
         ];
-
-        // Show the flow (optional depending on your use case)
-        this.isFlowVisible = true;
     }
 
     handleProceedToGenerate() {
-        this.isPdftronOpen = true;
+        this.isFlowModalOpen = true;
     }
 
     handleFlowStatusChange(event) {
         if (event.detail.status === 'FINISHED') {
             // Handle flow completion
-            this.isPdftronOpen = false;
+            this.isFlowModalOpen = false;
         }
     }
 
-    handlePdftronClose() {
-        this.isPdftronOpen = false;
+    handleFlowClose() {
+        // Close the flow modal
+        this.isFlowModalOpen = false;
     }
 
     // Getter to determine if the Proceed button should be disabled
