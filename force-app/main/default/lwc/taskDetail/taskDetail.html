@@ -115,13 +115,10 @@
                                     <thead>
                                         <tr class="slds-line-height_reset">
                                             <th scope="col">
-                                                <div class="slds-truncate" title="Details">Details</div>
+                                                <div class="slds-truncate" title="Date">Date</div>
                                             </th>
                                             <th scope="col">
                                                 <div class="slds-truncate" title="Action">Action</div>
-                                            </th>
-                                            <th scope="col">
-                                                <div class="slds-truncate" title="Date">Date</div>
                                             </th>
                                             <th scope="col">
                                                 <div class="slds-truncate" title="Case Officer">Case Officer</div>
@@ -131,16 +128,11 @@
                                     <tbody>
                                         <template for:each={caseHistoryData} for:item="history">
                                             <tr key={history.Id} class="slds-hint-parent">
-                                                <th data-label="Details" scope="row">
-                                                    <div class="slds-truncate" title={history.Details__c}>
-                                                        {history.Details__c}
-                                                    </div>
-                                                </th>
+                                                <td data-label="Date">
+                                                    <div class="slds-truncate" title={history.Date_Inserted__c}><lightning-formatted-date-time value={history.Date_Inserted__c} day="numeric" month="numeric" year="numeric"></lightning-formatted-date-time></div>
+                                                </td>
                                                 <td data-label="Action">
                                                     <div class="slds-truncate" title={history.Action__c}>{history.Action__c}</div>
-                                                </td>
-                                                <td data-label="Date">
-                                                    <div class="slds-truncate" title={history.Date__c}>{history.Date__c}</div>
                                                 </td>
                                                 <td data-label="Case Officer">
                                                     <div class="slds-truncate" title={history.Case_Officer_Name}>{history.Case_Officer_Name}</div>
