@@ -109,7 +109,7 @@ export default class TaskDetail extends LightningElement {
     }
 
     @wire(getRecord, { recordId: '$recordId', fields: [TASK_TEMPLATES_FIELD] })
-    wiredTask({ error, data }) {
+    wiredTaskTemplates({ error, data }) {
         if (data) {
             const templateIds = getFieldValue(data, TASK_TEMPLATES_FIELD);
             if (templateIds) {
