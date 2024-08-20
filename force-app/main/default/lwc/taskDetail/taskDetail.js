@@ -20,6 +20,7 @@ import TASK_DATE_INSERTED_FIELD from '@salesforce/schema/BV_Task__c.Date_Inserte
 import TASK_GROUP_CODE_FIELD from '@salesforce/schema/BV_Task__c.Group_Code__c';
 import TASK_OTHER_PARTY_FIELD from '@salesforce/schema/BV_Task__c.Other_party__c';
 import TASK_TEMPLATES_FIELD from '@salesforce/schema/BV_Task__c.Templates__c';
+import WAITING_PERIOD_FIELD from '@salesforce/schema/BV_Task__c.Waiting_Period_Data__c';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 export default class TaskDetail extends LightningElement {
@@ -53,7 +54,8 @@ export default class TaskDetail extends LightningElement {
     @wire(getRecord, { recordId: '$recordId', fields: [
         TASK_ID_FIELD, TASK_NAME_FIELD, TASK_PARENT_FIELD, TASK_ASSIGNED_TO_FIELD, TASK_DUE_DATE_FIELD, TASK_PRIORITY_FIELD, 
         TASK_COMMENTS_FIELD, TASK_CREATED_BY_FIELD, TASK_LAST_MODIFIED_BY_FIELD, TASK_NEXT_TASK_FIELD, 
-        TASK_DESCRIPTION_FIELD, TASK_DATE_INSERTED_FIELD, TASK_GROUP_CODE_FIELD, TASK_OTHER_PARTY_FIELD
+        TASK_DESCRIPTION_FIELD, TASK_DATE_INSERTED_FIELD, TASK_GROUP_CODE_FIELD, TASK_OTHER_PARTY_FIELD, 
+        WAITING_PERIOD_FIELD
     ] })
     wiredTask(result) {
         this.wiredTaskResult = result;
@@ -66,6 +68,22 @@ export default class TaskDetail extends LightningElement {
                 getFieldValue(data, TASK_LAST_MODIFIED_BY_FIELD)
             ];
             this.fetchUserNames(userIds);
+
+            // Check if WAITING_PERIOD_FIELD contains data
+            const waitingPeriodDataStr = getFieldValue(data, WAITING_PERIOD_FIELD);
+            if (waitingPeriodDataStr) {
+                const waitingPeriodData = JSON.parse(waitingPeriodDataStr);
+                this.waitingPeriodInputValue = waitingPeriodData.waitingPeriodInputValue || '';
+                this.waitingPeriodTimeValue = waitingPeriodData.waitingPeriodTimeValue || '';
+                this.beforeAfterValue = waitingPeriodData.beforeAfterValue || '';
+                this.dateInsertedSelected = waitingPeriodData.dateInsertedSelected || '';
+            } else {
+                // Set defaults if there's no data in WAITING_PERIOD_FIELD
+                this.waitingPeriodInputValue = 1;
+                this.waitingPeriodTimeValue = 'Days';
+                this.beforeAfterValue = 'After';
+                this.dateInsertedSelected = 'Date Inserted';
+            }
         } else if (error) {
             this.dispatchEvent(
                 new ShowToastEvent({
@@ -82,24 +100,48 @@ export default class TaskDetail extends LightningElement {
         this.wiredSubTaskResult = result;
         const { error, data } = result;
         if (data) {
-            this.subTasks = data.map(record => ({
-                ...record,
-                isOpen: false,
-                sectionClass: 'slds-accordion__section',
-                iconName: 'utility:chevronright',
-                formattedDateInserted: this.formatDate(record.Date_Inserted__c),
-                formattedDueDate: this.formatDate(record.Due_Date__c),
-                Assigned_To_Name: '',
-                Waiting_Period__c: this.calculateWaitingPeriod(record.Date_Inserted__c, record.Due_Date__c),
-                Comments: record.Comments__c
-            }));
-
+            this.subTasks = data.map(record => {
+                // Parse the waiting period data from WAITING_PERIOD_FIELD, if it exists
+                let waitingPeriodData = {
+                    waitingPeriodInputValue: '',
+                    waitingPeriodTimeValue: '',
+                    beforeAfterValue: '',
+                    dateInsertedSelected: ''
+                };
+    
+                if (record.Waiting_Period_Data__c) {  // Assuming the subtask has a WAITING_PERIOD_FIELD equivalent
+                    try {
+                        const parsedData = JSON.parse(record.Waiting_Period_Data__c);
+                        waitingPeriodData = {
+                            waitingPeriodInputValue: parsedData.waitingPeriodInputValue || '',
+                            waitingPeriodTimeValue: parsedData.waitingPeriodTimeValue || '',
+                            beforeAfterValue: parsedData.beforeAfterValue || '',
+                            dateInsertedSelected: parsedData.dateInsertedSelected || ''
+                        };
+                    } catch (error) {
+                        console.error('Error parsing WAITING_PERIOD_FIELD for subtask:', error);
+                    }
+                }
+    
+                return {
+                    ...record,
+                    isOpen: false,
+                    sectionClass: 'slds-accordion__section',
+                    iconName: 'utility:chevronright',
+                    formattedDateInserted: this.formatDate(record.Date_Inserted__c),
+                    formattedDueDate: this.formatDate(record.Due_Date__c),
+                    Assigned_To_Name: '',
+                    Waiting_Period__c: `${waitingPeriodData.waitingPeriodInputValue} ${waitingPeriodData.waitingPeriodTimeValue} ${waitingPeriodData.beforeAfterValue} ${waitingPeriodData.dateInsertedSelected}`,
+                    Comments: record.Comments__c
+                };
+            });
+    
             this.subTasks.sort((a, b) => {
                 const dateA = new Date(a.Due_Date__c);
                 const dateB = new Date(b.Due_Date__c);
                 return dateA - dateB;
             });
-
+    
             this.fetchSubTaskUserNames(this.subTasks);
         } else if (error) {
             this.dispatchEvent(
@@ -164,29 +206,6 @@ export default class TaskDetail extends LightningElement {
                 );
             });
     }
-
-    calculateWaitingPeriod(dateInserted, dueDate) {
-        if (!dateInserted || !dueDate) return '';
-    
-        const dateInsertedObj = new Date(dateInserted);
-        const dueDateObj = new Date(dueDate);
-        const timeDifference = dueDateObj - dateInsertedObj;
-    
-        const absDifference = Math.abs(timeDifference);
-        const dayDifference = absDifference / (1000 * 3600 * 24);
-        let waitingPeriod = '';
-    
-        if (dayDifference <= 30) {
-            waitingPeriod = `${Math.round(dayDifference)} days`;
-        } else if (dayDifference <= 365) {
-            waitingPeriod = `${Math.round(dayDifference / 7)} weeks`;
-        } else {
-            waitingPeriod = `${Math.round(dayDifference / 30)} months`;
-        }
-    
-        return `${waitingPeriod} ${timeDifference > 0 ? 'after' : 'before'} date inserted`;
-    }
-    
 
     fetchSubTaskUserNames(subTasks) {
         const userIds = subTasks.map(record => record.Assigned_To__c).filter(userId => !!userId);
@@ -293,7 +312,15 @@ export default class TaskDetail extends LightningElement {
     get isHigh() {
         return this.priority === 'High';
     }
-    
+
+    get dateInserted() {
+        return getFieldValue(this.task, TASK_DATE_INSERTED_FIELD);
+    }
+
+    get waitingPeriod() {
+        // ${waitingPeriodData.waitingPeriodInputValue} ${waitingPeriodData.waitingPeriodTimeValue} ${waitingPeriodData.beforeAfterValue} ${waitingPeriodData.dateInsertedSelected}
+        return this.waitingPeriodInputValue + ' ' + this.waitingPeriodTimeValue + ' ' + this.beforeAfterValue + ' ' + this.dateInsertedSelected;
+    }
 
     get modalHeader() {
         if (this.currentSubTaskId && !this.editTaskState) {

@@ -9,10 +9,10 @@ import CASE_OFFICER_FIELD from '@salesforce/schema/BV_Task__c.Assigned_To__c';
 import PRIORITY_FIELD from '@salesforce/schema/BV_Task__c.Priority__c';
 import DATE_INSERTED_FIELD from '@salesforce/schema/BV_Task__c.Date_Inserted__c';
 import DUE_DATE_FIELD from '@salesforce/schema/BV_Task__c.Due_Date__c';
-import OTHER_PARTY_MEMBERS_FIELD from '@salesforce/schema/BV_Task__c.Other_party_members__c';
 import LAST_UPDATED_FIELD from '@salesforce/schema/BV_Task__c.Last_updated__c';
 import BV_CASE_LOOKUP_FIELD from '@salesforce/schema/BV_Task__c.BV_Case_Lookup__c';
 import PARENT_TASK_FIELD from '@salesforce/schema/BV_Task__c.Parent_Task__c';
+import WAITING_PERIOD_FIELD from '@salesforce/schema/BV_Task__c.Waiting_Period_Data__c';
 import searchUsers from '@salesforce/apex/TaskController.searchUsers';
 import getUserNames from '@salesforce/apex/HistoryController.getUserNames';
 import getCaseOwnerId from '@salesforce/apex/HistoryController.getCaseOwnerId';
@@ -26,7 +26,8 @@ const fields = [
     PRIORITY_FIELD,
     DATE_INSERTED_FIELD,
     DUE_DATE_FIELD,
-    LAST_UPDATED_FIELD
+    LAST_UPDATED_FIELD,
+    WAITING_PERIOD_FIELD
 ];
 
 export default class TaskManageModal extends LightningElement {
@@ -103,11 +104,27 @@ export default class TaskManageModal extends LightningElement {
     wiredRecord({ error, data }) {
         if (data) {
             this.task = JSON.parse(JSON.stringify(data.fields));
+            
+            // Load case officer value
             this.caseOfficerValue = this.task.Assigned_To__c.value ? this.task.Assigned_To__c.value : '';
             if (this.caseOfficerValue) {
                 this.fetchCaseOfficerName(this.caseOfficerValue);
             }
-            this.autoPopulateFields();
+            
+            // Check if there's data in the WAITING_PERIOD_FIELD
+            if (this.task[WAITING_PERIOD_FIELD.fieldApiName] && this.task[WAITING_PERIOD_FIELD.fieldApiName].value) {
+                const waitingPeriodData = JSON.parse(this.task[WAITING_PERIOD_FIELD.fieldApiName].value);
+                this.waitingPeriodInputValue = waitingPeriodData.waitingPeriodInputValue || '';
+                this.waitingPeriodTimeValue = waitingPeriodData.waitingPeriodTimeValue || '';
+                this.beforeAfterValue = waitingPeriodData.beforeAfterValue || '';
+                this.dateInsertedSelected = waitingPeriodData.dateInsertedSelected || '';
+                
+                // Populate fields with the loaded data
+                this.updateInputFields();
+            } else {
+                // Fallback to auto-population if no waiting period data is found
+                this.autoPopulateFields();
+            }
         } else if (error) {
             this.error = error;
         }
@@ -180,6 +197,18 @@ export default class TaskManageModal extends LightningElement {
 
     handleInputChange(event) {
         const field = event.target.dataset.field;
+
+        // Capture the input changes for waiting period-related fields
+        if (field === 'waitingPeriodInputValue') {
+            this.waitingPeriodInputValue = event.target.value;
+        } else if (field === 'waitingPeriodTimeValue') {
+            this.waitingPeriodTimeValue = event.target.value;
+        } else if (field === 'beforeAfterValue') {
+            this.beforeAfterValue = event.target.value;
+        } else if (field === 'dateInsertedSelected') {
+            this.dateInsertedSelected = event.target.value;
+        }
+
         if (!this.task[field]) {
             this.task[field] = { value: '' };
         }
@@ -241,26 +270,19 @@ export default class TaskManageModal extends LightningElement {
         const dueDate = this.task.Due_Date__c ? new Date(this.task.Due_Date__c.value) : null;
 
         if (dateInserted && dueDate) {
-            const timeDifference = dueDate - dateInserted;
-            const isAfter = timeDifference > 0;
+            const isAfter = dueDate > dateInserted;
             this.beforeAfterValue = isAfter ? 'After' : 'Before';
 
-            const absDifference = Math.abs(timeDifference);
-            const dayDifference = absDifference / (1000 * 3600 * 24);
+            // Calculate the difference in days
+            const dayDifference = Math.abs((dueDate - dateInserted) / (1000 * 3600 * 24)); // Difference in days
 
-            if (dayDifference <= 30) {
-                this.waitingPeriodTimeValue = 'Days';
-                this.waitingPeriodInputValue = Math.round(dayDifference).toString();
-            } else if (dayDifference <= 365) {
-                this.waitingPeriodTimeValue = 'Weeks';
-                this.waitingPeriodInputValue = Math.round(dayDifference / 7).toString();
-            } else {
-                this.waitingPeriodTimeValue = 'Months';
-                this.waitingPeriodInputValue = Math.round(dayDifference / 30).toString();
-            }
+            // Always display the difference in days
+            this.waitingPeriodTimeValue = 'Days';
+            this.waitingPeriodInputValue = Math.round(dayDifference).toString();
 
             this.dateInsertedSelected = 'Date Inserted';
 
+            // Update the input fields with the calculated values
             this.updateInputFields();
         }
     }
@@ -344,6 +366,19 @@ export default class TaskManageModal extends LightningElement {
 
     @api
     handleSave() {
+        const waitingPeriodData = {
+            waitingPeriodInputValue: this.waitingPeriodInputValue,
+            waitingPeriodTimeValue: this.waitingPeriodTimeValue,
+            beforeAfterValue: this.beforeAfterValue,
+            dateInsertedSelected: this.dateInsertedSelected
+        };
+
+        console.log('waitingPeriodData:', waitingPeriodData);
+        
+        this.task[WAITING_PERIOD_FIELD.fieldApiName] = {
+            value: JSON.stringify(waitingPeriodData)
+        };
+        
         if (this.recordId) {
             this.updateTask();
         } else {
