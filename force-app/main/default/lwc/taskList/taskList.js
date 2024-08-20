@@ -246,7 +246,6 @@ export default class TaskList extends LightningElement {
 
     handleDeleteSuccess() {
         this.isDeleteModalOpen = false;
-        this.showToast('Success', 'Record deleted successfully', 'success');
         this.refreshTaskItems();
     }
 

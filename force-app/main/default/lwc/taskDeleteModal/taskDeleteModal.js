@@ -95,4 +95,27 @@ export default class TaskDeleteModal extends LightningElement {
         return `${waitingPeriod} ${timeDifference > 0 ? 'after' : 'before'} date inserted`;
     }
 
+    @api
+    deleteRecord() {
+        deleteRecord(this.recordId)
+            .then(() => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Success',
+                        message: 'Task deleted successfully',
+                        variant: 'success'
+                    })
+                );
+                this.dispatchEvent(new CustomEvent('taskdeleted'));
+            })
+            .catch(error => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Error deleting task',
+                        message: error.body.message,
+                        variant: 'error'
+                    })
+                );
+            });
+    }
 }
