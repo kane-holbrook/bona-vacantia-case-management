@@ -175,10 +175,47 @@ export default class TaskDetail extends LightningElement {
     @wire(getHistoryItemsByTaskId, { taskId: '$recordId' })
     caseHistoryHandler({ error, data }) {
         if (data) {
-            this.caseHistoryData = data;  // Directly assign the data
+            this.caseHistoryData = data;
+            // Extract the Case Officer IDs
+            const caseOfficerIds = data.map(item => item.Case_Officer__c).filter(id => !!id);
+            
+            // Fetch user names for Case Officer IDs
+            if (caseOfficerIds.length > 0) {
+                this.fetchCaseOfficerNames(caseOfficerIds);
+            }
         } else if (error) {
             console.error('Error fetching case history:', error);
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Error loading case history',
+                    message: error.body.message,
+                    variant: 'error'
+                })
+            );
         }
+    }
+
+    fetchCaseOfficerNames(userIds) {
+        getUserNames({ userIds })
+            .then(result => {
+                // Map the result (Id -> Name) back to the caseHistoryData
+                this.caseHistoryData = this.caseHistoryData.map(item => {
+                    return { 
+                        ...item, 
+                        Case_Officer_Name: result[item.Case_Officer__c] || 'Unknown Officer'
+                    };
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching case officer names:', error);
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Error fetching user names',
+                        message: error.body.message,
+                        variant: 'error'
+                    })
+                );
+            });
     }
 
     fetchTemplates(templateIds) {
