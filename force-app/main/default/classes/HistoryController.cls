@@ -94,4 +94,19 @@ public with sharing class HistoryController {
             update historyRecord;
         }
     }
+
+    @AuraEnabled(cacheable=true)
+    public static List<Case_History__c> getHistoryItemsByTaskId(String taskId) {
+        System.debug('taskId: ' + taskId);
+
+        // Fetch Case_History__c records where BV_Task__c matches the provided taskId
+        List<Case_History__c> historyItems = [
+            SELECT Id, Date__c, Date_Inserted__c, Details__c, Action__c, Case_Officer__c, Flag_as_important__c, Last_updated__c
+            FROM Case_History__c 
+            WHERE BV_Task__c = :taskId
+            ORDER BY Date__c DESC
+        ];
+
+        return historyItems;
+    }
 }

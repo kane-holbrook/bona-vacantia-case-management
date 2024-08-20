@@ -108,13 +108,53 @@
                     </lightning-tab>
                     <lightning-tab label="Templates" name="templates">
                         <template if:true={hasTemplates}>
+                            <template if:true={caseHistoryData}>
+                                <table class="slds-table slds-table_cell-buffer slds-table_bordered" aria-labelledby="element-with-table-label other-element-with-table-label">
+                                    <thead>
+                                        <tr class="slds-line-height_reset">
+                                            <th scope="col">
+                                                <div class="slds-truncate" title="Details">Details</div>
+                                            </th>
+                                            <th scope="col">
+                                                <div class="slds-truncate" title="Action">Action</div>
+                                            </th>
+                                            <th scope="col">
+                                                <div class="slds-truncate" title="Date">Date</div>
+                                            </th>
+                                            <th scope="col">
+                                                <div class="slds-truncate" title="Case Officer">Case Officer</div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template for:each={caseHistoryData} for:item="history">
+                                            <tr key={history.Id} class="slds-hint-parent">
+                                                <th data-label="Details" scope="row">
+                                                    <div class="slds-truncate" title={history.Details__c}>
+                                                        {history.Details__c}
+                                                    </div>
+                                                </th>
+                                                <td data-label="Action">
+                                                    <div class="slds-truncate" title={history.Action__c}>{history.Action__c}</div>
+                                                </td>
+                                                <td data-label="Date">
+                                                    <div class="slds-truncate" title={history.Date__c}>{history.Date__c}</div>
+                                                </td>
+                                                <td data-label="Case Officer">
+                                                    <div class="slds-truncate" title={history.Case_Officer__c}>{history.Case_Officer__c}</div>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </template>
                             <lightning-combobox
                                 name="templateSelect"
                                 label="Select Template"
                                 value={selectedTemplate}
                                 placeholder="Choose Template"
                                 options={templates}
-                                class="slds-m-bottom_medium"
+                                class="slds-m-bottom_medium slds-m-top_medium"
                                 onchange={handleTemplateChange}>
                             </lightning-combobox>
                             <lightning-button

@@ -2,6 +2,7 @@ import { LightningElement, api, track, wire } from 'lwc';
 import { getRecord, getFieldValue, updateRecord } from 'lightning/uiRecordApi';
 import { refreshApex } from '@salesforce/apex';
 import getUserNames from '@salesforce/apex/HistoryController.getUserNames';
+import getHistoryItemsByTaskId from '@salesforce/apex/HistoryController.getHistoryItemsByTaskId';
 import getSubTasks from '@salesforce/apex/TaskController.getSubTasks';
 import fetchFilesByIds from '@salesforce/apex/FileControllerGraph.fetchFilesByIds';
 import TASK_ID_FIELD from '@salesforce/schema/BV_Task__c.Id';
@@ -42,6 +43,7 @@ export default class TaskDetail extends LightningElement {
     @track selectedTemplate = '';
     @track selectedDocumentType = '';  // Holds the document type
     @track flowInputs = [];  // Array to store input variables for the flow
+    @track caseHistoryData = [];
     currentSubTaskId; // Added this to track current sub-task ID
     parentTaskId;
     editTaskState; // Added this to track current task ID
@@ -125,6 +127,15 @@ export default class TaskDetail extends LightningElement {
                     variant: 'error'
                 })
             );
+        }
+    }
+
+    @wire(getHistoryItemsByTaskId, { taskId: '$recordId' })
+    caseHistoryHandler({ error, data }) {
+        if (data) {
+            this.caseHistoryData = data;  // Directly assign the data
+        } else if (error) {
+            console.error('Error fetching case history:', error);
         }
     }
 
