@@ -123,19 +123,32 @@
                                             <th scope="col">
                                                 <div class="slds-truncate" title="Case Officer">Case Officer</div>
                                             </th>
+                                            <th scope="col">
+                                                <div class="slds-truncate" title="Options">Options</div>
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <template for:each={caseHistoryData} for:item="history">
                                             <tr key={history.Id} class="slds-hint-parent">
                                                 <td data-label="Date">
-                                                    <div class="slds-truncate" title={history.Date_Inserted__c}><lightning-formatted-date-time value={history.Date_Inserted__c} day="numeric" month="numeric" year="numeric"></lightning-formatted-date-time></div>
+                                                    <div class="slds-truncate" title={history.Date_Inserted__c}>
+                                                        <lightning-formatted-date-time value={history.Date_Inserted__c} day="numeric" month="numeric" year="numeric"></lightning-formatted-date-time>
+                                                    </div>
                                                 </td>
                                                 <td data-label="Action">
                                                     <div class="slds-truncate" title={history.Action__c}>{history.Action__c}</div>
                                                 </td>
                                                 <td data-label="Case Officer">
                                                     <div class="slds-truncate" title={history.Case_Officer_Name}>{history.Case_Officer_Name}</div>
+                                                </td>
+                                                <td data-label="Options">
+                                                    <div class="slds-dropdown-trigger slds-dropdown-trigger_click">
+                                                        <lightning-button-menu alternative-text="Show More" menu-alignment="right">
+                                                            <lightning-menu-item label="Manage" data-id={history.Id} onclick={onManageTemplate}></lightning-menu-item>
+                                                            <lightning-menu-item label="Delete" data-id={history.Id} onclick={onDeleteTemplate}></lightning-menu-item>
+                                                        </lightning-button-menu>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         </template>
