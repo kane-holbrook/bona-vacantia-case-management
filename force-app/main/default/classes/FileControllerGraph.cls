@@ -232,21 +232,15 @@ public class FileControllerGraph {
     public static List<Map<String, Object>> fetchFilesByIds(String itemIds) {
         // List to store all files
         List<Map<String, Object>> allItems = new List<Map<String, Object>>();
-    
+        
         // Split the itemIds string into individual IDs
         List<String> idsList = itemIds.split(';');
-    
+        
         // Iterate through each ID and fetch corresponding document
         for (String itemId : idsList) {
-            // Skip if itemId is null or empty
-            if (String.isBlank(itemId)) {
-                System.debug('Skipping null or blank itemId');
-                continue;
-            }
-    
             fetchFileByListItemId(itemId, allItems);
         }
-    
+        
         return allItems;
     }
     
@@ -258,9 +252,9 @@ public class FileControllerGraph {
         String listName = 'Documents';  // Assuming you have a list named 'Documents'
     
         // Construct the URL to fetch the list item by list item ID
-        String listItemUrl = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/lists/' + listName + '/items/' + listItemId;
+        String listItemUrl = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/lists/' + listName + '/items/' + listItemId + '/fields';
     
-        // HTTP request to fetch the list item
+        // HTTP request to fetch the list item fields
         HttpRequest req = new HttpRequest();
         req.setEndpoint(listItemUrl);
         req.setMethod('GET');
@@ -271,26 +265,19 @@ public class FileControllerGraph {
     
         // Check for successful response
         if (res.getStatusCode() == 200) {
+            // Deserialize the response to a Map
             Map<String, Object> listItemData = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
     
-            // Debug the structure to ensure you're accessing the correct data
-            System.debug('listItemData: ' + JSON.serializePretty(listItemData));
+            System.debug(JSON.serializePretty(listItemData));
     
-            // Check if 'File' is present in the response before accessing it
-            if (listItemData != null && listItemData.containsKey('File')) {
-                Map<String, Object> fileDetails = (Map<String, Object>) listItemData.get('File');
-    
-                // Further null checks if needed
-                if (fileDetails != null && fileDetails.containsKey('Id')) {
-                    String fileId = (String) fileDetails.get('Id');
-    
-                    // Fetch the file by its ID
-                    fetchFileByFileId(fileId, allItems);
-                } else {
-                    System.debug('File details or File ID is missing for listItemId: ' + listItemId);
-                }
+            // Extract relevant fields (like file name or URL) to query the drive item
+            if (listItemData != null && listItemData.containsKey('FileLeafRef')) {
+                String fileName = (String) listItemData.get('FileLeafRef');
+                
+                // Now fetch the drive item by its name or path
+                fetchFileByFileName(fileName, allItems);
             } else {
-                System.debug('No File data present in listItemData for listItemId: ' + listItemId);
+                throw new CalloutException('FileLeafRef not found for list item ID ' + listItemId);
             }
         } else {
             throw new CalloutException('Failed to fetch list item with ID ' + listItemId + ': ' + res.getStatus() + ' ' + res.getBody());
@@ -554,7 +541,6 @@ public class FileControllerGraph {
         shDocument.DocumentID__c = documentId;
         shDocument.Name = contentVersion.Title;
         shDocument.Document_Name__c = contentVersion.Title;
-        shDocument.FileContent__c = EncodingUtil.base64Encode(contentVersion.VersionData);
         shDocument.DocumentType__c = 'Email Attachment'; // Adjust as needed
         shDocument.FileSize__c = contentVersion.ContentSize;
         shDocument.DocumentExtension__c = contentVersion.FileExtension;
