@@ -86,4 +86,12 @@ public with sharing class HistoryController {
         return task.Assigned_To__c;
     }
 
+    @AuraEnabled
+    public static void updateCaseHistoryTask(String historyRecordId, String taskId) {
+        Case_History__c historyRecord = [SELECT Id, BV_Task__c FROM Case_History__c WHERE Id = :historyRecordId LIMIT 1];
+        if (historyRecord != null) {
+            historyRecord.BV_Task__c = taskId;
+            update historyRecord;
+        }
+    }
 }

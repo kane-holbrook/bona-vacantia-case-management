@@ -324,6 +324,11 @@ export default class TaskDetail extends LightningElement {
                 name: 'selectedDocumentType',
                 type: 'String',
                 value: this.selectedDocumentType
+            },
+            {
+                name: 'taskId',
+                type: 'String',
+                value: this.recordId
             }
         ];
     }

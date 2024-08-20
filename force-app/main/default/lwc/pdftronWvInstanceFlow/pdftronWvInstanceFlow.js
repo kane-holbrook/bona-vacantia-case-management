@@ -13,6 +13,7 @@ import saveDocument from '@salesforce/apex/PDFTron_ContentVersionController.save
 import saveDocumentToSharePoint from '@salesforce/apex/PDFTron_ContentVersionController.saveDocumentToSharePointViaFlow';
 import getFileDataFromIds from '@salesforce/apex/PDFTron_ContentVersionController.getFileDataFromIds';
 import getUser from "@salesforce/apex/PDFTron_ContentVersionController.getUser";
+import updateCaseHistoryTask from '@salesforce/apex/HistoryController.updateCaseHistoryTask';
 import getSharePointFileDataById from '@salesforce/apex/FileControllerGraph.getGraphFileDataById';
 import { getRecordId } from 'c/sharedService';
 
@@ -42,6 +43,7 @@ export default class PdftronWvInstanceFlow extends LightningElement {
     @api selectedDocumentId;
     @api flowData; // Custom class property
     @api historyRecordId;
+    @api taskId;
 
     @wire(CurrentPageReference)
     pageRef;
@@ -412,7 +414,7 @@ export default class PdftronWvInstanceFlow extends LightningElement {
                     break;
                 case 'SAVE_SHAREPOINT_DOCUMENT':
                     const folderName = this.bvCaseName + '/' + this.historyRecordId;
-
+                
                     console.log(event.data.payload);
                     saveDocumentToSharePoint({
                         jsonpayload: JSON.stringify(event.data.payload),
@@ -421,13 +423,28 @@ export default class PdftronWvInstanceFlow extends LightningElement {
                     })
                         .then((response) => {
                             me.iframeWindow.postMessage({ type: 'DOCUMENT_SAVED', response }, '*');
-
                             fireEvent(this.pageRef, 'refreshOnSave', response);
-
+                    
+                            // Check if taskId is present
+                            if (this.taskId) {
+                                // Update Case History record with the taskId
+                                updateCaseHistoryTask({
+                                    historyRecordId: this.historyRecordId,
+                                    taskId: this.taskId
+                                })
+                                .then(() => {
+                                    this.showNotification('Success', 'History record updated with Task ID', 'success');
+                                })
+                                .catch(error => {
+                                    console.error('Error updating history record:', error);
+                                    this.showNotification('Error', 'Failed to update history record with Task ID', 'error');
+                                });
+                            }
+                    
                             this.showNotification('Document Generated', event.data.payload.filename + ' has been generated and attached to history', 'success');
                         })
                         .catch(error => {
-                            me.iframeWindow.postMessage({ type: 'DOCUMENT_SAVED', error }, '*')
+                            me.iframeWindow.postMessage({ type: 'DOCUMENT_SAVED', error }, '*');
                             fireEvent(this.pageRef, 'refreshOnSave', error);
                             console.error(event.data.payload.contentDocumentId);
                             console.error(JSON.stringify(error));
