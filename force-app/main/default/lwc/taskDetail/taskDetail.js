@@ -3,7 +3,7 @@ import { getRecord, getFieldValue, updateRecord } from 'lightning/uiRecordApi';
 import { refreshApex } from '@salesforce/apex';
 import getUserNames from '@salesforce/apex/HistoryController.getUserNames';
 import getSubTasks from '@salesforce/apex/TaskController.getSubTasks';
-import fetchFilesByIds from '@salesforce/apex/fileControllerGraph.fetchFilesByIds';
+import fetchFilesByIds from '@salesforce/apex/FileControllerGraph.fetchFilesByIds';
 import TASK_ID_FIELD from '@salesforce/schema/BV_Task__c.Id';
 import TASK_NAME_FIELD from '@salesforce/schema/BV_Task__c.Name';
 import TASK_PARENT_FIELD from '@salesforce/schema/BV_Task__c.Parent_Task__c';
@@ -38,6 +38,7 @@ export default class TaskDetail extends LightningElement {
     @track isParentTask = false;
     @track taskDeleteMarkedComplete = false;
     @track templates = [];
+    @track isPdftronOpen = false;
     @track selectedTemplate = '';
     currentSubTaskId; // Added this to track current sub-task ID
     parentTaskId;
@@ -297,6 +298,19 @@ export default class TaskDetail extends LightningElement {
 
     handleTemplateChange(event) {
         this.selectedTemplate = event.detail.value;
+    }
+
+    handleProceedToGenerate() {
+        this.isPdftronOpen = true;
+    }
+
+    handlePdftronClose() {
+        this.isPdftronOpen = false;
+    }
+
+    // Getter to determine if the Proceed button should be disabled
+    get isProceedButtonDisabled() {
+        return this.selectedTemplate === '';
     }
 
     get hasTemplates() {

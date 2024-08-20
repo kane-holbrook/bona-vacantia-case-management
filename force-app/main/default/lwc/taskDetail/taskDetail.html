@@ -116,6 +116,13 @@
                                 options={templates}
                                 onchange={handleTemplateChange}>
                             </lightning-combobox>
+                            <lightning-button
+                                label="Proceed to Generate"
+                                onclick={handleProceedToGenerate}
+                                class="slds-m-top_medium"
+                                variant="brand"
+                                disabled={isProceedButtonDisabled}>
+                            </lightning-button>
                         </template>
                         <template if:false={hasTemplates}>
                             <p>No templates available</p>
@@ -125,6 +132,10 @@
             </div>
         </div>
     </article>
+
+    <template if:true={isPdftronOpen}>
+        <c-pdftron-wv-instance-flow document-id={selectedTemplate} onclose={handlePdftronClose}></c-pdftron-wv-instance-flow>
+    </template>
 
     <template if:true={editSubTask}>
         <section role="dialog" tabindex="-1" aria-modal="true" class="slds-modal slds-fade-in-open">
