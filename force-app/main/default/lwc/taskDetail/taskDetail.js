@@ -50,6 +50,11 @@ export default class TaskDetail extends LightningElement {
     editTaskState; // Added this to track current task ID
     wiredTaskResult;
     wiredSubTaskResult;
+    wiredTaskTemplatesResult;
+    wiredCaseHistoryResult;
+
+    @track isManageModalOpen = false;
+    @track isDeleteModalOpen = false;
 
     @wire(getRecord, { recordId: '$recordId', fields: [
         TASK_ID_FIELD, TASK_NAME_FIELD, TASK_PARENT_FIELD, TASK_ASSIGNED_TO_FIELD, TASK_DUE_DATE_FIELD, TASK_PRIORITY_FIELD, 
@@ -156,6 +161,7 @@ export default class TaskDetail extends LightningElement {
 
     @wire(getRecord, { recordId: '$recordId', fields: [TASK_TEMPLATES_FIELD] })
     wiredTaskTemplates({ error, data }) {
+        this.wiredTaskTemplatesResult = data;
         if (data) {
             const templateIds = getFieldValue(data, TASK_TEMPLATES_FIELD);
             if (templateIds) {
@@ -173,7 +179,9 @@ export default class TaskDetail extends LightningElement {
     }
 
     @wire(getHistoryItemsByTaskId, { taskId: '$recordId' })
-    caseHistoryHandler({ error, data }) {
+    caseHistoryHandler(result) {
+        this.wiredCaseHistoryResult = result;
+        const { error, data } = result;
         if (data) {
             this.caseHistoryData = data;
             // Extract the Case Officer IDs
@@ -586,5 +594,53 @@ export default class TaskDetail extends LightningElement {
                     })
                 );
             });
+    }
+
+    handleManage(event) {
+        this.currentTemplateId = event.currentTarget.dataset.id;
+        this.currentTemplate = this.caseHistoryData.find(item => item.Id === this.currentTemplateId);
+        this.isManageModalOpen = true;
+    }
+
+    handleDeleteOpen(event) {
+        this.currentTemplateId = event.currentTarget.dataset.id;
+        this.currentTemplate = this.caseHistoryData.find(item => item.Id === this.currentTemplateId);
+        this.isDeleteModalOpen = true;
+    }
+
+    closeManageModal() {
+        this.isManageModalOpen = false;
+        this.currentTemplateId = null;
+    }
+
+    closeDeleteModal() {
+        this.isDeleteModalOpen = false;
+        this.currentTemplateId = null;
+    }
+
+    handleSave() {
+        // Call the save method on the `c-history-edit-modal` child component and pass the current template ID.
+        this.template.querySelector('c-history-edit-modal').saveRecord(this.currentTemplateId);
+    }
+
+    handleDelete() {
+        this.template.querySelector('c-history-delete-modal').deleteRecord();
+    }
+
+    handleSaveSuccess() {
+        this.isManageModalOpen = false;
+        this.currentTemplateId = null;
+        this.refreshTemplateData(); // Refresh template data after save
+    }
+
+    handleDeleteSuccess() {
+        this.isDeleteModalOpen = false;
+        this.currentTemplateId = null;
+        this.refreshTemplateData(); // Refresh template data after delete
+    }
+
+    refreshTemplateData() {
+        // Refresh the Apex wire call here to reload the template data
+        return refreshApex(this.wiredCaseHistoryResult);
     }
 }

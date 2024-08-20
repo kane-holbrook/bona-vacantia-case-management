@@ -145,8 +145,8 @@
                                                 <td data-label="Options">
                                                     <div class="slds-dropdown-trigger slds-dropdown-trigger_click">
                                                         <lightning-button-menu alternative-text="Show More" menu-alignment="right">
-                                                            <lightning-menu-item label="Manage" data-id={history.Id} onclick={onManageTemplate}></lightning-menu-item>
-                                                            <lightning-menu-item label="Delete" data-id={history.Id} onclick={onDeleteTemplate}></lightning-menu-item>
+                                                            <lightning-menu-item label="Manage" data-id={history.Id} onclick={handleManage}></lightning-menu-item>
+                                                            <lightning-menu-item label="Delete" data-id={history.Id} onclick={handleDeleteOpen}></lightning-menu-item>
                                                         </lightning-button-menu>
                                                     </div>
                                                 </td>
@@ -279,4 +279,49 @@
         </section>
         <div class="slds-backdrop slds-backdrop_open"></div>
     </template>
+
+    <template if:true={isManageModalOpen}>
+        <section role="dialog" tabindex="-1" aria-modal="true" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeManageModal}>
+                        <lightning-icon icon-name="utility:close" alternative-text="close" size="small"></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 class="slds-text-heading_medium">Manage Template</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <c-history-edit-modal record={currentTemplate} onclose={closeManageModal} onsave={handleSaveSuccess}></c-history-edit-modal>
+                </div>
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" onclick={closeManageModal}>Cancel</button>
+                    <button class="slds-button slds-button_brand" onclick={handleSave}>Save</button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+    
+    <template if:true={isDeleteModalOpen}>
+        <section role="dialog" tabindex="-1" aria-modal="true" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeDeleteModal}>
+                        <lightning-icon icon-name="utility:close" alternative-text="close" size="small"></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 class="slds-text-heading_medium">Delete Template</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <c-history-delete-modal record={currentTemplate} ondelete={handleDeleteSuccess}></c-history-delete-modal>
+                </div>
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" onclick={closeDeleteModal}>Cancel</button>
+                    <button class="slds-button slds-button_destructive" onclick={handleDelete}>Delete</button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+    
 </template>
