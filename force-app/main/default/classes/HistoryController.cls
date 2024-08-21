@@ -109,4 +109,41 @@ public with sharing class HistoryController {
 
         return historyItems;
     }
+
+    @AuraEnabled
+    public static void groupHistoryRecords(Id parentRecordId, List<Id> childRecordIds) {
+        try {
+            List<Case_History__c> recordsToUpdate = new List<Case_History__c>();
+            
+            for (Id childId : childRecordIds) {
+                Case_History__c childRecord = new Case_History__c(Id = childId, Parent_History_Record__c = parentRecordId);
+                recordsToUpdate.add(childRecord);
+            }
+            
+            if (!recordsToUpdate.isEmpty()) {
+                update recordsToUpdate;
+            }
+        } catch (Exception e) {
+            throw new AuraHandledException('Error grouping records: ' + e.getMessage());
+        }
+    }
+    
+    @AuraEnabled
+    public static void ungroupHistoryRecords(List<Id> recordIds) {
+        try {
+            List<Case_History__c> recordsToUpdate = new List<Case_History__c>();
+            
+            for (Id recordId : recordIds) {
+                Case_History__c record = new Case_History__c(Id = recordId, Parent_History_Record__c = null);
+                recordsToUpdate.add(record);
+            }
+            
+            if (!recordsToUpdate.isEmpty()) {
+                update recordsToUpdate;
+            }
+        } catch (Exception e) {
+            throw new AuraHandledException('Error ungrouping records: ' + e.getMessage());
+        }
+    }
+
 }

@@ -20,6 +20,10 @@
             </header>
             <div class="slds-no-flex slds-grid slds-align-middle">
                 <lightning-input type="checkbox" label="Group by related" checked={showRelatedItems} onchange={toggleShowRelatedItems} class="slds-m-right_small"></lightning-input>
+                <template if:true={showRelatedItems}>
+                    <lightning-button label="Group" onclick={handleGroup} disabled={isGroupDisabled} class="slds-button_neutral slds-m-left_x-small"></lightning-button>
+                    <lightning-button label="Ungroup" onclick={handleUngroup} disabled={isUngroupDisabled} class="slds-button_neutral slds-m-left_x-small"></lightning-button>
+                </template>
                 <lightning-button label="Add" onclick={handleAdd} class="slds-button_neutral"></lightning-button>
             </div>
         </div>
@@ -29,6 +33,7 @@
                     {filteredHistoryItems.length} items - {sortedByText} - Updated {lastUpdated}
                 </div>
                 <div class="slds-col slds-size_1-of-2 slds-grid slds-wrap slds-grid_align-end">
+                    <lightning-button-icon icon-name="utility:refresh" alternative-text="Refresh" onclick={refreshHistoryItems} class="slds-m-bottom_small slds-m-right_small slds-col slds-size_1-of-12"></lightning-button-icon>
                     <lightning-input type="text" placeholder="Search history" variant="label-hidden" class="slds-m-bottom_small slds-m-right_small slds-col slds-size_1-of-3" onchange={handleSearchInputChange}></lightning-input>
                     <lightning-input type="date" placeholder="From" variant="label-hidden" class="slds-m-bottom_small slds-m-right_small slds-col slds-size_1-of-4" onchange={handleDateFilterChange} data-filter="from"></lightning-input>
                     <lightning-input type="date" placeholder="To" variant="label-hidden" class="slds-m-bottom_small slds-col slds-size_1-of-4" onchange={handleDateFilterChange} data-filter="to"></lightning-input>
@@ -45,6 +50,14 @@
                 <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_col-bordered">
                     <thead>
                         <tr class="slds-line-height_reset">
+                            <th scope="col" if:true={showRelatedItems}>
+                                <button class="slds-button slds-button_reset slds-truncate" title="Selected" onclick={handleSort} data-column="Selected">
+                                    Selected
+                                    <template if:true={isSortedBySelected}>
+                                        <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
+                                    </template>
+                                </button>
+                            </th>
                             <th scope="col">
                                 <div class="slds-truncate" title="Expand"></div>
                             </th>
@@ -120,9 +133,13 @@
                     <tbody>
                         <template for:each={filteredHistoryItems} for:item="item">
                             <tr key={item.Id} class={item.rowClass} onclick={handleRowClick} data-id={item.Id}>
+                                <td data-label="Selected" if:true={showRelatedItems}>
+                                    <lightning-input type="checkbox" checked={item.isSelected} data-id={item.Id} onchange={handleRowSelection}></lightning-input>
+                                </td>
+                                <!-- Expand Button -->
                                 <td data-label="Expand">
                                     <template if:true={showRelatedItems}>
-                                        <template if:true={item.hasRelatedItems}>
+                                        <template if:true={item.hasChildren}>
                                             <button class="slds-button slds-button_icon slds-m-right_x-small" aria-expanded={item.isExpanded} onclick={toggleRow} data-id={item.Id}>
                                                 <lightning-icon icon-name={item.iconName} alternative-text="Expand"></lightning-icon>
                                             </button>
@@ -149,45 +166,42 @@
                                 <td data-label="Case Officer">{item.Case_Officer_Name}</td>
                                 <td data-label="Actions">
                                     <lightning-button-menu alternative-text="Actions" icon-name="utility:down" menu-alignment="right">
-                                        <lightning-menu-item label="View/Edit" data-id={item.Id} onclick={handleViewEdit}></lightning-menu-item>
+                                        <lightning-menu-item label="View/Edit Details" data-id={item.Id} onclick={handleViewEdit}></lightning-menu-item>
                                         <lightning-menu-item label="Forward to Mail Recipient" data-id={item.Id} onclick={handleForward}></lightning-menu-item>
                                         <lightning-menu-item label="Delete" data-id={item.Id} onclick={handleDeleteOpen}></lightning-menu-item>
                                     </lightning-button-menu>
                                 </td>
                             </tr>
+
+                            <!-- Child Records -->
                             <template if:true={item.isExpanded}>
-                                <template for:each={item.SHDocuments__r} for:item="relatedItem">
-                                    <tr key={relatedItem.Id} class={relatedItem.rowClass}>
-                                        <td data-label="Expand">
-                                            <lightning-icon icon-name="utility:level_down" alternative-text="Sub-item" class="slds-icon-text-default version-expand-icon"></lightning-icon>
+                                <template for:each={item.Case_History__r} for:item="childItem">
+                                    <tr key={childItem.Id} class={childItem.rowClass}>
+                                        <td data-label="Selected">
+                                            <lightning-input type="checkbox" checked={childItem.isSelected} data-id={childItem.Id} onchange={handleRowSelection}></lightning-input>
                                         </td>
-                                        <td data-label="Important"></td>
+                                        <td data-label="Expand"></td>
+                                        <td data-label="Important">
+                                            <lightning-icon icon-name="utility:priority" alternative-text="Important" class={item.flagIconClass}></lightning-icon>
+                                        </td>
                                         <td data-label="Date">
                                             <div class="slds-grid slds-align_absolute-center">
-                                                <lightning-formatted-date-time value={relatedItem.Created_Time__c} year="numeric" month="2-digit" day="2-digit" day-style="2-digit" month-style="2-digit" timezone="UTC"></lightning-formatted-date-time>
+                                                <lightning-formatted-date-time value={childItem.Date_Inserted__c} year="numeric" month="2-digit" day="2-digit" month-style="2-digit" timezone="UTC"></lightning-formatted-date-time>
                                             </div>
                                         </td>
-                                        <td data-label="Action">{relatedItem.Action__c}</td>
+                                        <td data-label="Action">{childItem.Action__c}</td>
                                         <td data-label="Notes">
-                                            <template if:true={relatedItem.hasDetails}>
+                                            <template if:true={childItem.hasDetails}>
                                                 <lightning-icon icon-name="utility:check" alternative-text="Has Details" size="x-small"></lightning-icon>
                                             </template>
                                         </td>
-                                        <td data-label="Document Type">
-                                            <div class="slds-grid slds-align_absolute-center">
-                                                {relatedItem.DocumentType__c}
-                                                <template if:true={relatedItem.showAttachmentIcon}>
-                                                    <lightning-icon icon-name="utility:attach" alternative-text="Attachment" size="small" class="slds-m-left_x-small"></lightning-icon>
-                                                </template>
-                                            </div>
-                                        </td>
-                                        <td data-label="File Size">{relatedItem.fileSize}</td>
-                                        <td data-label="Draft">{relatedItem.Draft__c}</td>
-                                        <td data-label="Case Officer">{relatedItem.Case_Officer_Name}</td>
-                                        <!-- No actions for related items, so removing the Actions column -->
+                                        <td data-label="Document Type">{childItem.documentType}</td>
+                                        <td data-label="File Size">{childItem.fileSize}</td>
+                                        <td data-label="Draft">{childItem.draft}</td>
+                                        <td data-label="Case Officer">{childItem.Case_Officer_Name}</td>
                                     </tr>
                                 </template>
-                            </template>
+                            </template>                            
                         </template>
                     </tbody>                    
                 </table>
