@@ -291,11 +291,11 @@
                     <h2 class="slds-text-heading_medium">Manage Template</h2>
                 </header>
                 <div class="slds-modal__content slds-p-around_medium">
-                    <c-history-edit-modal record={currentTemplate} onclose={closeManageModal} onsave={handleSaveSuccess}></c-history-edit-modal>
+                    <c-history-edit-modal record={currentTemplate} onclose={closeManageModal} onsave={handleSaveSuccessHistory}></c-history-edit-modal>
                 </div>
                 <footer class="slds-modal__footer">
                     <button class="slds-button slds-button_neutral" onclick={closeManageModal}>Cancel</button>
-                    <button class="slds-button slds-button_brand" onclick={handleSave}>Save</button>
+                    <button class="slds-button slds-button_brand" onclick={handleSaveHistory}>Save</button>
                 </footer>
             </div>
         </section>
@@ -313,7 +313,7 @@
                     <h2 class="slds-text-heading_medium">Delete Template</h2>
                 </header>
                 <div class="slds-modal__content slds-p-around_medium">
-                    <c-history-delete-modal record={currentTemplate} ondelete={handleDeleteSuccess}></c-history-delete-modal>
+                    <c-history-delete-modal record={currentTemplate} ondelete={handleDeleteSuccessHistory}></c-history-delete-modal>
                 </div>
                 <footer class="slds-modal__footer">
                     <button class="slds-button slds-button_neutral" onclick={closeDeleteModal}>Cancel</button>

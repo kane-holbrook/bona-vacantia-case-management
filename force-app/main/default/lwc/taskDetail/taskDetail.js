@@ -618,7 +618,7 @@ export default class TaskDetail extends LightningElement {
         this.currentTemplateId = null;
     }
 
-    handleSave() {
+    handleSaveHistory() {
         // Call the save method on the `c-history-edit-modal` child component and pass the current template ID.
         this.template.querySelector('c-history-edit-modal').saveRecord(this.currentTemplateId);
     }
@@ -627,13 +627,13 @@ export default class TaskDetail extends LightningElement {
         this.template.querySelector('c-history-delete-modal').deleteRecord();
     }
 
-    handleSaveSuccess() {
+    handleSaveSuccessHistory() {
         this.isManageModalOpen = false;
         this.currentTemplateId = null;
         this.refreshTemplateData(); // Refresh template data after save
     }
 
-    handleDeleteSuccess() {
+    handleDeleteSuccessHistory() {
         this.isDeleteModalOpen = false;
         this.currentTemplateId = null;
         this.refreshTemplateData(); // Refresh template data after delete

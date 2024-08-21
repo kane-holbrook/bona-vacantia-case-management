@@ -452,11 +452,12 @@ export default class TaskManageModal extends LightningElement {
                     }),
                 );
                 const updatedEvent = new CustomEvent('taskupdated', {
-                    detail: {
-                        taskId: this.recordId,
-                    },
+                    detail: { taskId: this.recordId },
+                    bubbles: true, // Allow the event to bubble up
+                    composed: true // Allow the event to cross the shadow DOM boundary
                 });
                 this.dispatchEvent(updatedEvent);
+                console.log('updatedEvent', updatedEvent);
             })
             .catch(error => {
                 this.dispatchEvent(
