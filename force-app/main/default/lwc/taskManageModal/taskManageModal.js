@@ -48,6 +48,7 @@ export default class TaskManageModal extends LightningElement {
         { label: 'Days', value: 'Days' },
         { label: 'Weeks', value: 'Weeks' },
         { label: 'Months', value: 'Months' },
+        { label: 'Years', value: 'Years' },
     ];
 
     beforeAfterOptions = [
@@ -340,6 +341,9 @@ export default class TaskManageModal extends LightningElement {
                 break;
             case 'Months':
                 dueDate.setMonth(beforeAfterValue === 'After' ? dueDate.getMonth() + waitingPeriodInputValue : dueDate.getMonth() - waitingPeriodInputValue);
+                break;
+            case 'Years':
+                dueDate.setFullYear(beforeAfterValue === 'After' ? dueDate.getFullYear() + waitingPeriodInputValue : dueDate.getFullYear() - waitingPeriodInputValue);
                 break;
             default:
                 break;
