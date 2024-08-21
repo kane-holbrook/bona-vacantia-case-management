@@ -270,12 +270,15 @@ public class FileControllerGraph {
     
             System.debug(JSON.serializePretty(listItemData));
     
-            // Extract relevant fields (like file name or URL) to query the drive item
+            // Extract relevant fields
             if (listItemData != null && listItemData.containsKey('FileLeafRef')) {
                 String fileName = (String) listItemData.get('FileLeafRef');
+                String documentName = (String) listItemData.get('Document_x0020_Name');
+                String documentType = (String) listItemData.get('DocumentType');
+                String documentCategory = (String) listItemData.get('Document_x0020_Category');
                 
-                // Now fetch the drive item by its name or path
-                fetchFileByFileName(fileName, allItems);
+                // Now fetch the drive item by its name or path and pass the additional fields
+                fetchFileByFileName(fileName, documentName, documentType, documentCategory, allItems);
             } else {
                 throw new CalloutException('FileLeafRef not found for list item ID ' + listItemId);
             }
@@ -284,7 +287,7 @@ public class FileControllerGraph {
         }
     }
     
-    private static void fetchFileByFileName(String fileName, List<Map<String, Object>> allItems) {
+    private static void fetchFileByFileName(String fileName, String documentName, String documentType, String documentCategory, List<Map<String, Object>> allItems) {
         // Settings and base URL
         Map<String, String> settings = getSharePointSettings();
         String siteUrl = settings.get('SharePoint_Site_URL');
@@ -306,11 +309,18 @@ public class FileControllerGraph {
         // Check for successful response
         if (res.getStatusCode() == 200) {
             Map<String, Object> fileData = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
-
+    
             System.debug(JSON.serializePretty(fileData));
             
-            // Add file data to the allItems list
-            allItems.add(fileData);
+            // Merge fileData with document details
+            Map<String, Object> combinedData = new Map<String, Object>();
+            combinedData.putAll(fileData);
+            combinedData.put('Document_x0020_Name', documentName);
+            combinedData.put('DocumentType', documentType);
+            combinedData.put('Document_x0020_Category', documentCategory);
+            
+            // Add combined data to the allItems list
+            allItems.add(combinedData);
         } else {
             throw new CalloutException('Failed to fetch file with name ' + fileName + ': ' + res.getStatus() + ' ' + res.getBody());
         }

@@ -40,6 +40,9 @@ export default class TaskDetail extends LightningElement {
     @track isParentTask = false;
     @track taskDeleteMarkedComplete = false;
     @track templates = [];
+    @track filteredTemplates = [];
+    @track shouldShowDropdown = false;
+    @track searchTerm = '';
     @track isFlowModalOpen = false;
     @track selectedTemplate = '';
     @track selectedDocumentType = '';  // Holds the document type
@@ -234,8 +237,9 @@ export default class TaskDetail extends LightningElement {
                 // Ensure the result is valid and map it to the appropriate format
                 if (result && Array.isArray(result)) {
                     this.templates = result.map(file => ({
-                        label: file.name || 'Unnamed File',
-                        value: file.id
+                        label: file.Document_x0020_Name || 'Unnamed File',
+                        value: file.id,
+                        type: file.DocumentType || 'Unknown Category'
                     }));
                 } else {
                     this.templates = [];
@@ -381,39 +385,30 @@ export default class TaskDetail extends LightningElement {
         return this.subTasks.length > 0;
     }
 
-    handleTemplateChange(event) {
-        // Set the selected template (document ID)
-        this.selectedTemplate = event.detail.value;
-
-        // Find the selected file in the templates list
-        const selectedFile = this.templates.find(file => file.value === this.selectedTemplate);
-
+    handleTemplateSelect(event) {
+        this.selectedTemplate = event.currentTarget.dataset.value;
+        const selectedFile = this.templates.find(template => template.value === this.selectedTemplate);
+    
         if (selectedFile) {
-            // Extract the file name and remove the extension (assuming it's after the last dot)
-            const fileNameWithoutExtension = selectedFile.label.split('.').slice(0, -1).join('.');
-
-            // Convert the file name to uppercase and set it as the document type
-            this.selectedDocumentType = fileNameWithoutExtension.toUpperCase();
+            this.selectedDocumentType = selectedFile.type;
+    
+            // Persist the selected template in the input field
+            this.searchTerm = selectedFile.label; // Set the search input to the selected template's name
         }
+    
+        this.shouldShowDropdown = false;
+        this.prepareFlowInputs();
+    }
 
-        // Prepare the flow input variables
+    // Prepare flow inputs based on selected template
+    prepareFlowInputs() {
         this.flowInputs = [
-            {
-                name: 'selectedDocumentId',
-                type: 'String',
-                value: this.selectedTemplate
-            },
-            {
-                name: 'selectedDocumentType',
-                type: 'String',
-                value: this.selectedDocumentType
-            },
-            {
-                name: 'taskId',
-                type: 'String',
-                value: this.recordId
-            }
+            { name: 'selectedDocumentId', type: 'String', value: this.selectedTemplate },
+            { name: 'selectedDocumentType', type: 'String', value: this.selectedDocumentType },
+            { name: 'taskId', type: 'String', value: this.recordId }
         ];
+
+        console.log('Flow inputs:', this.flowInputs);
     }
 
     handleProceedToGenerate() {
@@ -643,4 +638,31 @@ export default class TaskDetail extends LightningElement {
         // Refresh the Apex wire call here to reload the template data
         return refreshApex(this.wiredCaseHistoryResult);
     }
+
+    handleSearchChange(event) {
+        this.searchTerm = event.target.value;
+        this.filterTemplates();
+    }
+
+    filterTemplates() {
+        if (this.searchTerm) {
+            const searchTermLowerCase = this.searchTerm.toLowerCase();
+    
+            // Filter templates based on label, value (Document ID), and category
+            this.filteredTemplates = this.templates.filter(template => {
+                const documentNameLowerCase = template.label.toLowerCase();
+                const documentCategoryLowerCase = template.type.toLowerCase();
+                
+                // Check if search term matches the label, category, or ID
+                return documentNameLowerCase.includes(searchTermLowerCase) || 
+                    documentCategoryLowerCase.includes(searchTermLowerCase);
+            });
+            
+            this.shouldShowDropdown = this.filteredTemplates.length > 0;
+        } else {
+            this.filteredTemplates = [];
+            this.shouldShowDropdown = false;
+        }
+    }
+    
 }
