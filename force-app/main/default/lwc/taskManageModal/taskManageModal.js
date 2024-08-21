@@ -44,6 +44,7 @@ export default class TaskManageModal extends LightningElement {
     @track parentTaskOwner = '';
 
     timeOptions = [
+        { label: 'Working Days', value: 'Working Days' },
         { label: 'Days', value: 'Days' },
         { label: 'Weeks', value: 'Weeks' },
         { label: 'Months', value: 'Months' },
@@ -328,6 +329,9 @@ export default class TaskManageModal extends LightningElement {
         let dueDate = new Date(dateInserted);
 
         switch (waitingPeriodTimeValue) {
+            case 'Working Days':
+                dueDate = this.calculateWorkingDays(dateInserted, waitingPeriodInputValue, beforeAfterValue === 'After');
+                break;
             case 'Days':
                 dueDate.setDate(beforeAfterValue === 'After' ? dueDate.getDate() + waitingPeriodInputValue : dueDate.getDate() - waitingPeriodInputValue);
                 break;
@@ -345,7 +349,23 @@ export default class TaskManageModal extends LightningElement {
         this.updateDueDateInput();
     }
 
+    calculateWorkingDays(startDate, numberOfDays, isAfter) {
+        let currentDate = new Date(startDate);
+        let dayCount = 0;
     
+        while (dayCount < numberOfDays) {
+            // Move the date forward or backward
+            currentDate.setDate(isAfter ? currentDate.getDate() + 1 : currentDate.getDate() - 1);
+    
+            // Skip weekends (Saturday and Sunday)
+            const dayOfWeek = currentDate.getDay();
+            if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+                dayCount++;
+            }
+        }
+    
+        return currentDate;
+    }
 
     updateDueDateInput() {
         const dueDateInput = this.template.querySelector('[data-id="due-date"]');
