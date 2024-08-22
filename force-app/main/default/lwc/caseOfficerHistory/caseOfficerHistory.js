@@ -54,29 +54,29 @@ export default class CaseOfficerHistory extends LightningElement {
 
         if (result.data) {
             const caseDetail = result.data;
-            this.currentOfficer = caseDetail.Current_Officer__c;
-            this.currentOfficerDate = caseDetail.Date_Officer__c;
-            this.previous1 = caseDetail.Previous_1__c;
-            this.previous1Date = caseDetail.Date_1_Officer__c;
-            this.previous2 = caseDetail.Previous_2__c;
-            this.previous2Date = caseDetail.Date_2_Officer__c;
-            this.previous3 = caseDetail.Previous_3__c;
-            this.previous3Date = caseDetail.Date_3_Officer__c;
-            this.previous4 = caseDetail.Previous_4__c;
-            this.previous4Date = caseDetail.Date_4_Officer__c;
-            this.previous5 = caseDetail.Previous_5__c;
-            this.previous5Date = caseDetail.Date_5_Officer__c;
-            this.previous6 = caseDetail.Previous_6__c;
-            this.previous6Date = caseDetail.Date_6_Officer__c;
-            this.previous7 = caseDetail.Previous_7__c;
-            this.previous7Date = caseDetail.Date_7_Officer__c;
-            this.previous8 = caseDetail.Previous_8__c;
-            this.previous8Date = caseDetail.Date_8_Officer__c;
-            this.previous9 = caseDetail.Previous_9__c;
-            this.previous9Date = caseDetail.Date_9_Officer__c;
-            this.putAway = caseDetail.Put_Away__c;
-            this.reopened = caseDetail.Reopened__c;
-            this.reopenedBy = caseDetail.Reopened_By__c;
+            this.currentOfficer = caseDetail.Current_Officer__c || '';
+            this.currentOfficerDate = caseDetail.Date_Officer__c || '';
+            this.previous1 = caseDetail.Previous_1__c || '';
+            this.previous1Date = caseDetail.Date_1_Officer__c || '';
+            this.previous2 = caseDetail.Previous_2__c || '';
+            this.previous2Date = caseDetail.Date_2_Officer__c || '';
+            this.previous3 = caseDetail.Previous_3__c || '';
+            this.previous3Date = caseDetail.Date_3_Officer__c || '';
+            this.previous4 = caseDetail.Previous_4__c || '';
+            this.previous4Date = caseDetail.Date_4_Officer__c || '';
+            this.previous5 = caseDetail.Previous_5__c || '';
+            this.previous5Date = caseDetail.Date_5_Officer__c || '';
+            this.previous6 = caseDetail.Previous_6__c || '';
+            this.previous6Date = caseDetail.Date_6_Officer__c || '';
+            this.previous7 = caseDetail.Previous_7__c || '';
+            this.previous7Date = caseDetail.Date_7_Officer__c || '';
+            this.previous8 = caseDetail.Previous_8__c || '';
+            this.previous8Date = caseDetail.Date_8_Officer__c || '';
+            this.previous9 = caseDetail.Previous_9__c|| '';
+            this.previous9Date = caseDetail.Date_9_Officer__c || '';
+            this.putAway = caseDetail.Put_Away__c || '';
+            this.reopened = caseDetail.Reopened__c || '';
+            this.reopenedBy = caseDetail.Reopened_By__c || '';
         } else if (result.error) {
             console.error('Error loading Case_Detail__c record:', result.error);
         }
