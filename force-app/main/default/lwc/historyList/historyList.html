@@ -58,9 +58,12 @@
                                     </template>
                                 </button>
                             </th>
-                            <th scope="col">
-                                <div class="slds-truncate" title="Expand"></div>
-                            </th>
+                            <!-- Expand Column Header -->
+                            <template if:true={showRelatedItems}>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Expand"></div>
+                                </th>
+                            </template>
                             <th scope="col">
                                 <button class="slds-button slds-button_reset slds-truncate" title="Important" onclick={handleSort} data-column="Important">
                                     Important
@@ -137,15 +140,15 @@
                                     <lightning-input type="checkbox" checked={item.isSelected} data-id={item.Id} onchange={handleRowSelection}></lightning-input>
                                 </td>
                                 <!-- Expand Button -->
-                                <td data-label="Expand">
-                                    <template if:true={showRelatedItems}>
+                                <template if:true={showRelatedItems}>
+                                    <td data-label="Expand">
                                         <template if:true={item.hasChildren}>
                                             <button class="slds-button slds-button_icon slds-m-right_x-small" aria-expanded={item.isExpanded} onclick={toggleRow} data-id={item.Id}>
                                                 <lightning-icon icon-name={item.iconName} alternative-text="Expand"></lightning-icon>
                                             </button>
                                         </template>
-                                    </template>
-                                </td>
+                                    </td>
+                                </template>
                                 <td data-label="Important">
                                     <lightning-icon icon-name="utility:priority" alternative-text="Important" class={item.flagIconClass}></lightning-icon>
                                 </td>
@@ -174,7 +177,7 @@
                             </tr>
 
                             <!-- Child Records -->
-                            <template if:true={item.isExpanded}>
+                            <!-- <template if:true={item.isExpanded}>
                                 <template for:each={item.Case_History__r} for:item="childItem">
                                     <tr key={childItem.Id} class={childItem.rowClass}>
                                         <td data-label="Selected">
@@ -201,7 +204,7 @@
                                         <td data-label="Case Officer">{childItem.Case_Officer_Name}</td>
                                     </tr>
                                 </template>
-                            </template>                            
+                            </template>                             -->
                         </template>
                     </tbody>                    
                 </table>
