@@ -33,6 +33,8 @@ export default class CaseOfficerButtons extends LightningElement {
     @track officerHistoryRecordTypeId; // Stores the Record Type Id for Officer_History
     @track caseDetailRecord; // Holds the Case_Detail__c record
     @track bvCaseName; // Holds the BV_Case__c Name
+    @track flowInputs = [];
+    @track isChangeCaseCategoryModalOpen = false;
     @track isAddAccrualModalOpen = false;
     @track isReverseAccrualModalOpen = false;
 
@@ -94,13 +96,22 @@ export default class CaseOfficerButtons extends LightningElement {
     handleActionClick(event) {
         const actionName = event.target.label;
         console.log(`Button clicked: ${actionName}`);
-    
+        
         if (actionName === 'Add accrual') {
             this.isAddAccrualModalOpen = true;
         } else if (actionName === 'Reverse accrual') {
             this.isReverseAccrualModalOpen = true;
         } else if (actionName === 'Re-allocate case') {
             this.template.querySelector('c-re-allocate-case').openModal();
+        } else if (actionName === 'Change case category') {
+            this.flowInputs = [
+                {
+                    name: 'recordId', 
+                    type: 'String', 
+                    value: this.recordId
+                }
+            ];
+            this.isChangeCaseCategoryModalOpen = true;
         }
     }
 
@@ -208,5 +219,15 @@ export default class CaseOfficerButtons extends LightningElement {
 
     closeReverseAccrualModal() {
         this.isReverseAccrualModalOpen = false;
+    }
+
+    closeChangeCaseCategoryModal() {
+        this.isChangeCaseCategoryModalOpen = false;
+    }
+    
+    handleFlowStatusChange(event) {
+        if (event.detail.status === 'FINISHED') {
+            this.isChangeCaseCategoryModalOpen = false;
+        }
     }
 }
