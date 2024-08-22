@@ -1,6 +1,6 @@
 import { LightningElement, track, wire } from 'lwc';
 import { getObjectInfo } from 'lightning/uiObjectInfoApi';
-import { createRecord, updateRecord } from 'lightning/uiRecordApi';
+import { getRecord, createRecord, updateRecord } from 'lightning/uiRecordApi';
 import CASE_DETAIL_OBJECT from '@salesforce/schema/Case_Detail__c';
 import CURRENT_OFFICER_FIELD from '@salesforce/schema/Case_Detail__c.Current_Officer__c';
 import DATE_OFFICER_FIELD from '@salesforce/schema/Case_Detail__c.Date_Officer__c';
@@ -22,6 +22,8 @@ import PREVIOUS_6_OFFICER_FIELD from '@salesforce/schema/Case_Detail__c.Previous
 import PREVIOUS_7_OFFICER_FIELD from '@salesforce/schema/Case_Detail__c.Previous_7__c';
 import PREVIOUS_8_OFFICER_FIELD from '@salesforce/schema/Case_Detail__c.Previous_8__c';
 import PREVIOUS_9_OFFICER_FIELD from '@salesforce/schema/Case_Detail__c.Previous_9__c';
+import BV_CASE_OBJECT from '@salesforce/schema/BV_Case__c';
+import NAME_FIELD from '@salesforce/schema/BV_Case__c.Name';
 import getCaseDetail from '@salesforce/apex/CaseOfficerController.getCaseDetail';
 import { getRecordId } from 'c/sharedService';
 
@@ -30,6 +32,9 @@ export default class CaseOfficerButtons extends LightningElement {
     @track caseDetailId; // Stores the Case_Detail__c Id for Officer History
     @track officerHistoryRecordTypeId; // Stores the Record Type Id for Officer_History
     @track caseDetailRecord; // Holds the Case_Detail__c record
+    @track bvCaseName; // Holds the BV_Case__c Name
+    @track isAddAccrualModalOpen = false;
+    @track isReverseAccrualModalOpen = false;
 
     actions = [
         { actionId: '1', label: 'Put away', disabled: false },
@@ -43,6 +48,15 @@ export default class CaseOfficerButtons extends LightningElement {
 
     connectedCallback() {
         this.recordId = getRecordId();
+    }
+
+    @wire(getRecord, { recordId: '$recordId', fields: [NAME_FIELD] })
+    wiredCase({ error, data }) {
+        if (data) {
+            this.bvCaseName = data.fields.Name.value;
+        } else if (error) {
+            console.error('Error fetching BV_Case__c Name:', error);
+        }
     }
 
     @wire(getObjectInfo, { objectApiName: CASE_DETAIL_OBJECT })
@@ -80,7 +94,12 @@ export default class CaseOfficerButtons extends LightningElement {
     handleActionClick(event) {
         const actionName = event.target.label;
         console.log(`Button clicked: ${actionName}`);
-        if (actionName === 'Re-allocate case') {
+    
+        if (actionName === 'Add accrual') {
+            this.isAddAccrualModalOpen = true;
+        } else if (actionName === 'Reverse accrual') {
+            this.isReverseAccrualModalOpen = true;
+        } else if (actionName === 'Re-allocate case') {
             this.template.querySelector('c-re-allocate-case').openModal();
         }
     }
@@ -181,5 +200,13 @@ export default class CaseOfficerButtons extends LightningElement {
                 console.error('Error updating Case_Detail__c:', error);
                 // Optionally, handle error like showing an error message to the user
             });
+    }
+
+    closeAddAccrualModal() {
+        this.isAddAccrualModalOpen = false;
+    }
+
+    closeReverseAccrualModal() {
+        this.isReverseAccrualModalOpen = false;
     }
 }
