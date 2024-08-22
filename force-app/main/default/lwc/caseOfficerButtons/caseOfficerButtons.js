@@ -38,6 +38,7 @@ export default class CaseOfficerButtons extends LightningElement {
     @track isChangeCaseCategoryModalOpen = false;
     @track isAddAccrualModalOpen = false;
     @track isReverseAccrualModalOpen = false;
+    @track isSection27Open = false;
 
     actions = [
         { actionId: '1', label: 'Put away', disabled: false },
@@ -113,6 +114,15 @@ export default class CaseOfficerButtons extends LightningElement {
                 }
             ];
             this.isChangeCaseCategoryModalOpen = true;
+        } else if (actionName === 'Section 27') {
+            this.flowInputs = [
+                {
+                    name: 'recordId', 
+                    type: 'String', 
+                    value: this.recordId
+                }
+            ];
+            this.isSection27Open = true;
         }
     }
 
@@ -224,6 +234,10 @@ export default class CaseOfficerButtons extends LightningElement {
 
     closeChangeCaseCategoryModal() {
         this.isChangeCaseCategoryModalOpen = false;
+    }
+
+    closeSection27Modal() {
+        this.isSection27Open = false
     }
     
     handleFlowStatusChange(event) {
