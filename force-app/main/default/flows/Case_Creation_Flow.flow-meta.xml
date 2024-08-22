@@ -850,6 +850,14 @@
         </connector>
     </assignments>
     <choices>
+        <name>A_SRA_Intestate</name>
+        <choiceText>A - SRA Intestate</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>A - SRA Intestate</stringValue>
+        </value>
+    </choices>
+    <choices>
         <name>Auction_Dwellings</name>
         <choiceText>Auction - Dwellings</choiceText>
         <dataType>String</dataType>
@@ -863,6 +871,14 @@
         <dataType>String</dataType>
         <value>
             <stringValue>Auction - Land</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>B_Freehold_Leasehold_Property</name>
+        <choiceText>B - Freehold/Leasehold Property</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>B - Freehold/Leasehold Property</stringValue>
         </value>
     </choices>
     <choices>
@@ -962,6 +978,38 @@
         </value>
     </choices>
     <choices>
+        <name>C1_Freedom_of_Information_Request</name>
+        <choiceText>C1 - Freedom of Information Request</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>C1 - Freedom of Information Request</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>C2_Net_Estate_over_15_000_no_grant_required</name>
+        <choiceText>C2 - Net Estate over £15,000 no grant required</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>C2 - Net Estate over £15,000 no grant required</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>C4_Net_Estate_over_15_000_collection_only</name>
+        <choiceText>C4 - Net Estate over £15,000 collection only</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>C4 - Net Estate over £15,000 collection only</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>C_Net_Estate_over_5000_pre_January</name>
+        <choiceText>C - Net Estate over £5000 (pre January)</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>C - Net Estate over £5000 (pre January)</stringValue>
+        </value>
+    </choices>
+    <choices>
         <name>Case_Officer</name>
         <choiceText>Case Officer</choiceText>
         <dataType>String</dataType>
@@ -999,6 +1047,46 @@
         <dataType>String</dataType>
         <value>
             <stringValue>Conveyencing</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>D1_Net_Estate_under_5000</name>
+        <choiceText>D1 - Net Estate under £5000</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>D1 - Net Estate under £5000</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>D2_Net_Estate_over_5000_under_15_000</name>
+        <choiceText>D2 - Net Estate over £5000 &amp; under £15,000</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>D2 - Net Estate over £5000 &amp; under £15,000</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>D3_Net_Estate_under_15_000</name>
+        <choiceText>D3 - Net Estate under £15,000</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>D3 - Net Estate under £15,000</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>D4_Net_Estate_Under_15k_collection_only</name>
+        <choiceText>D4 - Net Estate Under £15k - collection only</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>D4 - Net Estate Under £15k - collection only</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>D_Net_Estate_less_than_5000_pre_Jan_2009</name>
+        <choiceText>D - Net Estate less than £5000 (pre Jan 2009)</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>D - Net Estate less than £5000 (pre Jan 2009)</stringValue>
         </value>
     </choices>
     <choices>
@@ -1178,6 +1266,14 @@
         </value>
     </choices>
     <choices>
+        <name>F_Collect</name>
+        <choiceText>F - Collect</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>F - Collect</stringValue>
+        </value>
+    </choices>
+    <choices>
         <name>Failed_Trust</name>
         <choiceText>Failed Trust</choiceText>
         <dataType>String</dataType>
@@ -1266,6 +1362,14 @@
         </value>
     </choices>
     <choices>
+        <name>G_General</name>
+        <choiceText>G - General</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>G - General</stringValue>
+        </value>
+    </choices>
+    <choices>
         <name>General</name>
         <choiceText>General</choiceText>
         <dataType>String</dataType>
@@ -1330,6 +1434,14 @@
         </value>
     </choices>
     <choices>
+        <name>L_Limitation_Period_Cases</name>
+        <choiceText>L - Limitation Period Cases</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>L - Limitation Period Cases</stringValue>
+        </value>
+    </choices>
+    <choices>
         <name>Land</name>
         <choiceText>Land</choiceText>
         <dataType>String</dataType>
@@ -1375,6 +1487,14 @@
         <dataType>String</dataType>
         <value>
             <stringValue>M</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>M_Costs_Case</name>
+        <choiceText>M - Costs Case</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>M - Costs Case</stringValue>
         </value>
     </choices>
     <choices>
@@ -1439,6 +1559,14 @@
         <dataType>String</dataType>
         <value>
             <stringValue>Natwest</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>NE_Northern_Ireland</name>
+        <choiceText>NE - Northern Ireland</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>NE - Northern Ireland</stringValue>
         </value>
     </choices>
     <choices>
@@ -1535,6 +1663,14 @@
         </value>
     </choices>
     <choices>
+        <name>P_Pre_1997_Case</name>
+        <choiceText>P - Pre-1997 Case</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>P - Pre-1997 Case</stringValue>
+        </value>
+    </choices>
+    <choices>
         <name>PANo</name>
         <choiceText>PANo</choiceText>
         <dataType>String</dataType>
@@ -1564,6 +1700,22 @@
         <dataType>String</dataType>
         <value>
             <stringValue>Public Authority</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Q_Query</name>
+        <choiceText>Q - Query</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Q - Query</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>R_BV_Registry_queries</name>
+        <choiceText>R - BV Registry queries</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>R - BV Registry queries</stringValue>
         </value>
     </choices>
     <choices>
@@ -1828,6 +1980,22 @@
         <dataType>String</dataType>
         <value>
             <stringValue>Widower</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Y_Kin_Claims</name>
+        <choiceText>Y - Kin Claims</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Y - Kin Claims</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>YA_Reopened_Other</name>
+        <choiceText>YA - Reopened Other</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>YA - Reopened Other</stringValue>
         </value>
     </choices>
     <choices>
@@ -3146,170 +3314,6 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             <field>Type__c</field>
             <value>
                 <elementReference>Type_of_Company_Referral</elementReference>
-            </value>
-        </inputAssignments>
-        <object>BV_Case__c</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordCreates>
-    <recordCreates>
-        <name>Create_Conveyancing_Company_Record</name>
-        <label>Create Conveyancing Company Record</label>
-        <locationX>4802</locationX>
-        <locationY>1730</locationY>
-        <inputAssignments>
-            <field>Allocation_Date__c</field>
-            <value>
-                <elementReference>Allocated_Conv_After_Method</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Case_Officer__c</field>
-            <value>
-                <elementReference>Case_Officer_Conv_After_Method</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Case_Type__c</field>
-            <value>
-                <elementReference>Case_Type_Conv_After_Method</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Current_Status_Date__c</field>
-            <value>
-                <elementReference>Date_Current_Status_Conv_After_Method</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Current_Status__c</field>
-            <value>
-                <elementReference>Current_Status_Conv_After_Method</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Date_Case_Last_Reviewed__c</field>
-            <value>
-                <elementReference>Date_Last_Reviewed_Conv_After_Method</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Date_Case_Opened__c</field>
-            <value>
-                <elementReference>Opened_Conv_After_Method</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Date_Disclosed__c</field>
-            <value>
-                <elementReference>Date_Disclosed_Conv_After_Method</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Date_Of_Last_Lm_Review__c</field>
-            <value>
-                <elementReference>Date_of_last_LM_Review_Conv_After_Method</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Date_of_Death_or_Dissolution__c</field>
-            <value>
-                <elementReference>Died_Diss_Conv_After_Method</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Disclaim_by__c</field>
-            <value>
-                <elementReference>Disclaim_By_Conv_After_Method</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Disclaimer_Date__c</field>
-            <value>
-                <elementReference>Disclaimer_Date_Conv_Comp_CD</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Disclosed_by__c</field>
-            <value>
-                <elementReference>By_Conv_After_Method</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>HIPS_required__c</field>
-            <value>
-                <elementReference>HIPS_Required_Conv_After_Method</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Key_Address__c</field>
-            <value>
-                <elementReference>Key_Address_Conv_After_Method</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Key_Name__c</field>
-            <value>
-                <elementReference>Key_Name_Conv_After_Method</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Last_Action_Date__c</field>
-            <value>
-                <elementReference>Date_Last_Action_Conv_After_Method</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Last_Action__c</field>
-            <value>
-                <elementReference>Last_Action_Conv_After_Method</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Method__c</field>
-            <value>
-                <elementReference>Method_Conv_After_Method</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>On_Report_To_Date__c</field>
-            <value>
-                <elementReference>Date_Conv_On_Report_To_After_Method</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>On_Report_To__c</field>
-            <value>
-                <elementReference>On_Report_To_Conv_After_Method</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Part_sale__c</field>
-            <value>
-                <elementReference>Part_Sale_Conv_After_Method</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>RecordTypeId</field>
-            <value>
-                <elementReference>BVCaseRecordTypeId</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Referred_To_Date__c</field>
-            <value>
-                <elementReference>Date_Referred_To_Conv_After_Method</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Referred_To__c</field>
-            <value>
-                <elementReference>Referred_To_Conv_After_Method</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Stage__c</field>
-            <value>
-                <stringValue>Advertising</stringValue>
             </value>
         </inputAssignments>
         <object>BV_Case__c</object>
@@ -5967,7 +5971,27 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         </fields>
         <fields>
             <name>Case_type_picklist</name>
-            <choiceReferences>Net_estate_under_15000</choiceReferences>
+            <choiceReferences>R_BV_Registry_queries</choiceReferences>
+            <choiceReferences>B_Freehold_Leasehold_Property</choiceReferences>
+            <choiceReferences>C_Net_Estate_over_5000_pre_January</choiceReferences>
+            <choiceReferences>D_Net_Estate_less_than_5000_pre_Jan_2009</choiceReferences>
+            <choiceReferences>A_SRA_Intestate</choiceReferences>
+            <choiceReferences>Q_Query</choiceReferences>
+            <choiceReferences>G_General</choiceReferences>
+            <choiceReferences>NE_Northern_Ireland</choiceReferences>
+            <choiceReferences>Y_Kin_Claims</choiceReferences>
+            <choiceReferences>F_Collect</choiceReferences>
+            <choiceReferences>M_Costs_Case</choiceReferences>
+            <choiceReferences>L_Limitation_Period_Cases</choiceReferences>
+            <choiceReferences>D1_Net_Estate_under_5000</choiceReferences>
+            <choiceReferences>D2_Net_Estate_over_5000_under_15_000</choiceReferences>
+            <choiceReferences>C1_Freedom_of_Information_Request</choiceReferences>
+            <choiceReferences>YA_Reopened_Other</choiceReferences>
+            <choiceReferences>D3_Net_Estate_under_15_000</choiceReferences>
+            <choiceReferences>P_Pre_1997_Case</choiceReferences>
+            <choiceReferences>D4_Net_Estate_Under_15k_collection_only</choiceReferences>
+            <choiceReferences>C2_Net_Estate_over_15_000_no_grant_required</choiceReferences>
+            <choiceReferences>C4_Net_Estate_over_15_000_collection_only</choiceReferences>
             <dataType>String</dataType>
             <fieldText>Case type</fieldText>
             <fieldType>DropdownBox</fieldType>
@@ -11054,9 +11078,6 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
-        <connector>
-            <targetReference>Create_Conveyancing_Company_Record</targetReference>
-        </connector>
         <fields>
             <name>Sale_Property_Conv_Screen_Section1</name>
             <fieldType>RegionContainer</fieldType>
