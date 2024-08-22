@@ -1,6 +1,7 @@
 import { LightningElement, track, wire } from 'lwc';
 import { getObjectInfo } from 'lightning/uiObjectInfoApi';
 import { getRecord, createRecord, updateRecord } from 'lightning/uiRecordApi';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import CASE_DETAIL_OBJECT from '@salesforce/schema/Case_Detail__c';
 import CURRENT_OFFICER_FIELD from '@salesforce/schema/Case_Detail__c.Current_Officer__c';
 import DATE_OFFICER_FIELD from '@salesforce/schema/Case_Detail__c.Date_Officer__c';
@@ -228,6 +229,13 @@ export default class CaseOfficerButtons extends LightningElement {
     handleFlowStatusChange(event) {
         if (event.detail.status === 'FINISHED') {
             this.isChangeCaseCategoryModalOpen = false;
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Success',
+                    message: 'Case category changed successfully',
+                    variant: 'success'
+                })
+            );
         }
     }
 }
