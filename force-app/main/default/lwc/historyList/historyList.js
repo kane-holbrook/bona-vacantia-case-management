@@ -360,15 +360,24 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
 
     toggleShowRelatedItems(event) {
         this.showRelatedItems = event.target.checked;
+    
         if (!this.showRelatedItems) {
+            // Unselect all records when the Group by related is unticked
             this.historyItems = this.historyItems.map(item => ({ 
                 ...item, 
                 isExpanded: false,
-                iconName: this.getIconName(false)
+                iconName: this.getIconName(false),
+                isSelected: false, // Unselect parent item
+                children: item.children.map(child => ({
+                    ...child,
+                    isSelected: false // Unselect child items
+                }))
             }));
         }
-        this.filterHistoryItems();
+        this.filterHistoryItems(); // Reapply filters to update the filteredHistoryItems list
+        this.updateGroupButtonState(); // Update the state of group/ungroup buttons
     }
+    
 
     showToast(title, message, variant) {
         const evt = new ShowToastEvent({
@@ -620,6 +629,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
             this.showToast('Error', 'There are no valid child records to group.', 'error');
         }
     }
+
     
     
     handleUngroup() {
