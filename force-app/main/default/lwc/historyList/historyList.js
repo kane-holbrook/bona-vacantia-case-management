@@ -10,6 +10,7 @@ import { getRecordId } from 'c/sharedService';
 import { NavigationMixin } from 'lightning/navigation';
 import groupHistoryRecords from '@salesforce/apex/HistoryController.groupHistoryRecords';
 import ungroupHistoryRecords from '@salesforce/apex/HistoryController.ungroupHistoryRecords';
+import updateParentHistoryRecords from '@salesforce/apex/HistoryController.updateParentHistoryRecords';
 
 export default class HistoryList extends NavigationMixin(LightningElement) {
     @api recordId;
@@ -517,6 +518,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
 
     handleRowSelection(event) {
         const itemId = event.currentTarget.dataset.id;
+        console.log('item id: ', itemId);
     
         this.historyItems = this.historyItems.map(item => {
             // Toggle the selection of the parent record if it matches the itemId
@@ -581,25 +583,21 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     }
     
     handleGroup() {
-        // Flatten the selected records from filteredHistoryItems, considering both parents and children
         const selectedRecords = this.filteredHistoryItems.flatMap(item => {
             if (item.isSelected) {
                 return [item];
             }
-            // If a parent is selected, include its selected children
             if (item.isExpanded) {
                 return item.children.filter(child => child.isSelected);
             }
             return [];
         });
     
-        // Edge Case: No records selected
         if (selectedRecords.length === 0) {
             this.showToast('Error', 'Please select records to group.', 'error');
             return;
         }
     
-        // Edge Case: Mixed selection of parent and child records
         const hasChild = selectedRecords.some(item => item.isChild);
         const hasParent = selectedRecords.some(item => !item.isChild);
         if (hasChild && hasParent) {
@@ -607,7 +605,6 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
             return;
         }
     
-        // Proceed with grouping if valid selection
         const parentRecord = selectedRecords.reduce((oldest, item) => {
             return new Date(item.Date_Inserted__c) < new Date(oldest.Date_Inserted__c) ? item : oldest;
         });
@@ -617,10 +614,28 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
             .map(record => record.Id);
     
         if (childRecordIds.length > 0) {
+            console.log('Grouping child records:', childRecordIds);
             groupHistoryRecords({ parentRecordId: parentRecord.Id, childRecordIds })
                 .then(() => {
-                    this.showToast('Success', 'Records grouped successfully.', 'success');
-                    this.refreshHistoryItems();
+                    // After grouping, reassign the children of the newly grouped record to the new parent
+                    const reassignedChildRecordIds = [];
+                    selectedRecords.forEach(record => {
+                        if (record.Id !== parentRecord.Id && record.hasChildren) {
+                            record.children.forEach(child => {
+                                child.parentId = parentRecord.Id;
+                                child.Parent_History_Record__c = parentRecord.Id; // Update the Parent_History_Record__c field
+                                reassignedChildRecordIds.push(child.Id);
+                                console.log('Reassigning child record:', child.Id, 'to parent:', parentRecord.Id);
+                            });
+                        }
+                    });
+    
+                    // If there are reassigned child records, call Apex to update their parent IDs
+                    if (reassignedChildRecordIds.length > 0) {
+                        this.updateChildRecordParents(reassignedChildRecordIds, parentRecord.Id);
+                    } else {
+                        this.refreshHistoryItems();
+                    }
                 })
                 .catch(error => {
                     this.showToast('Error', 'Error grouping records: ' + error.body.message, 'error');
@@ -629,6 +644,21 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
             this.showToast('Error', 'There are no valid child records to group.', 'error');
         }
     }
+    
+    updateChildRecordParents(childRecordIds, newParentId) {
+        // Apex call to update the Parent_History_Record__c for the child records
+        updateParentHistoryRecords({ childRecordIds, newParentId })
+            .then(() => {
+                this.showToast('Success', 'Child records reassigned successfully.', 'success');
+                this.refreshHistoryItems();
+            })
+            .catch(error => {
+                this.showToast('Error', 'Error updating child records: ' + error.body.message, 'error');
+            });
+    }
+    
+    
+    
 
     
     

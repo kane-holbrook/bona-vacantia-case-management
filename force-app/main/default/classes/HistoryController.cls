@@ -160,4 +160,31 @@ public with sharing class HistoryController {
         }
     }
 
+    @AuraEnabled
+    public static void updateParentHistoryRecords(List<Id> childRecordIds, Id newParentId) {
+        try {
+            // Fetch the child records that need to be updated
+            List<Case_History__c> childRecords = [
+                SELECT Id, Parent_History_Record__c 
+                FROM Case_History__c 
+                WHERE Id IN :childRecordIds
+            ];
+
+            // Update the Parent_History_Record__c field for each child record
+            for (Case_History__c childRecord : childRecords) {
+                childRecord.Parent_History_Record__c = newParentId;
+            }
+
+            // Save the changes
+            if (!childRecords.isEmpty()) {
+                update childRecords;
+            }
+
+        } catch (Exception e) {
+            // Handle exceptions and throw a user-friendly error message
+            throw new AuraHandledException('Error updating child records: ' + e.getMessage());
+        }
+    }
+
+
 }
