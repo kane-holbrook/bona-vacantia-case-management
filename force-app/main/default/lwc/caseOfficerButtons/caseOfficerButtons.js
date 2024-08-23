@@ -45,11 +45,9 @@ export default class CaseOfficerButtons extends LightningElement {
         { actionId: '1', label: 'Put away', disabled: false },
         { actionId: '2', label: 'Re-allocate case', disabled: false },
         { actionId: '3', label: 'Change case category', disabled: false },
-        { actionId: '4', label: 'Add accrual', disabled: false },
-        { actionId: '5', label: 'Reverse accrual', disabled: false },
-        { actionId: '6', label: 'Hidden Screen Controls', disabled: false },
-        { actionId: '7', label: 'LM case review', disabled: false },
-        { actionId: '8', label: 'Section 27', disabled: false }
+        { actionId: '4', label: 'Hidden Screen Controls', disabled: false },
+        { actionId: '5', label: 'LM case review', disabled: false },
+        { actionId: '6', label: 'Section 27', disabled: false }
     ];
 
     connectedCallback() {
@@ -102,11 +100,7 @@ export default class CaseOfficerButtons extends LightningElement {
         const actionName = event.target.label;
         console.log(`Button clicked: ${actionName}`);
         
-        if (actionName === 'Add accrual') {
-            this.isAddAccrualModalOpen = true;
-        } else if (actionName === 'Reverse accrual') {
-            this.isReverseAccrualModalOpen = true;
-        } else if (actionName === 'Re-allocate case') {
+        if (actionName === 'Re-allocate case') {
             this.template.querySelector('c-re-allocate-case').openModal();
         } else if (actionName === 'Change case category') {
             this.flowInputs = [
