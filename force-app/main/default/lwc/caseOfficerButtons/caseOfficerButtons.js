@@ -32,6 +32,7 @@ export default class CaseOfficerButtons extends LightningElement {
     @track recordId;  // The BV_Case__c recordId
     @track caseDetailId; // Stores the Case_Detail__c Id for Officer History
     @track officerHistoryRecordTypeId; // Stores the Record Type Id for Officer_History
+    @track adminHiddenScreenRecordTypeId // Stores the Record Type Id for Admin Hidden Screen
     @track caseDetailRecord; // Holds the Case_Detail__c record
     @track bvCaseName; // Holds the BV_Case__c Name
     @track flowInputs = [];
@@ -46,8 +47,9 @@ export default class CaseOfficerButtons extends LightningElement {
         { actionId: '3', label: 'Change case category', disabled: false },
         { actionId: '4', label: 'Add accrual', disabled: false },
         { actionId: '5', label: 'Reverse accrual', disabled: false },
-        { actionId: '6', label: 'LM case review', disabled: false },
-        { actionId: '7', label: 'Section 27', disabled: false }
+        { actionId: '6', label: 'Hidden Screen Controls', disabled: false },
+        { actionId: '7', label: 'LM case review', disabled: false },
+        { actionId: '8', label: 'Section 27', disabled: false }
     ];
 
     connectedCallback() {
@@ -68,6 +70,7 @@ export default class CaseOfficerButtons extends LightningElement {
         if (data) {
             const recordTypes = data.recordTypeInfos;
             this.officerHistoryRecordTypeId = Object.keys(recordTypes).find(rtId => recordTypes[rtId].name === 'Officer History');
+            this.adminHiddenScreenRecordTypeId = Object.keys(recordTypes).find(rtId => recordTypes[rtId].name === 'Admin - Hidden Screen');
             this.loadCaseDetailRecord();
         } else if (error) {
             console.error('Error fetching object info:', error);
@@ -123,6 +126,8 @@ export default class CaseOfficerButtons extends LightningElement {
                 }
             ];
             this.isSection27Open = true;
+        } else if (actionName === 'Hidden Screen Controls') {
+            this.template.querySelector('c-hidden-screen-controls').openModal();
         }
     }
 
@@ -251,5 +256,15 @@ export default class CaseOfficerButtons extends LightningElement {
                 })
             );
         }
+    }
+
+    handleHiddenScreenControlsSave() {
+        this.dispatchEvent(
+            new ShowToastEvent({
+                title: 'Success',
+                message: 'Hidden Screen Controls saved successfully',
+                variant: 'success'
+            })
+        );
     }
 }

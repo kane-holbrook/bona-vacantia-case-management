@@ -16,6 +16,12 @@
         onsave={handleCaseOfficerSave}>
     </c-re-allocate-case>
 
+    <c-hidden-screen-controls
+        bv-case-id={recordId}
+        record-type-id={adminHiddenScreenRecordTypeId}
+        onsavehidden={handleHiddenScreenControlsSave}>
+    </c-hidden-screen-controls>
+
     <template if:true={isChangeCaseCategoryModalOpen}>
         <section role="dialog" tabindex="-1" aria-modal="true" class="slds-modal slds-fade-in-open">
             <div class="slds-modal__container">
