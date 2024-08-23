@@ -147,6 +147,9 @@
                                                 <lightning-icon icon-name={item.iconName} alternative-text="Expand"></lightning-icon>
                                             </button>
                                         </template>
+                                        <template if:true={item.isChild}>
+                                            <lightning-icon icon-name="utility:level_down" alternative-text="Child Record" size="x-medium"></lightning-icon>
+                                        </template>
                                     </td>
                                 </template>
                                 <td data-label="Important">

@@ -173,10 +173,6 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
         }
     }
 
-
-
-
-
     fetchUserNames(userIds) {
         const validUserIds = userIds.filter(id => id && id.length === 18);
 
@@ -208,7 +204,6 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     }
 
     updateLastUpdated(isDeletion = false) {
-        console.log('is deletion: ', isDeletion);
         const now = new Date();
     
         if (this.historyItems.length > 0) {
@@ -219,15 +214,12 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     
             let lastUpdateTime;
             if (isDeletion) {
-                console.log('deletion occurred');
                 lastUpdateTime = now; // If a deletion occurred, consider now as the last update time
-                console.log('last update time: ', lastUpdateTime);
             } else {
                 lastUpdateTime = new Date(latestItem.Last_updated__c);
             }
     
             const diffInMinutes = Math.floor((now - lastUpdateTime) / 60000);
-            console.log('diff in minutes: ', diffInMinutes);
     
             if (diffInMinutes < 60) {
                 this.lastUpdated = `${diffInMinutes} minutes ago`;
@@ -239,7 +231,6 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
                 this.lastUpdated = `${diffInDays} day${diffInDays > 1 ? 's' : ''} ago`;
             }
         } else {
-            console.log('all items are deleted');
             // If all items are deleted, calculate the time difference from the last action (which is now)
             const diffInMinutes = Math.floor((now - this.lastActionTime) / 60000);
     
@@ -442,7 +433,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
 
     filterHistoryItems() {
         this.filteredHistoryItems = this.historyItems.flatMap(item => {
-            const searchKeyLower = this.searchKey.toLowerCase();
+            const searchKeyLower = this.searchKey?.toLowerCase() ?? '';
             const searchMatch = this.searchKey ? (
                 (item.Action__c?.toLowerCase() ?? '').includes(searchKeyLower) ||
                 (item.notes?.toLowerCase() ?? '').includes(searchKeyLower) ||
@@ -451,8 +442,8 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
             ) : true;
     
             const dateMatch = (
-                (!this.dateFrom || new Date(item.Date_Inserted__c) >= this.dateFrom) &&
-                (!this.dateTo || new Date(item.Date_Inserted__c) <= this.dateTo)
+                (!this.dateFrom || new Date(item.Date_Inserted__c ?? 0) >= this.dateFrom) &&
+                (!this.dateTo || new Date(item.Date_Inserted__c ?? 0) <= this.dateTo)
             );
     
             const historyTypeMatch = this.selectedHistoryType === 'allHistory' || 
@@ -473,8 +464,8 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
                         ) : true;
     
                         const childDateMatch = (
-                            (!this.dateFrom || new Date(child.Date_Inserted__c) >= this.dateFrom) &&
-                            (!this.dateTo || new Date(child.Date_Inserted__c) <= this.dateTo)
+                            (!this.dateFrom || new Date(child.Date_Inserted__c ?? 0) >= this.dateFrom) &&
+                            (!this.dateTo || new Date(child.Date_Inserted__c ?? 0) <= this.dateTo)
                         );
     
                         const childHistoryTypeMatch = this.selectedHistoryType === 'allHistory' || 
@@ -517,13 +508,11 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
 
     handleRowSelection(event) {
         const itemId = event.currentTarget.dataset.id;
-        console.log('itemId: ', itemId);
     
         this.historyItems = this.historyItems.map(item => {
             // Toggle the selection of the parent record if it matches the itemId
             if (item.Id === itemId) {
                 item.isSelected = !item.isSelected;
-                console.log('Parent item.isSelected: ', item.isSelected);
             }
     
             // Iterate over child records and toggle their selection if they match the itemId
@@ -531,7 +520,6 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
                 item.children = item.children.map(child => {
                     if (child && child.Id === itemId) {
                         child.isSelected = !child.isSelected;
-                        console.log('Child item.isSelected: ', child.isSelected);
                     }
                     return child;
                 });
@@ -550,11 +538,9 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
         const selectedRecords = this.historyItems.flatMap(item => {
             let records = [];
             if (item.isSelected) {
-                console.log('Parent item: ', item);
                 records.push(item);
             }
             if (item.children && item.children.length > 0) {
-                console.log('Child items: ', item.children);
                 records = records.concat(item.children.filter(child => child.isSelected));
             }
             return records;
@@ -582,11 +568,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
 
         this.isUngroupDisabled = !this.isUngroupDisabled;
         this.isUngroupDisabled = !this.isUngroupDisabled;
-    
-        console.log('hasChildSelected: ', hasChildSelected);
-        console.log('hasParentSelected: ', hasParentSelected);
-        console.log('isGroupDisabled: ', this.isGroupDisabled);
-        console.log('isUngroupDisabled: ', this.isUngroupDisabled);
+
     }
     
     handleGroup() {
@@ -643,9 +625,11 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     handleUngroup() {
         // Flatten the selected child records from filteredHistoryItems
         const selectedRecords = this.filteredHistoryItems.flatMap(item => {
-            // Only return selected children
-            if (item.isExpanded) {
-                return item.children.filter(child => child.isSelected);
+            if (item.isSelected) {
+                return [item];
+            }
+            if (item?.isExpanded) {
+                return item.children?.filter(child => child?.isSelected) ?? [];
             }
             return [];
         });
@@ -656,42 +640,62 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
             return;
         }
     
-        // Edge Case: Mixed selection of parent and child records
-        const hasParent = selectedRecords.some(item => !item.isChild);
-        if (hasParent) {
-            this.showToast('Error', 'You can only ungroup child records.', 'error');
-            return;
-        }
+        const selectedParentRecords = selectedRecords.filter(item => !item.isChild);
+        const selectedChildRecords = selectedRecords.filter(item => item.isChild);
     
-        const recordIds = selectedRecords.map(record => record.Id);
+        const childRecordIds = selectedChildRecords.map(record => record?.Id);
     
-        if (recordIds.length > 0) {
-            ungroupHistoryRecords({ recordIds })
+        if (childRecordIds.length > 0) {
+            console.log('Ungrouping child records:', childRecordIds);
+            ungroupHistoryRecords({ recordIds: childRecordIds })
                 .then(() => {
-                    // Optional: Reassign the oldest child as the new parent if necessary
-                    selectedRecords.forEach(child => {
-                        const parent = this.historyItems.find(item => item.Id === child.parentId);
-                        if (parent && parent.children) {
-                            // Remove the ungrouped child from the parent's children list
-                            parent.children = parent.children.filter(id => id !== child.Id);
+                    // Unselect the ungrouped records
+                    // this.historyItems = this.historyItems.map(item => {
+                    //     if (childRecordIds.includes(item.Id)) {
+                    //         console.log('Unselecting record:', item.Id);
+                    //         item.isSelected = false;
+                    //         console.log('Item is selected:', item.isSelected);
+                    //     }
+                    //     if (item.children && item.children.length > 0) {
+                    //         item.children = item.children.map(child => {
+                    //             if (childRecordIds.includes(child.Id)) {
+                    //                 console.log('Unselecting child record:', child.Id);
+                    //                 child.isSelected = false;
+                    //                 item.isSelected = child.isSelected;
+                    //                 console.log('item is selected: ', item.isSelected);
+                    //                 console.log('Child is selected:', child.isSelected);
+                    //             }
+                    //             return child;
+                    //         });
+                    //     }
+                    //     return item;
+                    // });
     
-                            // If the parent now has no children, check for a new oldest child
-                            if (parent.children.length > 0) {
-                                const oldestChildId = parent.children.reduce((oldestId, childId) => {
-                                    const childRecord = this.historyItems.find(item => item.Id === childId);
-                                    const oldestRecord = this.historyItems.find(item => item.Id === oldestId);
-                                    return new Date(childRecord.Date_Inserted__c) < new Date(oldestRecord.Date_Inserted__c) ? childId : oldestId;
-                                });
+                    // Force a UI refresh by assigning to filteredHistoryItems again
+                    this.filteredHistoryItems = [...this.filteredHistoryItems];
     
-                                // Reassign oldestChildId as the new parent
-                                groupHistoryRecords({ parentRecordId: oldestChildId, childRecordIds: parent.children.filter(id => id !== oldestChildId) })
-                                    .then(() => {
-                                        this.showToast('Success', 'Oldest child reassigned as new parent.', 'success');
-                                    })
-                                    .catch(error => {
-                                        this.showToast('Error', 'Error reassigning new parent: ' + error.body.message, 'error');
-                                    });
-                            }
+                    selectedParentRecords.forEach(parent => {
+                        const remainingChildren = parent.children.filter(child => !childRecordIds.includes(child.Id));
+    
+                        if (remainingChildren.length > 0) {
+                            const oldestChild = remainingChildren.reduce((oldest, child) => {
+                                return new Date(child.Date_Inserted__c) < new Date(oldest.Date_Inserted__c) ? child : oldest;
+                            }, remainingChildren[0]);
+    
+                            groupHistoryRecords({ 
+                                parentRecordId: oldestChild.Id, 
+                                childRecordIds: remainingChildren.filter(child => child.Id !== oldestChild.Id).map(child => child.Id) 
+                            })
+                            .then(() => {
+                                this.showToast('Success', 'Oldest child reassigned as new parent.', 'success');
+                                this.refreshHistoryItems();
+                            })
+                            .catch(error => {
+                                console.error('Error reassigning new parent:', error);
+                                this.showToast('Error', 'Error reassigning new parent: ' + this.getErrorMessage(error), 'error');
+                            });
+                        } else {
+                            this.refreshHistoryItems();
                         }
                     });
     
@@ -699,10 +703,28 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
                     this.refreshHistoryItems();
                 })
                 .catch(error => {
-                    this.showToast('Error', 'Error ungrouping records: ' + error.body.message, 'error');
+                    this.showToast('Error', 'Error ungrouping records: ' + this.getErrorMessage(error), 'error');
                 });
+        } else {
+            this.showToast('Error', 'No valid child records to ungroup.', 'error');
         }
     }
+    
+    
+    
+    getErrorMessage(error) {
+        // Check if the error has a body with a message
+        if (error && error.body && error.body.message) {
+            return error.body.message;
+        }
+        // Check if the error itself is a string or has a message
+        if (error && error.message) {
+            return error.message;
+        }
+        // Default fallback
+        return 'An unexpected error occurred';
+    }
+    
     
 
     get sortedByText() {

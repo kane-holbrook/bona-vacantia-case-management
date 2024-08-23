@@ -131,17 +131,31 @@ public with sharing class HistoryController {
     @AuraEnabled
     public static void ungroupHistoryRecords(List<Id> recordIds) {
         try {
-            List<Case_History__c> recordsToUpdate = new List<Case_History__c>();
-            
-            for (Id recordId : recordIds) {
-                Case_History__c record = new Case_History__c(Id = recordId, Parent_History_Record__c = null);
-                recordsToUpdate.add(record);
+            if (recordIds == null || recordIds.isEmpty()) {
+                throw new AuraHandledException('No record IDs provided for ungrouping.');
             }
-            
-            if (!recordsToUpdate.isEmpty()) {
-                update recordsToUpdate;
+
+            // Query the records to ensure they exist
+            List<Case_History__c> recordsToUpdate = [
+                SELECT Id, Parent_History_Record__c 
+                FROM Case_History__c 
+                WHERE Id IN :recordIds
+            ];
+
+            if (recordsToUpdate.isEmpty()) {
+                throw new AuraHandledException('No matching records found for the provided IDs.');
             }
+
+            // Update the records to ungroup them
+            for (Case_History__c record : recordsToUpdate) {
+                record.Parent_History_Record__c = null;
+            }
+
+            update recordsToUpdate;
+
         } catch (Exception e) {
+            // Log the error for debugging purposes
+            System.debug('Error during ungrouping: ' + e.getMessage());
             throw new AuraHandledException('Error ungrouping records: ' + e.getMessage());
         }
     }
