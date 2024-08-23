@@ -518,7 +518,6 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
 
     handleRowSelection(event) {
         const itemId = event.currentTarget.dataset.id;
-        console.log('item id: ', itemId);
     
         this.historyItems = this.historyItems.map(item => {
             // Toggle the selection of the parent record if it matches the itemId
@@ -559,28 +558,70 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     
         let hasChildSelected = false;
         let hasParentSelected = false;
+        let selectedParentCount = 0;
+        let selectedParentWithChildrenCount = 0;
+        let selectedParentWithoutChildrenCount = 0;
+        let selectedChildWithinSameParent = false;
     
         selectedRecords.forEach(item => {
             if (item.isChild) {
                 hasChildSelected = true;
+    
+                // Check if this child is selected along with its parent
+                const parentRecord = selectedRecords.find(parent => parent.Id === item.parentId);
+                if (parentRecord) {
+                    selectedChildWithinSameParent = true;
+                }
             } else {
                 hasParentSelected = true;
+                selectedParentCount++;
+    
+                if (item.children && item.children.length > 0) {
+                    selectedParentWithChildrenCount++;
+                } else {
+                    selectedParentWithoutChildrenCount++;
+                }
             }
         });
     
-        // Determine if all selected records have the same parent ID (for children)
-        const selectedParentIds = [...new Set(selectedRecords.filter(item => item.isChild).map(item => item.parentId))];
-    
-        // Disable the "Group" button if any child record is selected or if no records are selected
-        this.isGroupDisabled = hasChildSelected || selectedRecords.length === 0;
-    
-        // Enable the "Ungroup" button only if all selected records are children of the same parent and no parent records are selected
-        this.isUngroupDisabled = selectedRecords.length === 0 || selectedParentIds.length > 1 || hasParentSelected;
-
-        this.isUngroupDisabled = !this.isUngroupDisabled;
-        this.isUngroupDisabled = !this.isUngroupDisabled;
-
+        // If a parent record is selected and no other record is selected
+        if (selectedParentCount === 1 && selectedRecords.length === 1) {
+            this.isGroupDisabled = true;
+            this.isUngroupDisabled = true;
+        }
+        // If two or more parent records with children are selected, disable group and ungroup buttons for all parent records
+        else if (selectedParentWithChildrenCount >= 2) {
+            this.isGroupDisabled = true;
+            this.isUngroupDisabled = true;
+        }
+        // If a parent record and its child are selected, and another parent record without children is also selected, disable both buttons for all parent records
+        else if (selectedParentWithoutChildrenCount > 0 && hasChildSelected && selectedChildWithinSameParent) {
+            this.isGroupDisabled = true;
+            this.isUngroupDisabled = true;
+        }
+        // If two parent records are selected, and one has children, the group button is enabled
+        else if (selectedParentCount === 2 && selectedParentWithChildrenCount === 1 && selectedParentWithoutChildrenCount === 1) {
+            this.isGroupDisabled = false;
+            this.isUngroupDisabled = true;
+        }
+        // If a parent and child record are selected (from different parents), disable both buttons
+        else if (hasParentSelected && hasChildSelected && !selectedChildWithinSameParent) {
+            this.isGroupDisabled = true;
+            this.isUngroupDisabled = true;
+        }
+        // If a parent and child record are selected (from the same parent), enable the ungroup button
+        else if (hasParentSelected && hasChildSelected && selectedChildWithinSameParent) {
+            this.isGroupDisabled = true;
+            this.isUngroupDisabled = false;
+        }
+        // Default case: no records selected or all other cases
+        else {
+            this.isGroupDisabled = selectedRecords.length === 0 || hasChildSelected;
+            this.isUngroupDisabled = selectedRecords.length === 0 || selectedParentCount > 1 || (hasParentSelected && hasChildSelected && !selectedChildWithinSameParent);
+        }
     }
+    
+    
     
     handleGroup() {
         const selectedRecords = this.filteredHistoryItems.flatMap(item => {
@@ -614,7 +655,6 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
             .map(record => record.Id);
     
         if (childRecordIds.length > 0) {
-            console.log('Grouping child records:', childRecordIds);
             groupHistoryRecords({ parentRecordId: parentRecord.Id, childRecordIds })
                 .then(() => {
                     // After grouping, reassign the children of the newly grouped record to the new parent
@@ -625,7 +665,6 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
                                 child.parentId = parentRecord.Id;
                                 child.Parent_History_Record__c = parentRecord.Id; // Update the Parent_History_Record__c field
                                 reassignedChildRecordIds.push(child.Id);
-                                console.log('Reassigning child record:', child.Id, 'to parent:', parentRecord.Id);
                             });
                         }
                     });
@@ -659,8 +698,6 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     
     
     
-
-    
     
     handleUngroup() {
         // Flatten the selected child records from filteredHistoryItems
@@ -686,7 +723,6 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
         const childRecordIds = selectedChildRecords.map(record => record?.Id);
     
         if (childRecordIds.length > 0) {
-            console.log('Ungrouping child records:', childRecordIds);
             ungroupHistoryRecords({ recordIds: childRecordIds })
                 .then(() => {
                     // Unselect the ungrouped records
