@@ -172,23 +172,23 @@ public class FileControllerGraph {
 
     @AuraEnabled(cacheable=true)
     public static List<Map<String, Object>> fetchAllFilesFromFolder(String folderPath) {
-        // Recursive list to store all files and subfolders
+        // List to store all files and subfolders
         List<Map<String, Object>> allItems = new List<Map<String, Object>>();
-    
-        // Call the recursive helper method
-        fetchFilesRecursively(folderPath, allItems);
         
-        return allItems;
-    }
-    
-    private static void fetchFilesRecursively(String folderPath, List<Map<String, Object>> allItems) {
-        // Settings and base URL
+        // Get settings and site ID once
         Map<String, String> settings = getSharePointSettings();
         String siteUrl = settings.get('SharePoint_Site_URL');
         String directoryPath = settings.get('SharePoint_Directory_Path');
         String siteId = getSiteId(siteUrl, directoryPath);
+    
+        // Call the recursive helper method once with the pre-fetched settings and site ID
+        fetchFilesRecursively(folderPath, allItems, siteUrl, siteId);
         
-        // Construct the folder URL
+        return allItems;
+    }
+    
+    private static void fetchFilesRecursively(String folderPath, List<Map<String, Object>> allItems, String siteUrl, String siteId) {
+        // Construct the folder URL (siteUrl and siteId are now passed in as parameters)
         String folderUrl = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/drive/root:/' + folderPath + ':/children?$expand=listItem($expand=fields)';
         
         // HTTP request to fetch files and folders
@@ -217,7 +217,7 @@ public class FileControllerGraph {
                         // If it's a folder, recursively fetch its contents
                         String folderName = (String) fileOrFolder.get('name');
                         String newFolderPath = folderPath + '/' + folderName;
-                        fetchFilesRecursively(newFolderPath, allItems);
+                        fetchFilesRecursively(newFolderPath, allItems, siteUrl, siteId);  // Recursive call with pre-fetched values
                     }
                 }
             } else {
