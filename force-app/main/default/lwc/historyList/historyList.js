@@ -456,16 +456,15 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
                 (!this.dateTo || new Date(item.Date_Inserted__c ?? 0) <= this.dateTo)
             );
     
-            const historyTypeMatch = this.selectedHistoryType === 'allHistory' || 
+            const historyTypeMatch = this.selectedHistoryType === 'allHistory' ||
                 (this.selectedHistoryType === 'myHistory' && item.Case_Officer__c === this.currentUserId);
     
             const isMatch = searchMatch && dateMatch && historyTypeMatch;
     
             if (isMatch) {
                 const result = [item];
-                if (item.isExpanded && item.children && item.children.length > 0) {
+                if (this.showRelatedItems && item.isExpanded && item.children && item.children.length > 0) {
                     const childRecords = item.children.flatMap(child => {
-                        // Apply the same filtering logic to child records
                         const childSearchMatch = this.searchKey ? (
                             (child.Action__c?.toLowerCase() ?? '').includes(searchKeyLower) ||
                             (child.notes?.toLowerCase() ?? '').includes(searchKeyLower) ||
@@ -478,7 +477,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
                             (!this.dateTo || new Date(child.Date_Inserted__c ?? 0) <= this.dateTo)
                         );
     
-                        const childHistoryTypeMatch = this.selectedHistoryType === 'allHistory' || 
+                        const childHistoryTypeMatch = this.selectedHistoryType === 'allHistory' ||
                             (this.selectedHistoryType === 'myHistory' && child.Case_Officer__c === this.currentUserId);
     
                         if (childSearchMatch && childDateMatch && childHistoryTypeMatch) {
@@ -487,6 +486,8 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
                         return [];
                     });
                     result.push(...childRecords);
+                } else if (!this.showRelatedItems && item.children && item.children.length > 0) {
+                    result.push(...item.children.map(child => ({ ...child, isChild: true })));
                 }
                 return result;
             }
@@ -496,6 +497,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     
         this.updateGroupButtonState();
     }
+    
     
     
 
