@@ -36,6 +36,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     @track sortedByPriority = false;
     @track previousHistoryItems = [];
     @track isUngroupDisabled = true;
+    @track isGroupDisabled = true;
 
     wiredHistoryItemsResult;
     userNames = {};
@@ -344,9 +345,49 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     handleDeleteSuccess() {
         this.isDeleteModalOpen = false;
         this.showToast('Success', 'Record deleted successfully', 'success');
-        this.refreshHistoryItems();
-        // this.updateLastUpdated(true);
-    }
+    
+        // Check if the deleted record had children
+        const deletedRecord = this.historyItems.find(item => item.Id === this.currentRecordId);
+        if (deletedRecord && deletedRecord.children.length > 0) {
+            // If there are children, find the oldest child to be the new parent
+            const oldestChild = deletedRecord.children.reduce((oldest, child) => {
+                return new Date(child.Date_Inserted__c) < new Date(oldest.Date_Inserted__c) ? child : oldest;
+            }, deletedRecord.children[0]);
+    
+            const remainingChildrenIds = deletedRecord.children
+                .filter(child => child.Id !== oldestChild.Id)
+                .map(child => child.Id);
+    
+            // Make the oldest child the new parent
+            ungroupHistoryRecords({ recordIds: [oldestChild.Id] })
+                .then(() => {
+                    if (remainingChildrenIds.length > 0) {
+                        // Group the remaining children under the oldest child
+                        groupHistoryRecords({
+                            parentRecordId: oldestChild.Id,
+                            childRecordIds: remainingChildrenIds
+                        })
+                        .then(() => {
+                            this.showToast('Success', 'Oldest child reassigned as new parent.', 'success');
+                            this.refreshHistoryItems();
+                        })
+                        .catch(error => {
+                            console.error('Error reassigning new parent:', error);
+                            this.showToast('Error', 'Error reassigning new parent: ' + this.getErrorMessage(error), 'error');
+                        });
+                    } else {
+                        this.refreshHistoryItems();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error ungrouping record:', error);
+                    this.showToast('Error', 'Error ungrouping record: ' + this.getErrorMessage(error), 'error');
+                });
+        } else {
+            // If there were no children, just refresh the items
+            this.refreshHistoryItems();
+        }
+    }    
     
 
     handleSave() {
@@ -593,61 +634,83 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
             }
         });
     
-        // Disable both buttons if there are selected records from multiple parents
-        if (parentIds.size > 1) {
+        // Disable buttons if a parent record is selected and a child record from another parent record is selected
+        if (hasParentSelected && hasChildSelected && parentIds.size > 1) {
+            console.log('first if statement: Parent and child from different parents selected');
             this.isGroupDisabled = true;
             this.isUngroupDisabled = true;
-            return;
+            console.log('is Group Disabled: ' + this.isGroupDisabled);
+            console.log('is Ungroup Disabled: ' + this.isUngroupDisabled);
         }
-    
+        // New condition to disable the group button if a parent with children and a child record are selected
+        else if (hasParentSelected && hasChildSelected) {
+            console.log('New condition: Parent with children and a child record selected');
+            this.isGroupDisabled = true;
+            this.isUngroupDisabled = true;
+            console.log('is Group Disabled: ' + this.isGroupDisabled);
+            console.log('is Ungroup Disabled: ' + this.isUngroupDisabled);
+        }
         // If one parent with children and one parent without children are selected, enable the group button
-        if (selectedParentWithChildrenCount === 1 && selectedParentWithoutChildrenCount === 1) {
+        else if (selectedParentWithChildrenCount === 1 && selectedParentWithoutChildrenCount >= 1) {
+            console.log('second if statement: One parent with children and one parent without children');
             this.isGroupDisabled = false;
             this.isUngroupDisabled = true; // Ungroup button should be disabled in this scenario
+            console.log('is Group Disabled: ' + this.isGroupDisabled);
+            console.log('is Ungroup Disabled: ' + this.isUngroupDisabled);
         }
         // If a parent record with children is selected, enable the ungroup button
         else if (selectedParentWithChildrenCount === 1 && selectedParentWithoutChildrenCount === 0) {
+            console.log('third if statement: One parent with children');
             this.isUngroupDisabled = false;
             this.isGroupDisabled = true; // Disable the group button in this scenario
+            console.log('is Group Disabled: ' + this.isGroupDisabled);
+            console.log('is Ungroup Disabled: ' + this.isUngroupDisabled);
         }
         // If a parent record is selected and no other record is selected
         else if (selectedParentCount === 1 && selectedRecords.length === 1) {
+            console.log('fourth if statement: One parent selected');
             this.isGroupDisabled = true;
             this.isUngroupDisabled = true;
+            console.log('is Group Disabled: ' + this.isGroupDisabled);
+            console.log('is Ungroup Disabled: ' + this.isUngroupDisabled);
         }
         // If two or more parent records with children are selected, disable group and ungroup buttons for all parent records
         else if (selectedParentWithChildrenCount >= 2) {
+            console.log('fifth if statement: Two or more parents with children selected');
             this.isGroupDisabled = true;
             this.isUngroupDisabled = true;
-        }
-        // If a parent record and its child are selected, and another parent record without children is also selected, disable both buttons for all parent records
-        else if (selectedParentWithoutChildrenCount > 0 && hasChildSelected && selectedChildWithinSameParent) {
-            this.isGroupDisabled = true;
-            this.isUngroupDisabled = true;
+            console.log('is Group Disabled: ' + this.isGroupDisabled);
+            console.log('is Ungroup Disabled: ' + this.isUngroupDisabled);
         }
         // If two parent records are selected, and one has children, the group button is enabled
         else if (selectedParentCount === 2 && selectedParentWithChildrenCount === 1 && selectedParentWithoutChildrenCount === 1) {
+            console.log('sixth if statement: Two parents selected, one with children');
             this.isGroupDisabled = false;
             this.isUngroupDisabled = true;
-        }
-        // If a parent and child record are selected (from different parents), disable both buttons
-        else if (hasParentSelected && hasChildSelected && !selectedChildWithinSameParent) {
-            this.isGroupDisabled = true;
-            this.isUngroupDisabled = true;
+            console.log('is Group Disabled: ' + this.isGroupDisabled);
+            console.log('is Ungroup Disabled: ' + this.isUngroupDisabled);
         }
         // If a parent and child record are selected (from the same parent), enable the ungroup button
         else if (hasParentSelected && hasChildSelected && selectedChildWithinSameParent) {
+            console.log('seventh if statement: Parent and child selected from the same parent');
             this.isGroupDisabled = true;
             this.isUngroupDisabled = false;
+            console.log('is Group Disabled: ' + this.isGroupDisabled);
+            console.log('is Ungroup Disabled: ' + this.isUngroupDisabled);
         }
         // Default case: no records selected or all other cases
         else {
+            console.log('Default case');
             this.isGroupDisabled = selectedRecords.length === 0 || hasChildSelected;
             this.isUngroupDisabled = selectedRecords.length === 0 || selectedParentCount > 1 || (hasParentSelected && hasChildSelected && !selectedChildWithinSameParent);
+            console.log('is Group Disabled: ' + this.isGroupDisabled);
+            console.log('is Ungroup Disabled: ' + this.isUngroupDisabled);
         }
+
+        console.log('is Group Disabled: ' + this.isGroupDisabled);
+        console.log('is Ungroup Disabled: ' + this.isUngroupDisabled);
     }
-    
-        
+            
     
     handleGroup() {
         const selectedRecords = this.filteredHistoryItems.flatMap(item => {
