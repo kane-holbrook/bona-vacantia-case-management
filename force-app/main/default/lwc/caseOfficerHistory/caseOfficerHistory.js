@@ -80,6 +80,36 @@ export default class CaseOfficerHistory extends LightningElement {
         } else if (result.error) {
             console.error('Error loading Case_Detail__c record:', result.error);
         }
+        else {
+            // Set all fields to blank if result.data is undefined
+            this.setAllFieldsToBlank();
+        }
+    }
+
+    setAllFieldsToBlank() {
+        this.currentOfficer = '';
+        this.currentOfficerDate = '';
+        this.previous1 = '';
+        this.previous1Date = '';
+        this.previous2 = '';
+        this.previous2Date = '';
+        this.previous3 = '';
+        this.previous3Date = '';
+        this.previous4 = '';
+        this.previous4Date = '';
+        this.previous5 = '';
+        this.previous5Date = '';
+        this.previous6 = '';
+        this.previous6Date = '';
+        this.previous7 = '';
+        this.previous7Date = '';
+        this.previous8 = '';
+        this.previous8Date = '';
+        this.previous9 = '';
+        this.previous9Date = '';
+        this.putAway = '';
+        this.reopened = '';
+        this.reopenedBy = '';
     }
 
     @api
