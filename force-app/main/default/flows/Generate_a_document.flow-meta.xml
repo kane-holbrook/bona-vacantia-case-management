@@ -4,7 +4,7 @@
     <assignments>
         <name>setValuesForDocGen</name>
         <label>Set valuesForDocGen</label>
-        <locationX>798</locationX>
+        <locationX>1326</locationX>
         <locationY>650</locationY>
         <assignmentItems>
             <assignToReference>valuesForDocGen</assignToReference>
@@ -20,7 +20,7 @@
     <decisions>
         <name>Document_Type_to_Generate</name>
         <label>Document Type to Generate</label>
-        <locationX>710</locationX>
+        <locationX>1238</locationX>
         <locationY>242</locationY>
         <defaultConnector>
             <targetReference>Loop_subflow_values</targetReference>
@@ -101,6 +101,66 @@
             </connector>
             <label>minute</label>
         </rules>
+        <rules>
+            <name>Pay</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Generate_a_document_flow_LWC.selectedDocumentType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Pay</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Payment_request_to_BV_Finance_Pay</targetReference>
+            </connector>
+            <label>Pay</label>
+        </rules>
+        <rules>
+            <name>PROB</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Generate_a_document_flow_LWC.selectedDocumentType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>PROB</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Letter_to_probate_registry_re_missing_off_copies_PROB</targetReference>
+            </connector>
+            <label>PROB</label>
+        </rules>
+        <rules>
+            <name>telnote</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Generate_a_document_flow_LWC.selectedDocumentType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>telnote</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Telephone_Note_telnote</targetReference>
+            </connector>
+            <label>telnote</label>
+        </rules>
+        <rules>
+            <name>FOLLOW_1</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Generate_a_document_flow_LWC.selectedDocumentType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>FOLLOW.1</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Following_on_grant_subject_interstate_FOLLOW_1</targetReference>
+            </connector>
+            <label>FOLLOW.1</label>
+        </rules>
     </decisions>
     <environments>Default</environments>
     <interviewLabel>Generate a document {!$Flow.CurrentDateTime}</interviewLabel>
@@ -108,7 +168,7 @@
     <loops>
         <name>Loop_subflow_values</name>
         <label>Loop subflow values</label>
-        <locationX>710</locationX>
+        <locationX>1238</locationX>
         <locationY>542</locationY>
         <collectionReference>subflowValues</collectionReference>
         <iterationOrder>Asc</iterationOrder>
@@ -141,7 +201,7 @@
     <screens>
         <name>Generate_a_document</name>
         <label>Select a document to generate</label>
-        <locationX>710</locationX>
+        <locationX>1238</locationX>
         <locationY>134</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -153,6 +213,18 @@
             <name>Generate_a_document_flow_LWC</name>
             <extensionName>c:generateDocumentFlow</extensionName>
             <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>selectedDocumentId</name>
+                <value>
+                    <elementReference>selectedDocumentId</elementReference>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>selectedDocumentType</name>
+                <value>
+                    <elementReference>selectedDocumentType</elementReference>
+                </value>
+            </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
@@ -163,11 +235,14 @@
     <screens>
         <name>Generated_document</name>
         <label>Generated document</label>
-        <locationX>710</locationX>
+        <locationX>1238</locationX>
         <locationY>842</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Open_generated_document</targetReference>
+        </connector>
         <fields>
             <name>Apryse_Generate_Document_Modal</name>
             <extensionName>c:pdftronWvInstanceFlow</extensionName>
@@ -190,6 +265,12 @@
                     <elementReference>historyRecordId</elementReference>
                 </value>
             </inputParameters>
+            <inputParameters>
+                <name>taskId</name>
+                <value>
+                    <elementReference>taskId</elementReference>
+                </value>
+            </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
@@ -197,8 +278,33 @@
         <showFooter>false</showFooter>
         <showHeader>true</showHeader>
     </screens>
+    <screens>
+        <name>Open_generated_document</name>
+        <label>Open generated document</label>
+        <locationX>1238</locationX>
+        <locationY>950</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>opengenerateddocumentlwc</name>
+            <extensionName>c:generateOpenDocumentFlow</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>documentUrl</name>
+                <value>
+                    <elementReference>Apryse_Generate_Document_Modal.serverRelativeUrl</elementReference>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
     <start>
-        <locationX>584</locationX>
+        <locationX>1112</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Generate_a_document</targetReference>
@@ -274,6 +380,30 @@
         </outputAssignments>
     </subflows>
     <subflows>
+        <name>Following_on_grant_subject_interstate_FOLLOW_1</name>
+        <label>Following on grant - subject interstate (FOLLOW.1)</label>
+        <locationX>2162</locationX>
+        <locationY>350</locationY>
+        <connector>
+            <targetReference>Loop_subflow_values</targetReference>
+        </connector>
+        <flowName>Following_on_grant_subject_interstate_FOLLOW_1</flowName>
+        <inputAssignments>
+            <name>recordId</name>
+            <value>
+                <elementReference>Generate_a_document_flow_LWC.caseId</elementReference>
+            </value>
+        </inputAssignments>
+        <outputAssignments>
+            <assignToReference>historyRecordId</assignToReference>
+            <name>historyRecordId</name>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>subflowValues</assignToReference>
+            <name>subflowValues</name>
+        </outputAssignments>
+    </subflows>
+    <subflows>
         <name>Instructions_to_council_COUNSEL1</name>
         <label>Instructions to council (COUNSEL1)</label>
         <locationX>314</locationX>
@@ -282,6 +412,30 @@
             <targetReference>Loop_subflow_values</targetReference>
         </connector>
         <flowName>Instructions_to_council_COUNSEL1</flowName>
+        <inputAssignments>
+            <name>recordId</name>
+            <value>
+                <elementReference>Generate_a_document_flow_LWC.caseId</elementReference>
+            </value>
+        </inputAssignments>
+        <outputAssignments>
+            <assignToReference>historyRecordId</assignToReference>
+            <name>historyRecordId</name>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>subflowValues</assignToReference>
+            <name>storedFieldValues</name>
+        </outputAssignments>
+    </subflows>
+    <subflows>
+        <name>Letter_to_probate_registry_re_missing_off_copies_PROB</name>
+        <label>Letter to probate registry re: missing off. copies (PROB)</label>
+        <locationX>1634</locationX>
+        <locationY>350</locationY>
+        <connector>
+            <targetReference>Loop_subflow_values</targetReference>
+        </connector>
+        <flowName>Letter_to_probate_registry_re_missing_off_copies_PROB</flowName>
         <inputAssignments>
             <name>recordId</name>
             <value>
@@ -321,6 +475,54 @@
             <name>storedFieldValues</name>
         </outputAssignments>
     </subflows>
+    <subflows>
+        <name>Payment_request_to_BV_Finance_Pay</name>
+        <label>Payment request to BV Finance (Pay)</label>
+        <locationX>1370</locationX>
+        <locationY>350</locationY>
+        <connector>
+            <targetReference>Loop_subflow_values</targetReference>
+        </connector>
+        <flowName>Payment_request_to_BV_Finance_PAY</flowName>
+        <inputAssignments>
+            <name>recordId</name>
+            <value>
+                <elementReference>Generate_a_document_flow_LWC.caseId</elementReference>
+            </value>
+        </inputAssignments>
+        <outputAssignments>
+            <assignToReference>historyRecordId</assignToReference>
+            <name>historyRecordId</name>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>subflowValues</assignToReference>
+            <name>storedFieldValues</name>
+        </outputAssignments>
+    </subflows>
+    <subflows>
+        <name>Telephone_Note_telnote</name>
+        <label>Telephone Note (telnote)</label>
+        <locationX>1898</locationX>
+        <locationY>350</locationY>
+        <connector>
+            <targetReference>Loop_subflow_values</targetReference>
+        </connector>
+        <flowName>Telephone_note_TELNOTE</flowName>
+        <inputAssignments>
+            <name>recordId</name>
+            <value>
+                <elementReference>Generate_a_document_flow_LWC.caseId</elementReference>
+            </value>
+        </inputAssignments>
+        <outputAssignments>
+            <assignToReference>historyRecordId</assignToReference>
+            <name>historyRecordId</name>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>subflowValues</assignToReference>
+            <name>subflowValues</name>
+        </outputAssignments>
+    </subflows>
     <variables>
         <name>caseId</name>
         <dataType>String</dataType>
@@ -336,11 +538,39 @@
         <isOutput>true</isOutput>
     </variables>
     <variables>
+        <name>selectedDocumentId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>selectedDocumentType</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>serverRelativeURL</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
         <name>subflowValues</name>
         <dataType>String</dataType>
         <isCollection>true</isCollection>
         <isInput>true</isInput>
         <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>taskId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
     </variables>
     <variables>
         <name>valuesForDocGen</name>

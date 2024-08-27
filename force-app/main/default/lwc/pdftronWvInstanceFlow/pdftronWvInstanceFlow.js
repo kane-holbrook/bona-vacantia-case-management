@@ -8,6 +8,7 @@ import { publish, createMessageContext, releaseMessageContext, subscribe, unsubs
 import WebViewerMC from "@salesforce/messageChannel/WebViewerMessageChannel__c";
 import { FlowNavigationFinishEvent } from 'lightning/flowSupport';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import { FlowNavigationNextEvent } from 'lightning/flowSupport';
 import mimeTypes from './mimeTypes';
 import { fireEvent, registerListener, unregisterAllListeners } from 'c/pubsub';
 import saveDocument from '@salesforce/apex/PDFTron_ContentVersionController.saveDocument';
@@ -47,6 +48,7 @@ export default class PdftronWvInstanceFlow extends LightningElement {
     @api flowData; // Custom class property
     @api historyRecordId;
     @api taskId;
+    @api serverRelativeUrl;
 
     @wire(CurrentPageReference)
     pageRef;
@@ -456,6 +458,9 @@ export default class PdftronWvInstanceFlow extends LightningElement {
                         historyRecordId: this.historyRecordId
                     })
                         .then((response) => {
+                            this.serverRelativeUrl = response.webUrl;
+
+                            console.log('response', this.serverRelativeUrl);
                             me.iframeWindow.postMessage({ type: 'DOCUMENT_SAVED', response }, '*');
                             fireEvent(this.pageRef, 'refreshOnSave', response);
                     
@@ -476,6 +481,10 @@ export default class PdftronWvInstanceFlow extends LightningElement {
                             }
                     
                             this.showNotification('Document Generated', event.data.payload.filename + ' has been generated and attached to history', 'success');
+
+                            // Navigate to next LWC screen
+                            const navigateNextEvent = new FlowNavigationNextEvent();
+                            this.dispatchEvent(navigateNextEvent);
                         })
                         .catch(error => {
                             me.iframeWindow.postMessage({ type: 'DOCUMENT_SAVED', error }, '*');

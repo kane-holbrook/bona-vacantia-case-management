@@ -12,6 +12,7 @@
           <property name="flowData" type="String" label="Flow inputs"/>
           <property name="historyRecordId" type="String" label="History RecordID"/>
           <property name="taskId" type="String" label="Task ID"/>
+          <property name="serverRelativeUrl" type="String" label="SharePoint URL"/>
       </targetConfig>
   </targetConfigs>
 </LightningComponentBundle>

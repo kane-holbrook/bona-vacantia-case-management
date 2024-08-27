@@ -96,7 +96,7 @@ public with sharing class PDFTron_ContentVersionController {
     }
 
     @AuraEnabled
-    public static String saveDocumentToSharePointViaFlow(String jsonpayload, String folderName, String historyRecordId) {
+    public static Map<String, String> saveDocumentToSharePointViaFlow(String jsonpayload, String folderName, String historyRecordId) {
         try {
             PDFTron_ContentVersionPayload pl = new PDFTron_ContentVersionPayload(jsonpayload);
             // Decode the base64 string to get the binary content of the file
@@ -156,7 +156,7 @@ public with sharing class PDFTron_ContentVersionController {
                 String shDocumentId = saveSHDocumentRecord(historyRecordId, listItemInfo);
     
                 // Return the ID of the newly created SHDocument__c record
-                return shDocumentId;
+                return listItemInfo;
             } else {
                 // Handle the error accordingly
                 System.debug('Error from SharePoint: ' + response.getBody());
@@ -170,6 +170,7 @@ public with sharing class PDFTron_ContentVersionController {
 
     private static String saveSHDocumentRecord(String historyRecordId, Map<String, String> listItemInfo) {
         try {
+            System.debug('Creating SHDocument__c record with data: ' + listItemInfo);
             // Create a new SHDocument__c record
             SHDocument__c shDocument = new SHDocument__c();
             shDocument.Case_History__c = historyRecordId;

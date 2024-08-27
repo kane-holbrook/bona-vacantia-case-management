@@ -1,0 +1,21 @@
+<template>
+    <lightning-card title="Open Document" icon-name="standard:document">
+        <div class="slds-p-around_medium">
+            <lightning-radio-group
+                name="openDocumentOptions"
+                label="Would you like to open the document?"
+                options={options}
+                value={value}
+                type="radio"
+                onchange={handleRadioChange}>
+            </lightning-radio-group>
+
+            <lightning-button
+                class="slds-m-top_medium"
+                label="Finish"
+                variant="brand"
+                onclick={handleFinish}>
+            </lightning-button>
+        </div>
+    </lightning-card>
+</template>
