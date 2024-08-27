@@ -40,6 +40,7 @@ export default class PdftronWvInstanceFlow extends LightningElement {
     source = 'My file';
     fullAPI = true;
     enableRedaction = false;
+    @track documentLoadedCallback;
     @api recordId;
 
     @api selectedDocumentId;
@@ -61,7 +62,7 @@ export default class PdftronWvInstanceFlow extends LightningElement {
 
     connectedCallback() {
         if (this.recordId === undefined) {
-          this.recordId = getRecordId();
+            this.recordId = getRecordId();
         }
 
         this.handleSubscribe();
@@ -71,7 +72,9 @@ export default class PdftronWvInstanceFlow extends LightningElement {
         console.log('flowData', this.flowData);
 
         this.processFlowData(); // Process the flowData string
-        this.processFile();
+
+        // Start the document generation process in the connectedCallback
+        this.executeDocumentGenerationSequence();
 
         this.template.addEventListener('savedocument', this.handleSaveDocumentEvent.bind(this));
     }
@@ -129,25 +132,64 @@ export default class PdftronWvInstanceFlow extends LightningElement {
         }
     }
 
+    // New method to handle document generation flow
+    async executeDocumentGenerationSequence() {
+        try {
+            await this.processFile(); // Wait for file data to be processed and iframe to be ready
+            await this.waitForDocumentLoaded(); // Wait for documentLoaded event before continuing
+            await this.fireDocGenOptionsEvent(); // Wait for doc_gen_options event to be handled
+            await this.generateDocumentPromise(); // Wait for document generation to complete
+            console.log('Document generation sequence completed.');
+        } catch (error) {
+            console.error('Error in document generation sequence:', error);
+            this.showNotification('Error', 'An error occurred during document generation', 'error');
+        }
+    }
+
+    waitForDocumentLoaded() {
+        return new Promise((resolve) => {
+            this.documentLoadedCallback = resolve; // Store the resolve function
+        });
+    }
+
+    fireDocGenOptionsEvent() {
+        return new Promise((resolve) => {
+            console.log("Firing doc_gen_options event");
+            fireEvent(this.pageRef, 'doc_gen_options', this.doc_keys);
+            // Using a small delay to simulate waiting for the event to be handled
+            setTimeout(() => resolve(), 100); 
+        });
+    }
+
+    generateDocumentPromise() {
+        return new Promise((resolve) => {
+            console.log("Generating document with mapping: ", this.mapping);
+            this.generateDocument();
+            setTimeout(() => resolve(), 100); // Resolving after FILL_TEMPLATE is posted
+        });
+    }
+
     processFile() {
         console.log('selectedDocumentId', this.selectedDocumentId);
-        getSharePointFileDataById({ fileId: this.selectedDocumentId })
-            .then(result => {
-                console.log('data by id result', result);
-
-                this.waitForIframeLoad().then(() => {
-                    this.handleBlobSelected(result);
-    
-                    registerListener('doc_gen_options', this.handleOptions, this);
-                    this.columns = [
-                        { "label": "Template Key", "apiName": "templateKey", "fieldType": "text", "objectName": "Account" },
-                        { "label": "Value", "apiName": "Value", "fieldType": "text", "objectName": "Account" }
-                    ];
+        return new Promise((resolve, reject) => {
+            getSharePointFileDataById({ fileId: this.selectedDocumentId })
+                .then(result => {
+                    console.log('data by id result', result);
+                    this.waitForIframeLoad().then(() => {
+                        this.handleBlobSelected(result);
+                        registerListener('doc_gen_options', this.handleOptions, this);
+                        this.columns = [
+                            { "label": "Template Key", "apiName": "templateKey", "fieldType": "text", "objectName": "Account" },
+                            { "label": "Value", "apiName": "Value", "fieldType": "text", "objectName": "Account" }
+                        ];
+                        resolve();
+                    });
+                })
+                .catch(error => {
+                    console.log("Error fetching file data", error);
+                    reject(error);
                 });
-            })
-            .catch(error => {
-                console.log("Error fetching file data", error);
-            });
+        });
     }
 
     waitForIframeLoad() {
@@ -164,7 +206,7 @@ export default class PdftronWvInstanceFlow extends LightningElement {
     }
 
     generateDocument() {
-        console.log('mapping', this.mapping);
+        console.log('Filling template with mapping', this.mapping);
         this.handleTemplateMapping(this.mapping);
     }
 
@@ -195,7 +237,7 @@ export default class PdftronWvInstanceFlow extends LightningElement {
     }
 
     handleTemplateMapping(mapping) {
-        console.log('mapping in instance: ', mapping);
+        console.log('Mapping in instance: ', mapping);
         this.iframeWindow.postMessage({ type: 'FILL_TEMPLATE', mapping }, '*');
     }
 
@@ -231,17 +273,10 @@ export default class PdftronWvInstanceFlow extends LightningElement {
             .catch((error) => {
                 console.error(error);
                 this.error = error;
-
-                //this.showNotification('Error', error.body.message, 'error');
             });
-
-        //this.iframeWindow.postMessage({ type: 'OPEN_DOCUMENT_LIST', temprecords }, '*');
     }
 
     handleFilesSelected(records) {
-        //records = JSON.parse(records);
-
-        console.log("records", records);
         let temprecords = [];
 
         records.forEach(record => {
@@ -259,7 +294,6 @@ export default class PdftronWvInstanceFlow extends LightningElement {
             temprecords = [...temprecords, payload];
         });
 
-        console.log("temprecords", temprecords);
         this.iframeWindow.postMessage({ type: 'OPEN_DOCUMENT_LIST', temprecords }, '*');
     }
 
@@ -289,7 +323,6 @@ export default class PdftronWvInstanceFlow extends LightningElement {
             filename: record.cv.Title + "." + record.cv.FileExtension,
             documentId: record.cv.Id
         };
-        console.log("payload", payload);
         this.iframeWindow.postMessage({ type: "OPEN_DOCUMENT_BLOB", payload }, "*");
     }
 
@@ -341,10 +374,9 @@ export default class PdftronWvInstanceFlow extends LightningElement {
         const viewerElement = this.template.querySelector('div')
         // eslint-disable-next-line no-unused-vars
         const viewer = new WebViewer({
-            path: libUrl, // path to the PDFTron 'lib' folder on your server
+            path: libUrl, 
             custom: JSON.stringify(myObj),
             backendType: 'ems',
-            //initialDoc: url,
             config: myfilesUrl + this.config,
             fullAPI: this.fullAPI,
             enableFilePicker: this.enableFilePicker,
@@ -353,19 +385,19 @@ export default class PdftronWvInstanceFlow extends LightningElement {
             enableOptimizedWorkers: false,
             l: 'demo:1698667176711:7ccce815030000000032579c76ef4bf6398d5025f2b556af0efef948be',
             disabledElements: [
-                'toolbarGroup-Annotate', // Disable the Annotate toolbar group
-                'toolbarGroup-Shapes', // Disable the Shapes toolbar group
-                'toolbarGroup-Insert', // Disable the Insert toolbar group
-                'toolbarGroup-Edit', // Disable the Edit toolbar group
-                'toolbarGroup-FillAndSign', // Disable the Fill and Sign toolbar group
-                'toolbarGroup-Forms', // Disable the Forms toolbar group
-                'toolbarGroup-Save', // Disable the Save toolbar group (tool.saveDocument)
-                'selectToolButton', // Disable the Select tool button
-                'viewControlsButton', // Disable the View Controls button
-                'menuButton', // Disable the Menu button
-                'panToolButton', // Disable the Pan tool button
-                'toggleNotesButton', // Disable the Panel toggle button
-                'eraserToolButton', // Disable the Eraser tool button
+                'toolbarGroup-Annotate', 
+                'toolbarGroup-Shapes', 
+                'toolbarGroup-Insert', 
+                'toolbarGroup-Edit', 
+                'toolbarGroup-FillAndSign', 
+                'toolbarGroup-Forms', 
+                'toolbarGroup-Save', 
+                'selectToolButton', 
+                'viewControlsButton', 
+                'menuButton', 
+                'panToolButton', 
+                'toggleNotesButton', 
+                'eraserToolButton',
             ],
         }, viewerElement);
 
@@ -453,6 +485,13 @@ export default class PdftronWvInstanceFlow extends LightningElement {
                             this.showNotification('Error', error.body, 'error');
                         });
                     break;
+                    case 'DOCUMENT_LOADED':
+                        console.log("Document fully loaded, ready for further operations.");
+                        if (this.documentLoadedCallback) {
+                            this.documentLoadedCallback(); // Resolve the promise waiting for document load
+                            this.documentLoadedCallback = null; // Clear the callback once resolved
+                        }
+                        break;
                 default:
                     break;
             }
@@ -469,20 +508,7 @@ export default class PdftronWvInstanceFlow extends LightningElement {
     }
 
     handleSaveDocumentEvent() {
-        // Create a Promise to handle the listener execution sequence
-        const listenerPromise = new Promise((resolve) => {
-            // Fire the DOC_KEYS event and resolve the promise when done
-            fireEvent(this.pageRef, 'doc_gen_options', this.doc_keys);
-            resolve();  // Resolve immediately after firing the event
-        });
-    
-        // Chain the generateDocument call and SAVE_DOCUMENT after the Promise resolves
-        listenerPromise.then(() => {
-            this.generateDocument();  // Process the document generation
-    
-            // After document generation is complete, trigger SAVE_DOCUMENT
-            this.iframeWindow.postMessage({ type: 'SAVE_DOCUMENT' }, '*');
-        });
+        this.iframeWindow.postMessage({ type: 'SAVE_DOCUMENT' }, '*');
     }
 
     createUUID() {
@@ -500,7 +526,7 @@ export default class PdftronWvInstanceFlow extends LightningElement {
     }
 
     matchKeysToProperties(templateKeys) {
-        const dataProps = this.mapping; // Use the processed mapping from flowData
+        const dataProps = this.mapping; //  // Use the processed mapping from flowData
         const mapping = {};
 
         templateKeys.forEach(key => {
@@ -517,7 +543,7 @@ export default class PdftronWvInstanceFlow extends LightningElement {
             });
 
             // Consider a reasonable threshold for accepting a match
-            if (bestMatch.distance <= 3) { // Adjust as necessary based on your specific data
+            if (bestMatch.distance <= 3) { 
                 mapping[key] = dataProps[bestMatch.propName];
             }
         });
@@ -538,9 +564,9 @@ export default class PdftronWvInstanceFlow extends LightningElement {
             for (let j = 1; j <= b; j++) {
                 const cost = s1[i - 1] === s2[j - 1] ? 0 : 1;
                 dp[i][j] = Math.min(
-                    dp[i - 1][j] + 1,    // deletion
-                    dp[i][j - 1] + 1,    // insertion
-                    dp[i - 1][j - 1] + cost  // substitution
+                    dp[i - 1][j] + 1, // Deletion
+                    dp[i][j - 1] + 1, // Insertion
+                    dp[i - 1][j - 1] + cost // Substitution
                 );
             }
         }
