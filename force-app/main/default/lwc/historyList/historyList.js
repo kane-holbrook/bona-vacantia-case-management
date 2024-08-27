@@ -122,33 +122,35 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
 
                 // Attach child records directly to the parent record
                 if (mergedRecord.hasChildren) {
-                    mergedRecord.children = history.Case_History__r.map(childRecord => {
-                        const childMergedRecord = {
-                            ...childRecord,
-                            Id: childRecord.Id || '',
-                            BV_Case__c: childRecord.BV_Case__c || '',
-                            Date_Inserted__c: childRecord.Date_Inserted__c || '',
-                            Details__c: childRecord.Details__c || '',
-                            Action__c: childRecord.Action__c || '',
-                            Case_Officer__c: childRecord.Case_Officer__c || '',
-                            Flag_as_important__c: childRecord.Flag_as_important__c || false,
-                            Last_updated__c: childRecord.Last_updated__c || '',
-                            isExpanded: false,
-                            iconName: this.getIconName(false),
-                            rowClass: childRecord.Flag_as_important__c ? 'highlighted-row' : '',
-                            flagIconClass: childRecord.Flag_as_important__c ? 'icon-important' : 'icon-default',
-                            notes: childRecord.Details__c ? 'Has details' : '',
-                            hasDetails: !!childRecord.Details__c,
-                            Case_Officer_Name: this.userNames[childRecord.Case_Officer__c] || childRecord.Case_Officer__c,
-                            isChild: true,
-                            parentId: mergedRecord.Id,
-                            isSelected: false,
-                            children: [], // Ensure this is empty for child records
-                            hasChildren: false
-                        };
-                        recordsMap[childRecord.Id] = childMergedRecord;
-                        return childMergedRecord; // Return the actual child record, not null
-                    });
+                    mergedRecord.children = history.Case_History__r
+                        .map(childRecord => {
+                            const childMergedRecord = {
+                                ...childRecord,
+                                Id: childRecord.Id || '',
+                                BV_Case__c: childRecord.BV_Case__c || '',
+                                Date_Inserted__c: childRecord.Date_Inserted__c || '',
+                                Details__c: childRecord.Details__c || '',
+                                Action__c: childRecord.Action__c || '',
+                                Case_Officer__c: childRecord.Case_Officer__c || '',
+                                Flag_as_important__c: childRecord.Flag_as_important__c || false,
+                                Last_updated__c: childRecord.Last_updated__c || '',
+                                isExpanded: false,
+                                iconName: this.getIconName(false),
+                                rowClass: childRecord.Flag_as_important__c ? 'highlighted-row' : '',
+                                flagIconClass: childRecord.Flag_as_important__c ? 'icon-important' : 'icon-default',
+                                notes: childRecord.Details__c ? 'Has details' : '',
+                                hasDetails: !!childRecord.Details__c,
+                                Case_Officer_Name: this.userNames[childRecord.Case_Officer__c] || childRecord.Case_Officer__c,
+                                isChild: true,
+                                parentId: mergedRecord.Id,
+                                isSelected: false,
+                                children: [], // Ensure this is empty for child records
+                                hasChildren: false
+                            };
+                            recordsMap[childRecord.Id] = childMergedRecord;
+                            return childMergedRecord; // Return the actual child record, not null
+                        })
+                        .sort((a, b) => new Date(a.Date_Inserted__c) - new Date(b.Date_Inserted__c)); // Sort by Date_Inserted__c ascending
                 }                
 
                 return mergedRecord;
@@ -169,6 +171,8 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
             this.fetchUserNames(userIds);
             this.updateLastUpdated(isDeletion);
             this.previousHistoryItems = [...this.historyItems];
+
+            this.sortHistoryItems();
             this.filterHistoryItems();
         } else if (result.error) {
             this.showToast('Error', 'Error fetching history items', 'error');
@@ -416,6 +420,8 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
                 }))
             }));
         }
+
+        this.sortHistoryItems(); // Sort the history items after toggling the related items
         this.filterHistoryItems(); // Reapply filters to update the filteredHistoryItems list
         this.updateGroupButtonState(); // Update the state of group/ungroup buttons
     }
@@ -454,32 +460,83 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     }
 
     sortHistoryItems() {
-        this.historyItems.sort((a, b) => {
-            let valA, valB;
+        console.log('Sorting history items');
+        
+        if (this.showRelatedItems) {
+            // Sort only the parent items if grouping by related items
+            this.historyItems.sort((a, b) => {
+                let valA, valB;
+        
+                if (this.sortedBy === 'Selected') {
+                    valA = a.isSelected ? 0 : 1;
+                    valB = b.isSelected ? 0 : 1;
+                } else if (this.sortedBy === 'Important') {
+                    valA = a.Flag_as_important__c ? 0 : 1;
+                    valB = b.Flag_as_important__c ? 0 : 1;
+                } else if (this.sortedBy === 'Notes__c') {
+                    valA = a.hasDetails ? 1 : 0;
+                    valB = b.hasDetails ? 1 : 0;
+                } else {
+                    valA = a[this.sortedBy] ? a[this.sortedBy].toLowerCase() : '';
+                    valB = b[this.sortedBy] ? b[this.sortedBy].toLowerCase() : '';
+                }
+        
+                if (valA < valB) {
+                    return this.sortOrder === 'asc' ? -1 : 1;
+                } else if (valA > valB) {
+                    return this.sortOrder === 'asc' ? 1 : -1;
+                }
+                return 0;
+            });
+        } else {
+            // Flatten the list including children for sorting when not grouping by related items
+            let itemsToSort = this.historyItems.flatMap(item => [item, ...item.children]);
+            
+            itemsToSort.sort((a, b) => {
+                let valA, valB;
+        
+                if (this.sortedBy === 'Selected') {
+                    valA = a.isSelected ? 0 : 1;
+                    valB = b.isSelected ? 0 : 1;
+                } else if (this.sortedBy === 'Important') {
+                    valA = a.Flag_as_important__c ? 0 : 1;
+                    valB = b.Flag_as_important__c ? 0 : 1;
+                } else if (this.sortedBy === 'Notes__c') {
+                    valA = a.hasDetails ? 1 : 0;
+                    valB = b.hasDetails ? 1 : 0;
+                } else {
+                    valA = a[this.sortedBy] ? a[this.sortedBy].toLowerCase() : '';
+                    valB = b[this.sortedBy] ? b[this.sortedBy].toLowerCase() : '';
+                }
+        
+                if (valA < valB) {
+                    return this.sortOrder === 'asc' ? -1 : 1;
+                } else if (valA > valB) {
+                    return this.sortOrder === 'asc' ? 1 : -1;
+                }
+                return 0;
+            });
+            
+            // After sorting, reassign sorted items back to their parent-child hierarchy
+            const recordsMap = {};
+            itemsToSort.forEach(item => {
+                if (!item.isChild) {
+                    recordsMap[item.Id] = { ...item, children: [] };
+                }
+            });
     
-            if (this.sortedBy === 'Selected') {
-                valA = a.isSelected ? 0 : 1;
-                valB = b.isSelected ? 0 : 1;
-            } else if (this.sortedBy === 'Important') {
-                valA = a.Flag_as_important__c ? 0 : 1;
-                valB = b.Flag_as_important__c ? 0 : 1;
-            } else if (this.sortedBy === 'Notes__c') {
-                valA = a.hasDetails ? 1 : 0;
-                valB = b.hasDetails ? 1 : 0;
-            } else {
-                valA = a[this.sortedBy] ? a[this.sortedBy].toLowerCase() : '';
-                valB = b[this.sortedBy] ? b[this.sortedBy].toLowerCase() : '';
-            }
+            itemsToSort.forEach(item => {
+                if (item.isChild && recordsMap[item.parentId]) {
+                    recordsMap[item.parentId].children.push(item);
+                }
+            });
     
-            if (valA < valB) {
-                return this.sortOrder === 'asc' ? -1 : 1;
-            } else if (valA > valB) {
-                return this.sortOrder === 'asc' ? 1 : -1;
-            }
-            return 0;
-        });
-        this.filterHistoryItems();
+            this.historyItems = Object.values(recordsMap);
+        }
+    
+        this.filterHistoryItems(); // Apply filters again after sorting
     }
+    
     
 
     filterHistoryItems() {
