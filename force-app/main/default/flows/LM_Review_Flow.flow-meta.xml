@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>61.0</apiVersion>
+    <choices>
+        <name>AO_Review</name>
+        <choiceText>AO Review</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>AO Review</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>EO_and_above_Review</name>
+        <choiceText>EO and above Review</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>EO and above Review</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Name_1</name>
+        <choiceText>Name 1</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Name 1</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Name_2</name>
+        <choiceText>Name 2</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Name 2</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>No</name>
+        <choiceText>No</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>No</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Yes</name>
+        <choiceText>Yes</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Yes</stringValue>
+        </value>
+    </choices>
+    <environments>Default</environments>
+    <interviewLabel>LM Review Flow {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>LM Review Flow</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <screens>
+        <name>Is_this_a_complex_or_high_value_case</name>
+        <label>Is this a complex or high value case?</label>
+        <locationX>176</locationX>
+        <locationY>350</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>Is_this_a_complex_or_high_value_case_select</name>
+            <choiceReferences>Yes</choiceReferences>
+            <choiceReferences>No</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Is this a complex or high value case?</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Select_AO</name>
+        <label>Select AO</label>
+        <locationX>176</locationX>
+        <locationY>242</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Is_this_a_complex_or_high_value_case</targetReference>
+        </connector>
+        <fields>
+            <name>Select_the_AO</name>
+            <choiceReferences>Name_1</choiceReferences>
+            <choiceReferences>Name_2</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Select the AO</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Select_review_type</name>
+        <label>Select review type</label>
+        <locationX>176</locationX>
+        <locationY>134</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Select_AO</targetReference>
+        </connector>
+        <fields>
+            <name>Please_select_review_type</name>
+            <choiceReferences>AO_Review</choiceReferences>
+            <choiceReferences>EO_and_above_Review</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Please select review type</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Select_review_type</targetReference>
+        </connector>
+    </start>
+    <status>Draft</status>
+</Flow>
