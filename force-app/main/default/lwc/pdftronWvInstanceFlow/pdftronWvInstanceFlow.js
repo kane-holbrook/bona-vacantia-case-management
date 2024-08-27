@@ -6,6 +6,7 @@ import libUrl from "@salesforce/resourceUrl/lib";
 import myfilesUrl from '@salesforce/resourceUrl/myfiles';
 import { publish, createMessageContext, releaseMessageContext, subscribe, unsubscribe } from 'lightning/messageService';
 import WebViewerMC from "@salesforce/messageChannel/WebViewerMessageChannel__c";
+import { FlowNavigationFinishEvent } from 'lightning/flowSupport';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import mimeTypes from './mimeTypes';
 import { fireEvent, registerListener, unregisterAllListeners } from 'c/pubsub';
@@ -14,6 +15,7 @@ import saveDocumentToSharePoint from '@salesforce/apex/PDFTron_ContentVersionCon
 import getFileDataFromIds from '@salesforce/apex/PDFTron_ContentVersionController.getFileDataFromIds';
 import getUser from "@salesforce/apex/PDFTron_ContentVersionController.getUser";
 import updateCaseHistoryTask from '@salesforce/apex/HistoryController.updateCaseHistoryTask';
+import deleteHistoryRecord from '@salesforce/apex/HistoryController.deleteHistoryRecord';
 import getSharePointFileDataById from '@salesforce/apex/FileControllerGraph.getGraphFileDataById';
 import { getRecordId } from 'c/sharedService';
 
@@ -558,6 +560,20 @@ export default class PdftronWvInstanceFlow extends LightningElement {
             }
         }
         return dateStr; // Return the original string if it doesn't match the date format
+    }
+
+    handleCancelAndRestartFlow() {
+        // Delete the history record before canceling and restarting the flow
+        deleteHistoryRecord({ historyRecordId: this.historyRecordId })
+            .then(() => {
+                // Dispatch the finish event to end the flow
+                const finishEvent = new FlowNavigationFinishEvent();
+                this.dispatchEvent(finishEvent);
+            })
+            .catch(error => {
+                console.error('Error deleting history record:', error);
+                this.showNotification('Error', 'Failed to delete history record', 'error');
+            });
     }
 
     get bvCaseName() {

@@ -186,5 +186,15 @@ public with sharing class HistoryController {
         }
     }
 
-
+    @AuraEnabled
+    public static void deleteHistoryRecord(String historyRecordId) {
+        try {
+            if (String.isNotBlank(historyRecordId)) {
+                Case_History__c historyRecord = [SELECT Id FROM Case_History__c WHERE Id = :historyRecordId LIMIT 1];
+                delete historyRecord;
+            }
+        } catch (Exception e) {
+            throw new AuraHandledException('Error deleting history record: ' + e.getMessage());
+        }
+    }
 }
