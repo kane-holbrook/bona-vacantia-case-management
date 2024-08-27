@@ -1,6 +1,8 @@
 <template>
     <div class="pdf_viewer slds-grid slds-card slds-grid--vertical-stretch" id='pdf_viewer'></div>
 
-    <lightning-button label="Cancel and Restart" onclick={handleCancelAndRestartFlow}></lightning-button>
-    <c-flow-generate-document-button></c-flow-generate-document-button>
+    <div class="slds-grid slds-grid_align-spread slds-m-around_medium">
+        <lightning-button label="Cancel and Restart" onclick={handleCancelAndRestartFlow}></lightning-button>
+        <c-flow-generate-document-button></c-flow-generate-document-button>
+    </div>
 </template>
