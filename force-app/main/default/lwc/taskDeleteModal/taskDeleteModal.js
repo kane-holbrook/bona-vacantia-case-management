@@ -30,8 +30,8 @@ export default class TaskDeleteModal extends LightningElement {
             this.category = data.Category__c;
             this.priority = data.Priority__c;
             this.waitingPeriod = this.calculateWaitingPeriod(data.Date_Inserted__c, data.Due_Date__c);
-            this.dateInserted = data.Date_Inserted__c;
-            this.due = data.Due_Date__c;
+            this.dateInserted = this.formatDateUK(data.Date_Inserted__c);
+            this.due = this.formatDateUK(data.Due_Date__c);
             this.document = data.Document__c;
             this.groupCode = data.Group_Code__c;
             this.otherParty = data.Other_party__c;
@@ -93,6 +93,15 @@ export default class TaskDeleteModal extends LightningElement {
         }
 
         return `${waitingPeriod} ${timeDifference > 0 ? 'after' : 'before'} date inserted`;
+    }
+
+    formatDateUK(dateStr) {
+        if (!dateStr) return '';
+        const dateObj = new Date(dateStr);
+        const day = String(dateObj.getDate()).padStart(2, '0');
+        const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const year = dateObj.getFullYear();
+        return `${day}/${month}/${year}`;
     }
 
     @api
