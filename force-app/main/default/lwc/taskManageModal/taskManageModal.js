@@ -181,11 +181,21 @@ export default class TaskManageModal extends LightningElement {
         if (userId) {
             getUserNames({ userIds: [userId] })
                 .then((result) => {
-                    this.selectedCaseOfficerName = result[userId];
-                    this.searchTerm = this.selectedCaseOfficerName;
+                    // Check if the userId exists in the result
+                    if (result[userId]) {
+                        this.selectedCaseOfficerName = result[userId];
+                        this.searchTerm = this.selectedCaseOfficerName;
+                    } else {
+                        // If the userId is not found, it indicates the user is deactivated
+                        this.selectedCaseOfficerName = 'Deactivated user';
+                        this.searchTerm = this.selectedCaseOfficerName;
+                    }
                 })
                 .catch((error) => {
                     console.error(error);
+                    // Handle any unexpected errors, setting a default value
+                    this.selectedCaseOfficerName = 'Deactivated user';
+                    this.searchTerm = this.selectedCaseOfficerName;
                 });
         } else {
             this.selectedCaseOfficerName = '';
