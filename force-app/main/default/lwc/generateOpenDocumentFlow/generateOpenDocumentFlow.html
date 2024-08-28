@@ -1,21 +1,27 @@
 <template>
     <lightning-card title="Open Document" icon-name="standard:document">
         <div class="slds-p-around_medium">
-            <lightning-radio-group
-                name="openDocumentOptions"
-                label="Would you like to open the document?"
-                options={options}
-                value={value}
-                type="radio"
-                onchange={handleRadioChange}>
-            </lightning-radio-group>
+            <!-- Success message -->
+            <p>Your document was successfully generated.</p>
+            <p class="slds-m-bottom_medium">Click the button below to view or edit the document in SharePoint.</p>
 
-            <lightning-button
-                class="slds-m-top_medium"
-                label="Finish"
-                variant="brand"
-                onclick={handleFinish}>
-            </lightning-button>
+            <!-- Button to open the document in SharePoint -->
+            <div class="slds-m-bottom_medium">
+                <lightning-button
+                    label="View/Edit in SharePoint"
+                    variant="brand"
+                    onclick={openSharePointLink}>
+                </lightning-button>
+            </div>
+
+            <!-- Button to finish -->
+            <div>
+                <lightning-button
+                    label="Finish"
+                    variant="brand"
+                    onclick={handleFinish}>
+                </lightning-button>
+            </div>
         </div>
     </lightning-card>
 </template>

@@ -602,8 +602,7 @@ export default class PdftronWvInstanceFlow extends LightningElement {
         deleteHistoryRecord({ historyRecordId: this.historyRecordId })
             .then(() => {
                 // Dispatch the finish event to end the flow
-                const finishEvent = new FlowNavigationFinishEvent();
-                this.dispatchEvent(finishEvent);
+                window.location.reload();
             })
             .catch(error => {
                 console.error('Error deleting history record:', error);

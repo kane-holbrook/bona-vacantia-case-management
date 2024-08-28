@@ -1,5 +1,4 @@
 import { LightningElement, api, track } from 'lwc';
-import { FlowNavigationFinishEvent } from 'lightning/flowSupport';
 
 export default class GenerateOpenDocumentFlow extends LightningElement {
     @api documentUrl; // The SharePoint URL passed from the flow
@@ -20,15 +19,12 @@ export default class GenerateOpenDocumentFlow extends LightningElement {
     }
 
     // Handle the Finish button click
-    handleFinish() {
-        console.log('documenturl', this.documentUrl);
-        if (this.value === 'yes' && this.documentUrl) {
-            // Open SharePoint document in new tab
-            window.open(this.documentUrl, '_blank');
-        }
+    openSharePointLink() {
+        // Open the SharePoint URL in a new tab
+        window.open(this.documentUrl, '_blank');
+    }
 
-        // Close the flow regardless of the selection
-        const navigateNextEvent = new FlowNavigationFinishEvent();
-        this.dispatchEvent(navigateNextEvent);
+    handleFinish() {
+        window.location.reload();
     }
 }
