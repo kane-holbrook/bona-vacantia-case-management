@@ -45,3 +45,8 @@ table tr.highlighted-row:hover td {
     width: 80% !important;
     max-width: 100rem !important;
 }
+
+/* There must be a better solution than this to stop dropdown menu from hiding behind the modal */
+:host .slds-modal__content{
+    overflow: initial;
+}
