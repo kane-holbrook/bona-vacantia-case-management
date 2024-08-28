@@ -26,6 +26,7 @@ import PREVIOUS_9_OFFICER_FIELD from '@salesforce/schema/Case_Detail__c.Previous
 import BV_CASE_OBJECT from '@salesforce/schema/BV_Case__c';
 import NAME_FIELD from '@salesforce/schema/BV_Case__c.Name';
 import getCaseDetail from '@salesforce/apex/CaseOfficerController.getCaseDetail';
+import fetchFilesFromSharePoint from '@salesforce/apex/FileControllerGraph.fetchFilesFromSharePoint';
 import { getRecordId } from 'c/sharedService';
 
 export default class CaseOfficerButtons extends LightningElement {
@@ -40,6 +41,7 @@ export default class CaseOfficerButtons extends LightningElement {
     @track isAddAccrualModalOpen = false;
     @track isReverseAccrualModalOpen = false;
     @track isSection27Open = false;
+    @track isFlowModalOpen = false;
 
     actions = [
         { actionId: '1', label: 'Put away', disabled: false },
@@ -122,6 +124,40 @@ export default class CaseOfficerButtons extends LightningElement {
             this.isSection27Open = true;
         } else if (actionName === 'Hidden Screen Controls') {
             this.template.querySelector('c-hidden-screen-controls').openModal();
+        } else if (actionName === 'LM case review') {
+            // Fetch files from SharePoint for LMREV document type
+            const folderPath = `Templates`;
+            const documentType = 'LMREV';
+    
+            fetchFilesFromSharePoint({ folderPath: folderPath, documentType: documentType })
+                .then(result => {
+                    console.log('Files from sharepoint:', result);
+                    if (result && result.length > 0) {
+                        const selectedDocument = result[0];
+    
+                        // Populate flowInputs with selectedDocumentId and selectedDocumentType
+                        this.flowInputs = [
+                            {
+                                name: 'selectedDocumentId',
+                                type: 'String',
+                                value: selectedDocument.id
+                            },
+                            {
+                                name: 'selectedDocumentType',
+                                type: 'String',
+                                value: documentType
+                            }
+                        ];
+    
+                        // Open the modal or flow for LM case review
+                        this.isFlowModalOpen = true;
+                    } else {
+                        console.warn('No files found for LMREV document type');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching files from SharePoint:', error);
+                });
         }
     }
 
@@ -237,6 +273,11 @@ export default class CaseOfficerButtons extends LightningElement {
 
     closeSection27Modal() {
         this.isSection27Open = false
+    }
+
+    handleFlowClose() {
+        // Close the flow modal
+        this.isFlowModalOpen = false;
     }
     
     handleFlowStatusChange(event) {
