@@ -52,6 +52,7 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
     @track isEmailHistory = false; // Track if it's an email history record
     @track contentDocumentId;
     @track isConvertToPDFModalOpen = false;
+    @track isParent = false;
 
     // Email related fields
     @track emailMessageId;
@@ -93,6 +94,7 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
         this.details = this.record.Details__c || '';
         this.flagImportant = this.record.Flag_as_important__c || false;
         this.bvCaseId = this.record.BV_Case__c || getRecordId();
+        this.isParent = this.record.Case_History__r && this.record.Case_History__r.length > 0;
 
         // Check if this is an email history record
         this.isEmailHistory = !!this.record.emailMessageSubject;
@@ -368,7 +370,13 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
                 updateRecord({ fields })
                     .then(() => {
                         if (!this.fileName) {
-                            this.dispatchEvent(new CustomEvent('save'));
+                            this.dispatchEvent(new CustomEvent('save', {
+                                detail: { 
+                                    recordId: this.record.Id,
+                                    dateInserted: this.dateInserted,
+                                    isParent: this.isParent
+                                }
+                            }));
                         }
                         resolve(this.record.Id);
                     })
@@ -440,6 +448,8 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
 
         if (selectedItem) {
             this.contentDocumentId = selectedItem.DocumentID__c;
+
+            console.log('Document ID:', this.contentDocumentId);
             this.isConvertToPDFModalOpen = true; // Open the modal with the PDF conversion component
         } else {
             this.showToast('Error', 'Document ID not found for this item.', 'error');

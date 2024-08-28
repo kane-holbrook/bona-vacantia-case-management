@@ -422,11 +422,28 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
         this.template.querySelector('c-history-edit-modal').saveRecord(this.recordId);
     }
 
-    handleSaveSuccess() {
+    handleSaveSuccess(event) {
+        const { recordId, dateInserted, isParent } = event.detail;
+    
         this.isModalOpen = false;
         this.showToast('Success', 'Record saved successfully', 'success');
-        this.refreshHistoryItems();
+    
+        // Call the Apex method to check if the parent-child swap is necessary
+        swapParentChildIfNecessary({
+            recordId: recordId, 
+            newDate: dateInserted, // Use the updated date from the event
+            isParent: isParent // Pass the isParent flag
+        })
+        .then(() => {
+            this.showToast('Success', 'Record hierarchy updated successfully.', 'success');
+            this.refreshHistoryItems(); // Refresh the history items after potential hierarchy change
+        })
+        .catch(error => {
+            this.showToast('Error', 'Error updating record hierarchy: ' + error.body.message, 'error');
+        });
     }
+    
+    
 
     toggleShowRelatedItems(event) {
         this.showRelatedItems = event.target.checked;

@@ -197,4 +197,80 @@ public with sharing class HistoryController {
             throw new AuraHandledException('Error deleting history record: ' + e.getMessage());
         }
     }
+
+    @AuraEnabled
+    public static void swapParentChildIfNecessary(Id recordId, Date newDate, Boolean isParent) {
+        // Fetch the record (could be parent or child)
+        Case_History__c record = [
+            SELECT Id, Parent_History_Record__c, Date_Inserted__c, BV_Case__c,
+                (SELECT Id, Date_Inserted__c FROM Case_History__r ORDER BY Date_Inserted__c ASC)
+            FROM Case_History__c 
+            WHERE Id = :recordId LIMIT 1
+        ];
+
+        System.Debug('record: ' + record);
+
+        // Scenario 1: Child record is updated with an earlier date
+        if (!isParent && record.Parent_History_Record__c != null) {
+            Case_History__c parentRecord = [
+                SELECT Id, Date_Inserted__c, 
+                    (SELECT Id FROM Case_History__r) 
+                FROM Case_History__c 
+                WHERE Id = :record.Parent_History_Record__c LIMIT 1
+            ];
+
+            if (newDate < parentRecord.Date_Inserted__c) {
+                // Existing logic for swapping child and parent
+                performParentChildSwap(record, parentRecord, newDate);
+            }
+        }
+
+        // Scenario 2: Parent record is updated with a later date
+        if (isParent && record.Case_History__r.size() > 0) {
+            System.Debug('Scenario 2');
+            Case_History__c earliestChild = record.Case_History__r[0];
+
+            if (newDate > earliestChild.Date_Inserted__c) {
+                // Swap the parent with the earliest child
+                performParentChildSwap(earliestChild, record, earliestChild.Date_Inserted__c);
+            }
+        }
+    }
+
+    private static void performParentChildSwap(Case_History__c newParent, Case_History__c oldParent, Date newParentDate) {
+        List<Case_History__c> recordsToUpdate = new List<Case_History__c>();
+
+        // Reassign the old parent's children to the new parent
+        for (Case_History__c sibling : oldParent.Case_History__r) {
+            if (sibling.Id != newParent.Id) {
+                sibling.Parent_History_Record__c = newParent.Id;
+                recordsToUpdate.add(sibling);
+            }
+        }
+
+        // Old parent becomes a child
+        oldParent.Parent_History_Record__c = newParent.Id;
+        recordsToUpdate.add(oldParent);
+
+        // New parent gets updated (date and parent-child relationship)
+        newParent.Parent_History_Record__c = null;
+        newParent.Date_Inserted__c = newParentDate;
+        recordsToUpdate.add(newParent);
+
+        // Ensure no duplicate IDs in the recordsToUpdate list
+        Set<Id> processedIds = new Set<Id>();
+        List<Case_History__c> uniqueRecordsToUpdate = new List<Case_History__c>();
+        for (Case_History__c record : recordsToUpdate) {
+            if (!processedIds.contains(record.Id)) {
+                uniqueRecordsToUpdate.add(record);
+                processedIds.add(record.Id);
+            }
+        }
+
+        // Update all records
+        update uniqueRecordsToUpdate;
+    }
+
+
+
 }
