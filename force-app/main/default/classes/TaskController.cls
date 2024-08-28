@@ -64,6 +64,7 @@ public with sharing class TaskController {
             SELECT Id, Name 
             FROM User 
             WHERE Name LIKE :searchPattern 
+            AND IsActive = true
             LIMIT 50
         ];
     }

@@ -62,7 +62,7 @@ public with sharing class HistoryController {
     @AuraEnabled(cacheable=true)
     public static Map<Id, String> getUserNames(List<Id> userIds) {
         Map<Id, String> userNames = new Map<Id, String>();
-        for (User u : [SELECT Id, Name FROM User WHERE Id IN :userIds]) {
+        for (User u : [SELECT Id, Name FROM User WHERE Id IN :userIds AND IsActive = true]) {
             userNames.put(u.Id, u.Name);
         }
         return userNames;
