@@ -423,26 +423,38 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     }
 
     handleSaveSuccess(event) {
-        const { recordId, dateInserted, isParent } = event.detail;
-    
         this.isModalOpen = false;
         this.showToast('Success', 'Record saved successfully', 'success');
     
         // Call the Apex method to check if the parent-child swap is necessary
-        swapParentChildIfNecessary({
-            recordId: recordId, 
-            newDate: dateInserted, // Use the updated date from the event
-            isParent: isParent // Pass the isParent flag
-        })
-        .then(() => {
-            this.showToast('Success', 'Record hierarchy updated successfully.', 'success');
-            this.refreshHistoryItems(); // Refresh the history items after potential hierarchy change
-        })
-        .catch(error => {
-            this.showToast('Error', 'Error updating record hierarchy: ' + error.body.message, 'error');
-        });
-    }
+        if (this.currentRecordId) {
+            const { recordId, dateInserted, isParent } = event.detail;
+            const originalRecord = this.historyItems.find(item => item.Id === recordId);
     
+            // Only call swapParentChildIfNecessary if the date has changed and the record is in a group
+            if (originalRecord && originalRecord.Date_Inserted__c !== dateInserted &&
+                (originalRecord.Parent_History_Record__c || (originalRecord.children && originalRecord.children.length > 0))) {
+                
+                swapParentChildIfNecessary({
+                    recordId: recordId,
+                    newDate: dateInserted, // Use the updated date from the event
+                    isParent: isParent // Pass the isParent flag
+                })
+                .then(() => {
+                    this.showToast('Success', 'Record hierarchy updated successfully.', 'success');
+                    this.refreshHistoryItems(); // Refresh the history items after potential hierarchy change
+                })
+                .catch(error => {
+                    this.showToast('Error', 'Error updating record hierarchy: ' + error.body.message, 'error');
+                });
+            } else {
+                this.refreshHistoryItems(); // Just refresh history items if no swap is necessary
+            }
+        } else {
+            // Just refresh history items without swapping if the record is new
+            this.refreshHistoryItems();
+        }
+    }
     
 
     toggleShowRelatedItems(event) {
@@ -860,13 +872,6 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     
         const selectedParentRecords = selectedRecords.filter(item => !item.isChild);
         const selectedChildRecords = selectedRecords.filter(item => item.isChild);
-
-        console.log('Selected Records:', selectedRecords);
-        console.log('Selected parent records:', selectedParentRecords);
-        console.log('Selected child records:', selectedChildRecords);
-        console.log('Parent records length', selectedParentRecords.length);
-        console.log('Child records length', selectedChildRecords.length);
-        
     
         // Case 1: If a parent and some of its children are selected
         if (selectedParentRecords.length === 1 && selectedChildRecords.length > 0) {

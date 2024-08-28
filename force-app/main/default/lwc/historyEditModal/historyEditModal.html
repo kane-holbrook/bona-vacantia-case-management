@@ -12,7 +12,7 @@
             Description
         </label>
         <div class="slds-form-element__control">
-            <lightning-input type="text" name="description" value={description} onchange={handleInputChange} required></lightning-input>
+            <lightning-input type="text" name="description" value={description} maxlength="255" onchange={handleInputChange} required></lightning-input>
         </div>
     </div>    
     <div class="slds-form-element slds-m-around_medium">
