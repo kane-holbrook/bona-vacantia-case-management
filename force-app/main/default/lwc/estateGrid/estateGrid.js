@@ -31,6 +31,8 @@ export default class EstateGrid extends LightningElement {
     @track originalEstateAccData;
     @track estateAccData;
     @track isChanged = false;
+    @track draftValuesAssets = [];
+    @track draftValuesLiabilities = [];
     isRecordIdAvailable = false;
 
     estateAccData = {
@@ -142,6 +144,8 @@ export default class EstateGrid extends LightningElement {
                 .then(result => {
                     this.showToast('Success', 'New assets added', 'success');
                     this.processPostSaveActions('asset');
+                    // Clear draft values after saving
+                    this.draftValuesAssets = [];
                 })
                 .catch(error => {
                     this.showToast('Error adding new assets', error.body, 'error');
@@ -154,6 +158,8 @@ export default class EstateGrid extends LightningElement {
                 .then(() => {
                     this.showToast('Success', 'Assets updated', 'success');
                     this.processPostSaveActions('asset');
+                    // Clear draft values after saving
+                    this.draftValuesAssets = [];
                 })
                 .catch(error => {
                     this.showToast('Error updating assets', error.body, 'error');
@@ -183,6 +189,7 @@ export default class EstateGrid extends LightningElement {
                 .then(result => {
                     this.showToast('Success', 'New liabilities added', 'success');
                     this.processPostSaveActions('liability');
+                    this.draftValuesLiabilities = [];
                 })
                 .catch(error => {
                     this.showToast('Error adding new liabilities', error.body, 'error');
@@ -195,6 +202,7 @@ export default class EstateGrid extends LightningElement {
                 .then(() => {
                     this.showToast('Success', 'Liabilities updated', 'success');
                     this.processPostSaveActions('liability');
+                    this.draftValuesLiabilities = [];
                 })
                 .catch(error => {
                     this.showToast('Error updating liabilities', error.body, 'error');
