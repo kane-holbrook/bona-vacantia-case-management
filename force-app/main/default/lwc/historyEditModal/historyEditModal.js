@@ -158,6 +158,8 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
 
     handleInputChange(event) {
         const field = event.target.name;
+        const value = event.target.value;
+
         if (field === 'date-inserted') {
             this.dateInserted = event.target.value;
         } else if (field === 'description') {
