@@ -161,7 +161,11 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
         if (field === 'date-inserted') {
             this.dateInserted = event.target.value;
         } else if (field === 'description') {
-            this.description = event.target.value;
+            if (value.length > 255) {
+                this.showToast('Error', 'Description cannot exceed 255 characters.', 'error');
+            } else {
+                this.description = value;
+            }
         } else if (field === 'details') {
             this.details = event.target.value;
         } else if (field === 'flag-important') {
