@@ -99,12 +99,15 @@ export default class GenerateDocumentFlow extends LightningElement {
         this.selectedCategory = category;
         this.filteredDocuments = this.documentCategories.find(cat => cat.name === category).documents;
         this.isCategorySelected = true;
+        this.isSearching = false;  // Reset search state when selecting a category
     }
 
     handleBackToCategories() {
         this.isCategorySelected = false;
         this.selectedCategory = '';
         this.filteredDocuments = [];
+        this.searchTerm = '';
+        this.isSearching = false;
     }
 
     handleSelectionChange(event) {
@@ -145,6 +148,9 @@ export default class GenerateDocumentFlow extends LightningElement {
                 (doc.displayName && doc.displayName.toLowerCase().includes(this.searchTerm)) ||
                 (doc.DocumentType && doc.DocumentType.toLowerCase().includes(this.searchTerm))
             );
+        } else if (this.isCategorySelected) {
+            // Reset to show category documents when search is cleared
+            this.filteredDocuments = this.documentCategories.find(cat => cat.name === this.selectedCategory).documents;
         } else {
             this.filteredDocuments = [];
         }
