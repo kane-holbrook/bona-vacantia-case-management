@@ -39,6 +39,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     @track previousHistoryItems = [];
     @track isUngroupDisabled = true;
     @track isGroupDisabled = true;
+    @track expandedItems = new Map();
 
     wiredHistoryItemsResult;
     userNames = {};
@@ -268,6 +269,12 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
             if (item.Id === itemId) {
                 item.isExpanded = !item.isExpanded;
                 item.iconName = this.getIconName(item.isExpanded);
+
+                if (item.isExpanded) {
+                    this.expandedItems.set(item.Id, true);
+                } else {
+                    this.expandedItems.delete(item.Id);
+                }
             }
             return item;
         });
@@ -574,6 +581,9 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
 
     filterHistoryItems() {
         this.filteredHistoryItems = this.historyItems.flatMap(item => {
+            item.isExpanded = this.expandedItems.has(item.Id);
+            item.iconName = this.getIconName(item.isExpanded);
+            
             const searchKeyLower = this.searchKey?.toLowerCase() ?? '';
             const searchMatch = this.searchKey ? (
                 (item.Action__c?.toLowerCase() ?? '').includes(searchKeyLower) ||
