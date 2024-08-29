@@ -24,6 +24,8 @@ export default class TaskList extends LightningElement {
     @track selectedTaskType = 'allTasks';  // Default selection
     @track currentUserId;  // To store the current user's ID
     @track isTaskDetailVisible = false;
+    @track dateFilterFrom = null;  // Start date for filtering
+    @track dateFilterTo = null;    // End date for filtering
     wiredTaskItemsResult;
     userNames = {};
 
@@ -326,7 +328,7 @@ export default class TaskList extends LightningElement {
                 (subTask.Priority__c?.toLowerCase() ?? '').includes(searchKeyLower) ||
                 (subTask.Case_Officer_Name?.toLowerCase() ?? '').includes(searchKeyLower)
             ) : false;
-    
+
             const taskTypeMatch = this.selectedTaskType === 'allTasks' ||
                 (this.selectedTaskType === 'myTasks' && 
                     (item.Assigned_To__c === this.currentUserId || 
@@ -334,8 +336,11 @@ export default class TaskList extends LightningElement {
                 (this.selectedTaskType === 'othersTasks' && 
                     (item.Assigned_To__c !== this.currentUserId || 
                     item.SubTasks.some(subTask => subTask.Assigned_To__c !== this.currentUserId)));
+
+            const dateMatch = (!this.dateFilterFrom || new Date(item.Due_Date__c) >= new Date(this.dateFilterFrom)) &&
+                              (!this.dateFilterTo || new Date(item.Due_Date__c) <= new Date(this.dateFilterTo));
     
-            return (searchMatch || subTaskMatch) && taskTypeMatch;
+            return (searchMatch || subTaskMatch) && taskTypeMatch && dateMatch;
         });
     
         // Filter sub-tasks based on the selected task type
@@ -369,7 +374,17 @@ export default class TaskList extends LightningElement {
             searchInput.value = '';
         }
     }
-    
+
+    handleDateFilterChange(event) {
+        const filterType = event.target.dataset.filter;
+        if (filterType === 'from') {
+            this.dateFilterFrom = event.target.value;
+        } else if (filterType === 'to') {
+            this.dateFilterTo = event.target.value;
+        }
+        this.filterTaskItems();
+    }
+
     handleRowDoubleClick(event) {
         const clickedId = event.currentTarget.dataset.id;
         let mainTaskId = clickedId;
