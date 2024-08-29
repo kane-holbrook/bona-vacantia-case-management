@@ -50,6 +50,7 @@ export default class TaskDetail extends LightningElement {
     @track selectedDocumentType = '';  // Holds the document type
     @track flowInputs = [];  // Array to store input variables for the flow
     @track caseHistoryData = [];
+    @track currentTemplateIds = '';  // Temporary storage for template IDs
     currentSubTaskId; // Added this to track current sub-task ID
     parentTaskId;
     editTaskState; // Added this to track current task ID
@@ -168,10 +169,10 @@ export default class TaskDetail extends LightningElement {
     wiredTaskTemplates({ error, data }) {
         this.wiredTaskTemplatesResult = data;
         if (data) {
-            const templateIds = getFieldValue(data, TASK_TEMPLATES_FIELD);
-            if (templateIds) {
-                this.fetchTemplates();
-                this.fetchExistingTemplates(templateIds);
+            this.currentTemplateIds = getFieldValue(data, TASK_TEMPLATES_FIELD) || '';  // Store the IDs
+            this.fetchTemplates();
+            if (this.currentTemplateIds) {
+                this.fetchExistingTemplates(this.currentTemplateIds);
             }
         } else if (error) {
             this.dispatchEvent(
@@ -244,7 +245,8 @@ export default class TaskDetail extends LightningElement {
                     this.templates = result.map(file => ({
                         label: file.listItem.fields.Document_x0020_Name || 'Unnamed File',
                         value: file.id,
-                        type: file.listItem.fields.DocumentType || 'Unknown Category'
+                        type: file.listItem.fields.DocumentType || 'Unknown Category',
+                        listItemId: file.listItem.fields.id
                     }));
                 } else {
                     this.templates = [];
@@ -423,13 +425,68 @@ export default class TaskDetail extends LightningElement {
     
         if (selectedFile) {
             this.selectedDocumentType = selectedFile.type;
+            this.searchTerm = selectedFile.label;
     
-            // Persist the selected template in the input field
-            this.searchTerm = selectedFile.label; // Set the search input to the selected template's name
+            // Append the selected template's listItemId to the TASK_TEMPLATES_FIELD
+            this.appendTemplateId(selectedFile.listItemId);
         }
     
         this.shouldShowDropdown = false;
         this.prepareFlowInputs();
+    }
+    
+    appendTemplateId(newListItemId) {
+        // Ensure the new ID is appended, checking that it's not already included
+        if (!this.currentTemplateIds.includes(newListItemId)) {
+            this.currentTemplateIds = this.currentTemplateIds 
+                ? `${this.currentTemplateIds};${newListItemId}` 
+                : newListItemId;
+    
+            // Update the task record
+            this.updateTaskTemplatesField();
+        }
+    }
+    
+    updateTaskTemplatesField() {
+        const fields = {};
+        fields.Id = this.recordId;
+        fields[TASK_TEMPLATES_FIELD.fieldApiName] = this.currentTemplateIds;
+    
+        const recordInput = { fields };
+    
+        updateRecord(recordInput)
+            .then(() => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Success',
+                        message: 'Template added to task',
+                        variant: 'success'
+                    })
+                );
+                // Refresh the task data to reflect the updated templates
+                return refreshApex(this.wiredTaskTemplatesResult);
+            })
+            .catch(error => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Error updating templates',
+                        message: error.body.message,
+                        variant: 'error'
+                    })
+                );
+            });
+    }
+
+    handleRemove(event) {
+        const listItemIdToRemove = event.currentTarget.dataset.id;
+    
+        // Convert the current IDs to an array, remove the ID, and rejoin
+        const templateArray = this.currentTemplateIds.split(';');
+        const updatedTemplateArray = templateArray.filter(id => id !== listItemIdToRemove);
+        this.currentTemplateIds = updatedTemplateArray.join(';');
+    
+        // Update the task record
+        this.updateTaskTemplatesField();
     }
 
     // Prepare flow inputs based on selected template
