@@ -583,7 +583,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
         this.filteredHistoryItems = this.historyItems.flatMap(item => {
             item.isExpanded = this.expandedItems.has(item.Id);
             item.iconName = this.getIconName(item.isExpanded);
-            
+
             const searchKeyLower = this.searchKey?.toLowerCase() ?? '';
             const searchMatch = this.searchKey ? (
                 (item.Action__c?.toLowerCase() ?? '').includes(searchKeyLower) ||
@@ -918,6 +918,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
             const childRecords = parentRecord.children || [];
     
             if (childRecords.length === 1) {
+                console.log('Case 2.1.1: Only the parent selected with one child');
                 // If there is only one child, it simply becomes a new parent
                 const childRecordId = childRecords[0].Id;
     
@@ -931,10 +932,10 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
                     });
     
             } else if (childRecords.length > 1) {
-                console.log('Case 2.2: Only the parent selected with multiple children');
+                console.log('Case 2.1.2: Only the parent selected with multiple children');
                 // If there are multiple children, make the oldest child the new parent
                 const oldestChild = this.findOldestChild(childRecords);
-    
+
                 const remainingChildRecordIds = childRecords
                     .filter(child => child.Id !== oldestChild.Id)
                     .map(child => child.Id);
@@ -942,8 +943,10 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
                 ungroupHistoryRecords({ recordIds: [oldestChild.Id] })
                     .then(() => {
                         if (remainingChildRecordIds.length > 0) {
+                            console.log('If statement when remainingChildRecordIds Length is over 0');
                             this.groupUnderNewParent(oldestChild, remainingChildRecordIds);
                         } else {
+                            this.expandedItems.set(oldestChild.Id, true);
                             this.refreshHistoryItems();
                         }
                     })
@@ -1018,6 +1021,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
             childRecordIds: remainingChildRecordIds
         })
             .then(() => {
+                this.expandedItems.set(oldestChild.Id, true);
                 this.showToast('Success', 'Oldest child reassigned as new parent.', 'success');
                 this.refreshHistoryItems();
             })
