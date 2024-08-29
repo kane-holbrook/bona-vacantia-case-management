@@ -1,3 +1,7 @@
 .bold-headers {
     font-weight: var(--lwc-fontWeightBold,700);
 }
+
+.hidden-label {
+    visibility: hidden;
+}
