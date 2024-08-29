@@ -400,6 +400,17 @@ export default class TaskManageModal extends LightningElement {
 
     @api
     handleSave() {
+        if (!this.task.Name || !this.task.Name.value.trim()) {
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Error',
+                    message: 'Please enter a description of the task before saving.',
+                    variant: 'error',
+                }),
+            );
+            return;
+        }
+
         const waitingPeriodData = {
             waitingPeriodInputValue: this.waitingPeriodInputValue,
             waitingPeriodTimeValue: this.waitingPeriodTimeValue,
