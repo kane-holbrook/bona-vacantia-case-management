@@ -106,6 +106,50 @@
                     <lightning-tab label="Templates" name="templates">
                         <template if:true={hasTemplates}>
                             <template if:true={caseHistoryData}>
+                                <div class="slds-col slds-size_3-of-7 slds-m-bottom_medium slds-m-top_medium">
+                                    <div class="slds-text-align_left">
+                                        <div class="slds-form-element">
+                                            <label class="slds-form-element__label" for="template-search">Search Template</label>
+                                            <div class="slds-combobox_container">
+                                                <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open">
+                                                    <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
+                                                        <input 
+                                                            type="text" 
+                                                            class="slds-input slds-combobox__input" 
+                                                            id="template-search" 
+                                                            aria-autocomplete="list" 
+                                                            aria-controls="template-options" 
+                                                            aria-haspopup="listbox" 
+                                                            autocomplete="off" 
+                                                            role="combobox" 
+                                                            placeholder="Search for a Template" 
+                                                            value={searchTerm} 
+                                                            oninput={handleSearchChange}/>
+                                                        <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_right">
+                                                            <lightning-icon icon-name="utility:search" size="x-small"></lightning-icon>
+                                                        </span>
+                                                    </div>
+                                                    <!-- Dropdown list -->
+                                                    <template if:true={shouldShowDropdown}>
+                                                        <div id="template-options" class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox" aria-label="Template Options" tabindex="-1" aria-busy="false">
+                                                            <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                                                                <template for:each={filteredTemplates} for:item="template">
+                                                                    <li key={template.value} role="presentation" class="slds-listbox__item" data-value={template.value} data-label={template.label} onclick={handleTemplateSelect}>
+                                                                        <div class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_term" role="option">
+                                                                            <span class="slds-media__body">
+                                                                                <span class="slds-listbox__option-text slds-listbox__option-text_entity">{template.label}</span>
+                                                                            </span>
+                                                                        </div>
+                                                                    </li>
+                                                                </template>
+                                                            </ul>
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_col-bordered slds-m-bottom_xx-large">
                                     <thead>
                                         <tr class="slds-text-title_caps">
@@ -191,56 +235,6 @@
                                     </tbody>
                                 </table>
                             </template>
-                            <div class="slds-col slds-size_3-of-7 slds-m-bottom_medium slds-m-top_medium">
-                                <div class="slds-text-align_left">
-                                    <div class="slds-form-element">
-                                        <label class="slds-form-element__label" for="template-search">Search Template</label>
-                                        <div class="slds-combobox_container">
-                                            <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open">
-                                                <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
-                                                    <input 
-                                                        type="text" 
-                                                        class="slds-input slds-combobox__input" 
-                                                        id="template-search" 
-                                                        aria-autocomplete="list" 
-                                                        aria-controls="template-options" 
-                                                        aria-haspopup="listbox" 
-                                                        autocomplete="off" 
-                                                        role="combobox" 
-                                                        placeholder="Search for a Template" 
-                                                        value={searchTerm} 
-                                                        oninput={handleSearchChange}/>
-                                                    <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_right">
-                                                        <lightning-icon icon-name="utility:search" size="x-small"></lightning-icon>
-                                                    </span>
-                                                </div>
-                                                <!-- Dropdown list -->
-                                                <template if:true={shouldShowDropdown}>
-                                                    <div id="template-options" class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox" aria-label="Template Options" tabindex="-1" aria-busy="false">
-                                                        <ul class="slds-listbox slds-listbox_vertical" role="presentation">
-                                                            <template for:each={filteredTemplates} for:item="template">
-                                                                <li key={template.value} role="presentation" class="slds-listbox__item" data-value={template.value} data-label={template.label} onclick={handleTemplateSelect}>
-                                                                    <div class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_term" role="option">
-                                                                        <span class="slds-media__body">
-                                                                            <span class="slds-listbox__option-text slds-listbox__option-text_entity">{template.label}</span>
-                                                                        </span>
-                                                                    </div>
-                                                                </li>
-                                                            </template>
-                                                        </ul>
-                                                    </div>
-                                                </template>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <lightning-button
-                                label="Proceed to Generate"
-                                onclick={handleProceedToGenerate}
-                                variant="brand"
-                                disabled={isProceedButtonDisabled}>
-                            </lightning-button>
                         </template>
                         <template if:false={hasTemplates}>
                             <p>No templates available</p>
