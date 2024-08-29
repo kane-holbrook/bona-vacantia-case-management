@@ -5,6 +5,7 @@ import getUserNames from '@salesforce/apex/HistoryController.getUserNames';
 import getHistoryItemsByTaskId from '@salesforce/apex/HistoryController.getHistoryItemsByTaskId';
 import getSubTasks from '@salesforce/apex/TaskController.getSubTasks';
 import fetchFilesByIds from '@salesforce/apex/FileControllerGraph.fetchFilesByIds';
+import fetchFilesFromFolder from '@salesforce/apex/FileControllerGraph.fetchAllFilesFromFolder';
 import TASK_ID_FIELD from '@salesforce/schema/BV_Task__c.Id';
 import TASK_NAME_FIELD from '@salesforce/schema/BV_Task__c.Name';
 import TASK_PARENT_FIELD from '@salesforce/schema/BV_Task__c.Parent_Task__c';
@@ -40,6 +41,7 @@ export default class TaskDetail extends LightningElement {
     @track isParentTask = false;
     @track taskDeleteMarkedComplete = false;
     @track templates = [];
+    @track existingTemplates = [];
     @track filteredTemplates = [];
     @track shouldShowDropdown = false;
     @track searchTerm = '';
@@ -168,7 +170,8 @@ export default class TaskDetail extends LightningElement {
         if (data) {
             const templateIds = getFieldValue(data, TASK_TEMPLATES_FIELD);
             if (templateIds) {
-                this.fetchTemplates(templateIds);
+                this.fetchTemplates();
+                this.fetchExistingTemplates(templateIds);
             }
         } else if (error) {
             this.dispatchEvent(
@@ -229,17 +232,19 @@ export default class TaskDetail extends LightningElement {
             });
     }
 
-    fetchTemplates(templateIds) {
-        fetchFilesByIds({ itemIds: templateIds })
+    fetchTemplates() {
+        const folderPath = 'Templates'; // Assuming the folder is named "Templates"
+        
+        fetchFilesFromFolder({ folderPath })
             .then(result => {
                 console.log('Templates:', result);
     
                 // Ensure the result is valid and map it to the appropriate format
                 if (result && Array.isArray(result)) {
                     this.templates = result.map(file => ({
-                        label: file.Document_x0020_Name || 'Unnamed File',
+                        label: file.listItem.fields.Document_x0020_Name || 'Unnamed File',
                         value: file.id,
-                        type: file.DocumentType || 'Unknown Category'
+                        type: file.listItem.fields.DocumentType || 'Unknown Category'
                     }));
                 } else {
                     this.templates = [];
@@ -249,6 +254,33 @@ export default class TaskDetail extends LightningElement {
                 this.dispatchEvent(
                     new ShowToastEvent({
                         title: 'Error fetching templates',
+                        message: error.body.message,
+                        variant: 'error',
+                    })
+                );
+            });
+    }
+
+    fetchExistingTemplates(templateIds) {
+        fetchFilesByIds({ itemIds: templateIds })
+            .then(result => {
+                console.log('Existing Templates:', result);
+    
+                // Map result to the appropriate format
+                if (result && Array.isArray(result)) {
+                    this.existingTemplates = result.map(file => ({
+                        label: file.Document_x0020_Name || 'Unnamed File',
+                        value: file.id,
+                        type: file.DocumentType || 'Unknown Category'
+                    }));
+                } else {
+                    this.existingTemplates = [];
+                }
+            })
+            .catch(error => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Error fetching existing templates',
                         message: error.body.message,
                         variant: 'error',
                     })
@@ -425,6 +457,21 @@ export default class TaskDetail extends LightningElement {
     handleFlowClose() {
         // Close the flow modal
         this.isFlowModalOpen = false;
+    }
+
+    handleGenerate(event) {
+        const templateId = event.currentTarget.dataset.id;
+        const selectedTemplate = this.existingTemplates.find(template => template.value === templateId);
+
+        if (selectedTemplate) {
+            // Prepare the flow inputs and proceed with generation
+            this.flowInputs = [
+                { name: 'selectedDocumentId', type: 'String', value: selectedTemplate.value },
+                { name: 'selectedDocumentType', type: 'String', value: selectedTemplate.type },
+                { name: 'taskId', type: 'String', value: this.recordId }
+            ];
+            this.isFlowModalOpen = true;
+        }
     }
 
     // Getter to determine if the Proceed button should be disabled

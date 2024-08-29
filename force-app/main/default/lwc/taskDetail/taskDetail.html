@@ -106,6 +106,47 @@
                     <lightning-tab label="Templates" name="templates">
                         <template if:true={hasTemplates}>
                             <template if:true={caseHistoryData}>
+                                <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_col-bordered slds-m-bottom_xx-large">
+                                    <thead>
+                                        <tr class="slds-text-title_caps">
+                                            <th scope="col">
+                                                <div class="slds-truncate">Action</div>
+                                            </th>
+                                            <th scope="col">
+                                                <div class="slds-truncate">Document Type</div>
+                                            </th>
+                                            <th scope="col"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template for:each={existingTemplates} for:item="template">
+                                            <tr key={template.value}>
+                                                <td>
+                                                    <div class="slds-truncate">{template.label}</div>
+                                                </td>
+                                                <td>
+                                                    <div class="slds-truncate">{template.type}</div>
+                                                </td>
+                                                <td>
+                                                    <lightning-button 
+                                                        label="Generate" 
+                                                        data-id={template.value} 
+                                                        onclick={handleGenerate}
+                                                        variant="brand"
+                                                        class="slds-m-right_x-small">
+                                                    </lightning-button>
+                                                    <lightning-button 
+                                                        label="Remove from Task" 
+                                                        data-id={template.value} 
+                                                        onclick={handleRemove}
+                                                        variant="destructive">
+                                                    </lightning-button>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+
                                 <table class="slds-table slds-table_cell-buffer slds-table_bordered" aria-labelledby="element-with-table-label other-element-with-table-label">
                                     <thead>
                                         <tr class="slds-line-height_reset">
