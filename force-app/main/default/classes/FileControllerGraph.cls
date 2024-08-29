@@ -300,9 +300,10 @@ public class FileControllerGraph {
                 String documentName = (String) listItemData.get('Document_x0020_Name');
                 String documentType = (String) listItemData.get('DocumentType');
                 String documentCategory = (String) listItemData.get('Document_x0020_Category');
+                String newListItemId = (String) listItemData.get('id');
                 
                 // Now fetch the drive item by its name or path and pass the additional fields
-                fetchFileByFileName(fileName, documentName, documentType, documentCategory, allItems);
+                fetchFileByFileName(fileName, documentName, documentType, documentCategory, newListItemId, allItems);
             } else {
                 throw new CalloutException('FileLeafRef not found for list item ID ' + listItemId);
             }
@@ -311,7 +312,7 @@ public class FileControllerGraph {
         }
     }
     
-    private static void fetchFileByFileName(String fileName, String documentName, String documentType, String documentCategory, List<Map<String, Object>> allItems) {
+    private static void fetchFileByFileName(String fileName, String documentName, String documentType, String documentCategory, String newListItemId, List<Map<String, Object>> allItems) {
         // Settings and base URL
         Map<String, String> settings = getSharePointSettings();
         String siteUrl = settings.get('SharePoint_Site_URL');
@@ -342,6 +343,7 @@ public class FileControllerGraph {
             combinedData.put('Document_x0020_Name', documentName);
             combinedData.put('DocumentType', documentType);
             combinedData.put('Document_x0020_Category', documentCategory);
+            combinedData.put('listItemId', newListItemId);
             
             // Add combined data to the allItems list
             allItems.add(combinedData);

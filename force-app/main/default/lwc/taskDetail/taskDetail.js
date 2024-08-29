@@ -273,7 +273,8 @@ export default class TaskDetail extends LightningElement {
                     this.existingTemplates = result.map(file => ({
                         label: file.Document_x0020_Name || 'Unnamed File',
                         value: file.id,
-                        type: file.DocumentType || 'Unknown Category'
+                        type: file.DocumentType || 'Unknown Category',
+                        listItemId: file.listItemId
                     }));
                 } else {
                     this.existingTemplates = [];
@@ -478,15 +479,35 @@ export default class TaskDetail extends LightningElement {
     }
 
     handleRemove(event) {
-        const listItemIdToRemove = event.currentTarget.dataset.id;
+        const valueIdToRemove = event.currentTarget.dataset.id;
     
-        // Convert the current IDs to an array, remove the ID, and rejoin
-        const templateArray = this.currentTemplateIds.split(';');
-        const updatedTemplateArray = templateArray.filter(id => id !== listItemIdToRemove);
-        this.currentTemplateIds = updatedTemplateArray.join(';');
+        // Find the corresponding listItemId for this value ID
+        const templateToRemove = this.existingTemplates.find(template => template.value === valueIdToRemove);
     
-        // Update the task record
-        this.updateTaskTemplatesField();
+        if (templateToRemove && templateToRemove.listItemId) {
+            const listItemIdToRemove = templateToRemove.listItemId;
+    
+            // Convert the current template IDs into an array
+            const templateArray = this.currentTemplateIds.split(';');
+            
+            // Filter out the `listItemIdToRemove`
+            const updatedTemplateArray = templateArray.filter(id => id !== listItemIdToRemove);
+            
+            // Update the currentTemplateIds by joining the remaining IDs
+            this.currentTemplateIds = updatedTemplateArray.join(';');
+            
+            // Update the task record
+            this.updateTaskTemplatesField();
+        } else {
+            console.error('Template not found or listItemId missing.');
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Error',
+                    message: 'Unable to remove the template. Please try again.',
+                    variant: 'error'
+                })
+            );
+        }
     }
 
     // Prepare flow inputs based on selected template
