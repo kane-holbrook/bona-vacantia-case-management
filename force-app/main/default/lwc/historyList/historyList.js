@@ -216,10 +216,17 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
         const now = new Date();
     
         if (this.historyItems.length > 0) {
-            const latestItem = this.historyItems.reduce((latest, item) => {
+            const validItems = this.historyItems.filter(item => item.Last_updated__c);
+            
+            if (validItems.length === 0) {
+                this.lastUpdated = 'No updates available';
+                return;
+            }
+    
+            const latestItem = validItems.reduce((latest, item) => {
                 const itemDate = new Date(item.Last_updated__c);
                 return itemDate > new Date(latest.Last_updated__c) ? item : latest;
-            }, this.historyItems[0]);
+            }, validItems[0]);
     
             let lastUpdateTime;
             if (isDeletion) {
@@ -240,7 +247,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
                 this.lastUpdated = `${diffInDays} day${diffInDays > 1 ? 's' : ''} ago`;
             }
         } else {
-            // If all items are deleted, calculate the time difference from the last action (which is now)
+            // If all items are deleted or historyItems is empty, calculate the time difference from the last action (which is now)
             const diffInMinutes = Math.floor((now - this.lastActionTime) / 60000);
     
             if (diffInMinutes < 60) {
@@ -256,7 +263,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     
         // Store the time of the last action
         this.lastActionTime = now;
-    }    
+    }
     
 
     getIconName(isExpanded) {
