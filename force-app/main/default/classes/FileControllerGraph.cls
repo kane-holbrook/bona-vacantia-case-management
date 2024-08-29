@@ -46,9 +46,33 @@ public class FileControllerGraph {
     }
     
     private static Boolean isBase64String(String content) {
-        // Basic check for Base64 by validating if the content contains only Base64 characters
-        String base64Pattern = '^[a-zA-Z0-9+/]*={0,2}$';
-        return Pattern.matches(base64Pattern, content);
+        // Check if the length is a multiple of 4
+        Integer length = content.length();
+        if (length == 0 || Math.mod(length, 4) != 0) {
+            return false;
+        }
+    
+        // Check if it ends with typical Base64 padding
+        if (content.endsWith('==') || content.endsWith('=') || !content.endsWith('=')) {
+            return true;
+        }
+    
+        // Quick scan of the first few characters for validity
+        for (Integer i = 0; i < Math.min(10, length); i++) {
+            String c = content.substring(i, i + 1);
+            if (!(
+                (c >= 'A' && c <= 'Z') ||
+                (c >= 'a' && c <= 'z') ||
+                (c >= '0' && c <= '9') ||
+                c == '+' ||
+                c == '/' ||
+                c == '=')) {
+                return false;
+            }
+        }
+    
+        // If all checks pass, assume it's Base64
+        return true;
     }
 
     // Method to tag a document in SharePoint
