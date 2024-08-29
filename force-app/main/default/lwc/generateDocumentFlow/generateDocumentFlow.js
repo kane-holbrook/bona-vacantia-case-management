@@ -11,6 +11,8 @@ export default class GenerateDocumentFlow extends LightningElement {
     @track documents;
     @track documentCategories = [];
     @track filteredDocuments = [];
+    @track searchTerm = '';
+    @track isSearching = false;
     @api selectedDocumentId;
     @api selectedDocumentType;
     @api availableActions = [];
@@ -26,7 +28,6 @@ export default class GenerateDocumentFlow extends LightningElement {
         this.caseId = getRecordId();
         this.fetchSharePointSettings();
 
-        // Automatically proceed if document ID and type are already provided
         if (this.selectedDocumentId && this.selectedDocumentType) {
             this.autoNavigateToNextStep();
         }
@@ -54,11 +55,8 @@ export default class GenerateDocumentFlow extends LightningElement {
 
         fetchAllFilesFromFolder({ folderPath: 'Templates' })
             .then(result => {
-                console.log('Files from sharepoint:', result);
-                // Construct the SharePoint preview URL
                 this.documents = result.map(doc => {
                     let previewUrl = `${this.sharePointSiteUrl}/${this.sharePointDirectoryPath}/Shared%20Documents/Forms/AllItems.aspx?id=${encodeURIComponent(doc.webUrl)}&parent=${parentFolderPath}`;
-                    // Determine the display name
                     let displayName = doc.listItem.fields.Document_x0020_Name ? doc.listItem.fields.Document_x0020_Name : doc.name;
                     return { 
                         ...doc, 
@@ -72,7 +70,6 @@ export default class GenerateDocumentFlow extends LightningElement {
                     };
                 });
 
-                // Group documents by categories
                 this.groupDocumentsByCategory();
                 this.isLoading = false;
             })
@@ -120,7 +117,6 @@ export default class GenerateDocumentFlow extends LightningElement {
 
     handleNextDocumentSelection() {
         if (this.selectedDocumentId) {
-            // If the next action is available, navigate to the next screen
             if (this.availableActions.includes('NEXT')) {
                 const navigateNextEvent = new FlowNavigationNextEvent();
                 this.dispatchEvent(navigateNextEvent);
@@ -131,10 +127,30 @@ export default class GenerateDocumentFlow extends LightningElement {
     }
 
     autoNavigateToNextStep() {
-        // Check if the "NEXT" action is available and trigger it
         if (this.availableActions.includes('NEXT')) {
             const navigateNextEvent = new FlowNavigationNextEvent();
             this.dispatchEvent(navigateNextEvent);
         }
+    }
+
+    handleSearchInputChange(event) {
+        this.searchTerm = event.target.value.toLowerCase();
+        this.isSearching = !!this.searchTerm;
+        this.filterDocumentsBySearchTerm();
+    }
+
+    filterDocumentsBySearchTerm() {
+        if (this.searchTerm) {
+            this.filteredDocuments = this.documents.filter(doc => 
+                (doc.displayName && doc.displayName.toLowerCase().includes(this.searchTerm)) ||
+                (doc.DocumentType && doc.DocumentType.toLowerCase().includes(this.searchTerm))
+            );
+        } else {
+            this.filteredDocuments = [];
+        }
+    }
+
+    get hasFilteredDocuments() {
+        return this.filteredDocuments.length > 0;
     }
 }
