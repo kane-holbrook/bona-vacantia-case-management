@@ -19,11 +19,11 @@
                 </div>
             </header>
             <div class="slds-no-flex slds-grid slds-align-middle">
-                <lightning-input type="checkbox" label="Group by related" checked={showRelatedItems} onchange={toggleShowRelatedItems} class="slds-m-right_small"></lightning-input>
+                <!-- <lightning-input type="checkbox" label="Group by related" checked={showRelatedItems} onchange={toggleShowRelatedItems} class="slds-m-right_small"></lightning-input>
                 <template if:true={showRelatedItems}>
                     <lightning-button label="Group" onclick={handleGroup} disabled={isGroupDisabled} class="slds-button_neutral slds-m-left_x-small"></lightning-button>
                     <lightning-button label="Ungroup" onclick={handleUngroup} disabled={isUngroupDisabled} class="slds-button_neutral slds-m-left_x-small"></lightning-button>
-                </template>
+                </template> -->
                 <lightning-button label="Add" onclick={handleAdd} class="slds-button_neutral"></lightning-button>
             </div>
         </div>
@@ -31,13 +31,27 @@
             <div class="slds-text-body_small slds-m-bottom_medium slds-grid slds-wrap slds-grid_align-end">
                 <div class="slds-col slds-size_1-of-2">
                     {filteredHistoryItems.length} items - {sortedByText} - Updated {lastUpdated}
+                    <lightning-button-icon icon-name="utility:refresh" alternative-text="Refresh" onclick={refreshHistoryItems} class="slds-m-bottom_small slds-m-right_small slds-col slds-size_1-of-12"></lightning-button-icon>
                 </div>
                 <div class="slds-col slds-size_1-of-2 slds-grid slds-wrap slds-grid_align-end">
-                    <lightning-button-icon icon-name="utility:refresh" alternative-text="Refresh" onclick={refreshHistoryItems} class="slds-m-bottom_small slds-m-right_small slds-col slds-size_1-of-12"></lightning-button-icon>
-                    <lightning-input type="text" placeholder="Search history" variant="label-hidden" class="slds-m-bottom_small slds-m-right_small slds-col slds-size_1-of-3" onchange={handleSearchInputChange}></lightning-input>
-                    <lightning-input type="date" placeholder="From" variant="label-hidden" class="slds-m-bottom_small slds-m-right_small slds-col slds-size_1-of-4" onchange={handleDateFilterChange} data-filter="from"></lightning-input>
-                    <lightning-input type="date" placeholder="To" variant="label-hidden" class="slds-m-bottom_small slds-col slds-size_1-of-4" onchange={handleDateFilterChange} data-filter="to"></lightning-input>
+                    <lightning-input type="text" placeholder="Search history" variant="label-hidden" class="slds-m-bottom_small slds-m-right_small slds-col slds-size_1-of-4" onchange={handleSearchInputChange}></lightning-input>
+                    
+                    <div class="slds-col slds-size_1-of-6 slds-m-right_small slds-grid slds-wrap">
+                        <lightning-input type="date" placeholder="From" variant="label-hidden" class="slds-m-bottom_small" onchange={handleDateFilterChange} data-filter="from"></lightning-input>
+                    </div>
+                    
+                    <div class="slds-col slds-size_1-of-6 slds-grid slds-wrap">
+                        <lightning-input type="date" placeholder="To" variant="label-hidden" class="slds-m-bottom_small" onchange={handleDateFilterChange} data-filter="to"></lightning-input>
+                    </div>
                 </div>
+                
+            </div>
+            <div class="slds-grid slds-wrap slds-grid_align-start slds-m-bottom_small">
+                <lightning-input type="checkbox" label="Group by related" checked={showRelatedItems} onchange={toggleShowRelatedItems} class="slds-m-right_small"></lightning-input>
+                <template if:true={showRelatedItems}>
+                    <lightning-button label="Group" onclick={handleGroup} disabled={isGroupDisabled} class="slds-button_neutral slds-m-left_x-small"></lightning-button>
+                    <lightning-button label="Ungroup" onclick={handleUngroup} disabled={isUngroupDisabled} class="slds-button_neutral slds-m-left_x-small"></lightning-button>
+                </template>
             </div>
             <template if:false={filteredHistoryItems.length}>
                 <div class="slds-text-align_center slds-p-vertical_medium">

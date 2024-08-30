@@ -40,6 +40,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     @track isUngroupDisabled = true;
     @track isGroupDisabled = true;
     @track expandedItems = new Map();
+    @track wasGroupByRelatedTickedOff = false;
 
     wiredHistoryItemsResult;
     userNames = {};
@@ -443,36 +444,56 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     handleSaveSuccess(event) {
         this.isModalOpen = false;
         this.showToast('Success', 'Record saved successfully', 'success');
-    
-        // Call the Apex method to check if the parent-child swap is necessary
-        if (this.currentRecordId) {
+
+        if(this.currentRecordId) {
             const { recordId, dateInserted, isParent } = event.detail;
-            const originalRecord = this.historyItems.find(item => item.Id === recordId);
-    
-            // Only call swapParentChildIfNecessary if the date has changed and the record is in a group
-            if (originalRecord && originalRecord.Date_Inserted__c !== dateInserted &&
-                (originalRecord.Parent_History_Record__c || (originalRecord.children && originalRecord.children.length > 0))) {
-                
-                swapParentChildIfNecessary({
-                    recordId: recordId,
-                    newDate: dateInserted, // Use the updated date from the event
-                    isParent: isParent // Pass the isParent flag
-                })
-                .then(() => {
-                    this.showToast('Success', 'Record hierarchy updated successfully.', 'success');
-                    this.refreshHistoryItems(); // Refresh the history items after potential hierarchy change
-                })
-                .catch(error => {
-                    this.showToast('Error', 'Error updating record hierarchy: ' + error.body.message, 'error');
+            console.log('recordId ', recordId);
+
+            // Find the original record in the historyItems or its children
+            let originalRecord = this.historyItems.find(item => item.Id === recordId);
+        
+            if (!originalRecord) {
+                // If the record is not a parent, search through children
+                this.historyItems.forEach(item => {
+                    const childRecord = item.children.find(child => child.Id === recordId);
+                    if (childRecord) {
+                        originalRecord = childRecord;
+                    }
                 });
-            } else {
-                this.refreshHistoryItems(); // Just refresh history items if no swap is necessary
             }
-        } else {
-            // Just refresh history items without swapping if the record is new
+        
+            // Proceed only if the original record is found
+            if (originalRecord) {
+                // Only call swapParentChildIfNecessary if the date has changed and the record is in a group
+                if (originalRecord.Date_Inserted__c !== dateInserted &&
+                    (originalRecord.Parent_History_Record__c || (originalRecord.children && originalRecord.children.length > 0))) {
+                    console.log('if statement for swapParentChildIfNecessary');
+        
+                    swapParentChildIfNecessary({
+                        recordId: recordId,
+                        newDate: dateInserted, // Use the updated date from the event
+                        isParent: !!originalRecord.children.length // Check if it's a parent based on children
+                    })
+                    .then((newParentId) => {
+                        // Ensure the new parent is expanded
+                        this.expandedItems.set(newParentId, true);
+                        this.showToast('Success', 'Record hierarchy updated successfully.', 'success');
+                        this.refreshHistoryItems(); // Refresh the history items after potential hierarchy change
+                    })
+                    .catch(error => {
+                        this.showToast('Error', 'Error updating record hierarchy: ' + error.body.message, 'error');
+                    });
+                } else {
+                    this.refreshHistoryItems(); // Just refresh history items if no swap is necessary
+                }
+            } else {
+                this.refreshHistoryItems(); // Just refresh history items if no record was found
+            }
+        }else{
             this.refreshHistoryItems();
         }
     }
+    
     
 
     toggleShowRelatedItems(event) {
@@ -490,6 +511,14 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
                     isSelected: false // Unselect child items
                 }))
             }));
+        }
+
+        if (!this.showRelatedItems) {
+            console.log('Group by related was unticked');
+            this.wasGroupByRelatedTickedOff = true;
+        } else {
+            console.log('Group by related was ticked');
+            this.wasGroupByRelatedTickedOff = false;
         }
     
         this.sortHistoryItems(); // Sort the history items after toggling the related items
@@ -531,6 +560,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
 
     sortHistoryItems() {
         if (this.showRelatedItems) {
+            console.log('sort history items if statement');
             // Sort only the parent items if grouping by related items
             this.historyItems.sort((a, b) => this.compareRecords(a, b));
             
@@ -542,6 +572,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
                 };
             });
         } else {
+            console.log('sort history items else statement');
             // Flatten the list including children for sorting when not grouping by related items
             let itemsToSort = this.historyItems.flatMap(item => [item, ...item.children]);
             
@@ -566,6 +597,15 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     // Helper method for comparing records based on sorting criteria
     compareRecords(a, b) {
         let valA, valB;
+
+        if (this.wasGroupByRelatedTickedOff) {
+            console.log('Group by related was unticked');
+            // Sort by Date_Inserted__c ascending when "Group by related" was unticked
+            const dateA = new Date(a.Date_Inserted__c);
+            const dateB = new Date(b.Date_Inserted__c);
+            this.wasGroupByRelatedTickedOff = false;
+            return dateA - dateB;
+        }
     
         if (this.sortedBy === 'Selected') {
             valA = a.isSelected ? 0 : 1;

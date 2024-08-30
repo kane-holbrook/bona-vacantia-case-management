@@ -1,7 +1,6 @@
 public with sharing class HistoryController {
     @AuraEnabled(cacheable=true)
     public static List<Map<String, Object>> getHistoryItems(String recordId) {
-        System.debug('caseId' + recordId);
     
         // Fetch Case_History__c records
         List<Case_History__c> historyItems = [SELECT Id, BV_Case__c, Date__c, Date_Inserted__c, Details__c, Action__c, Case_Officer__c, Flag_as_important__c, Last_updated__c, EmailMessageId__c,
@@ -97,7 +96,6 @@ public with sharing class HistoryController {
 
     @AuraEnabled(cacheable=true)
     public static List<Case_History__c> getHistoryItemsByTaskId(String taskId) {
-        System.debug('taskId: ' + taskId);
 
         // Fetch Case_History__c records where BV_Task__c matches the provided taskId
         List<Case_History__c> historyItems = [
@@ -155,7 +153,6 @@ public with sharing class HistoryController {
 
         } catch (Exception e) {
             // Log the error for debugging purposes
-            System.debug('Error during ungrouping: ' + e.getMessage());
             throw new AuraHandledException('Error ungrouping records: ' + e.getMessage());
         }
     }
@@ -199,7 +196,7 @@ public with sharing class HistoryController {
     }
 
     @AuraEnabled
-    public static void swapParentChildIfNecessary(Id recordId, Date newDate, Boolean isParent) {
+    public static Id swapParentChildIfNecessary(Id recordId, Date newDate, Boolean isParent) {
         // Fetch the record (could be parent or child)
         Case_History__c record = [
             SELECT Id, Parent_History_Record__c, Date_Inserted__c, BV_Case__c,
@@ -208,7 +205,7 @@ public with sharing class HistoryController {
             WHERE Id = :recordId LIMIT 1
         ];
 
-        System.Debug('record: ' + record);
+        Id newParentId = recordId;  // Default to the current record ID
 
         // Scenario 1: Child record is updated with an earlier date
         if (!isParent && record.Parent_History_Record__c != null) {
@@ -220,21 +217,22 @@ public with sharing class HistoryController {
             ];
 
             if (newDate < parentRecord.Date_Inserted__c) {
-                // Existing logic for swapping child and parent
                 performParentChildSwap(record, parentRecord, newDate);
+                newParentId = record.Id;  // The child becomes the new parent
             }
         }
 
         // Scenario 2: Parent record is updated with a later date
         if (isParent && record.Case_History__r.size() > 0) {
-            System.Debug('Scenario 2');
             Case_History__c earliestChild = record.Case_History__r[0];
 
             if (newDate > earliestChild.Date_Inserted__c) {
-                // Swap the parent with the earliest child
                 performParentChildSwap(earliestChild, record, earliestChild.Date_Inserted__c);
+                newParentId = earliestChild.Id;  // The earliest child becomes the new parent
             }
         }
+
+        return newParentId;  // Return the ID of the new parent
     }
 
     private static void performParentChildSwap(Case_History__c newParent, Case_History__c oldParent, Date newParentDate) {
