@@ -40,7 +40,6 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     @track isUngroupDisabled = true;
     @track isGroupDisabled = true;
     @track expandedItems = new Map();
-    @track wasGroupByRelatedTickedOff = false;
 
     wiredHistoryItemsResult;
     userNames = {};
@@ -447,7 +446,6 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
 
         if(this.currentRecordId) {
             const { recordId, dateInserted, isParent } = event.detail;
-            console.log('recordId ', recordId);
 
             // Find the original record in the historyItems or its children
             let originalRecord = this.historyItems.find(item => item.Id === recordId);
@@ -467,7 +465,6 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
                 // Only call swapParentChildIfNecessary if the date has changed and the record is in a group
                 if (originalRecord.Date_Inserted__c !== dateInserted &&
                     (originalRecord.Parent_History_Record__c || (originalRecord.children && originalRecord.children.length > 0))) {
-                    console.log('if statement for swapParentChildIfNecessary');
         
                     swapParentChildIfNecessary({
                         recordId: recordId,
@@ -498,11 +495,11 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
 
     toggleShowRelatedItems(event) {
         this.showRelatedItems = event.target.checked;
-        
+    
         if (!this.showRelatedItems) {
             // Unselect all records when the Group by related is unticked
-            this.historyItems = this.historyItems.map(item => ({ 
-                ...item, 
+            this.historyItems = this.historyItems.map(item => ({
+                ...item,
                 isExpanded: false,
                 iconName: this.getIconName(false),
                 isSelected: false, // Unselect parent item
@@ -511,20 +508,36 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
                     isSelected: false // Unselect child items
                 }))
             }));
-        }
-
-        if (!this.showRelatedItems) {
-            console.log('Group by related was unticked');
-            this.wasGroupByRelatedTickedOff = true;
+    
+            // Flatten and sort all items, treating parents and children equally
+            let flattenedItems = this.historyItems.flatMap(item => [item, ...item.children]);
+    
+            flattenedItems.sort((a, b) => {
+                const dateA = new Date(a.Date_Inserted__c);
+                const dateB = new Date(b.Date_Inserted__c);
+    
+                if (dateA < dateB) {
+                    return this.sortOrder === 'asc' ? -1 : 1;
+                } else if (dateA > dateB) {
+                    return this.sortOrder === 'asc' ? 1 : -1;
+                }
+                return 0;
+            });
+    
+            // Assign the sorted flat list to filteredHistoryItems for rendering
+            this.filteredHistoryItems = flattenedItems.map(item => ({
+                ...item,
+                isChild: false, // Treat all as independent records for rendering
+                children: [] // Clear children since we're not grouping
+            }));
         } else {
-            console.log('Group by related was ticked');
-            this.wasGroupByRelatedTickedOff = false;
+            // Handle the case when grouping is enabled
+            this.sortHistoryItems(); // Sort the history items after toggling the related items
+            this.filterHistoryItems(); // Reapply filters to update the filteredHistoryItems list
         }
     
-        this.sortHistoryItems(); // Sort the history items after toggling the related items
-        this.filterHistoryItems(); // Reapply filters to update the filteredHistoryItems list
         this.updateGroupButtonState(); // Update the state of group/ungroup buttons
-    }  
+    }
 
     showToast(title, message, variant) {
         const evt = new ShowToastEvent({
@@ -560,7 +573,6 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
 
     sortHistoryItems() {
         if (this.showRelatedItems) {
-            console.log('sort history items if statement');
             // Sort only the parent items if grouping by related items
             this.historyItems.sort((a, b) => this.compareRecords(a, b));
             
@@ -572,9 +584,9 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
                 };
             });
         } else {
-            console.log('sort history items else statement');
             // Flatten the list including children for sorting when not grouping by related items
             let itemsToSort = this.historyItems.flatMap(item => [item, ...item.children]);
+
             
             // Apply sorting to the flat list
             itemsToSort.sort((a, b) => this.compareRecords(a, b));
@@ -596,16 +608,8 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     
     // Helper method for comparing records based on sorting criteria
     compareRecords(a, b) {
+        console.log('compare records called');
         let valA, valB;
-
-        if (this.wasGroupByRelatedTickedOff) {
-            console.log('Group by related was unticked');
-            // Sort by Date_Inserted__c ascending when "Group by related" was unticked
-            const dateA = new Date(a.Date_Inserted__c);
-            const dateB = new Date(b.Date_Inserted__c);
-            this.wasGroupByRelatedTickedOff = false;
-            return dateA - dateB;
-        }
     
         if (this.sortedBy === 'Selected') {
             valA = a.isSelected ? 0 : 1;
