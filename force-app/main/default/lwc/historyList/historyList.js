@@ -295,16 +295,16 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
 
 
     handleAdd() {
-        this.deselectAllItems();
-        this.refreshHistoryItems();
+        // this.deselectAllItems();
+        // this.refreshHistoryItems();
         this.currentRecordId = null;
         this.currentRecord = {};
         this.isModalOpen = true;
     }
 
     handleViewEdit(event) {
-        this.deselectAllItems();
-        this.refreshHistoryItems();
+        // this.deselectAllItems();
+        // this.refreshHistoryItems();
         this.currentRecordId = event.currentTarget.dataset.id;
         let record = this.historyItems.find(item => item.Id === this.currentRecordId);
     
@@ -351,8 +351,8 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     }
 
     handleDeleteOpen(event) {
-        this.deselectAllItems();
-        this.refreshHistoryItems();
+        // this.deselectAllItems();
+        // this.refreshHistoryItems();
         this.currentRecordId = event.currentTarget.dataset.id;
         let record = this.historyItems.find(item => item.Id === this.currentRecordId);
     
@@ -393,6 +393,14 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     handleDeleteSuccess() {
         this.isDeleteModalOpen = false;
         this.showToast('Success', 'Record deleted successfully', 'success');
+
+        this.historyItems = this.historyItems.map(item => {
+            if (item.Id === this.currentRecordId || item.children.some(child => child.Id === this.currentRecordId)) {
+                item.isSelected = false;
+                item.children.forEach(child => child.isSelected = false);
+            }
+            return item;
+        });
     
         // Check if the deleted record had children
         const deletedRecord = this.historyItems.find(item => item.Id === this.currentRecordId);
@@ -464,6 +472,8 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
         
             // Proceed only if the original record is found
             if (originalRecord) {
+                originalRecord.isSelected = false;
+                originalRecord.children.forEach(child => child.isSelected = false);
                 // Only call swapParentChildIfNecessary if the date has changed and the record is in a group
                 if (originalRecord.Date_Inserted__c !== dateInserted &&
                     (originalRecord.Parent_History_Record__c || (originalRecord.children && originalRecord.children.length > 0))) {
@@ -1136,18 +1146,18 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
         return 'An unexpected error occurred';
     }
 
-    deselectAllItems() {
-        this.historyItems = this.historyItems.map(item => {
-            item.isSelected = false;
-            item.children = item.children.map(child => {
-                child.isSelected = false;
-                return child;
-            });
-            return item;
-        });
+    // deselectAllItems() {
+    //     this.historyItems = this.historyItems.map(item => {
+    //         item.isSelected = false;
+    //         item.children = item.children.map(child => {
+    //             child.isSelected = false;
+    //             return child;
+    //         });
+    //         return item;
+    //     });
 
-        this.updateGroupButtonState();
-    }
+    //     this.updateGroupButtonState();
+    // }
     
     
     get sortedByText() {
