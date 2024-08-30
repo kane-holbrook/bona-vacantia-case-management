@@ -295,17 +295,20 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
 
 
     handleAdd() {
+        this.deselectAllItems();
+        this.refreshHistoryItems();
         this.currentRecordId = null;
         this.currentRecord = {};
         this.isModalOpen = true;
     }
 
     handleViewEdit(event) {
+        this.deselectAllItems();
+        this.refreshHistoryItems();
         this.currentRecordId = event.currentTarget.dataset.id;
         let record = this.historyItems.find(item => item.Id === this.currentRecordId);
-
+    
         if (!record) {
-            // If no parent record is found, look for the record in child items
             this.historyItems.forEach(item => {
                 const childRecord = item.children.find(child => child.Id === this.currentRecordId);
                 if (childRecord) {
@@ -313,9 +316,9 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
                 }
             });
         }
-
+    
         this.currentRecord = { ...record };
-
+    
         getSHDocuments({ parentId: this.currentRecordId })
             .then(result => {
                 if (result.length > 0) {
@@ -348,12 +351,11 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     }
 
     handleDeleteOpen(event) {
+        this.deselectAllItems();
+        this.refreshHistoryItems();
         this.currentRecordId = event.currentTarget.dataset.id;
-    
-        // First, try to find the record in the parent items
         let record = this.historyItems.find(item => item.Id === this.currentRecordId);
     
-        // If not found in parents, search in children
         if (!record) {
             this.historyItems.forEach(parentItem => {
                 if (parentItem.children && parentItem.children.length > 0) {
@@ -1133,6 +1135,20 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
         // Default fallback
         return 'An unexpected error occurred';
     }
+
+    deselectAllItems() {
+        this.historyItems = this.historyItems.map(item => {
+            item.isSelected = false;
+            item.children = item.children.map(child => {
+                child.isSelected = false;
+                return child;
+            });
+            return item;
+        });
+
+        this.updateGroupButtonState();
+    }
+    
     
     get sortedByText() {
         const fieldLabelMap = {
