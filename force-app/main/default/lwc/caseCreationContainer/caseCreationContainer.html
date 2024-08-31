@@ -25,8 +25,8 @@
     </article>
 
     <div class="container-background">
-        <div class="slds-grid slds-m-top_large">
-            <div class="slds-col slds-size_1-of-6">
+        <div class="slds-grid slds-m-top_large slds-grid_align-center">
+            <!-- <div class="slds-col slds-size_1-of-6">
                 <div class="slds-progress slds-progress_vertical slds-m-left_medium">
                     <ol class="slds-progress__list">
                         <template for:each={steps} for:item="step" for:index="index">
@@ -50,9 +50,9 @@
                         <span class="slds-assistive-text">Progress: {progressValue}%</span>
                     </div>
                 </div>
-            </div>
+            </div> -->
             <div class="slds-col slds-size_3-of-4">
-                <p class="slds-text-heading_small slds-m-top_small">{stageName}</p>
+                <!-- <p class="slds-text-heading_small slds-m-top_small">{stageName}</p> -->
                 <lightning-flow
                     flow-api-name="Case_Creation_Flow"
                     onstatuschange={handleStatusChange}
