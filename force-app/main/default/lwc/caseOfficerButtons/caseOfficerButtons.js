@@ -97,6 +97,21 @@ export default class CaseOfficerButtons extends LightningElement {
                     { actionId: '7', label: 'Change Disclaimer', disabled: false },
                     { actionId: '8', label: 'Archive Search', disabled: false }
                 ];
+            } else if (recordTypeDeveloperName === 'CONV' || recordTypeDeveloperName === 'GENE') {
+                this.actions = [
+                    { actionId: '1', label: 'Put away', disabled: false },
+                    { actionId: '3', label: 'Change case category', disabled: false }
+                ];
+            } else if (recordTypeDeveloperName === 'FOIR') {
+                this.actions = [
+                    { actionId: '1', label: 'Put away', disabled: false },
+                    { actionId: '3', label: 'Change case category', disabled: false },
+                    { actionId: '9', label: 'Send to Case Officer', disabled: false },
+                    { actionId: '10', label: 'Send to ILO', disabled: false },
+                    { actionId: '11', label: 'ILO Approve', disabled: false },
+                    { actionId: '12', label: 'HOD Approve', disabled: false },
+                    { actionId: '13', label: 'Send to RCO', disabled: false }
+                ];
             }
         } catch (error) {
             console.error('Error retrieving record type developer name:', error);
