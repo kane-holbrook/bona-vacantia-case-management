@@ -1,20 +1,20 @@
 <template>
     <div class="slds-p-top_small"></div>
-    <template for:each={actions} for:item="action">
-        <lightning-button 
-            key={action.actionId} 
-            label={action.label} 
-            onclick={handleActionClick} 
-            disabled={action.disabled}
-            stretch
-            class="slds-m-bottom_x-small slds-align_absolute-center">
-        </lightning-button>
+    <template if:true={actions.length}>
+        <template for:each={actions} for:item="action">
+            <lightning-button 
+                key={action.actionId} 
+                label={action.label} 
+                onclick={handleActionClick} 
+                disabled={action.disabled}
+                stretch
+                class="slds-m-bottom_x-small slds-align_absolute-center">
+            </lightning-button>
+        </template>
     </template>
     <lightning-flow></lightning-flow>
 
-    <c-re-allocate-case
-        onsave={handleCaseOfficerSave}>
-    </c-re-allocate-case>
+    <c-re-allocate-case onsave={handleCaseOfficerSave}></c-re-allocate-case>
 
     <c-hidden-screen-controls
         bv-case-id={recordId}
@@ -61,7 +61,6 @@
     <template if:true={isFlowModalOpen}>
         <section role="dialog" tabindex="-1" aria-modal="true" class="slds-modal slds-fade-in-open">
             <div class="slds-modal__container">
-                <!-- Modal Header -->
                 <header class="slds-modal__header">
                     <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={handleFlowClose}>
                         <lightning-icon icon-name="utility:close" alternative-text="close" size="small"></lightning-icon>

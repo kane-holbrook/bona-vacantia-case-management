@@ -28,12 +28,14 @@ import NAME_FIELD from '@salesforce/schema/BV_Case__c.Name';
 import getCaseDetail from '@salesforce/apex/CaseOfficerController.getCaseDetail';
 import fetchFilesFromSharePoint from '@salesforce/apex/FileControllerGraph.fetchFilesFromSharePoint';
 import { getRecordId } from 'c/sharedService';
+import getRecordTypeIdForRecord from '@salesforce/apex/LayoutController.getRecordTypeIdForRecord';
+import getRecordTypeDeveloperName from '@salesforce/apex/LayoutController.getRecordTypeDeveloperName';
 
 export default class CaseOfficerButtons extends LightningElement {
     @track recordId;  // The BV_Case__c recordId
     @track caseDetailId; // Stores the Case_Detail__c Id for Officer History
     @track officerHistoryRecordTypeId; // Stores the Record Type Id for Officer_History
-    @track adminHiddenScreenRecordTypeId // Stores the Record Type Id for Admin Hidden Screen
+    @track adminHiddenScreenRecordTypeId; // Stores the Record Type Id for Admin Hidden Screen
     @track caseDetailRecord; // Holds the Case_Detail__c record
     @track bvCaseName; // Holds the BV_Case__c Name
     @track flowInputs = [];
@@ -42,18 +44,13 @@ export default class CaseOfficerButtons extends LightningElement {
     @track isReverseAccrualModalOpen = false;
     @track isSection27Open = false;
     @track isFlowModalOpen = false;
+    @track recordTypeDeveloperName; // Holds the record type developer name
 
-    actions = [
-        { actionId: '1', label: 'Put away', disabled: false },
-        { actionId: '2', label: 'Re-allocate case', disabled: false },
-        { actionId: '3', label: 'Change case category', disabled: false },
-        { actionId: '4', label: 'Hidden Screen Controls', disabled: false },
-        { actionId: '5', label: 'LM case review', disabled: false },
-        { actionId: '6', label: 'Section 27', disabled: false }
-    ];
+    actions = []; // Actions array will be set based on record type
 
     connectedCallback() {
         this.recordId = getRecordId();
+        this.retrieveRecordTypeDeveloperName(); // Retrieve the record type developer name
     }
 
     @wire(getRecord, { recordId: '$recordId', fields: [NAME_FIELD] })
@@ -74,6 +71,35 @@ export default class CaseOfficerButtons extends LightningElement {
             this.loadCaseDetailRecord();
         } else if (error) {
             console.error('Error fetching object info:', error);
+        }
+    }
+
+    async retrieveRecordTypeDeveloperName() {
+        try {
+            const recordTypeId = await getRecordTypeIdForRecord({ recordId: this.recordId });
+            const recordTypeDeveloperName = await getRecordTypeDeveloperName({ recordTypeId });
+            this.recordTypeDeveloperName = recordTypeDeveloperName;
+
+            // Set the actions based on record type
+            if (recordTypeDeveloperName === 'ESTA') {
+                this.actions = [
+                    { actionId: '1', label: 'Put away', disabled: false },
+                    { actionId: '2', label: 'Re-allocate case', disabled: false },
+                    { actionId: '3', label: 'Change case category', disabled: false },
+                    { actionId: '4', label: 'Hidden Screen Controls', disabled: false },
+                    { actionId: '5', label: 'LM case review', disabled: false },
+                    { actionId: '6', label: 'Section 27', disabled: false }
+                ];
+            } else if (recordTypeDeveloperName === 'COMP') {
+                this.actions = [
+                    { actionId: '1', label: 'Put away', disabled: false },
+                    { actionId: '3', label: 'Change case category', disabled: false },
+                    { actionId: '7', label: 'Change Disclaimer', disabled: false },
+                    { actionId: '8', label: 'Archive Search', disabled: false }
+                ];
+            }
+        } catch (error) {
+            console.error('Error retrieving record type developer name:', error);
         }
     }
 
@@ -158,6 +184,14 @@ export default class CaseOfficerButtons extends LightningElement {
                 .catch(error => {
                     console.error('Error fetching files from SharePoint:', error);
                 });
+        } else if (actionName === 'Change Disclaimer') {
+            // Logic for Change Disclaimer action
+            console.log('Change Disclaimer action triggered');
+            // Add any specific handling logic here
+        } else if (actionName === 'Archive Search') {
+            // Logic for Archive Search action
+            console.log('Archive Search action triggered');
+            // Add any specific handling logic here
         }
     }
 
@@ -272,7 +306,7 @@ export default class CaseOfficerButtons extends LightningElement {
     }
 
     closeSection27Modal() {
-        this.isSection27Open = false
+        this.isSection27Open = false;
     }
 
     handleFlowClose() {
