@@ -235,10 +235,15 @@
         </div>
     </article>
 
-    <section class="slds-m-top_small">
-        <h2 class="slds-text-heading_small">History Notes</h2>
-        <p class="slds-m-top_xx-small">{selectedRecordDetails}</p>
-    </section>
+    <!-- Sticky History Notes Section -->
+    <footer class="slds-docked-form-footer">
+        <div class="slds-docked-form-footer__body">
+            <section>
+                <h2 class="slds-text-heading_small">History Notes</h2>
+                <p class="slds-m-top_xx-small">{selectedRecordDetails}</p>
+            </section>
+        </div>
+    </footer>
 
     <template if:true={isModalOpen}>
         <section role="dialog" tabindex="-1" aria-modal="true" class="slds-modal slds-fade-in-open">
