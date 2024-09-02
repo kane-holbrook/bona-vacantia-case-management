@@ -67,7 +67,7 @@
             </template>
 
             <template if:true={filteredHistoryItems.length}>
-                <div class="slds-table--header-fixed_container" style="height:650px;">
+                <div class="slds-table--header-fixed_container" style="height: calc(65vh - 100px);">
                     <div class="slds-scrollable_y" style="height: 100%">
                         <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_col-bordered slds-table_header-fixed">
                             <thead>
@@ -205,19 +205,15 @@
                         </table>
                     </div>
                 </div>
+                <template if:true={selectedRecordDetails}>
+                    <section class="slds-m-top_small">
+                        <h2 class="slds-text-heading_small">History Notes</h2>
+                        <p class="slds-m-top_xx-small">{selectedRecordDetails}</p>
+                    </section>
+                </template>
             </template>
         </div>
     </article>
-
-    <!-- Sticky History Notes Section -->
-    <footer class="slds-docked-form-footer">
-        <div class="slds-docked-form-footer__body">
-            <section>
-                <h2 class="slds-text-heading_small">History Notes</h2>
-                <p class="slds-m-top_xx-small">{selectedRecordDetails}</p>
-            </section>
-        </div>
-    </footer>
 
     <template if:true={isModalOpen}>
         <section role="dialog" tabindex="-1" aria-modal="true" class="slds-modal slds-fade-in-open">

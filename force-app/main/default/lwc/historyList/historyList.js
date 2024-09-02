@@ -718,7 +718,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
         if (record && record.Details__c) {
             this.selectedRecordDetails = record.Details__c;
         } else {
-            this.selectedRecordDetails = 'There are no history notes for this record.';
+            this.selectedRecordDetails = '';
         }
     }
 
