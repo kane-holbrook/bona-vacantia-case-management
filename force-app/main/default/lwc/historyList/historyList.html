@@ -30,8 +30,8 @@
                 <lightning-button label="Add" onclick={handleAdd} class="slds-button_neutral"></lightning-button>
             </div>
         </div>
-        <div class="slds-card__body slds-p-horizontal_small slds-p-vertical_medium">
-            <div class="slds-text-body_small slds-m-bottom_medium slds-grid slds-wrap slds-grid_align-end">
+        <div class="slds-card__body slds-p-horizontal_small">
+            <div class="slds-text-body_small slds-grid slds-wrap slds-grid_align-end">
                 <div class="slds-col slds-size_1-of-2">
                     {filteredHistoryItems.length} items - {sortedByText} - Updated {lastUpdated}
                     <lightning-button-icon icon-name="utility:refresh" alternative-text="Refresh" onclick={refreshHistoryItems} class="slds-m-bottom_small slds-m-right_small slds-col slds-size_1-of-12"></lightning-button-icon>
@@ -40,11 +40,11 @@
                     <lightning-input type="text" placeholder="Search history" variant="label-hidden" class="slds-m-bottom_small slds-m-right_small slds-col slds-size_1-of-4" onchange={handleSearchInputChange}></lightning-input>
                     
                     <div class="slds-col slds-size_1-of-6 slds-m-right_small slds-grid slds-wrap">
-                        <lightning-input type="date" placeholder="From" variant="label-hidden" class="slds-m-bottom_small" onchange={handleDateFilterChange} data-filter="from"></lightning-input>
+                        <lightning-input type="date" placeholder="From" variant="label-hidden" class="" onchange={handleDateFilterChange} data-filter="from"></lightning-input>
                     </div>
                     
                     <div class="slds-col slds-size_1-of-6 slds-grid slds-wrap">
-                        <lightning-input type="date" placeholder="To" variant="label-hidden" class="slds-m-bottom_small" onchange={handleDateFilterChange} data-filter="to"></lightning-input>
+                        <lightning-input type="date" placeholder="To" variant="label-hidden" class="" onchange={handleDateFilterChange} data-filter="to"></lightning-input>
                     </div>
                 </div>
                 
