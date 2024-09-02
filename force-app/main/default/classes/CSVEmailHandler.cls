@@ -51,9 +51,7 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
                         Integer jurisdictionStatus = handleJurisdictionCheck(fetchPostCode(caseRecord.Company_No__c));
                         
                         if (jurisdictionStatus == 1) {
-                            duplicateInCSV.add('Company Number: ' + caseRecord.Company_No__c + ' - Company Name: ' + caseRecord.Name 
-                                + ' - Date of Dissolution: ' + caseRecord.Date_Dissolved__c.format() + ' - Reference Number: ' + caseRecord.Rm_Reference__c 
-                                + ' - Date Monies Transferred: ' + caseRecord.Date_Received__c.format() + ' - Amount to be transferred: ' + caseRecord.Amount_Collected__c);
+                            duplicateInCSV.add(caseRecord.Company_No__c + ' - ' + caseRecord.Name + ' - ' + caseRecord.Rm_Reference__c);
                         }
                         continue;
                     }
@@ -61,9 +59,7 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
                     companyNumbersInCSV.add(caseRecord.Company_No__c);
                 
                     if (existingCompanyNumbers.contains(paddedCompanyNumber)) {
-                        existingCasesList.add('Company Number: ' + caseRecord.Company_No__c + ' - Company Name: ' + caseRecord.Name 
-                            + ' - Date of Dissolution: ' + caseRecord.Date_Dissolved__c.format() + ' - Reference Number: ' + caseRecord.Rm_Reference__c 
-                            + ' - Date Monies Transferred: ' + caseRecord.Date_Received__c.format() + ' - Amount to be transferred: ' + caseRecord.Amount_Collected__c);
+                        existingCasesList.add(caseRecord.Company_No__c + ' - ' + caseRecord.Name + ' - ' + caseRecord.Rm_Reference__c);
                         continue;
                     }
                 
@@ -72,17 +68,11 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
                 
                     if (jurisdictionStatus == 1) {
                         casesToInsert.add(caseRecord);
-                        acceptedCompanies.add('Company Number: ' + caseRecord.Company_No__c + ' - Company Name: ' + caseRecord.Name 
-                            + ' - Date of Dissolution: ' + caseRecord.Date_Dissolved__c.format() + ' - Reference Number: ' + caseRecord.Rm_Reference__c 
-                            + ' - Date Monies Transferred: ' + caseRecord.Date_Received__c.format() + ' - Amount to be transferred: ' + caseRecord.Amount_Collected__c);
+                        acceptedCompanies.add(caseRecord.Company_No__c + ' - ' + caseRecord.Name + ' - ' + caseRecord.Rm_Reference__c);
                     } else if (jurisdictionStatus == 2) {
-                        consultFCo.add('Company Number: ' + caseRecord.Company_No__c + ' - Company Name: ' + caseRecord.Name 
-                            + ' - Date of Dissolution: ' + caseRecord.Date_Dissolved__c.format() + ' - Reference Number: ' + caseRecord.Rm_Reference__c 
-                            + ' - Date Monies Transferred: ' + caseRecord.Date_Received__c.format() + ' - Amount to be transferred: ' + caseRecord.Amount_Collected__c);
+                        consultFCo.add(caseRecord.Company_No__c + ' - ' + caseRecord.Name + ' - ' + caseRecord.Rm_Reference__c);
                     } else if (jurisdictionStatus == 3) {
-                        notInJurisdiction.add('Company Number: ' + caseRecord.Company_No__c + ' - Company Name: ' + caseRecord.Name 
-                            + ' - Date of Dissolution: ' + caseRecord.Date_Dissolved__c.format() + ' - Reference Number: ' + caseRecord.Rm_Reference__c 
-                            + ' - Date Monies Transferred: ' + caseRecord.Date_Received__c.format() + ' - Amount to be transferred: ' + caseRecord.Amount_Collected__c);
+                        notInJurisdiction.add(caseRecord.Company_No__c + ' - ' + caseRecord.Name + ' - ' + caseRecord.Rm_Reference__c);
                     }
                 }
                 
