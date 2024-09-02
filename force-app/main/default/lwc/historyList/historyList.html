@@ -182,7 +182,7 @@
                                                 <lightning-formatted-date-time value={item.Date_Inserted__c} year="numeric" month="2-digit" day="2-digit" day-style="2-digit" month-style="2-digit" timezone="UTC"></lightning-formatted-date-time>
                                             </div>
                                         </td>
-                                        <td data-label="Action">{item.Action__c}</td>
+                                        <td class="action-truncrate" data-label="Action">{item.Action__c}</td>
                                         <td class="notes" data-label="Notes">
                                             <template if:true={item.hasDetails}>
                                                 <lightning-icon icon-name="utility:check" alternative-text="Has Details" size="x-small"></lightning-icon>

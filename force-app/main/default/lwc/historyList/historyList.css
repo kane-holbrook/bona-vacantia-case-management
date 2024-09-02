@@ -81,3 +81,11 @@ th.document-type, th.case-officer {
 }
 
 /* Ends here */
+
+.action-truncrate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 30rem;
+    vertical-align: middle;
+}
