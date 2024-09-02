@@ -54,3 +54,22 @@ table tr.highlighted-row:hover td {
 .slds-combobox_position-adjust {
     margin-top: 5px;
 }
+
+/* This is to make column headers more responsive when resizing the screen */
+th {
+    min-width: 100px;
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+th.important, th.date, th.notes, th.document-type, th.file-size, th.draft, th.case-officer, th.actions {
+    min-width: 50px;
+}
+
+th.document-type, th.case-officer {
+    min-width: 150px; /* Expand these columns slightly */
+}
+
+/* Ends here */
