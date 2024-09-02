@@ -40,8 +40,7 @@ export default class CaseOfficerButtons extends LightningElement {
     @track bvCaseName; // Holds the BV_Case__c Name
     @track flowInputs = [];
     @track isChangeCaseCategoryModalOpen = false;
-    @track isAddAccrualModalOpen = false;
-    @track isReverseAccrualModalOpen = false;
+    @track isReopenCaseModalOpen = false;
     @track isSection27Open = false;
     @track isFlowModalOpen = false;
     @track recordTypeDeveloperName; // Holds the record type developer name
@@ -79,20 +78,22 @@ export default class CaseOfficerButtons extends LightningElement {
             const recordTypeId = await getRecordTypeIdForRecord({ recordId: this.recordId });
             const recordTypeDeveloperName = await getRecordTypeDeveloperName({ recordTypeId });
             this.recordTypeDeveloperName = recordTypeDeveloperName;
-
+    
             // Set the actions based on record type
             if (recordTypeDeveloperName === 'ESTA') {
                 this.actions = [
                     { actionId: '1', label: 'Put away', disabled: false },
-                    { actionId: '2', label: 'Re-allocate case', disabled: false },
-                    { actionId: '3', label: 'Change case category', disabled: false },
-                    { actionId: '4', label: 'Hidden Screen Controls', disabled: false },
-                    { actionId: '5', label: 'LM case review', disabled: false },
-                    { actionId: '6', label: 'Section 27', disabled: false }
+                    { actionId: '2', label: 'Re-open case', disabled: false },
+                    { actionId: '3', label: 'Re-allocate case', disabled: false },
+                    { actionId: '4', label: 'Change case category', disabled: false },
+                    { actionId: '5', label: 'Hidden Screen Controls', disabled: false },
+                    { actionId: '6', label: 'LM case review', disabled: false },
+                    { actionId: '7', label: 'Section 27', disabled: false }
                 ];
             } else if (recordTypeDeveloperName === 'COMP') {
                 this.actions = [
                     { actionId: '1', label: 'Put away', disabled: false },
+                    { actionId: '2', label: 'Re-open case', disabled: false },
                     { actionId: '3', label: 'Change case category', disabled: false },
                     { actionId: '7', label: 'Change Disclaimer', disabled: false },
                     { actionId: '8', label: 'Archive Search', disabled: false }
@@ -100,11 +101,13 @@ export default class CaseOfficerButtons extends LightningElement {
             } else if (recordTypeDeveloperName === 'CONV' || recordTypeDeveloperName === 'GENE') {
                 this.actions = [
                     { actionId: '1', label: 'Put away', disabled: false },
+                    { actionId: '2', label: 'Re-open case', disabled: false },
                     { actionId: '3', label: 'Change case category', disabled: false }
                 ];
             } else if (recordTypeDeveloperName === 'FOIR') {
                 this.actions = [
                     { actionId: '1', label: 'Put away', disabled: false },
+                    { actionId: '2', label: 'Re-open case', disabled: false },
                     { actionId: '3', label: 'Change case category', disabled: false },
                     { actionId: '9', label: 'Send to Case Officer', disabled: false },
                     { actionId: '10', label: 'Send to ILO', disabled: false },
@@ -154,6 +157,15 @@ export default class CaseOfficerButtons extends LightningElement {
                 }
             ];
             this.isChangeCaseCategoryModalOpen = true;
+        } else if (actionName === 'Re-open case') {
+            this.flowInputs = [
+                {
+                    name: 'caseId',
+                    type: 'String',
+                    value: this.recordId
+                }
+            ];
+            this.isReopenCaseModalOpen = true;
         } else if (actionName === 'Section 27') {
             this.flowInputs = [
                 {
@@ -327,6 +339,10 @@ export default class CaseOfficerButtons extends LightningElement {
     handleFlowClose() {
         // Close the flow modal
         this.isFlowModalOpen = false;
+    }
+
+    closeReopenCaseModal() {
+        this.isReopenCaseModalOpen = false;
     }
     
     handleFlowStatusChange(event) {

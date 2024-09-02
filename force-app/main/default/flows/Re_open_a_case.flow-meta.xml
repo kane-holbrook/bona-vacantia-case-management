@@ -1,6 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>61.0</apiVersion>
+    <assignments>
+        <name>Set_Case_Officer_Collection</name>
+        <label>Set Case Officer Collection</label>
+        <locationX>138</locationX>
+        <locationY>998</locationY>
+        <assignmentItems>
+            <assignToReference>updatedCaseOfficerCollection</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <elementReference>Loop_Case_Officer_Details</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Loop_Case_Officer_Details</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Set_Case_Officer_Fields</name>
+        <label>Set Case Officer Fields</label>
+        <locationX>138</locationX>
+        <locationY>890</locationY>
+        <assignmentItems>
+            <assignToReference>Loop_Case_Officer_Details.Reopened_By__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>CaseOfficerName</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Loop_Case_Officer_Details.Reopened__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Set_Case_Officer_Collection</targetReference>
+        </connector>
+    </assignments>
     <choices>
         <name>No</name>
         <choiceText>No</choiceText>
@@ -33,9 +72,96 @@
             <stringValue>Yes</stringValue>
         </value>
     </choices>
+    <decisions>
+        <name>Do_you_wish_to_re_open_the_case</name>
+        <label>Do you wish to re-open the case?</label>
+        <locationX>710</locationX>
+        <locationY>350</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Yes_Reopen_Decision</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Re_open_the_case</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Yes</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Do_you_wish_to_leave_the_case_open</targetReference>
+            </connector>
+            <label>Yes</label>
+        </rules>
+        <rules>
+            <name>No_Reopen_Decision</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Re_open_the_case</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>No</elementReference>
+                </rightValue>
+            </conditions>
+            <label>No</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Open_the_case</name>
+        <label>Open the case?</label>
+        <locationX>314</locationX>
+        <locationY>566</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Yes_Decision</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Leave_open</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Yes_Leave_Open</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Case_Officer_History_Record</targetReference>
+            </connector>
+            <label>Yes</label>
+        </rules>
+        <rules>
+            <name>No_Decision</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Leave_open</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>No_Leave_Open</elementReference>
+                </rightValue>
+            </conditions>
+            <label>No</label>
+        </rules>
+    </decisions>
     <environments>Default</environments>
+    <formulas>
+        <name>CaseOfficerName</name>
+        <dataType>String</dataType>
+        <expression>{!$User.FirstName} &amp; &quot; &quot; &amp; {!$User.LastName}</expression>
+    </formulas>
     <interviewLabel>Re-open a case {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Re-open a case</label>
+    <loops>
+        <name>Loop_Case_Officer_Details</name>
+        <label>Loop Case Officer Details</label>
+        <locationX>50</locationX>
+        <locationY>782</locationY>
+        <collectionReference>Get_Case_Officer_History_Record</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>Set_Case_Officer_Fields</targetReference>
+        </nextValueConnector>
+        <noMoreValuesConnector>
+            <targetReference>Update_Case_Officer_Record</targetReference>
+        </noMoreValuesConnector>
+    </loops>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -55,16 +181,121 @@
         </value>
     </processMetadataValues>
     <processType>Flow</processType>
+    <recordCreates>
+        <name>Create_a_history_record</name>
+        <label>Create a history record</label>
+        <locationX>50</locationX>
+        <locationY>1298</locationY>
+        <inputAssignments>
+            <field>Action__c</field>
+            <value>
+                <stringValue>Case Reopened</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>BV_Case__c</field>
+            <value>
+                <elementReference>caseId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Case_Officer__c</field>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Date_Inserted__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Last_updated__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Case_History__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordLookups>
+        <name>Get_BV_Case</name>
+        <label>Get BV Case</label>
+        <locationX>710</locationX>
+        <locationY>134</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Question</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>caseId</elementReference>
+            </value>
+        </filters>
+        <object>BV_Case__c</object>
+        <outputAssignments>
+            <assignToReference>caseCompletedDate</assignToReference>
+            <field>Completed__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>caseName</assignToReference>
+            <field>Name</field>
+        </outputAssignments>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Case_Officer_History_Record</name>
+        <label>Get Case Officer History Record</label>
+        <locationX>50</locationX>
+        <locationY>674</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Loop_Case_Officer_Details</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>BV_Case__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>caseId</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Record_Type_Dev_Name__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Officer_History</stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>Case_Detail__c</object>
+        <sortField>Id</sortField>
+        <sortOrder>Asc</sortOrder>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <name>Update_Case_Officer_Record</name>
+        <label>Update Case Officer Record</label>
+        <locationX>50</locationX>
+        <locationY>1190</locationY>
+        <connector>
+            <targetReference>Create_a_history_record</targetReference>
+        </connector>
+        <inputReference>updatedCaseOfficerCollection</inputReference>
+    </recordUpdates>
     <screens>
         <name>Do_you_wish_to_leave_the_case_open</name>
         <label>Do you wish to leave the case open?</label>
-        <locationX>176</locationX>
-        <locationY>242</locationY>
+        <locationX>314</locationX>
+        <locationY>458</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Placeholder_update_the_case_object_here_to_re_open</targetReference>
+            <targetReference>Open_the_case</targetReference>
         </connector>
         <fields>
             <name>Leave_open</name>
@@ -79,44 +310,19 @@
         <showHeader>true</showHeader>
     </screens>
     <screens>
-        <name>Placeholder_create_history_record_here</name>
-        <label>Placeholder, create history record here</label>
-        <locationX>176</locationX>
-        <locationY>458</locationY>
-        <allowBack>true</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
-        <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
-    </screens>
-    <screens>
-        <name>Placeholder_update_the_case_object_here_to_re_open</name>
-        <label>Placeholder, update the case object here to re-open</label>
-        <locationX>176</locationX>
-        <locationY>350</locationY>
-        <allowBack>true</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
-        <connector>
-            <targetReference>Placeholder_create_history_record_here</targetReference>
-        </connector>
-        <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
-    </screens>
-    <screens>
         <name>Question</name>
         <label>Question</label>
-        <locationX>176</locationX>
-        <locationY>134</locationY>
+        <locationX>710</locationX>
+        <locationY>242</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Do_you_wish_to_leave_the_case_open</targetReference>
+            <targetReference>Do_you_wish_to_re_open_the_case</targetReference>
         </connector>
         <fields>
             <name>Case_Details</name>
-            <fieldText>&lt;p&gt;The Case {NameHere} was completed on {datehere}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Do you wish to re-open this Case?&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;The Case {!caseName} was completed on {!caseCompletedDate}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Do you wish to re-open this Case?&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <fields>
@@ -132,11 +338,40 @@
         <showHeader>true</showHeader>
     </screens>
     <start>
-        <locationX>50</locationX>
+        <locationX>584</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Question</targetReference>
+            <targetReference>Get_BV_Case</targetReference>
         </connector>
     </start>
     <status>Draft</status>
+    <variables>
+        <name>caseCompletedDate</name>
+        <dataType>Date</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>caseId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>caseName</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>updatedCaseOfficerCollection</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Case_Detail__c</objectType>
+    </variables>
 </Flow>
