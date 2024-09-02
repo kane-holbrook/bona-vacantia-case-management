@@ -64,7 +64,15 @@ th {
     text-overflow: ellipsis;
 }
 
-th.important, th.date, th.notes, th.document-type, th.file-size, th.draft, th.case-officer, th.actions {
+th.date, th.document-type, th.file-size, th.draft, th.case-officer, th.actions {
+    min-width: 50px;
+}
+
+th.important {
+    min-width: 90px;
+}
+
+th.notes {
     min-width: 50px;
 }
 

@@ -86,7 +86,7 @@
                                             <div class="slds-truncate slds-cell-fixed" title="Expand"></div>
                                         </th>
                                     </template>
-                                    <th scope="col">
+                                    <th class="important" scope="col">
                                         <button class="slds-button slds-button_reset slds-truncate slds-cell-fixed" title="Important" onclick={handleSort} data-column="Important">
                                             Important
                                             <template if:true={isSortedByImportant}>
@@ -94,7 +94,7 @@
                                             </template>
                                         </button>
                                     </th>
-                                    <th scope="col">
+                                    <th class="date" scope="col">
                                         <button class="slds-button slds-button_reset slds-truncate slds-cell-fixed" title="Date" onclick={handleSort} data-column="Date_Inserted__c">
                                             Date
                                             <template if:true={isSortedByDate}>
@@ -102,7 +102,7 @@
                                             </template>
                                         </button>
                                     </th>
-                                    <th scope="col">
+                                    <th class="action" scope="col">
                                         <button class="slds-button slds-button_reset slds-truncate slds-cell-fixed" title="Action" onclick={handleSort} data-column="Action__c">
                                             Action
                                             <template if:true={isSortedByAction}>
@@ -110,7 +110,7 @@
                                             </template>
                                         </button>
                                     </th>
-                                    <th scope="col">
+                                    <th class="notes" scope="col">
                                         <button class="slds-button slds-button_reset slds-truncate slds-cell-fixed" title="Notes" onclick={handleSort} data-column="Notes__c">
                                             Notes
                                             <template if:true={isSortedByNotes}>
@@ -118,7 +118,7 @@
                                             </template>
                                         </button>
                                     </th>
-                                    <th scope="col">
+                                    <th class="document-type" scope="col">
                                         <button class="slds-button slds-button_reset slds-truncate slds-cell-fixed" title="Document Type" onclick={handleSort} data-column="DocumentType__c">
                                             Document Type
                                             <template if:true={isSortedByDocumentType}>
@@ -126,7 +126,7 @@
                                             </template>
                                         </button>
                                     </th>
-                                    <th scope="col">
+                                    <th class="file-size" scope="col">
                                         <button class="slds-button slds-button_reset slds-truncate slds-cell-fixed" title="File Size" onclick={handleSort} data-column="FileSize__c">
                                             File Size
                                             <template if:true={isSortedByFileSize}>
@@ -134,7 +134,7 @@
                                             </template>
                                         </button>
                                     </th>
-                                    <th scope="col">
+                                    <th class="draft" scope="col">
                                         <button class="slds-button slds-button_reset slds-truncate slds-cell-fixed" title="Draft" onclick={handleSort} data-column="Draft__c">
                                             Draft
                                             <template if:true={isSortedByDraft}>
@@ -142,7 +142,7 @@
                                             </template>
                                         </button>
                                     </th>
-                                    <th scope="col">
+                                    <th class="case-officer" scope="col">
                                         <button class="slds-button slds-button_reset slds-truncate slds-cell-fixed" title="Case Officer" onclick={handleSort} data-column="Case_Officer_Name">
                                             Case Officer
                                             <template if:true={isSortedByCaseOfficer}>
@@ -150,7 +150,7 @@
                                             </template>
                                         </button>
                                     </th>
-                                    <th scope="col">
+                                    <th class="actions" scope="col">
                                         <div class="slds-button slds-button_reset slds-truncate slds-cell-fixed" title="Actions">Actions</div>
                                     </th>
                                 </tr>
@@ -174,22 +174,22 @@
                                                 </template>
                                             </td>
                                         </template>
-                                        <td data-label="Important">
+                                        <td class="important" data-label="Important">
                                             <lightning-icon icon-name="utility:priority" alternative-text="Important" class={item.flagIconClass}></lightning-icon>
                                         </td>
-                                        <td data-label="Date">
+                                        <td class="date" data-label="Date">
                                             <div class="slds-grid slds-align_absolute-center">
                                                 <lightning-formatted-date-time value={item.Date_Inserted__c} year="numeric" month="2-digit" day="2-digit" day-style="2-digit" month-style="2-digit" timezone="UTC"></lightning-formatted-date-time>
                                             </div>
                                         </td>
                                         <td data-label="Action">{item.Action__c}</td>
-                                        <td data-label="Notes">
+                                        <td class="notes" data-label="Notes">
                                             <template if:true={item.hasDetails}>
                                                 <lightning-icon icon-name="utility:check" alternative-text="Has Details" size="x-small"></lightning-icon>
                                             </template>
                                         </td>
-                                        <td data-label="Document Type">{item.documentType}</td>
-                                        <td data-label="File Size">{item.fileSize}</td>
+                                        <td class="document-type" data-label="Document Type">{item.documentType}</td>
+                                        <td class="file-size" data-label="File Size">{item.fileSize}</td>
                                         <td data-label="Draft">{item.draft}</td>
                                         <td data-label="Case Officer">{item.Case_Officer_Name}</td>
                                         <td data-label="Actions">
