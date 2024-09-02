@@ -50,3 +50,7 @@ table tr.highlighted-row:hover td {
 :host .slds-modal__content{
     overflow: initial;
 }
+
+.slds-combobox_position-adjust {
+    margin-top: 5px;
+}

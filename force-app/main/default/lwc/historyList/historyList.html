@@ -7,13 +7,17 @@
                 </div>
                 <div class="slds-media__body">
                     <h2 class="slds-card__header-title">
-                        <lightning-combobox 
-                            name="historyType" 
-                            label="Select History Type" 
-                            value={selectedHistoryType} 
-                            options={historyTypeOptions} 
-                            onchange={handleHistoryTypeChange}>
-                        </lightning-combobox>
+                        <div class="slds-grid slds-align-middle">
+                            <span class="slds-m-right_small slds-align-middle">Select History Type:</span>
+                            <lightning-combobox
+                                variant="label-hidden"
+                                name="historyType" 
+                                class="slds-combobox_position-adjust"
+                                value={selectedHistoryType} 
+                                options={historyTypeOptions} 
+                                onchange={handleHistoryTypeChange}>
+                            </lightning-combobox>
+                        </div>
                     </h2>
                 </div>
             </header>
