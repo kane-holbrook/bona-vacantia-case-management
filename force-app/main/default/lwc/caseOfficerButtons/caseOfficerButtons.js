@@ -30,6 +30,8 @@ import fetchFilesFromSharePoint from '@salesforce/apex/FileControllerGraph.fetch
 import { getRecordId } from 'c/sharedService';
 import getRecordTypeIdForRecord from '@salesforce/apex/LayoutController.getRecordTypeIdForRecord';
 import getRecordTypeDeveloperName from '@salesforce/apex/LayoutController.getRecordTypeDeveloperName';
+import USER_ID from '@salesforce/user/Id';
+import USER_NAME_FIELD from '@salesforce/schema/User.Name';
 
 export default class CaseOfficerButtons extends LightningElement {
     @track recordId;  // The BV_Case__c recordId
@@ -46,12 +48,17 @@ export default class CaseOfficerButtons extends LightningElement {
     @track isChangeDisclaimerDateOpen = false;
     @track recordTypeDeveloperName; // Holds the record type developer name
     @track isEstates = false;
+    @track currentUserFullName;
+    @track iloFullName;
+    @track foiNo;
+    @track replyDue;
 
     actions = []; // Actions array will be set based on record type
 
     connectedCallback() {
         this.recordId = getRecordId();
         this.retrieveRecordTypeDeveloperName(); // Retrieve the record type developer name
+        this.loadFOIDetails();
     }
 
     @wire(getRecord, { recordId: '$recordId', fields: [NAME_FIELD] })
@@ -73,6 +80,23 @@ export default class CaseOfficerButtons extends LightningElement {
         } else if (error) {
             console.error('Error fetching object info:', error);
         }
+    }
+
+    @wire(getRecord, { recordId: USER_ID, fields: [USER_NAME_FIELD] })
+    wireUser({ error, data }) {
+        if (data) {
+            this.currentUserFullName = data.fields.Name.value;
+        } else if (error) {
+            console.error('Error loading user data', error);
+        }
+    }
+
+    async loadFOIDetails() {
+        // Implement this method to load FOI details like FOI No, ILO Full Name, and Reply Due date
+        // This is a placeholder and should be replaced with actual data fetching logic
+        this.foiNo = '12345';
+        this.iloFullName = 'John Doe';
+        this.replyDue = '2023-12-31';
     }
 
     async retrieveRecordTypeDeveloperName() {
@@ -236,6 +260,8 @@ export default class CaseOfficerButtons extends LightningElement {
             this.handleArchiveSearch(); // Invoke the email sending method for Archive Search
         } else if (actionName === 'Send to ILO') {
             this.handleSendToILO(); // Invoke the email sending method for Send to ILO
+        } else if (actionName === 'Send to Case Officer') {
+            this.handleSendToCaseOfficer();
         }
     }
 
@@ -292,6 +318,27 @@ export default class CaseOfficerButtons extends LightningElement {
             Subject: `FOI request - BVFOI/${FOINo} - ${applicant} re ${this.bvCaseName} - Response date: ${replyDue}`,
             ToAddress: ILO,
             CcAddress: 'BVFOI@governmentlegal.gov.uk'
+        });
+    }
+
+    handleSendToCaseOfficer() {
+        const currentOfficer = this.caseDetailRecord && this.caseDetailRecord.Current_Officer__c 
+            ? this.caseDetailRecord.Current_Officer__c 
+            : 'Unallocated';
+
+        const emailQuickActionComponent = this.template.querySelector('c-email-quick-action');
+        emailQuickActionComponent.invoke({
+            HtmlBody: `
+                <p>A new FOI file has been allocated to you.</p>
+                <p>The request is under reference number BVFOI/${this.foiNo} and has been received from UK People Finder</p>
+                <p>The request relates to Agnes Claridge (${this.bvCaseName}).</p>
+                <p>The response deadline is ${this.replyDue}</p>
+                <p>Please email ${this.iloFullName} once you have prepared a draft response.</p>
+                <p>Regards</p>
+                <p>${this.currentUserFullName}</p>
+            `,
+            Subject: `New FOI Request Allocated - BVFOI/${this.foiNo}`,
+            ToAddress: currentOfficer
         });
     }
 
