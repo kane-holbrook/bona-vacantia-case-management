@@ -43,6 +43,7 @@ export default class CaseOfficerButtons extends LightningElement {
     @track isReopenCaseModalOpen = false;
     @track isSection27Open = false;
     @track isFlowModalOpen = false;
+    @track isChangeDisclaimerDateOpen = false;
     @track recordTypeDeveloperName; // Holds the record type developer name
 
     actions = []; // Actions array will be set based on record type
@@ -215,9 +216,14 @@ export default class CaseOfficerButtons extends LightningElement {
                     console.error('Error fetching files from SharePoint:', error);
                 });
         } else if (actionName === 'Change Disclaimer') {
-            // Logic for Change Disclaimer action
-            console.log('Change Disclaimer action triggered');
-            // Add any specific handling logic here
+            this.flowInputs = [
+                {
+                    name: 'caseId',
+                    type: 'String',
+                    value: this.recordId
+                }
+            ];
+            this.isChangeDisclaimerDateOpen = true;
         } else if (actionName === 'Archive Search') {
             this.handleArchiveSearch(); // Invoke the email sending method for Archive Search
         }
@@ -372,6 +378,10 @@ export default class CaseOfficerButtons extends LightningElement {
 
     closeReopenCaseModal() {
         this.isReopenCaseModalOpen = false;
+    }
+
+    closeChangeDisclaimerDate() {
+        this.isChangeDisclaimerDateOpen = false;
     }
     
     handleFlowStatusChange(event) {
