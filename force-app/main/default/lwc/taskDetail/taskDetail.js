@@ -743,7 +743,7 @@ export default class TaskDetail extends LightningElement {
         this.template.querySelector('c-history-edit-modal').saveRecord(this.currentTemplateId);
     }
 
-    handleDelete() {
+    handleDeleteHistory() {
         this.template.querySelector('c-history-delete-modal').deleteRecord();
     }
 
