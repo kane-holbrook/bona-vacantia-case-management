@@ -13,7 +13,13 @@
 
                 <!-- Modal/Popup Body -->
                 <div class="slds-modal__content slds-p-around_medium">
-                    <lightning-input type="checkbox" label="Hide from Huel" checked={isHideFromHuelChecked} onchange={handleCheckboxChange}></lightning-input>
+                    <template if:true={isEstates}>
+                        <lightning-input type="checkbox" label="Hide from Huel" checked={isHideFromHuelChecked} onchange={handleCheckboxChange} data-field="isHideFromHuelChecked"></lightning-input>
+                    </template>
+                    <template if:false={isEstates}>
+                        <lightning-input type="checkbox" label="Cleared for Publishing" checked={isClearedForPublishingChecked} onchange={handleCheckboxChange} data-field="isClearedForPublishingChecked"></lightning-input>
+                        <lightning-input type="checkbox" label="Published" checked={isPublishedChecked} onchange={handleCheckboxChange} data-field="isPublishedChecked"></lightning-input>
+                    </template>
                 </div>
 
                 <!-- Modal/Popup Footer -->

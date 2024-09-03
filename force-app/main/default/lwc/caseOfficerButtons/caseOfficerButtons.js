@@ -45,6 +45,7 @@ export default class CaseOfficerButtons extends LightningElement {
     @track isFlowModalOpen = false;
     @track isChangeDisclaimerDateOpen = false;
     @track recordTypeDeveloperName; // Holds the record type developer name
+    @track isEstates = false;
 
     actions = []; // Actions array will be set based on record type
 
@@ -91,6 +92,7 @@ export default class CaseOfficerButtons extends LightningElement {
                     { actionId: '6', label: 'LM case review', disabled: false },
                     { actionId: '7', label: 'Section 27', disabled: false }
                 ];
+                this.isEstates = true;
             } else if (recordTypeDeveloperName === 'COMP') {
                 this.actions = [
                     { actionId: '1', label: 'Put away', disabled: false },
@@ -117,8 +119,10 @@ export default class CaseOfficerButtons extends LightningElement {
                     { actionId: '10', label: 'Send to ILO', disabled: false },
                     { actionId: '11', label: 'ILO Approve', disabled: false },
                     { actionId: '12', label: 'HOD Approve', disabled: false },
-                    { actionId: '13', label: 'Send to RCO', disabled: false }
+                    { actionId: '13', label: 'Send to RCO', disabled: false },
+                    { actionId: '14', label: 'Hidden Screen Controls', disabled: false }
                 ];
+                this.isEstates = false;
             }
         } catch (error) {
             console.error('Error retrieving record type developer name:', error);
@@ -180,7 +184,11 @@ export default class CaseOfficerButtons extends LightningElement {
             ];
             this.isSection27Open = true;
         } else if (actionName === 'Hidden Screen Controls') {
-            this.template.querySelector('c-hidden-screen-controls').openModal();
+            const hiddenScreenControlsComponent = this.template.querySelector('c-hidden-screen-controls');
+            hiddenScreenControlsComponent.bvCaseId = this.recordId;
+            hiddenScreenControlsComponent.recordTypeId = this.adminHiddenScreenRecordTypeId;
+            hiddenScreenControlsComponent.isEstates = this.isEstates;
+            hiddenScreenControlsComponent.openModal();
         } else if (actionName === 'LM case review') {
             // Fetch files from SharePoint for LMREV document type
             const folderPath = `Templates`;
