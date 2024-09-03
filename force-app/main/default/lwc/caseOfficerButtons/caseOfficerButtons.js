@@ -300,11 +300,10 @@ export default class CaseOfficerButtons extends LightningElement {
     }
 
     handleSendToILO() {
-        const caseOfficerName = this.caseDetailRecord && this.caseDetailRecord.Current_Officer__c 
-            ? this.caseDetailRecord.Current_Officer__c 
-            : this.currentUserFullName || 'Unallocated';
-
         const ILOFirstName = this.ilo ? this.ilo.split(' ')[0] : 'ILO'; // Get first name if available
+
+        // We convert the reply due date to the correct format
+        let replyDue = new Date(this.replyDue).toLocaleDateString('en-GB');
 
         const emailQuickActionComponent = this.template.querySelector('c-email-quick-action');
         emailQuickActionComponent.invoke({
@@ -312,11 +311,11 @@ export default class CaseOfficerButtons extends LightningElement {
                 <p>${ILOFirstName}</p>
                 <p>An information sheet and a draft response have been created in respect of the above FOI request.</p>
                 <p>The reference number of this request is BVFOI/${this.foiNo} and these documents can be found in the Solcase history.</p>
-                <p>The response is due by ${this.replyDue}.</p>
+                <p>The response is due by ${replyDue}.</p>
                 <p>Regards,</p>
-                <p>${caseOfficerName}</p>
+                <p>${this.currentUserFullName || 'FOI Team'}</p>
             `,
-            Subject: `FOI request - BVFOI/${this.foiNo} - ${this.applicant} re ${this.bvCaseName} - Response date: ${this.replyDue}`,
+            Subject: `FOI request - BVFOI/${this.foiNo} - ${this.applicant} re ${this.caseName} - Response date: ${replyDue}`,
             ToAddress: this.ilo,
             CcAddress: 'BVFOI@governmentlegal.gov.uk'
         });
