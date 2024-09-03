@@ -226,6 +226,8 @@ export default class CaseOfficerButtons extends LightningElement {
             this.isChangeDisclaimerDateOpen = true;
         } else if (actionName === 'Archive Search') {
             this.handleArchiveSearch(); // Invoke the email sending method for Archive Search
+        } else if (actionName === 'Send to ILO') {
+            this.handleSendToILO(); // Invoke the email sending method for Send to ILO
         }
     }
 
@@ -254,6 +256,34 @@ export default class CaseOfficerButtons extends LightningElement {
             Subject: `Archive search request - ${this.bvCaseName}`,
             ToAddress: 'ajones@companieshouse.gsi.gov.uk',
             CcAddress: 'Group4@governmentlegal.gov.uk'
+        });
+    }
+
+    handleSendToILO() {
+        // Assuming the necessary ILO, FOI No, Applicant, and Reply Due information is available
+        const ILO = 'ilo@example.com'; // Replace with actual logic to retrieve ILO email
+        const FOINo = '123456'; // Replace with actual logic to retrieve FOI No
+        const applicant = 'John Doe'; // Replace with actual logic to retrieve Applicant name
+        const replyDue = '2024-09-15'; // Replace with actual logic to retrieve Reply Due date
+        const caseOfficerName = this.caseDetailRecord && this.caseDetailRecord.Current_Officer__c 
+            ? this.caseDetailRecord.Current_Officer__c 
+            : 'Unallocated';
+
+        const ILOFirstName = 'FirstName'; // Replace with logic to retrieve ILO first name if available
+
+        const emailQuickActionComponent = this.template.querySelector('c-email-quick-action');
+        emailQuickActionComponent.invoke({
+            HtmlBody: `
+                <p>${ILOFirstName}</p>
+                <p>An information sheet and a draft response have been created in respect of the above FOI request.</p>
+                <p>The reference number of this request is BVFOI/${FOINo} and these documents can be found in the Solcase history.</p>
+                <p>The response is due by ${replyDue}.</p>
+                <p>Regards,</p>
+                <p>${caseOfficerName}</p>
+            `,
+            Subject: `FOI request - BVFOI/${FOINo} - ${applicant} re ${this.bvCaseName} - Response date: ${replyDue}`,
+            ToAddress: ILO,
+            CcAddress: 'BVFOI@governmentlegal.gov.uk'
         });
     }
 
