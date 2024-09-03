@@ -124,8 +124,8 @@ export default class TaskList extends LightningElement {
         this.fetchUserNames([...userIds]);
         this.updateLastUpdated();
         this.assignNumbers();
+        this.sortTaskItems();  // Keep the initial sorting
         this.filterTaskItems();
-        this.sortTaskItems();
     }
     
 
@@ -416,7 +416,51 @@ export default class TaskList extends LightningElement {
 
     handleTaskDetailClose() {
         this.isTaskDetailVisible = false;
+        this.clearFilters();
+        this.refreshAndUpdateTaskList();
+    }
+
+    refreshAndUpdateTaskList() {
         this.refreshTaskItems();
+        
+        // Use a promise to wait for the next render cycle
+        Promise.resolve().then(() => {
+            // Force a re-evaluation of the wired property
+            this.recordId = this.recordId;
+            
+            // Wait for the next render cycle again to ensure data is updated
+            return Promise.resolve();
+        }).then(() => {
+            // Process and filter the updated task items
+            if (this.wiredTaskItemsResult.data) {
+                this.processTaskItems(this.wiredTaskItemsResult.data);
+            }
+        });
+    }
+
+    clearFilters() {
+        this.searchKey = '';
+        this.dateFilterFrom = null;
+        this.dateFilterTo = null;
+        this.selectedTaskType = 'allTasks';  // Reset to default task type
+        
+        // Reset the search input field
+        const searchInput = this.template.querySelector('lightning-input[type="text"]');
+        if (searchInput) {
+            searchInput.value = '';
+        }
+        
+        // Reset date filter inputs
+        const dateInputs = this.template.querySelectorAll('lightning-input[type="date"]');
+        dateInputs.forEach(input => {
+            input.value = null;
+        });
+
+        // Reset task type combobox
+        const taskTypeCombobox = this.template.querySelector('lightning-combobox[name="taskType"]');
+        if (taskTypeCombobox) {
+            taskTypeCombobox.value = 'allTasks';
+        }
     }
 
     assignNumbers() {
