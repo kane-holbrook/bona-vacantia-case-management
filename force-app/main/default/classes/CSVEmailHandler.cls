@@ -127,6 +127,14 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
         if (!validateCSVHeaders(csvLines[0], errorMessages)) {
             return cases;
         }
+
+        RecordType compRecordType = [
+        SELECT Id 
+        FROM RecordType 
+        WHERE DeveloperName = 'COMP' 
+        AND SObjectType = 'BV_Case__c' 
+        LIMIT 1
+        ];
     
         for (Integer i = 1; i < csvLines.size(); i++) {
             String line = csvLines[i];
@@ -142,9 +150,12 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
                         isValid = false;
                     }
                 }
+
+                caseRecord.RecordTypeId = compRecordType.Id;
     
                 caseRecord.Company_No__c = padCompanyNumber(columns[0]);
                 caseRecord.Name = columns[3].toUpperCase(); 
+                caseRecord.Reg_Name__c = columns[3].toUpperCase();
     
                 if (!isCompanyNumberValid(caseRecord.Company_No__c)) {
                     errorMessages.add('Row ' + i + ': Company number not found in the Companies House: ' + caseRecord.Company_No__c);
@@ -198,8 +209,6 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
     
         return cases;
     }
-    
-    
 
     // Validate CSV headers
     private Boolean validateCSVHeaders(String headerLine, List<String> errorMessages) {
