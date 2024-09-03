@@ -25,6 +25,12 @@ import PREVIOUS_8_OFFICER_FIELD from '@salesforce/schema/Case_Detail__c.Previous
 import PREVIOUS_9_OFFICER_FIELD from '@salesforce/schema/Case_Detail__c.Previous_9__c';
 import BV_CASE_OBJECT from '@salesforce/schema/BV_Case__c';
 import NAME_FIELD from '@salesforce/schema/BV_Case__c.Name';
+import ILO_FIELD from '@salesforce/schema/BV_Case__c.Ilo__c';
+import FOI_NO_FIELD from '@salesforce/schema/BV_Case__c.Foi_No__c';
+import APPLICANT_FIELD from '@salesforce/schema/BV_Case__c.Applicant__c';
+import REPLY_DUE_FIELD from '@salesforce/schema/BV_Case__c.Reply_Due__c';
+import CASE_NAME_FIELD from '@salesforce/schema/BV_Case__c.Case_Name__c';
+import CASE_NUMBER_FIELD from '@salesforce/schema/BV_Case__c.Case_Number__c';
 import getCaseDetail from '@salesforce/apex/CaseOfficerController.getCaseDetail';
 import fetchFilesFromSharePoint from '@salesforce/apex/FileControllerGraph.fetchFilesFromSharePoint';
 import { getRecordId } from 'c/sharedService';
@@ -40,6 +46,13 @@ export default class CaseOfficerButtons extends LightningElement {
     @track adminHiddenScreenRecordTypeId; // Stores the Record Type Id for Admin Hidden Screen
     @track caseDetailRecord; // Holds the Case_Detail__c record
     @track bvCaseName; // Holds the BV_Case__c Name
+    @track ilo; // Holds the ILO from BV_Case__c
+    @track foiNo; // Holds the FOI No from BV_Case__c
+    @track applicant; // Holds the Applicant from BV_Case__c
+    @track replyDue; // Holds the Reply Due from BV_Case__c
+    @track caseName; // Holds the Case Name from BV_Case__c
+    @track caseNumber; // Holds the Case Number from BV_Case__c
+    @track currentUserFullName; // Holds the current user's full name
     @track flowInputs = [];
     @track isChangeCaseCategoryModalOpen = false;
     @track isReopenCaseModalOpen = false;
@@ -48,25 +61,35 @@ export default class CaseOfficerButtons extends LightningElement {
     @track isChangeDisclaimerDateOpen = false;
     @track recordTypeDeveloperName; // Holds the record type developer name
     @track isEstates = false;
-    @track currentUserFullName;
-    @track iloFullName;
-    @track foiNo;
-    @track replyDue;
 
     actions = []; // Actions array will be set based on record type
 
     connectedCallback() {
         this.recordId = getRecordId();
         this.retrieveRecordTypeDeveloperName(); // Retrieve the record type developer name
-        this.loadFOIDetails();
     }
 
-    @wire(getRecord, { recordId: '$recordId', fields: [NAME_FIELD] })
+    @wire(getRecord, { recordId: USER_ID, fields: [USER_NAME_FIELD] })
+    wireUser({ error, data }) {
+        if (data) {
+            this.currentUserFullName = data.fields.Name.value;
+        } else if (error) {
+            console.error('Error fetching user data:', error);
+        }
+    }
+
+    @wire(getRecord, { recordId: '$recordId', fields: [NAME_FIELD, ILO_FIELD, FOI_NO_FIELD, APPLICANT_FIELD, REPLY_DUE_FIELD, CASE_NAME_FIELD, CASE_NUMBER_FIELD] })
     wiredCase({ error, data }) {
         if (data) {
             this.bvCaseName = data.fields.Name.value;
+            this.ilo = data.fields.Ilo__c.value;
+            this.foiNo = data.fields.Foi_No__c.value;
+            this.applicant = data.fields.Applicant__c.value;
+            this.replyDue = data.fields.Reply_Due__c.value;
+            this.caseName = data.fields.Case_Name__c.value;
+            this.caseNumber = data.fields.Case_Number__c.value;
         } else if (error) {
-            console.error('Error fetching BV_Case__c Name:', error);
+            console.error('Error fetching BV_Case__c data:', error);
         }
     }
 
@@ -80,23 +103,6 @@ export default class CaseOfficerButtons extends LightningElement {
         } else if (error) {
             console.error('Error fetching object info:', error);
         }
-    }
-
-    @wire(getRecord, { recordId: USER_ID, fields: [USER_NAME_FIELD] })
-    wireUser({ error, data }) {
-        if (data) {
-            this.currentUserFullName = data.fields.Name.value;
-        } else if (error) {
-            console.error('Error loading user data', error);
-        }
-    }
-
-    async loadFOIDetails() {
-        // Implement this method to load FOI details like FOI No, ILO Full Name, and Reply Due date
-        // This is a placeholder and should be replaced with actual data fetching logic
-        this.foiNo = '12345';
-        this.iloFullName = 'John Doe';
-        this.replyDue = '2023-12-31';
     }
 
     async retrieveRecordTypeDeveloperName() {
@@ -261,7 +267,7 @@ export default class CaseOfficerButtons extends LightningElement {
         } else if (actionName === 'Send to ILO') {
             this.handleSendToILO(); // Invoke the email sending method for Send to ILO
         } else if (actionName === 'Send to Case Officer') {
-            this.handleSendToCaseOfficer();
+            this.handleSendToCaseOfficer(); // Invoke the email sending method for Send to Case Officer
         }
     }
 
@@ -294,51 +300,50 @@ export default class CaseOfficerButtons extends LightningElement {
     }
 
     handleSendToILO() {
-        // Assuming the necessary ILO, FOI No, Applicant, and Reply Due information is available
-        const ILO = 'ilo@example.com'; // Replace with actual logic to retrieve ILO email
-        const FOINo = '123456'; // Replace with actual logic to retrieve FOI No
-        const applicant = 'John Doe'; // Replace with actual logic to retrieve Applicant name
-        const replyDue = '2024-09-15'; // Replace with actual logic to retrieve Reply Due date
         const caseOfficerName = this.caseDetailRecord && this.caseDetailRecord.Current_Officer__c 
             ? this.caseDetailRecord.Current_Officer__c 
-            : 'Unallocated';
+            : this.currentUserFullName || 'Unallocated';
 
-        const ILOFirstName = 'FirstName'; // Replace with logic to retrieve ILO first name if available
+        const ILOFirstName = this.ilo ? this.ilo.split(' ')[0] : 'ILO'; // Get first name if available
 
         const emailQuickActionComponent = this.template.querySelector('c-email-quick-action');
         emailQuickActionComponent.invoke({
             HtmlBody: `
                 <p>${ILOFirstName}</p>
                 <p>An information sheet and a draft response have been created in respect of the above FOI request.</p>
-                <p>The reference number of this request is BVFOI/${FOINo} and these documents can be found in the Solcase history.</p>
-                <p>The response is due by ${replyDue}.</p>
+                <p>The reference number of this request is BVFOI/${this.foiNo} and these documents can be found in the Solcase history.</p>
+                <p>The response is due by ${this.replyDue}.</p>
                 <p>Regards,</p>
                 <p>${caseOfficerName}</p>
             `,
-            Subject: `FOI request - BVFOI/${FOINo} - ${applicant} re ${this.bvCaseName} - Response date: ${replyDue}`,
-            ToAddress: ILO,
+            Subject: `FOI request - BVFOI/${this.foiNo} - ${this.applicant} re ${this.bvCaseName} - Response date: ${this.replyDue}`,
+            ToAddress: this.ilo,
             CcAddress: 'BVFOI@governmentlegal.gov.uk'
         });
     }
 
     handleSendToCaseOfficer() {
-        const currentOfficer = this.caseDetailRecord && this.caseDetailRecord.Current_Officer__c 
+        const caseOfficerName = this.caseDetailRecord && this.caseDetailRecord.Current_Officer__c 
             ? this.caseDetailRecord.Current_Officer__c 
             : 'Unallocated';
+
+        // We convert the reply due date to the correct format
+        let replyDue = new Date(this.replyDue).toLocaleDateString('en-GB');
 
         const emailQuickActionComponent = this.template.querySelector('c-email-quick-action');
         emailQuickActionComponent.invoke({
             HtmlBody: `
                 <p>A new FOI file has been allocated to you.</p>
-                <p>The request is under reference number BVFOI/${this.foiNo} and has been received from UK People Finder</p>
-                <p>The request relates to Agnes Claridge (${this.bvCaseName}).</p>
-                <p>The response deadline is ${this.replyDue}</p>
-                <p>Please email ${this.iloFullName} once you have prepared a draft response.</p>
+                <p>The request is under reference number BVFOI/${this.foiNo} and has been received from ${this.applicant}.</p>
+                <p>The request relates to ${this.caseName} (${this.caseNumber}).</p>
+                <p>The response deadline is ${replyDue}</p>
+                <p>Please email ${this.ilo} once you have prepared a draft response.</p>
                 <p>Regards</p>
-                <p>${this.currentUserFullName}</p>
+                <p>${this.currentUserFullName || 'FOI Team'}</p>
             `,
-            Subject: `New FOI Request Allocated - BVFOI/${this.foiNo}`,
-            ToAddress: currentOfficer
+            Subject: `New FOI Request Assigned - BVFOI/${this.foiNo} - ${this.applicant}`,
+            ToAddress: caseOfficerName, // Assuming the case officer name is their email address
+            CcAddress: 'BVFOI@governmentlegal.gov.uk'
         });
     }
 
