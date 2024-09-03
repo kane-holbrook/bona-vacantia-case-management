@@ -52,6 +52,36 @@
         </rules>
     </decisions>
     <environments>Default</environments>
+    <formulas>
+        <name>AddDays1Month</name>
+        <dataType>Date</dataType>
+        <expression>ADDMONTHS(TODAY(), 1)</expression>
+    </formulas>
+    <formulas>
+        <name>AddDays2Months</name>
+        <dataType>Date</dataType>
+        <expression>ADDMONTHS(TODAY(), 2)</expression>
+    </formulas>
+    <formulas>
+        <name>AddDays5WorkingDays</name>
+        <dataType>Date</dataType>
+        <expression>CASE(
+    MOD(TODAY() - DATE(1900, 1, 7), 7), 
+    0, TODAY() + 7, 
+    1, TODAY() + 7, 
+    2, TODAY() + 7, 
+    3, TODAY() + 7, 
+    4, TODAY() + 7, 
+    5, TODAY() + 7, 
+    6, TODAY() + 9, 
+    TODAY() + 7
+) + 5</expression>
+    </formulas>
+    <formulas>
+        <name>AddDays6Months</name>
+        <dataType>Date</dataType>
+        <expression>ADDMONTHS(TODAY(), 6)</expression>
+    </formulas>
     <interviewLabel>Change disclaimer date {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Change disclaimer date</label>
     <processMetadataValues>
@@ -73,11 +103,223 @@
         </value>
     </processMetadataValues>
     <processType>Flow</processType>
+    <recordCreates>
+        <name>Create_BV_Task_1_month</name>
+        <label>Create BV Task 1 month</label>
+        <locationX>50</locationX>
+        <locationY>566</locationY>
+        <connector>
+            <targetReference>Create_BV_Task_2_month</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>Assigned_To__c</field>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>BV_Case_Lookup__c</field>
+            <value>
+                <elementReference>caseId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Date_Inserted__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Due_Date__c</field>
+            <value>
+                <elementReference>AddDays1Month</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Last_updated__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Name</field>
+            <value>
+                <stringValue>Limit of Disclaimer due in 1 month</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Priority__c</field>
+            <value>
+                <stringValue>Critical</stringValue>
+            </value>
+        </inputAssignments>
+        <object>BV_Task__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordCreates>
+        <name>Create_BV_Task_2_month</name>
+        <label>Create BV Task 2 month</label>
+        <locationX>50</locationX>
+        <locationY>674</locationY>
+        <connector>
+            <targetReference>Create_BV_Task_6_month</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>Assigned_To__c</field>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>BV_Case_Lookup__c</field>
+            <value>
+                <elementReference>caseId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Date_Inserted__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Due_Date__c</field>
+            <value>
+                <elementReference>AddDays2Months</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Last_updated__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Name</field>
+            <value>
+                <stringValue>Limit of Disclaimer due in 2 months</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Priority__c</field>
+            <value>
+                <stringValue>Critical</stringValue>
+            </value>
+        </inputAssignments>
+        <object>BV_Task__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordCreates>
+        <name>Create_BV_Task_6_month</name>
+        <label>Create BV Task 6 month</label>
+        <locationX>50</locationX>
+        <locationY>782</locationY>
+        <connector>
+            <targetReference>Create_BV_Task_next_week</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>Assigned_To__c</field>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>BV_Case_Lookup__c</field>
+            <value>
+                <elementReference>caseId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Date_Inserted__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Due_Date__c</field>
+            <value>
+                <elementReference>AddDays6Months</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Last_updated__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Name</field>
+            <value>
+                <stringValue>Limit of Disclaimer due in 6 months</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Priority__c</field>
+            <value>
+                <stringValue>Critical</stringValue>
+            </value>
+        </inputAssignments>
+        <object>BV_Task__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordCreates>
+        <name>Create_BV_Task_next_week</name>
+        <label>Create BV Task next week</label>
+        <locationX>50</locationX>
+        <locationY>890</locationY>
+        <inputAssignments>
+            <field>Assigned_To__c</field>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>BV_Case_Lookup__c</field>
+            <value>
+                <elementReference>caseId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Date_Inserted__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Due_Date__c</field>
+            <value>
+                <elementReference>AddDays5WorkingDays</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Last_updated__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Name</field>
+            <value>
+                <stringValue>Limit of Disclaimer next week!</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Priority__c</field>
+            <value>
+                <stringValue>Critical</stringValue>
+            </value>
+        </inputAssignments>
+        <object>BV_Task__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
     <recordUpdates>
         <name>Update_BV_Case</name>
         <label>Update BV Case</label>
         <locationX>50</locationX>
         <locationY>458</locationY>
+        <connector>
+            <targetReference>Create_BV_Task_1_month</targetReference>
+        </connector>
         <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>
