@@ -1,4 +1,14 @@
 global class CSVEmailHandler implements Messaging.InboundEmailHandler {
+    private Id getUserIdByEmail(String email) {
+        User user = [SELECT Id FROM User WHERE Email = :email LIMIT 1];
+        System.Debug('User: ' + user);
+        if (user != null) {
+            System.Debug('User ID: ' + user.Id);
+            return user.Id;
+        }
+        return null;
+    }
+
     global Messaging.InboundEmailResult handleInboundEmail(Messaging.InboundEmail email, Messaging.InboundEnvelope envelope) {
         Messaging.InboundEmailResult result = new Messaging.InboundEmailResult();
 
@@ -37,11 +47,18 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
             List<String> existingCasesList = new List<String>();
             Set<String> companyNumbersInCSV = new Set<String>();
 
+            Id userId = getUserIdByEmail(email.fromAddress);
+            if (userId == null) {
+                userId = getUserIdByEmail('julian.martin@xansium.com'); // Default to your email if no match is found
+            }
+
             if (errorMessages.isEmpty() && !casesToCreate.isEmpty()) {
                 // Check for duplicates in the system
                 List<BV_Case__c> caseRecords = new List<BV_Case__c>();
                 for (Map<String, Object> caseMap : casesToCreate) {
-                    caseRecords.add((BV_Case__c) caseMap.get('case'));
+                    BV_Case__c caseRecord = (BV_Case__c) caseMap.get('case');
+                    caseRecord.OwnerId = userId; // Assign the case to the identified or default user
+                    caseRecords.add(caseRecord);
                 }
 
                 Set<String> existingCompanyNumbers = getExistingCompanyNumbers(caseRecords);
