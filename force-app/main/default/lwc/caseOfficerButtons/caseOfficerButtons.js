@@ -224,11 +224,11 @@ export default class CaseOfficerButtons extends LightningElement {
     }
 
     handleArchiveSearch() {
-        if (!this.caseDetailRecord) {
-            console.error('Case detail record is not loaded.');
-            return;
-        }
-
+        // If caseDetailRecord or Current_Officer__c is undefined/null, set it to "Unallocated"
+        const currentOfficer = this.caseDetailRecord && this.caseDetailRecord.Current_Officer__c 
+            ? this.caseDetailRecord.Current_Officer__c 
+            : 'Unallocated';
+    
         const emailQuickActionComponent = this.template.querySelector('c-email-quick-action');
         emailQuickActionComponent.invoke({
             HtmlBody: `
@@ -243,7 +243,7 @@ export default class CaseOfficerButtons extends LightningElement {
                     <li>Full names and addresses of the former members and officers of the company.</li>
                 </ol>
                 <p>If, however, the company's records are on DVD, would you please forward the DVD to me. Please quote my reference of ${this.bvCaseName} in any correspondence and debit our account number S0003668 accordingly. Thank you for your assistance.</p>
-                <p>${this.caseDetailRecord.Current_Officer__c}<br>for the Treasury Solicitor (BV)</p>
+                <p>${currentOfficer}<br>for the Treasury Solicitor (BV)</p>
             `,
             Subject: `Archive search request - ${this.bvCaseName}`,
             ToAddress: 'ajones@companieshouse.gsi.gov.uk',
