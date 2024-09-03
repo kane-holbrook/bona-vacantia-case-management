@@ -268,6 +268,8 @@ export default class CaseOfficerButtons extends LightningElement {
             this.handleSendToILO(); // Invoke the email sending method for Send to ILO
         } else if (actionName === 'Send to Case Officer') {
             this.handleSendToCaseOfficer(); // Invoke the email sending method for Send to Case Officer
+        } else if (actionName === 'Send to RCO') {
+            this.handleSendToRCO();
         }
     }
 
@@ -337,6 +339,20 @@ export default class CaseOfficerButtons extends LightningElement {
             `,
             Subject: `New FOI Request Assigned - BVFOI/${this.foiNo} - ${this.applicant}`,
             ToAddress: caseOfficerName, // Assuming the case officer name is their email address
+            CcAddress: 'BVFOI@governmentlegal.gov.uk'
+        });
+    }
+
+    handleSendToRCO() {
+        const emailQuickActionComponent = this.template.querySelector('c-email-quick-action');
+        emailQuickActionComponent.invoke({
+            HtmlBody: `
+                <p>This FOI has been withdrawn and the case can now be closed.</p>
+                <p>Regards</p>
+                <p>${this.currentUserFullName}</p>
+            `,
+            Subject: `BVFOI/${this.foiNo}`,
+            ToAddress: 'Laura Antoniou',
             CcAddress: 'BVFOI@governmentlegal.gov.uk'
         });
     }
