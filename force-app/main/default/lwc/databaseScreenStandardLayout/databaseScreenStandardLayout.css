@@ -29,20 +29,20 @@
 }
 
 .label-wrap-less {
-    max-width: 200px;
+    max-width: 250px; /* Increased from 200px */
     white-space: normal;
     word-break: break-word;
-    width: 60% !important;
+    width: 40% !important; /* Decreased from 60% */
 }
 
 .wrap-label-value {
-    max-width: 150px;
+    max-width: 300px; /* Increased from 150px */
     white-space: normal;
     word-break: break-word;
 }
 
 .less-horizontal-width {
-    width: 40% !important;
+    width: 60% !important; /* Increased from 40% */
 }
 
 .slds-resizable__handle {
