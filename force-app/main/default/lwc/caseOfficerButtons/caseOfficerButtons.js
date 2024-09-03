@@ -486,14 +486,46 @@ export default class CaseOfficerButtons extends LightningElement {
     
     handleFlowStatusChange(event) {
         if (event.detail.status === 'FINISHED') {
-            this.isChangeCaseCategoryModalOpen = false;
+            let title = 'Success';
+            let message = '';
+            let modalToClose = '';
+
+            switch (event.target.flowApiName) {
+                case 'Change_case_category_flow':
+                    message = 'Case category changed successfully';
+                    modalToClose = 'isChangeCaseCategoryModalOpen';
+                    break;
+                case 'Re_open_a_case':
+                    message = 'Case reopened successfully';
+                    modalToClose = 'isReopenCaseModalOpen';
+                    break;
+                case 'Change_disclaimer_date':
+                    message = 'Disclaimer date changed successfully';
+                    modalToClose = 'isChangeDisclaimerDateOpen';
+                    break;
+                case 'Section_27_Flow':
+                    message = 'Section 27 process completed successfully';
+                    modalToClose = 'isSection27Open';
+                    break;
+                case 'Generate_a_document':
+                    message = 'Document generated successfully';
+                    modalToClose = 'isFlowModalOpen';
+                    break;
+                default:
+                    message = 'Operation completed successfully';
+            }
+
             this.dispatchEvent(
                 new ShowToastEvent({
-                    title: 'Success',
-                    message: 'Case category changed successfully',
+                    title: title,
+                    message: message,
                     variant: 'success'
                 })
             );
+
+            if (modalToClose) {
+                this[modalToClose] = false;
+            }
         }
     }
 
