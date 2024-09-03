@@ -94,7 +94,8 @@ export default class CaseOfficerButtons extends LightningElement {
                 this.actions = [
                     { actionId: '1', label: 'Put away', disabled: false },
                     { actionId: '2', label: 'Re-open case', disabled: false },
-                    { actionId: '3', label: 'Change case category', disabled: false },
+                    { actionId: '3', label: 'Re-allocate case', disabled: false },
+                    { actionId: '4', label: 'Change case category', disabled: false },
                     { actionId: '7', label: 'Change Disclaimer', disabled: false },
                     { actionId: '8', label: 'Archive Search', disabled: false }
                 ];
@@ -102,13 +103,15 @@ export default class CaseOfficerButtons extends LightningElement {
                 this.actions = [
                     { actionId: '1', label: 'Put away', disabled: false },
                     { actionId: '2', label: 'Re-open case', disabled: false },
-                    { actionId: '3', label: 'Change case category', disabled: false }
+                    { actionId: '3', label: 'Re-allocate case', disabled: false },
+                    { actionId: '4', label: 'Change case category', disabled: false }
                 ];
             } else if (recordTypeDeveloperName === 'FOIR') {
                 this.actions = [
                     { actionId: '1', label: 'Put away', disabled: false },
                     { actionId: '2', label: 'Re-open case', disabled: false },
-                    { actionId: '3', label: 'Change case category', disabled: false },
+                    { actionId: '3', label: 'Re-allocate case', disabled: false },
+                    { actionId: '4', label: 'Change case category', disabled: false },
                     { actionId: '9', label: 'Send to Case Officer', disabled: false },
                     { actionId: '10', label: 'Send to ILO', disabled: false },
                     { actionId: '11', label: 'ILO Approve', disabled: false },
@@ -216,10 +219,36 @@ export default class CaseOfficerButtons extends LightningElement {
             console.log('Change Disclaimer action triggered');
             // Add any specific handling logic here
         } else if (actionName === 'Archive Search') {
-            // Logic for Archive Search action
-            console.log('Archive Search action triggered');
-            // Add any specific handling logic here
+            this.handleArchiveSearch(); // Invoke the email sending method for Archive Search
         }
+    }
+
+    handleArchiveSearch() {
+        if (!this.caseDetailRecord) {
+            console.error('Case detail record is not loaded.');
+            return;
+        }
+
+        const emailQuickActionComponent = this.template.querySelector('c-email-quick-action');
+        emailQuickActionComponent.invoke({
+            HtmlBody: `
+                <p>The company records for abc do not appear to be on Companies House Direct. I would be grateful if you could please let me have the following information concerning the company:</p>
+                <ol>
+                    <li>The company number.</li>
+                    <li>The last registered office.</li>
+                    <li>The date of dissolution (if dissolved).</li>
+                    <li>The Act and section pursuant to which it was dissolved (if appropriate).</li>
+                    <li>A copy of the Certificate of Dissolution.</li>
+                    <li>Details of any former names of the company, together with copies of any Certificates of Change of name.</li>
+                    <li>Full names and addresses of the former members and officers of the company.</li>
+                </ol>
+                <p>If, however, the company's records are on DVD, would you please forward the DVD to me. Please quote my reference of ${this.bvCaseName} in any correspondence and debit our account number S0003668 accordingly. Thank you for your assistance.</p>
+                <p>${this.caseDetailRecord.Current_Officer__c}<br>for the Treasury Solicitor (BV)</p>
+            `,
+            Subject: `Archive search request - ${this.bvCaseName}`,
+            ToAddress: 'ajones@companieshouse.gsi.gov.uk',
+            CcAddress: 'Group4@governmentlegal.gov.uk'
+        });
     }
 
     handleCaseOfficerSave(event) {
