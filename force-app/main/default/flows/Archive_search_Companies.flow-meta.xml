@@ -28,23 +28,21 @@
         </value>
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
-    <recordUpdates>
-        <name>Create_BV_Task</name>
+    <recordCreates>
+        <name>Create_BV_Task_New</name>
         <label>Create BV Task</label>
         <locationX>176</locationX>
         <locationY>323</locationY>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>BV_Case_Lookup__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>$Record.RelatedToId</elementReference>
-            </value>
-        </filters>
         <inputAssignments>
             <field>Assigned_To__c</field>
             <value>
                 <elementReference>$Record.CreatedById</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>BV_Case_Lookup__c</field>
+            <value>
+                <elementReference>$Record.RelatedToId</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -56,7 +54,7 @@
         <inputAssignments>
             <field>Due_Date__c</field>
             <value>
-                <elementReference>AddDays</elementReference>
+                <elementReference>$Flow.CurrentDate</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -78,12 +76,13 @@
             </value>
         </inputAssignments>
         <object>BV_Task__c</object>
-    </recordUpdates>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
     <start>
         <locationX>50</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Create_BV_Task</targetReference>
+            <targetReference>Create_BV_Task_New</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
