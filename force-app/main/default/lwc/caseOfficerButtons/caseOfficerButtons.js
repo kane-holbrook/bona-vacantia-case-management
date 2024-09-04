@@ -147,9 +147,9 @@ export default class CaseOfficerButtons extends LightningElement {
                     { actionId: '3', label: 'Re-allocate case', disabled: false },
                     { actionId: '4', label: 'Change case category', disabled: false },
                     { actionId: '9', label: 'Send to Case Officer', disabled: false },
-                    { actionId: '10', label: 'Send to ILO', disabled: false },
-                    { actionId: '11', label: 'ILO Approve', disabled: false },
-                    { actionId: '12', label: 'HOD Approve', disabled: false },
+                    { actionId: '10', label: 'ILO Approve', disabled: false },
+                    { actionId: '11', label: 'HOD Approve', disabled: false },
+                    { actionId: '12', label: 'Send to ILO', disabled: false },
                     { actionId: '13', label: 'Send to RCO', disabled: false },
                     { actionId: '14', label: 'Hidden Screen Controls', disabled: false }
                 ];
