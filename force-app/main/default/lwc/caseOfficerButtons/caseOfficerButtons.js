@@ -58,6 +58,7 @@ export default class CaseOfficerButtons extends LightningElement {
     @track isReopenCaseModalOpen = false;
     @track isSection27Open = false;
     @track isFlowModalOpen = false;
+    @track isILOApproveModalOpen = false;
     @track isChangeDisclaimerDateOpen = false;
     @track recordTypeDeveloperName; // Holds the record type developer name
     @track isEstates = false;
@@ -270,6 +271,15 @@ export default class CaseOfficerButtons extends LightningElement {
             this.handleSendToCaseOfficer(); // Invoke the email sending method for Send to Case Officer
         } else if (actionName === 'Send to RCO') {
             this.handleSendToRCO();
+        } else if (actionName === 'ILO Approve') {
+            this.flowInputs = [
+                {
+                    name: 'caseId',
+                    type: 'String',
+                    value: this.recordId
+                }
+            ];
+            this.isILOApproveModalOpen = true;
         }
     }
 
@@ -483,6 +493,10 @@ export default class CaseOfficerButtons extends LightningElement {
     closeChangeDisclaimerDate() {
         this.isChangeDisclaimerDateOpen = false;
     }
+
+    closeILOApproveModal() {
+        this.isILOApproveModalOpen = false;
+    }
     
     handleFlowStatusChange(event) {
         if (event.detail.status === 'FINISHED') {
@@ -511,6 +525,25 @@ export default class CaseOfficerButtons extends LightningElement {
                     message = 'Document generated successfully';
                     modalToClose = 'isFlowModalOpen';
                     break;
+                case 'ILO_Approve':
+                message = 'ILO approval process completed successfully';
+                modalToClose = 'isILOApproveModalOpen';
+
+                // Read the flow output variables
+                const outputVariables = event.detail.outputVariables;
+
+                console.log('event detail', event.detail);
+                console.log('Flow output variables:', outputVariables);
+                let flowOutput = {};  // Initialize a place to store flow outputs
+
+                // Loop through outputVariables and assign key-value pairs to flowOutput
+                outputVariables.forEach(variable => {
+                    flowOutput[variable.name] = variable.value;
+                });
+
+                // Pass the captured flow output to the method that generates and sends the email
+                this.sendILOApproveEmail(flowOutput);
+                break;
                 default:
                     message = 'Operation completed successfully';
             }
@@ -527,6 +560,43 @@ export default class CaseOfficerButtons extends LightningElement {
                 this[modalToClose] = false;
             }
         }
+    }
+
+    sendILOApproveEmail(flowOutput) {
+        const emailQuickActionComponent = this.template.querySelector('c-email-quick-action');
+    
+        let message = 'I am content with the draft response to the above FOI request.';
+        let tf06 = '';
+    
+        if (flowOutput['AmendmentsMade'] === 'Yes') {
+            tf06 = 'I have made amendments to the draft. These can be found in the most recent version of the document in the Solcase history.';
+        }
+    
+        let emailBody = '';
+    
+        if (flowOutput['requireCaroline'] === 'No') {
+            emailBody = `
+                <p>I approve this FOI response.</p>
+                <p>This does not need to be seen by Caroline.</p>
+                <p>Regards,</p>
+                <p>${this.currentUserFullName || 'FOI Team'}</p>
+            `;
+        } else {
+            emailBody = `
+                <p>${message} ${tf06}</p>
+                <p>Please use the 'Send to HoD' button on the Front Cover for Caroline's approval.</p>
+                <p>Regards,</p>
+                <p>${this.currentUserFullName || 'FOI Team'}</p>
+            `;
+        }
+    
+        // Send the email using c-email-quick-action
+        emailQuickActionComponent.invoke({
+            HtmlBody: emailBody,
+            Subject: `FOI Request Approval - ${this.bvCaseName}`,
+            ToAddress: this.ilo,  // Assuming ILO is the recipient's email
+            CcAddress: 'BVFOI@governmentlegal.gov.uk'
+        });
     }
 
     handleHiddenScreenControlsSave() {
