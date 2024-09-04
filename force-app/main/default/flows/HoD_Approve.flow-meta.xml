@@ -29,6 +29,13 @@
                 <stringValue>No</stringValue>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Loop_Hidden_Screen_Records_for_Cleared_for_Publishing.Approved__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Yes</stringValue>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>Set_Cleared_for_Publishing_Collection</targetReference>
         </connector>
@@ -39,7 +46,14 @@
         <locationX>798</locationX>
         <locationY>782</locationY>
         <assignmentItems>
-            <assignToReference>Loop_Hidden_Screen_Records_for_Cleared_for_Publishing.Cleared_For_Publishing__c</assignToReference>
+            <assignToReference>Copy_1_of_Loop_Hidden_Screen_Records_for_Cleared_for_Publishing.Published__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Yes</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Copy_1_of_Loop_Hidden_Screen_Records_for_Cleared_for_Publishing.Approved__c</assignToReference>
             <operator>Assign</operator>
             <value>
                 <stringValue>Yes</stringValue>
