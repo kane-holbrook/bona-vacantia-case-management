@@ -59,6 +59,7 @@ export default class CaseOfficerButtons extends LightningElement {
     @track isSection27Open = false;
     @track isFlowModalOpen = false;
     @track isILOApproveModalOpen = false;
+    @track isHODApproveModalOpen = false;
     @track isChangeDisclaimerDateOpen = false;
     @track recordTypeDeveloperName; // Holds the record type developer name
     @track isEstates = false;
@@ -280,6 +281,15 @@ export default class CaseOfficerButtons extends LightningElement {
                 }
             ];
             this.isILOApproveModalOpen = true;
+        } else if (actionName === 'HOD Approve') {
+            this.flowInputs = [
+                {
+                    name: 'caseId',
+                    type: 'String',
+                    value: this.recordId
+                }
+            ];
+            this.isHODApproveModalOpen = true;
         }
     }
 
@@ -497,6 +507,10 @@ export default class CaseOfficerButtons extends LightningElement {
     closeILOApproveModal() {
         this.isILOApproveModalOpen = false;
     }
+
+    closeHODApproveModal() {
+        this.isHODApproveModalOpen = false;
+    }
     
     handleFlowStatusChange(event) {
         if (event.detail.status === 'FINISHED') {
@@ -544,6 +558,11 @@ export default class CaseOfficerButtons extends LightningElement {
                 // Pass the captured flow output to the method that generates and sends the email
                 this.sendILOApproveEmail(flowOutput);
                 break;
+                case 'HoD_Approve':
+                message = 'HOD approval process completed successfully';
+                modalToClose = 'isHODApproveModalOpen';
+
+                this.sendHODApproveEmail();
                 default:
                     message = 'Operation completed successfully';
             }
@@ -592,6 +611,26 @@ export default class CaseOfficerButtons extends LightningElement {
             `;
         }
     
+        // Send the email using c-email-quick-action
+        emailQuickActionComponent.invoke({
+            HtmlBody: emailBody,
+            Subject: `RE: FOI Request - BVFOI/${this.foiNo} - Response Date: ${replyDue}`,
+            ToAddress: this.ilo,  // Assuming ILO is the recipient's email
+            CcAddress: 'BVFOI@governmentlegal.gov.uk'
+        });
+    }
+
+    sendHODApproveEmail() {
+        const emailQuickActionComponent = this.template.querySelector('c-email-quick-action');
+
+        let replyDue = new Date(this.replyDue).toLocaleDateString('en-GB');
+    
+        let emailBody = `
+            <p>I approve this FOI response.</p>
+            <p>Regards,</p>
+            <p>${this.currentUserFullName || 'FOI Team'}</p>
+        `;
+
         // Send the email using c-email-quick-action
         emailQuickActionComponent.invoke({
             HtmlBody: emailBody,
