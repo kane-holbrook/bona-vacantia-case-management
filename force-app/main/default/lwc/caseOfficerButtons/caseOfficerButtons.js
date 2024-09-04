@@ -573,6 +573,8 @@ export default class CaseOfficerButtons extends LightningElement {
         }
     
         let emailBody = '';
+
+        let replyDue = new Date(this.replyDue).toLocaleDateString('en-GB');
     
         if (flowOutput['requireCaroline'] === 'No') {
             emailBody = `
@@ -593,7 +595,7 @@ export default class CaseOfficerButtons extends LightningElement {
         // Send the email using c-email-quick-action
         emailQuickActionComponent.invoke({
             HtmlBody: emailBody,
-            Subject: `FOI Request Approval - ${this.bvCaseName}`,
+            Subject: `RE: FOI Request - BVFOI/${this.foiNo} - Response Date: ${replyDue}`,
             ToAddress: this.ilo,  // Assuming ILO is the recipient's email
             CcAddress: 'BVFOI@governmentlegal.gov.uk'
         });
