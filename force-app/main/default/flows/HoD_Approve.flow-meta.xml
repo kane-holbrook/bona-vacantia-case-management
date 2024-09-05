@@ -10,7 +10,7 @@
             <assignToReference>ClearedForPublishingYesCollection</assignToReference>
             <operator>Add</operator>
             <value>
-                <elementReference>Loop_Hidden_Screen_Records_for_Cleared_for_Publishing</elementReference>
+                <elementReference>Copy_1_of_Loop_Hidden_Screen_Records_for_Cleared_for_Publishing</elementReference>
             </value>
         </assignmentItems>
         <connector>
@@ -277,7 +277,7 @@
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
-            <field>Id</field>
+            <field>BV_Case__c</field>
             <operator>EqualTo</operator>
             <value>
                 <elementReference>caseId</elementReference>
@@ -307,7 +307,7 @@
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
-            <field>Id</field>
+            <field>BV_Case__c</field>
             <operator>EqualTo</operator>
             <value>
                 <elementReference>caseId</elementReference>
