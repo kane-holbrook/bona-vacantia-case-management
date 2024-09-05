@@ -424,6 +424,25 @@ public with sharing class LayoutController {
     //     return contactData;
     // }
 
+    @AuraEnabled(cacheable=true)
+    public static List<Account> getAccountSearchResults(String searchTerm) {
+        // Check if search term is provided
+        if (String.isBlank(searchTerm)) {
+            return new List<Account>(); // Return empty list if no search term is provided
+        }
+        
+        // Query the Account object for matching records, filtering by Account Name
+        String likeSearchTerm = '%' + String.escapeSingleQuotes(searchTerm) + '%';
+        List<Account> accounts = [
+            SELECT Id, Name, Phone, ShippingStreet, ShippingCity, ShippingPostalCode 
+            FROM Account 
+            WHERE Name LIKE :likeSearchTerm
+            LIMIT 10
+        ];
+        
+        return accounts;
+    }
+
     // Method to decode HTML entities
     private static String decodeHtmlEntities(String str) {
         if (str == null) {

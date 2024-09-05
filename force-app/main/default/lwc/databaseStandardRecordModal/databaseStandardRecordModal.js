@@ -1,8 +1,15 @@
 import { LightningElement, api, track, wire } from 'lwc';
-import { updateRecord, createRecord, getRecord } from 'lightning/uiRecordApi';
+import { getRecord, createRecord, updateRecord } from 'lightning/uiRecordApi';
 import getPicklistValues from '@salesforce/apex/LayoutController.getPicklistValues';
+import getAccountSearchResults from '@salesforce/apex/LayoutController.getAccountSearchResults';
 
 const FIELDS = ['BV_Case__c.RecordTypeId']; // Adjust this to your object and field
+const ACCOUNT_FIELDS = [
+    'Account.Phone',
+    'Account.ShippingStreet',
+    'Account.ShippingCity',
+    'Account.ShippingPostalCode'
+];
 
 export default class DatabaseStandardRecordModal extends LightningElement {
     @api recordId;
@@ -23,8 +30,27 @@ export default class DatabaseStandardRecordModal extends LightningElement {
     @track isLoading = true; // Track the loading state
     @track showErrorMessage = false;
 
+    @track accountId;  // Holds selected Account ID
+    @track phone;
+    @track addressLine1;
+    @track addressLine2;
+    @track city;
+    @track postcode;
+    @track searchResults = []; // Track search results for account lookup
+    @track searchTerm = '';  // Current search term for the account
+
     @wire(getRecord, { recordId: '$recordId', fields: FIELDS })
     record;
+
+    @wire(getRecord, { recordId: '$accountId', fields: ACCOUNT_FIELDS })
+    wiredAccount({ error, data }) {
+        if (data) {
+            this.account = data;
+            this.populateAccountFields();
+        } else if (error) {
+            console.error('Error loading account', error);
+        }
+    }
 
     get actualRecordTypeId() {
         return this.record.data ? this.record.data.fields.RecordTypeId.value : this.recordTypeId;
@@ -35,16 +61,16 @@ export default class DatabaseStandardRecordModal extends LightningElement {
             if (!Array.isArray(this.recordData)) {
                 this.recordData = [this.recordData];
             }
-    
+
             let filteredData = this.recordData;
             if (this.subRecordId) {
                 filteredData = this.recordData.filter(record => record.Id === this.subRecordId);
             }
-    
+
             if (!this.subRecordId && this.objectApiName !== 'BV_Case__c') {
                 filteredData = [{ Id: 'new', ...this.getEmptyRecordFields() }];
             }
-    
+
             this.combinedData = filteredData.map(record => ({
                 id: record.Id === 'new' ? 'new' : (this.objectApiName === 'BV_Case__c' ? this.recordId : record.Id),
                 fields: this.columns
@@ -58,7 +84,7 @@ export default class DatabaseStandardRecordModal extends LightningElement {
                         if (column.length) {
                             if (typeof column.length === 'object' && column.length.precision !== undefined && column.length.scale !== undefined) {
                                 length = column.length.precision;
-                                max = '9'.repeat(length - column.length.scale ) + (column.length.scale  > 0 ? '.' + '9'.repeat(column.length.scale) : '');
+                                max = '9'.repeat(length - column.length.scale ) + (column.length.scale > 0 ? '.' + '9'.repeat(column.length.scale) : '');
                                 if (column.type === 'currency') {
                                     type = 'number';
                                     formatter = 'currency';
@@ -82,13 +108,14 @@ export default class DatabaseStandardRecordModal extends LightningElement {
                             isCheckbox: column.type === 'checkbox',
                             isLongText: column.type === 'long-text',
                             isDate: column.type === 'date',
-                            isDefault: column.type !== 'picklist' && column.type !== 'checkbox' && column.type !== 'long-text' && column.type !== 'date',
+                            isLookup: column.type === 'lookup',
+                            isDefault: column.type !== 'picklist' && column.type !== 'checkbox' && column.type !== 'long-text' && column.type !== 'date' && column.type !== 'lookup',
                             checked: column.type === 'checkbox' ? !!record[column.fieldName] : false,
                             options: column.type === 'picklist' ? [] : []
                         };
                     })
             }));
-    
+
             await this.loadPicklistOptions();
             this.splitFieldsByColumns();
         } catch (error) {
@@ -126,13 +153,13 @@ export default class DatabaseStandardRecordModal extends LightningElement {
         const rightFields = [];
         const leftFieldsWithRowIndex = [];
         const rightFieldsWithRowIndex = [];
-    
+
         const maxRowIndex = Math.max(this.originalLeftColumnFields.length, this.originalRightColumnFields.length);
-    
+
         for (let i = 0; i < maxRowIndex; i++) {
             const leftItem = this.originalLeftColumnFields[i];
             const rightItem = this.originalRightColumnFields[i];
-    
+
             if (leftItem && leftItem.componentType === 'Field') {
                 const field = this.findFieldInCombinedData(leftItem.apiName);
                 if (field) {
@@ -143,7 +170,7 @@ export default class DatabaseStandardRecordModal extends LightningElement {
                 leftFields.push({ componentType: 'EmptySpace', rowIndex: i });
                 leftFieldsWithRowIndex.push({ componentType: 'EmptySpace', rowIndex: i, isEmptySpace: true });
             }
-    
+
             if (rightItem && rightItem.componentType === 'Field') {
                 const field = this.findFieldInCombinedData(rightItem.apiName);
                 if (field) {
@@ -155,27 +182,26 @@ export default class DatabaseStandardRecordModal extends LightningElement {
                 rightFieldsWithRowIndex.push({ componentType: 'EmptySpace', rowIndex: i, isEmptySpace: true });
             }
         }
-    
-        // Filter out the EmptySpace items that are at the same index in both arrays
+
         const filteredLeftFieldsWithRowIndex = [];
         const filteredRightFieldsWithRowIndex = [];
-    
+
         for (let i = 0; i < leftFieldsWithRowIndex.length; i++) {
             const leftItem = leftFieldsWithRowIndex[i];
             const rightItem = rightFieldsWithRowIndex[i];
-    
+
             if (!(leftItem.isEmptySpace && rightItem.isEmptySpace)) {
                 filteredLeftFieldsWithRowIndex.push(leftItem);
                 filteredRightFieldsWithRowIndex.push(rightItem);
             }
         }
-    
+
         // Extract the fields again after filtering
         this.leftColumnFields = filteredLeftFieldsWithRowIndex.map(item => item.componentType === 'EmptySpace' ? item : this.findFieldInCombinedData(item.apiName));
         this.rightColumnFields = filteredRightFieldsWithRowIndex.map(item => item.componentType === 'EmptySpace' ? item : this.findFieldInCombinedData(item.apiName));
         this.leftColumnFieldsWithRowIndex = filteredLeftFieldsWithRowIndex;
         this.rightColumnFieldsWithRowIndex = filteredRightFieldsWithRowIndex;
-    
+
         console.log('leftFieldsWithRowIndex', this.leftColumnFieldsWithRowIndex);
         console.log('rightFieldsWithRowIndex', this.rightColumnFieldsWithRowIndex);
     
@@ -194,12 +220,96 @@ export default class DatabaseStandardRecordModal extends LightningElement {
         return null;
     }
 
+    // Handle search input changes
+    handleSearchInput(event) {
+        this.searchTerm = event.target.value;
+        if (this.searchTerm.length >= 2) {
+            getAccountSearchResults({ searchTerm: this.searchTerm })
+                .then(results => {
+                    this.searchResults = results;
+
+                    console.log('Results:', results);
+                })
+                .catch(error => {
+                    console.error('Error fetching accounts', error);
+                    this.searchResults = [];
+                });
+        } else {
+            this.searchResults = []; // Clear results if input is too short
+        }
+    }
+
+    // Handle account selection from the search results
+    handleAccountSelect(event) {
+        this.accountId = event.target.dataset.id;
+
+        console.log('Selected Account ID:', this.accountId);
+
+        this.searchResults = []; // Clear results after selection
+    }
+
+    // Populate the fields based on the selected account
+    populateAccountFields() {
+        if (this.account) {
+            const accountFields = this.account.fields;
+            const shippingAddress = accountFields.ShippingStreet.value || '';
+            const addressParts = shippingAddress.split(',');
+
+            this.addressLine1 = addressParts[0] || '';
+            this.addressLine2 = addressParts[1] || '';
+            this.city = accountFields.ShippingCity.value || '';
+            this.postcode = accountFields.ShippingPostalCode.value || '';
+            this.phone = accountFields.Phone.value || '';
+
+            this.updateCombinedData();
+            this.updateColumnFields();
+        }
+    }
+
+    updateCombinedData() {
+        this.combinedData = this.combinedData.map(record => ({
+            ...record,
+            fields: record.fields.map(item => {
+                let updatedValue = item.value;
+                if (item.label && item.label.startsWith('Phone')) {
+                    updatedValue = this.phone;
+                } else if (item.label && item.label.startsWith('Address Line 1')) {
+                    updatedValue = this.addressLine1;
+                } else if (item.label && item.label.startsWith('Address Line 2')) {
+                    updatedValue = this.addressLine2;
+                } else if (item.label && item.label.startsWith('City')) {
+                    updatedValue = this.city;
+                } else if (item.fieldName && item.fieldName.startsWith('Postcode')) {
+                    updatedValue = this.postcode;
+                }
+                return { ...item, value: updatedValue };
+            })
+        }));
+        console.log('updateCombinedData', this.combinedData);
+    }
+
+    updateColumnFields() {
+        this.leftColumnFieldsWithRowIndex = this.leftColumnFieldsWithRowIndex.map(field => 
+            field ? this.findUpdatedField(field) : null
+        ).filter(Boolean);
+        this.rightColumnFieldsWithRowIndex = this.rightColumnFieldsWithRowIndex.map(field => 
+            field ? this.findUpdatedField(field) : null
+        ).filter(Boolean);
+    }
+
+    findUpdatedField(field) {
+        console.log('findUpdatedField', field);
+        if (!field || field.componentType === 'EmptySpace') {
+            return field;
+        }
+        const updatedField = this.combinedData[0]?.fields.find(item => item.fieldName === field.fieldName);
+        return updatedField || field;
+    }
+
     handleInputChange(event) {
         const recordId = event.target.dataset.recordId;
         const fieldName = event.target.name;
         const updatedValue = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-
-        console.log(recordId, fieldName, updatedValue);
 
         this.combinedData = this.combinedData.map(record => {
             if (record.id === recordId) {
@@ -212,49 +322,41 @@ export default class DatabaseStandardRecordModal extends LightningElement {
             }
             return record;
         });
-
-        //this.splitFieldsByColumns();
     }
 
     handleSave() {
-        // Get all input elements
         const inputs = this.template.querySelectorAll('lightning-input, lightning-combobox, lightning-textarea');
-        
-        // Check if all inputs are valid
         let allInputsValid = true;
         inputs.forEach(input => {
             if (!input.reportValidity()) {
                 allInputsValid = false;
             }
         });
-    
-        // If any input is invalid, show an error message and do not proceed with save
+
         if (!allInputsValid) {
             this.showErrorMessage = true;
             return;
         }
-    
-        // Proceed with save operation if all inputs are valid
+
         this.showErrorMessage = false;
-    
+
         this.combinedData.forEach(record => {
             const fields = {};
             record.fields.forEach(item => {
-                // Ensure checkbox values are boolean
                 fields[item.fieldName] = item.isCheckbox ? !!item.checked : item.value;
             });
-    
+
             if (record.id === 'new') {
                 fields.BV_Case__c = this.recordId;
                 fields.RecordTypeId = this.recordTypeId;
-    
+
                 const newRecordInput = {
                     apiName: this.objectApiName,
                     fields: fields
                 };
-    
+
                 createRecord(newRecordInput)
-                    .then((record) => {
+                    .then(record => {
                         const recordUpdatedEvent = new CustomEvent('recordupdated', { detail: { recordId: record.id } });
                         this.dispatchEvent(recordUpdatedEvent);
                     })
@@ -264,11 +366,11 @@ export default class DatabaseStandardRecordModal extends LightningElement {
             } else {
                 fields.Id = record.id;
                 fields.RecordTypeId = this.objectApiName === 'BV_Case__c' ? this.actualRecordTypeId : this.recordTypeId;
-    
+
                 const recordInput = {
                     fields: fields
                 };
-    
+
                 updateRecord(recordInput)
                     .then(() => {
                         const recordUpdatedEvent = new CustomEvent('recordupdated', { detail: { recordId: record.id } });
@@ -335,7 +437,7 @@ export default class DatabaseStandardRecordModal extends LightningElement {
     addDividers(fields) {
         const fieldsWithDividers = [];
         const combinedDividerIndices = this.getDividerIndices();
-    
+
         fields.forEach((field, index) => {
             const fieldWithAttributes = {
                 ...field,
@@ -344,15 +446,15 @@ export default class DatabaseStandardRecordModal extends LightningElement {
                 isNumber: this.isNumberType(field),
                 pattern: this.getFieldPattern(field.length)
             };
-    
+
             fieldsWithDividers.push(fieldWithAttributes);
-    
+
             if (index < fields.length - 1) {
                 const nextField = fields[index + 1];
                 const dividerIndicesInRange = combinedDividerIndices.filter(
                     dividerIndex => field.rowIndex < dividerIndex && dividerIndex <= nextField.rowIndex
                 );
-    
+
                 dividerIndicesInRange.forEach(dividerIndex => {
                     fieldsWithDividers.push({ isDivider: true, key: `divider-${dividerIndex}` });
                 });
@@ -360,13 +462,13 @@ export default class DatabaseStandardRecordModal extends LightningElement {
                 const lastDividerIndices = combinedDividerIndices.filter(
                     dividerIndex => dividerIndex > field.rowIndex
                 );
-    
+
                 lastDividerIndices.forEach(dividerIndex => {
                     fieldsWithDividers.push({ isDivider: true, key: `divider-${dividerIndex}` });
                 });
             }
         });
-    
+
         return fieldsWithDividers;
     }
 

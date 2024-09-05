@@ -61,6 +61,33 @@
                                         class="wide-textarea">
                                     </lightning-textarea>
                                 </template>
+                                <template if:true={item.isLookup}>
+                                    <!-- Search input for account lookup -->
+                                    <lightning-input 
+                                        type="search" 
+                                        data-record-id={item.recordId} 
+                                        name={item.fieldName} 
+                                        label={item.label} 
+                                        value={item.value} 
+                                        placeholder="Search for an account" 
+                                        onchange={handleSearchInput}>
+                                    </lightning-input>
+                                
+                                    <!-- If there are search results, display them -->
+                                    <template if:true={searchResults.length}>
+                                        <ul class="slds-listbox slds-listbox_vertical">
+                                            <template for:each={searchResults} for:item="result">
+                                                <li key={result.Id} class="slds-listbox__item" role="presentation">
+                                                    <div class="slds-listbox__option slds-listbox__option_plain slds-media slds-media_small slds-media_center"
+                                                         data-id={result.Id}
+                                                         onclick={handleAccountSelect}>
+                                                        <h3 class="slds-truncate">{result.Name}</h3>
+                                                    </div>
+                                                </li>
+                                            </template>
+                                        </ul>
+                                    </template>
+                                </template>
                                 <template if:true={item.isDefault}>
                                     <template if:true={item.isNumber}>
                                         <lightning-input 
@@ -154,6 +181,33 @@
                                         class="wide-textarea">
                                     </lightning-textarea>
                                 </template>
+                                <template if:true={item.isLookup}>
+                                    <!-- Search input for account lookup -->
+                                    <lightning-input 
+                                        type="search" 
+                                        data-record-id={item.recordId} 
+                                        name={item.fieldName} 
+                                        label={item.label} 
+                                        value={item.value} 
+                                        placeholder="Search for an account" 
+                                        onchange={handleSearchInput}>
+                                    </lightning-input>
+                                
+                                    <!-- If there are search results, display them -->
+                                    <template if:true={searchResults.length}>
+                                        <ul class="slds-listbox slds-listbox_vertical">
+                                            <template for:each={searchResults} for:item="result">
+                                                <li key={result.Id} class="slds-listbox__item" role="presentation">
+                                                    <div class="slds-listbox__option slds-listbox__option_plain slds-media slds-media_small slds-media_center"
+                                                         data-id={result.Id}
+                                                         onclick={handleAccountSelect}>
+                                                        <h3 class="slds-truncate">{result.Name}</h3>
+                                                    </div>
+                                                </li>
+                                            </template>
+                                        </ul>
+                                    </template>
+                                </template>
                                 <template if:true={item.isDefault}>
                                     <template if:true={item.isNumber}>
                                         <lightning-input 
@@ -237,6 +291,33 @@
                                     message-when-too-long="Too many characters"
                                     class="wide-textarea">
                                 </lightning-textarea>
+                            </template>
+                            <template if:true={item.isLookup}>
+                                <!-- Search input for account lookup -->
+                                <lightning-input 
+                                    type="search" 
+                                    data-record-id={item.recordId} 
+                                    name={item.fieldName} 
+                                    label={item.label} 
+                                    value={item.value} 
+                                    placeholder="Search for an account" 
+                                    onchange={handleSearchInput}>
+                                </lightning-input>
+                            
+                                <!-- If there are search results, display them -->
+                                <template if:true={searchResults.length}>
+                                    <ul class="slds-listbox slds-listbox_vertical">
+                                        <template for:each={searchResults} for:item="result">
+                                            <li key={result.Id} class="slds-listbox__item" role="presentation">
+                                                <div class="slds-listbox__option slds-listbox__option_plain slds-media slds-media_small slds-media_center"
+                                                     data-id={result.Id}
+                                                     onclick={handleAccountSelect}>
+                                                    <h3 class="slds-truncate">{result.Name}</h3>
+                                                </div>
+                                            </li>
+                                        </template>
+                                    </ul>
+                                </template>
                             </template>
                             <template if:true={item.isDefault}>
                                 <template if:true={item.isNumber}>

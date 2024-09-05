@@ -241,6 +241,8 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                                             columnType = 'search';
                                         } else if (fieldType === 'Toggle') {
                                             columnType = 'toggle';
+                                        } else if (fieldType.startsWith('Lookup')) {
+                                            columnType = 'lookup';
                                         } else {
                                             columnType = 'text'; // Default to text if no other type matches
                                         }
