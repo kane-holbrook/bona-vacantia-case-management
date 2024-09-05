@@ -2,6 +2,7 @@ import { LightningElement, api, wire, track } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
 import getLayout from '@salesforce/apex/LayoutController.getLayout';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import { getRecord } from 'lightning/uiRecordApi';
 
 export default class DatabaseScreenStandardLayout extends LightningElement {
     _objectApiName;
@@ -26,6 +27,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
     @track emptySpaceIndices = [];
     @track populatedLeftColumnFields = [];
     @track populatedRightColumnFields = [];
+    @track relatedAccounts;
 
     hasDataBeenUpdated = false;
     isModalOpen = false;
@@ -132,6 +134,9 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
             }
 
             console.log('Initial Record Data: ', JSON.stringify(this.recordData));
+
+            // Store relatedAccounts in a component property
+            this.relatedAccounts = data.relatedAccounts || {};
 
             // Extract fieldDataTypes from data
             const fieldDataTypes = data.fieldDataTypes || {};
@@ -1040,10 +1045,21 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
     }
     
     formatFieldValue(fieldValue, fieldType) {
+        console.log('fieldValue:', fieldValue);
+        console.log('fieldType:', fieldType);
+
         fieldType = fieldType ? fieldType.toLowerCase() : 'text';
     
         if (!fieldValue && fieldValue !== 0) {
             return '—'; // or any default value you want for null/undefined values
+        }
+
+        if (this.isSalesforceId(fieldValue)) {
+            const relatedAccount = this.relatedAccounts[fieldValue];
+            if (relatedAccount) {
+                return relatedAccount.Name; // Return the Account Name from relatedAccounts map
+            }
+            return 'Loading...'; // Fallback in case relatedAccount is still loading or unavailable
         }
     
         if (typeof fieldValue === 'string' && fieldValue.match(/^\d{4}-\d{2}-\d{2}$/)) {
@@ -1077,6 +1093,34 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
         }
     
         return fieldValue;
+    }
+
+    // Method to check if the value matches Salesforce ID format
+    isSalesforceId(value) {
+        // Check if the value is a string and has a length of 15 or 18 characters
+        if (typeof value !== 'string' || (value.length !== 15 && value.length !== 18)) {
+            return false;
+        }
+
+        // Check if the first 15 characters are alphanumeric
+        const base15 = value.slice(0, 15);
+        if (!/^[a-zA-Z0-9]+$/.test(base15)) {
+            return false;
+        }
+
+        // If it's an 18-character ID, check if the last 3 characters are alphanumeric
+        if (value.length === 18) {
+            const suffix = value.slice(15);
+            if (!/^[a-zA-Z0-9]{3}$/.test(suffix)) {
+                return false;
+            }
+        }
+
+        // Additional check: Salesforce IDs typically start with specific prefixes
+        const validPrefixes = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '0A', '0B', '0C', '0D', '0E', '0F', '0G', '0H', '0I', '0J', '0K', '0L', '0M', '0N', 'a0', 'a1', 'a2', 'a3', 'a4', 'a5'];
+        const prefix = value.slice(0, 2).toUpperCase();
+
+        return validPrefixes.includes(prefix);
     }
 
     decodeHtmlEntities(text) {
