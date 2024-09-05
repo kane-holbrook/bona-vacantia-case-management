@@ -2,6 +2,7 @@ import { LightningElement, api, track, wire } from 'lwc';
 import { getRecord, createRecord, updateRecord } from 'lightning/uiRecordApi';
 import getPicklistValues from '@salesforce/apex/LayoutController.getPicklistValues';
 import getAccountSearchResults from '@salesforce/apex/LayoutController.getAccountSearchResults';
+import getAccountById from '@salesforce/apex/LayoutController.getAccountById';
 
 const FIELDS = ['BV_Case__c.RecordTypeId']; // Adjust this to your object and field
 const ACCOUNT_FIELDS = [
@@ -99,13 +100,17 @@ export default class DatabaseStandardRecordModal extends LightningElement {
                             }
                         }
                         const decodedLabel = this.decodeHtmlEntities(column.label); // Decode HTML entities in the label
+                        const fieldValue = record[column.fieldName];
+                        if (this.isSalesforceId(fieldValue)) {
+                            this.updateAccountDisplay(fieldValue);
+                        }
                         return {
                             label: decodedLabel,
                             fieldName: column.fieldName,
                             type: type,
                             formatter: formatter,
                             step: step,
-                            value: record[column.fieldName] || '',
+                            value: fieldValue || '',
                             length: length,
                             max: max,
                             isPicklist: column.type === 'picklist',
@@ -114,7 +119,7 @@ export default class DatabaseStandardRecordModal extends LightningElement {
                             isDate: column.type === 'date',
                             isLookup: column.type === 'lookup',
                             isDefault: column.type !== 'picklist' && column.type !== 'checkbox' && column.type !== 'long-text' && column.type !== 'date' && column.type !== 'lookup',
-                            checked: column.type === 'checkbox' ? !!record[column.fieldName] : false,
+                            checked: column.type === 'checkbox' ? !!fieldValue : false,
                             options: column.type === 'picklist' ? [] : [],
                             listboxId: `listbox-${column.fieldName}`
                         };
@@ -128,6 +133,34 @@ export default class DatabaseStandardRecordModal extends LightningElement {
         } finally {
             this.isLoading = false;
         }
+    }
+
+    // Method to check if the value matches Salesforce ID format
+    isSalesforceId(value) {
+        // Check if the value is a string and has a length of 15 or 18 characters
+        if (typeof value !== 'string' || (value.length !== 15 && value.length !== 18)) {
+            return false;
+        }
+
+        // Check if the first 15 characters are alphanumeric
+        const base15 = value.slice(0, 15);
+        if (!/^[a-zA-Z0-9]+$/.test(base15)) {
+            return false;
+        }
+
+        // If it's an 18-character ID, check if the last 3 characters are alphanumeric
+        if (value.length === 18) {
+            const suffix = value.slice(15);
+            if (!/^[a-zA-Z0-9]{3}$/.test(suffix)) {
+                return false;
+            }
+        }
+
+        // Additional check: Salesforce IDs typically start with specific prefixes
+        const validPrefixes = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '0A', '0B', '0C', '0D', '0E', '0F', '0G', '0H', '0I', '0J', '0K', '0L', '0M', '0N', 'a0', 'a1', 'a2', 'a3', 'a4', 'a5'];
+        const prefix = value.slice(0, 2).toUpperCase();
+
+        return validPrefixes.includes(prefix);
     }
 
     async loadPicklistOptions() {
@@ -223,6 +256,30 @@ export default class DatabaseStandardRecordModal extends LightningElement {
             }
         }
         return null;
+    }
+
+    updateAccountDisplay(accountId) {
+        getAccountById({ accountId })
+            .then(account => {
+                if (account) {
+                    this.combinedData = this.combinedData.map(record => ({
+                        ...record,
+                        fields: record.fields.map(field => {
+                            if (field.isLookup) {
+                                return {
+                                    ...field,
+                                    value: account.Name, // Display the name
+                                    accountId: accountId // Keep the ID for any backend operations
+                                };
+                            }
+                            return field;
+                        })
+                    }));
+                }
+            })
+            .catch(error => {
+                console.error('Failed to fetch account name:', error);
+            });
     }
 
     // Handle search input changes
