@@ -62,26 +62,46 @@
                                     </lightning-textarea>
                                 </template>
                                 <template if:true={item.isLookup}>
-                                    <!-- Search input for account lookup -->
-                                    <lightning-input 
-                                        type="search" 
-                                        data-record-id={item.recordId} 
-                                        name={item.fieldName} 
-                                        label={item.label} 
-                                        value={item.value} 
-                                        placeholder="Search for an account" 
-                                        onchange={handleSearchInput}>
-                                    </lightning-input>
-                                
-                                    <!-- If there are search results, display them -->
+                                    <div class="slds-form-element">
+                                        <label class="slds-form-element__label" for={item.fieldName}>{item.label}</label>
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-combobox_container">
+                                                <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open">
+                                                    <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
+                                                        <input
+                                                            type="text"
+                                                            class="slds-input slds-combobox__input"
+                                                            id={item.fieldName}
+                                                            aria-autocomplete="list"
+                                                            aria-controls="listbox-id-1"
+                                                            autocomplete="off"
+                                                            role="combobox"
+                                                            placeholder="Search for an account"
+                                                            value={item.value}
+                                                            onchange={handleSearchInput}
+                                                        />
+                                                        <template if:true={item.value}>
+                                                            <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" title="Clear Selection" onclick={handleClearAccount}>
+                                                                <lightning-icon icon-name="utility:close" size="xx-small" alternative-text="Clear Selection" class="slds-icon slds-icon_x-small"></lightning-icon>
+                                                            </button>
+                                                        </template>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <template if:true={searchResults.length}>
-                                        <ul class="slds-listbox slds-listbox_vertical">
+                                        <ul class="slds-listbox slds-listbox_vertical" role="listbox">
                                             <template for:each={searchResults} for:item="result">
                                                 <li key={result.Id} class="slds-listbox__item" role="presentation">
-                                                    <div class="slds-listbox__option slds-listbox__option_plain slds-media slds-media_small slds-media_center"
+                                                    <div class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta"
+                                                         role="option"
                                                          data-id={result.Id}
+                                                         data-name={result.Name}
                                                          onclick={handleAccountSelect}>
-                                                        <h3 class="slds-truncate">{result.Name}</h3>
+                                                        <span class="slds-media__body">
+                                                            <span class="slds-listbox__option-text slds-listbox__option-text_entity">{result.Name}</span>
+                                                        </span>
                                                     </div>
                                                 </li>
                                             </template>
@@ -182,26 +202,46 @@
                                     </lightning-textarea>
                                 </template>
                                 <template if:true={item.isLookup}>
-                                    <!-- Search input for account lookup -->
-                                    <lightning-input 
-                                        type="search" 
-                                        data-record-id={item.recordId} 
-                                        name={item.fieldName} 
-                                        label={item.label} 
-                                        value={item.value} 
-                                        placeholder="Search for an account" 
-                                        onchange={handleSearchInput}>
-                                    </lightning-input>
-                                
-                                    <!-- If there are search results, display them -->
+                                    <div class="slds-form-element">
+                                        <label class="slds-form-element__label" for={item.fieldName}>{item.label}</label>
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-combobox_container">
+                                                <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open">
+                                                    <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
+                                                        <input
+                                                            type="text"
+                                                            class="slds-input slds-combobox__input"
+                                                            id={item.fieldName}
+                                                            aria-autocomplete="list"
+                                                            aria-controls="listbox-id-1"
+                                                            autocomplete="off"
+                                                            role="combobox"
+                                                            placeholder="Search for an account"
+                                                            value={item.value}
+                                                            onchange={handleSearchInput}
+                                                        />
+                                                        <template if:true={item.value}>
+                                                            <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" title="Clear Selection" onclick={handleClearAccount}>
+                                                                <lightning-icon icon-name="utility:close" size="xx-small" alternative-text="Clear Selection" class="slds-icon slds-icon_x-small"></lightning-icon>
+                                                            </button>
+                                                        </template>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <template if:true={searchResults.length}>
-                                        <ul class="slds-listbox slds-listbox_vertical">
+                                        <ul class="slds-listbox slds-listbox_vertical" role="listbox">
                                             <template for:each={searchResults} for:item="result">
                                                 <li key={result.Id} class="slds-listbox__item" role="presentation">
-                                                    <div class="slds-listbox__option slds-listbox__option_plain slds-media slds-media_small slds-media_center"
+                                                    <div class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta"
+                                                         role="option"
                                                          data-id={result.Id}
+                                                         data-name={result.Name}
                                                          onclick={handleAccountSelect}>
-                                                        <h3 class="slds-truncate">{result.Name}</h3>
+                                                        <span class="slds-media__body">
+                                                            <span class="slds-listbox__option-text slds-listbox__option-text_entity">{result.Name}</span>
+                                                        </span>
                                                     </div>
                                                 </li>
                                             </template>
@@ -215,7 +255,7 @@
                                             data-record-id={item.recordId} 
                                             name={item.fieldName} 
                                             label={item.label} 
-                                            value={item.value} 
+                                            value={item.value}
                                             formatter={item.formatter}
                                             step={item.step}
                                             max={item.max}
@@ -293,26 +333,46 @@
                                 </lightning-textarea>
                             </template>
                             <template if:true={item.isLookup}>
-                                <!-- Search input for account lookup -->
-                                <lightning-input 
-                                    type="search" 
-                                    data-record-id={item.recordId} 
-                                    name={item.fieldName} 
-                                    label={item.label} 
-                                    value={item.value} 
-                                    placeholder="Search for an account" 
-                                    onchange={handleSearchInput}>
-                                </lightning-input>
-                            
-                                <!-- If there are search results, display them -->
+                                <div class="slds-form-element">
+                                    <label class="slds-form-element__label" for={item.fieldName}>{item.label}</label>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-combobox_container">
+                                            <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open">
+                                                <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
+                                                    <input
+                                                        type="text"
+                                                        class="slds-input slds-combobox__input"
+                                                        id={item.fieldName}
+                                                        aria-autocomplete="list"
+                                                        aria-controls="listbox-id-1"
+                                                        autocomplete="off"
+                                                        role="combobox"
+                                                        placeholder="Search for an account"
+                                                        value={item.value}
+                                                        onchange={handleSearchInput}
+                                                    />
+                                                    <template if:true={item.value}>
+                                                        <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" title="Clear Selection" onclick={handleClearAccount}>
+                                                            <lightning-icon icon-name="utility:close" size="xx-small" alternative-text="Clear Selection" class="slds-icon slds-icon_x-small"></lightning-icon>
+                                                        </button>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <template if:true={searchResults.length}>
-                                    <ul class="slds-listbox slds-listbox_vertical">
+                                    <ul class="slds-listbox slds-listbox_vertical" role="listbox">
                                         <template for:each={searchResults} for:item="result">
                                             <li key={result.Id} class="slds-listbox__item" role="presentation">
-                                                <div class="slds-listbox__option slds-listbox__option_plain slds-media slds-media_small slds-media_center"
+                                                <div class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta"
+                                                     role="option"
                                                      data-id={result.Id}
+                                                     data-name={result.Name}
                                                      onclick={handleAccountSelect}>
-                                                    <h3 class="slds-truncate">{result.Name}</h3>
+                                                    <span class="slds-media__body">
+                                                        <span class="slds-listbox__option-text slds-listbox__option-text_entity">{result.Name}</span>
+                                                    </span>
                                                 </div>
                                             </li>
                                         </template>

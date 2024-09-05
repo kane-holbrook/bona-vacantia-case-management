@@ -38,6 +38,7 @@ export default class DatabaseStandardRecordModal extends LightningElement {
     @track postcode;
     @track searchResults = []; // Track search results for account lookup
     @track searchTerm = '';  // Current search term for the account
+    @track selectedAccount = null; // Add this line to track the selected account
 
     @wire(getRecord, { recordId: '$recordId', fields: FIELDS })
     record;
@@ -241,11 +242,41 @@ export default class DatabaseStandardRecordModal extends LightningElement {
 
     // Handle account selection from the search results
     handleAccountSelect(event) {
-        this.accountId = event.target.dataset.id;
+        const selectedId = event.currentTarget.dataset.id;
+        const selectedName = event.currentTarget.dataset.name;
+        this.selectedAccount = { Id: selectedId, Name: selectedName };
+        this.accountId = selectedId;
+        this.searchResults = [];
+        this.searchTerm = selectedName;
 
-        console.log('Selected Account ID:', this.accountId);
+        // Update the combinedData with the selected account
+        this.updateCombinedDataWithSelectedAccount();
 
-        this.searchResults = []; // Clear results after selection
+        console.log('Selected Account:', this.selectedAccount);
+    }
+
+    handleClearAccount() {
+        this.selectedAccount = null;
+        this.accountId = null;
+        this.searchTerm = '';
+        this.updateCombinedDataWithSelectedAccount();
+    }
+
+    updateCombinedDataWithSelectedAccount() {
+        this.combinedData = this.combinedData.map(record => ({
+            ...record,
+            fields: record.fields.map(item => {
+                if (item.isLookup) {
+                    return {
+                        ...item,
+                        value: this.selectedAccount ? this.selectedAccount.Name : '',
+                        accountId: this.selectedAccount ? this.selectedAccount.Id : null
+                    };
+                }
+                return item;
+            })
+        }));
+        this.updateColumnFields();
     }
 
     // Populate the fields based on the selected account
