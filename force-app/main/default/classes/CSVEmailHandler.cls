@@ -1,14 +1,4 @@
 global class CSVEmailHandler implements Messaging.InboundEmailHandler {
-    private Id getUserIdByEmail(String email) {
-        User user = [SELECT Id FROM User WHERE Email = :email LIMIT 1];
-        System.Debug('User: ' + user);
-        if (user != null) {
-            System.Debug('User ID: ' + user.Id);
-            return user.Id;
-        }
-        return null;
-    }
-
     global Messaging.InboundEmailResult handleInboundEmail(Messaging.InboundEmail email, Messaging.InboundEnvelope envelope) {
         Messaging.InboundEmailResult result = new Messaging.InboundEmailResult();
 
@@ -49,8 +39,14 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
 
             Id userId = getUserIdByEmail(email.fromAddress);
             if (userId == null) {
-                userId = getUserIdByEmail('julian.martin@xansium.com'); // Default to your email if no match is found
+                String defaultEmail = getDefaultEmailFromMetadata();
+                if (defaultEmail != null) {
+                    userId = getUserIdByEmail(defaultEmail);
+                } else {
+                    System.debug('No default email found in metadata');
+                }
             }
+
 
             if (errorMessages.isEmpty() && !casesToCreate.isEmpty()) {
                 // Check for duplicates in the system
@@ -112,6 +108,11 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
                     return result;
                 } else if (!casesToInsert.isEmpty()) {
                     insert casesToInsert; // Insert the cases if they are within jurisdiction
+
+                    // After insertion, create Case_History__c records for each case
+                    for (BV_Case__c insertedCase : casesToInsert) {
+                        createCaseHistoryForCase(insertedCase); // Create a Case History record for each case
+                    }
                 }
 
                 sendJurisdictionEmail(email.fromAddress, notInJurisdiction, consultFCo, acceptedCompanies, existingCasesList, duplicateInCSV, !casesToInsert.isEmpty());
@@ -188,6 +189,8 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
     
                 caseRecord.Rm_Reference__c = columns[2];
                 caseRecord.Case_Name__c = caseRecord.Name;
+
+                fetchCompanyDetails(caseRecord, caseRecord.Company_No__c);
     
                 String apiCompanyName = fetchCompanyName(caseRecord.Company_No__c);
                 if (!caseRecord.Name.equals(apiCompanyName)) {
@@ -302,6 +305,53 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
 
         return false;
     }
+
+    private void fetchCompanyDetails(BV_Case__c caseRecord, String companyNumber) {
+        String endpoint = '/company/' + companyNumber;
+        System.debug('Endpoint: ' + endpoint);
+    
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint('callout:Companies_House_Named' + endpoint);
+        req.setMethod('GET');
+    
+        Http http = new Http();
+        HttpResponse res = http.send(req);
+    
+        if (res.getStatusCode() == 200) {
+            Map<String, Object> responseMap = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
+    
+            // Fetch and map the registered office address
+            if (responseMap.containsKey('registered_office_address')) {
+                Map<String, Object> address = (Map<String, Object>) responseMap.get('registered_office_address');
+                
+                if (address.containsKey('address_line_1')) {
+                    caseRecord.Reg_Office_Addr_1__c = (String) address.get('address_line_1');
+                }
+                if (address.containsKey('address_line_2')) {
+                    caseRecord.Reg_Office_Addr_2__c = (String) address.get('address_line_2');
+                }
+                if (address.containsKey('locality')) {
+                    caseRecord.Reg_Office_Addr_3__c = (String) address.get('locality');
+                }
+                if (address.containsKey('postal_code')) {
+                    caseRecord.Reg_Office_PC__c = (String) address.get('postal_code');
+                }
+            }
+    
+            // Fetch and map the date of creation (date_of_creation)
+            if (responseMap.containsKey('date_of_creation')) {
+                try {
+                    String dateOfCreation = (String) responseMap.get('date_of_creation');
+                    caseRecord.Date_Incorporated__c = Date.valueOf(dateOfCreation);
+                } catch (Exception e) {
+                    System.debug('Error converting date_of_creation: ' + e.getMessage());
+                }
+            }
+        } else {
+            System.debug('Failed to fetch company details. Status code: ' + res.getStatusCode());
+        }
+    }
+    
 
     // Fetch the company name
     private String fetchCompanyName(String companyNumber) {
@@ -476,4 +526,34 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
         }
         return companyNumber;
     }
+
+    private Id getUserIdByEmail(String email) {
+        User user = [SELECT Id FROM User WHERE Email = :email LIMIT 1];
+        System.Debug('User: ' + user);
+        if (user != null) {
+            System.Debug('User ID: ' + user.Id);
+            return user.Id;
+        }
+        return null;
+    }
+
+    private String getDefaultEmailFromMetadata() {
+        UserEmailConfig__mdt config = [SELECT Email__c FROM UserEmailConfig__mdt WHERE MasterLabel = 'DefaultEmailConfig' LIMIT 1];
+        if (config != null && config.Email__c != null) {
+            return config.Email__c;
+        }
+        return null;
+    }
+
+    private void createCaseHistoryForCase(BV_Case__c caseRecord) {
+        Case_History__c caseHistory = new Case_History__c();
+        caseHistory.Action__c = caseRecord.Name; // Set Action to the Company Name
+        caseHistory.BV_Case__c = caseRecord.Id; // Lookup to the BV Case
+        caseHistory.Date_Inserted__c = Date.today(); // Set current date for Date Inserted
+        caseHistory.Last_updated__c = DateTime.now(); // Set current date for Last Updated
+        caseHistory.Details__c = caseRecord.Company_No__c; // Set Details to the Company Number (Optional)
+        
+        insert caseHistory; // Insert the Case History record
+    }
+    
 }
