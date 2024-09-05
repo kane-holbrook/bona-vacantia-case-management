@@ -40,6 +40,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     @track isUngroupDisabled = true;
     @track isGroupDisabled = true;
     @track expandedItems = new Map();
+    @track newCase = true;
 
     wiredHistoryItemsResult;
     userNames = {};
@@ -246,6 +247,9 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
                 const diffInDays = Math.floor(diffInMinutes / 1440);
                 this.lastUpdated = `${diffInDays} day${diffInDays > 1 ? 's' : ''} ago`;
             }
+        } else if(this.newCase){
+            this.lastUpdated = 'No updates available';
+            return;
         } else {
             // If all items are deleted or historyItems is empty, calculate the time difference from the last action (which is now)
             const diffInMinutes = Math.floor((now - this.lastActionTime) / 60000);
@@ -453,6 +457,10 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     handleSaveSuccess(event) {
         this.isModalOpen = false;
         this.showToast('Success', 'Record saved successfully', 'success');
+
+        if(this.newCase = true){
+            this.newCase = false;
+        }
 
         if(this.currentRecordId) {
             const { recordId, dateInserted, isParent } = event.detail;
