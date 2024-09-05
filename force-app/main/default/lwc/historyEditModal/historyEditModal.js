@@ -430,7 +430,10 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
         if (selectedItem && selectedItem.ServerRelativeURL__c) {
             let serverRelativeURL = selectedItem.ServerRelativeURL__c;
     
-            // Check if serverRelativeURL already contains a full URL (starts with http or https)
+            // Apply double encoding only to the file name
+            serverRelativeURL = this.doubleEncodeFileName(serverRelativeURL);
+    
+            // Construct the full URL
             let url = serverRelativeURL.startsWith('http') ? serverRelativeURL : `${this.sharePointSiteUrl}/${serverRelativeURL}`;
     
             console.log('serverRelativeURL', url);
@@ -443,6 +446,22 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
             this.showToast('Error', 'File URL not found.', 'error');
         }
     }
+    
+    
+
+    doubleEncodeFileName(url) {
+        // Split the URL by slashes to isolate the file name (last part)
+        let parts = url.split('/');
+        let fileName = parts.pop(); // Get the file name (last part of the URL)
+    
+        // Double encode only the file name and leave the rest of the URL intact
+        fileName = encodeURIComponent(fileName).replace(/%20/g, '%2520').replace(/%23/g, '%2523');
+    
+        // Rejoin the parts with the double-encoded file name
+        return parts.join('/') + '/' + fileName;
+    }
+    
+    
 
     handleConvertToPDF(relatedItemId) {
         const selectedItem = this.relatedItems.find(item => item.Id === relatedItemId);
