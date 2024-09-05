@@ -39,6 +39,7 @@ export default class DatabaseStandardRecordModal extends LightningElement {
     @track searchResults = []; // Track search results for account lookup
     @track searchTerm = '';  // Current search term for the account
     @track selectedAccount = null; // Add this line to track the selected account
+    @track currentFieldName = ''; // Add this line to track the current field name
 
     @wire(getRecord, { recordId: '$recordId', fields: FIELDS })
     record;
@@ -112,7 +113,8 @@ export default class DatabaseStandardRecordModal extends LightningElement {
                             isLookup: column.type === 'lookup',
                             isDefault: column.type !== 'picklist' && column.type !== 'checkbox' && column.type !== 'long-text' && column.type !== 'date' && column.type !== 'lookup',
                             checked: column.type === 'checkbox' ? !!record[column.fieldName] : false,
-                            options: column.type === 'picklist' ? [] : []
+                            options: column.type === 'picklist' ? [] : [],
+                            listboxId: `listbox-${column.fieldName}`
                         };
                     })
             }));
@@ -224,11 +226,19 @@ export default class DatabaseStandardRecordModal extends LightningElement {
     // Handle search input changes
     handleSearchInput(event) {
         this.searchTerm = event.target.value;
+        this.currentFieldName = event.target.dataset.fieldName;
+        // Debounce the search to avoid too many API calls
+        window.clearTimeout(this.delayTimeout);
+        this.delayTimeout = setTimeout(() => {
+            this.performSearch();
+        }, 300); // 300ms delay
+    }
+
+    performSearch() {
         if (this.searchTerm.length >= 2) {
             getAccountSearchResults({ searchTerm: this.searchTerm })
                 .then(results => {
                     this.searchResults = results;
-
                     console.log('Results:', results);
                 })
                 .catch(error => {
@@ -236,7 +246,7 @@ export default class DatabaseStandardRecordModal extends LightningElement {
                     this.searchResults = [];
                 });
         } else {
-            this.searchResults = []; // Clear results if input is too short
+            this.searchResults = [];
         }
     }
 
@@ -244,29 +254,29 @@ export default class DatabaseStandardRecordModal extends LightningElement {
     handleAccountSelect(event) {
         const selectedId = event.currentTarget.dataset.id;
         const selectedName = event.currentTarget.dataset.name;
+        const fieldName = event.currentTarget.dataset.fieldName;
         this.selectedAccount = { Id: selectedId, Name: selectedName };
         this.accountId = selectedId;
         this.searchResults = [];
-        this.searchTerm = selectedName;
 
         // Update the combinedData with the selected account
-        this.updateCombinedDataWithSelectedAccount();
+        this.updateCombinedDataWithSelectedAccount(fieldName);
 
         console.log('Selected Account:', this.selectedAccount);
     }
 
-    handleClearAccount() {
+    handleClearAccount(event) {
+        const fieldName = event.currentTarget.dataset.fieldName;
         this.selectedAccount = null;
         this.accountId = null;
-        this.searchTerm = '';
-        this.updateCombinedDataWithSelectedAccount();
+        this.updateCombinedDataWithSelectedAccount(fieldName);
     }
 
-    updateCombinedDataWithSelectedAccount() {
+    updateCombinedDataWithSelectedAccount(fieldName) {
         this.combinedData = this.combinedData.map(record => ({
             ...record,
             fields: record.fields.map(item => {
-                if (item.isLookup) {
+                if (item.fieldName === fieldName) {
                     return {
                         ...item,
                         value: this.selectedAccount ? this.selectedAccount.Name : '',
