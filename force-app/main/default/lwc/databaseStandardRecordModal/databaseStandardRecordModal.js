@@ -384,7 +384,14 @@ export default class DatabaseStandardRecordModal extends LightningElement {
         this.combinedData.forEach(record => {
             const fields = {};
             record.fields.forEach(item => {
-                fields[item.fieldName] = item.isCheckbox ? !!item.checked : item.value;
+                if (item.isLookup) {
+                    // For lookup fields, save the ID instead of the label
+                    fields[item.fieldName] = item.accountId || null;
+                } else if (item.isCheckbox) {
+                    fields[item.fieldName] = !!item.checked;
+                } else {
+                    fields[item.fieldName] = item.value;
+                }
             });
 
             if (record.id === 'new') {
