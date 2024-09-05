@@ -5,6 +5,8 @@ import getAccountSearchResults from '@salesforce/apex/LayoutController.getAccoun
 
 const FIELDS = ['BV_Case__c.RecordTypeId']; // Adjust this to your object and field
 const ACCOUNT_FIELDS = [
+    'Account.Id',
+    'Account.Name',
     'Account.Phone',
     'Account.ShippingStreet',
     'Account.ShippingCity',
