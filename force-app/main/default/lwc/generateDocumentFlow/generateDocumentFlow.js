@@ -57,14 +57,14 @@ export default class GenerateDocumentFlow extends LightningElement {
             .then(result => {
                 this.documents = result.map(doc => {
                     let previewUrl = `${this.sharePointSiteUrl}/${this.sharePointDirectoryPath}/Shared%20Documents/Forms/AllItems.aspx?id=${encodeURIComponent(doc.webUrl)}&parent=${parentFolderPath}`;
-                    let displayName = doc.listItem.fields.Document_x0020_Name ? doc.listItem.fields.Document_x0020_Name : doc.name;
+                    let displayName = doc.listItem.fields.Document_x0020_Name || doc.listItem.fields.DocumentName || doc.name;
                     return { 
                         ...doc, 
                         id: doc.id,
                         previewUrl, 
                         displayName,
                         DocumentType: doc.listItem.fields.DocumentType,
-                        DocumentCategory: doc.listItem.fields.Document_x0020_Category,
+                        DocumentCategory: doc.listItem.fields.Document_x0020_Category || doc.listItem.fields.DocumentCategory,
                         Created_Time: doc.listItem.fields.Created,
                         ServerRelativeURL__c: doc.webUrl
                     };
