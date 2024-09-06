@@ -445,23 +445,7 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
         } else {
             this.showToast('Error', 'File URL not found.', 'error');
         }
-    }
-    
-    
-
-    doubleEncodeFileName(url) {
-        // Split the URL by slashes to isolate the file name (last part)
-        let parts = url.split('/');
-        let fileName = parts.pop(); // Get the file name (last part of the URL)
-    
-        // Double encode only the file name and leave the rest of the URL intact
-        fileName = encodeURIComponent(fileName).replace(/%20/g, '%2520').replace(/%23/g, '%2523');
-    
-        // Rejoin the parts with the double-encoded file name
-        return parts.join('/') + '/' + fileName;
-    }
-    
-    
+    } 
 
     handleConvertToPDF(relatedItemId) {
         const selectedItem = this.relatedItems.find(item => item.Id === relatedItemId);
@@ -483,8 +467,15 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
     handleDeleteRelatedItem(relatedItemId) {
         const selectedItem = this.relatedItems.find(item => item.Id === relatedItemId);
         if (selectedItem) {
-            const serverRelativeURL = selectedItem.ServerRelativeURL__c;
-            const fileName = selectedItem.Name;
+            let serverRelativeURL = selectedItem.ServerRelativeURL__c;
+            let fileName = selectedItem.Name;
+
+            console.log('filename before doubleEncode: ', fileName);
+
+            fileName = this.encodeFileName(fileName);
+            serverRelativeURL = this.doubleEncodeFileName(serverRelativeURL);
+
+            console.log('serverRelativeURL', serverRelativeURL)
 
             deleteSharepointFile({ filePath: serverRelativeURL, fileName })
                 .then(() => {
@@ -516,6 +507,64 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
             this.isSubModalOpen = true; // Open the modal to view/edit the item
         }
     }
+
+    doubleEncodeFileName(url) {
+        // Split the URL by slashes to isolate the file name (last part)
+        let parts = url.split('/');
+        let fileName = parts.pop(); // Get the file name (last part of the URL)
+
+        console.log('filename: ' + fileName);
+    
+        // Double encode only the file name and leave the rest of the URL intact
+        fileName = encodeURIComponent(fileName)
+        .replace(/%20/g, '%2520')
+        .replace(/%23/g, '%2523')
+        .replace(/%26/g, '%2526')
+        .replace(/%3F/g, '%253F')
+        .replace(/%25/g, '%2525')
+        .replace(/%7B/g, '%257B')
+        .replace(/%7D/g, '%257D')
+        .replace(/%5E/g, '%255E')
+        .replace(/%5B/g, '%255B')
+        .replace(/%5D/g, '%255D') 
+        .replace(/%60/g, '%2560')
+        .replace(/%27/g, '%2527');
+
+        // for some reason, the encodeURIComponent adds in an extra 25 FOR NO REASON - so get rid of that 25
+        fileName = fileName.replace(/%2525([0-9A-F]{2})/g, '%25$1');
+    
+        // Rejoin the parts with the double-encoded file name
+        console.log('fileName: ' + fileName);
+        return fileName;
+    }
+
+    encodeFileName(fileName) {
+        // Encode the file name using encodeURIComponent to handle special characters
+        console.log('filename in encodeFileName: ' + fileName);
+    
+        // Double encode only the file name and leave the rest of the URL intact
+        fileName = encodeURIComponent(fileName)
+        .replace(/%20/g, '%2520')
+        .replace(/%23/g, '%2523')
+        .replace(/%26/g, '%2526')
+        .replace(/%3F/g, '%253F')
+        .replace(/%25/g, '%2525')
+        .replace(/%7B/g, '%257B')
+        .replace(/%7D/g, '%257D')
+        .replace(/%5E/g, '%255E')
+        .replace(/%5B/g, '%255B')
+        .replace(/%5D/g, '%255D') 
+        .replace(/%60/g, '%2560')
+        .replace(/%27/g, '%2527');
+
+        // for some reason, the encodeURIComponent adds in an extra 25 FOR NO REASON - so get rid of that 25
+        fileName = fileName.replace(/%2525([0-9A-F]{2})/g, '%25$1');
+
+        console.log('fileName: ' + fileName);
+
+        return fileName;
+    }
+    
 
     closeModal() {
         this.isSubModalOpen = false;
