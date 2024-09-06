@@ -429,9 +429,13 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
         const selectedItem = this.relatedItems.find(item => item.Id === relatedItemId);
         if (selectedItem && selectedItem.ServerRelativeURL__c) {
             let serverRelativeURL = selectedItem.ServerRelativeURL__c;
+
+            console.log('before server relative URL - ', serverRelativeURL);
     
             // Apply double encoding only to the file name
             serverRelativeURL = this.doubleEncodeFileName(serverRelativeURL);
+
+            console.log('after server relative URL - ', serverRelativeURL);
     
             // Construct the full URL
             let url = serverRelativeURL.startsWith('http') ? serverRelativeURL : `${this.sharePointSiteUrl}/${serverRelativeURL}`;
@@ -535,7 +539,7 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
     
         // Rejoin the parts with the double-encoded file name
         console.log('fileName: ' + fileName);
-        return fileName;
+        return parts.join('/') + '/' + fileName;
     }
 
     encodeFileName(fileName) {
