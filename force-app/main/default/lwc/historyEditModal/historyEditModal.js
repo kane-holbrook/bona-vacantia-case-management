@@ -301,10 +301,10 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
                         documentType: this.documentType
                     });
                 })
-                .then((serverRelativeUrl) => {
-                    this.serverRelativeURL = serverRelativeUrl;
+                .then((result) => {
+                    this.serverRelativeURL = result.webUrl;
                     this.showToast('Success', 'File uploaded successfully', 'success');
-                    return this.createSHDocumentRecord(this.record.Id, folderName, serverRelativeUrl);
+                    return this.createSHDocumentRecord(this.record.Id, folderName, result.id, result.webUrl);
                 })
                 .then(() => {
                     refreshApex(this.wiredRelatedItemsResult);
@@ -318,7 +318,7 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
         });
     }
 
-    createSHDocumentRecord(historyRecordId, folderName, documentId) {
+    createSHDocumentRecord(historyRecordId, folderName, documentId, webUrl) {
         const shDocumentFields = {
             [SHDOCUMENT_NAME_FIELD.fieldApiName]: this.fileName,
             [DOCUMENT_EXTENSION_FIELD.fieldApiName]: this.fileName.split('.').pop(),
@@ -327,7 +327,7 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
             [DOCUMENT_FILE_SIZE_FIELD.fieldApiName]: this.fileSize,
             [DOCUMENT_CORRESPONDENCE_WITH_FIELD.fieldApiName]: this.correspondenceWith,
             [DOCUMENT_DRAFT_FIELD.fieldApiName]: this.draft,
-            [SERVER_RELATIVE_URL_FIELD.fieldApiName]: this.sharePointDirectoryPath + '/' + 'Shared%20Documents' + '/' + folderName + '/' + this.fileName,
+            [SERVER_RELATIVE_URL_FIELD.fieldApiName]: webUrl,
             [CREATED_TIME_FIELD.fieldApiName]: new Date(),
             [CASE_HISTORY_FIELD.fieldApiName]: historyRecordId
         };
@@ -428,10 +428,7 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
         if (selectedItem && selectedItem.ServerRelativeURL__c) {
             let serverRelativeURL = selectedItem.ServerRelativeURL__c;
     
-            // Apply double encoding only to the file name
-            serverRelativeURL = this.doubleEncodeFileName(serverRelativeURL);
-    
-            // Construct the full URL
+            // Construct the full URL without double encoding
             let url = serverRelativeURL.startsWith('http') ? serverRelativeURL : `${this.sharePointSiteUrl}/${serverRelativeURL}`;
 
             if (url) {
