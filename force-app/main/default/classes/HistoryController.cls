@@ -52,7 +52,7 @@ public with sharing class HistoryController {
     @AuraEnabled(cacheable=true)
     public static List<SHDocument__c> getSHDocuments(Id parentId) {
         return [
-            SELECT Id, Name, DocumentID__c, DocumentExtension__c, DocumentType__c, ServerRelativeURL__c, FileContent__c, FileSize__c, Correspondence_With__c, Draft__c, Created_Time__c
+            SELECT Id, Name, DocumentID__c, DocumentExtension__c, DocumentType__c, ServerRelativeURL__c, FileContent__c, FileSize__c, Correspondence_With__c, Draft__c, Created_Time__c, DirectURL__c
             FROM SHDocument__c
             WHERE Case_History__c = :parentId
         ];

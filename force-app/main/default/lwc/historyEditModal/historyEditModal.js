@@ -28,6 +28,7 @@ import DOCUMENT_CORRESPONDENCE_WITH_FIELD from '@salesforce/schema/SHDocument__c
 import DOCUMENT_DRAFT_FIELD from '@salesforce/schema/SHDocument__c.Draft__c';
 import SERVER_RELATIVE_URL_FIELD from '@salesforce/schema/SHDocument__c.ServerRelativeURL__c';
 import DOCUMENT_FILE_SIZE_FIELD from '@salesforce/schema/SHDocument__c.FileSize__c';
+import DIRECT_URL_FIELD from '@salesforce/schema/SHDocument__c.DirectURL__c';
 import CASE_HISTORY_FIELD from '@salesforce/schema/SHDocument__c.Case_History__c';
 import CREATED_TIME_FIELD from '@salesforce/schema/SHDocument__c.Created_Time__c';
 
@@ -304,7 +305,7 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
                 .then((result) => {
                     this.serverRelativeURL = result.webUrl;
                     this.showToast('Success', 'File uploaded successfully', 'success');
-                    return this.createSHDocumentRecord(this.record.Id, folderName, result.id, result.webUrl);
+                    return this.createSHDocumentRecord(this.record.Id, folderName, result.id, result.webUrl, result.directURL);
                 })
                 .then(() => {
                     refreshApex(this.wiredRelatedItemsResult);
@@ -318,7 +319,7 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
         });
     }
 
-    createSHDocumentRecord(historyRecordId, folderName, documentId, webUrl) {
+    createSHDocumentRecord(historyRecordId, folderName, documentId, webUrl, directURL) {
         const shDocumentFields = {
             [SHDOCUMENT_NAME_FIELD.fieldApiName]: this.fileName,
             [DOCUMENT_EXTENSION_FIELD.fieldApiName]: this.fileName.split('.').pop(),
@@ -328,6 +329,7 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
             [DOCUMENT_CORRESPONDENCE_WITH_FIELD.fieldApiName]: this.correspondenceWith,
             [DOCUMENT_DRAFT_FIELD.fieldApiName]: this.draft,
             [SERVER_RELATIVE_URL_FIELD.fieldApiName]: webUrl,
+            [DIRECT_URL_FIELD.fieldApiName]: directURL,
             [CREATED_TIME_FIELD.fieldApiName]: new Date(),
             [CASE_HISTORY_FIELD.fieldApiName]: historyRecordId
         };
@@ -459,12 +461,17 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
     handleDeleteRelatedItem(relatedItemId) {
         const selectedItem = this.relatedItems.find(item => item.Id === relatedItemId);
         if (selectedItem) {
-            let serverRelativeURL = selectedItem.ServerRelativeURL__c;
+            let serverRelativeURL = selectedItem.DirectURL__c;
             let fileName = selectedItem.Name;
 
+            // Strip away the unnecessary parts of the URL
+            const urlParts = serverRelativeURL.split('/Shared%20Documents/');
+            if (urlParts.length > 1) {
+                serverRelativeURL = urlParts[1];
+            }
 
             fileName = this.encodeFileName(fileName);
-            serverRelativeURL = this.doubleEncodeFileName(serverRelativeURL);
+            console.log('serverRelativeURL', serverRelativeURL);
 
             deleteSharepointFile({ filePath: serverRelativeURL, fileName })
                 .then(() => {

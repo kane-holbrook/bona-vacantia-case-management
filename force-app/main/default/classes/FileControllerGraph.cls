@@ -40,9 +40,11 @@ public class FileControllerGraph {
             Map<String, String> listItemInfo = getListItemInfo(siteId, itemId);
             String listId = listItemInfo.get('listId');
             String listItemId = listItemInfo.get('listItemId');
+            String directURL = listItemInfo.get('directURL');
             tagDocument(siteId, listId, listItemId, fileName, documentType);
             result.put('id', itemId);
             result.put('webUrl', webUrl);
+            result.put('directURL', directURL);
         } else {
             System.debug('File upload failed: ' + res.getStatus() + ' ' + res.getBody());
             result.put('error', 'File upload failed: ' + res.getStatus());
@@ -142,11 +144,13 @@ public class FileControllerGraph {
             Map<String, Object> parentReference = (Map<String, Object>) result.get('parentReference');
             System.debug(JSON.serializePretty(parentReference));
             String listId = (String) parentReference.get('id');
+            String directURL = (String) result.get('webUrl');
             String listItemId = (String) result.get('id');
             Map<String, String> listItemInfo = new Map<String, String>();
             String getListIdByName = getListIdByName(siteId, 'Documents');
             listItemInfo.put('listId', getListIdByName);
             listItemInfo.put('listItemId', listItemId);
+            listItemInfo.put('directURL', directURL);
             return listItemInfo;
         } else {
             throw new CalloutException('Failed to get list item information: ' + res.getStatus() + ' ' + res.getBody());
@@ -596,6 +600,7 @@ public class FileControllerGraph {
         shDocument.FileSize__c = contentVersion.ContentSize;
         shDocument.DocumentExtension__c = contentVersion.FileExtension;
         shDocument.ServerRelativeURL__c = uploadResult.get('webUrl');
+        shDocument.DirectURL__c = uploadResult.get('directURL');
         return shDocument;
     }
 
