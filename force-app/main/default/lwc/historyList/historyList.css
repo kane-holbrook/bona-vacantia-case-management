@@ -47,9 +47,9 @@ table tr.highlighted-row:hover td {
 }
 
 /* There must be a better solution than this to stop dropdown menu from hiding behind the modal */
-:host .slds-modal__content{
+/* :host .slds-modal__content{
     overflow: initial;
-}
+} */
 
 .slds-combobox_position-adjust {
     margin-top: 5px;

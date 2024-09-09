@@ -89,7 +89,7 @@
                             <div class="slds-truncate" title={item.Created_Time__c}>{item.Created_Time__c}</div>
                         </td>
                         <td data-label="Actions">
-                            <lightning-button-menu alternative-text="Show actions" icon-name="utility:down" data-id={item.Id} menu-alignment="right" onselect={handleRowAction}>
+                            <lightning-button-menu alternative-text="Show actions" icon-name="utility:down" data-id={item.Id} menu-alignment="auto" onselect={handleRowAction}>
                                 <lightning-menu-item label="View / edit file" value="viewEditFile" data-id={item.Id}></lightning-menu-item>
                                 <lightning-menu-item label="View / edit details" value="viewEditDetails" data-id={item.Id}></lightning-menu-item>
                                 <lightning-menu-item label="Convert to PDF" value="convertToPDF" data-id={item.Id}></lightning-menu-item>
