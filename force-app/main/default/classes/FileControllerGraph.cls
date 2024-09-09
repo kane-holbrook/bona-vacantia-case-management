@@ -176,6 +176,16 @@ public class FileControllerGraph {
         String siteUrl = settings.get('SharePoint_Site_URL');
         String directoryPath = settings.get('SharePoint_Directory_Path');
         String siteId = getSiteId(siteUrl, directoryPath);
+        String pathToRemove = 'sites/XansiumUATTestSite/Shared%20Documents/';
+
+        if (filePath.endsWith('/' + fileName)) {
+            filePath = filePath.substring(0, filePath.lastIndexOf('/'));
+        }
+
+        if (filePath.contains(pathToRemove)) {
+            filePath = filePath.replace(pathToRemove, '');
+        }
+
         
         String deleteUrl = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/drive/root:/' + filePath + '/' + fileName;
         
@@ -186,6 +196,7 @@ public class FileControllerGraph {
         
         Http http = new Http();
         HttpResponse res = http.send(req);
+
         
         if (res.getStatusCode() == 204) {
             System.debug('File deleted successfully.');

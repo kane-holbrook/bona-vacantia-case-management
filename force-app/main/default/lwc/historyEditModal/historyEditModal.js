@@ -412,8 +412,6 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
         const actionName = event.detail.value;
         const relatedItemId = event.target.dataset.id;
     
-        console.log('Action:', actionName, 'Related Item Id:', relatedItemId);
-    
         if (actionName === 'viewEditFile') {
             this.handleViewEditFile(relatedItemId);
         } else if (actionName === 'viewEditDetails') {
@@ -429,18 +427,13 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
         const selectedItem = this.relatedItems.find(item => item.Id === relatedItemId);
         if (selectedItem && selectedItem.ServerRelativeURL__c) {
             let serverRelativeURL = selectedItem.ServerRelativeURL__c;
-
-            console.log('before server relative URL - ', serverRelativeURL);
     
             // Apply double encoding only to the file name
             serverRelativeURL = this.doubleEncodeFileName(serverRelativeURL);
-
-            console.log('after server relative URL - ', serverRelativeURL);
     
             // Construct the full URL
             let url = serverRelativeURL.startsWith('http') ? serverRelativeURL : `${this.sharePointSiteUrl}/${serverRelativeURL}`;
-    
-            console.log('serverRelativeURL', url);
+
             if (url) {
                 window.open(url, '_blank');
             } else {
@@ -456,8 +449,6 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
 
         if (selectedItem) {
             this.contentDocumentId = selectedItem.DocumentID__c;
-
-            console.log('Document ID:', this.contentDocumentId);
             this.isConvertToPDFModalOpen = true; // Open the modal with the PDF conversion component
         } else {
             this.showToast('Error', 'Document ID not found for this item.', 'error');
@@ -474,12 +465,9 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
             let serverRelativeURL = selectedItem.ServerRelativeURL__c;
             let fileName = selectedItem.Name;
 
-            console.log('filename before doubleEncode: ', fileName);
 
             fileName = this.encodeFileName(fileName);
             serverRelativeURL = this.doubleEncodeFileName(serverRelativeURL);
-
-            console.log('serverRelativeURL', serverRelativeURL)
 
             deleteSharepointFile({ filePath: serverRelativeURL, fileName })
                 .then(() => {
@@ -516,8 +504,6 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
         // Split the URL by slashes to isolate the file name (last part)
         let parts = url.split('/');
         let fileName = parts.pop(); // Get the file name (last part of the URL)
-
-        console.log('filename: ' + fileName);
     
         // Double encode only the file name and leave the rest of the URL intact
         fileName = encodeURIComponent(fileName)
@@ -538,13 +524,11 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
         fileName = fileName.replace(/%2525([0-9A-F]{2})/g, '%25$1');
     
         // Rejoin the parts with the double-encoded file name
-        console.log('fileName: ' + fileName);
         return parts.join('/') + '/' + fileName;
     }
 
     encodeFileName(fileName) {
         // Encode the file name using encodeURIComponent to handle special characters
-        console.log('filename in encodeFileName: ' + fileName);
     
         // Double encode only the file name and leave the rest of the URL intact
         fileName = encodeURIComponent(fileName)
@@ -563,8 +547,6 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
 
         // for some reason, the encodeURIComponent adds in an extra 25 FOR NO REASON - so get rid of that 25
         fileName = fileName.replace(/%2525([0-9A-F]{2})/g, '%25$1');
-
-        console.log('fileName: ' + fileName);
 
         return fileName;
     }
