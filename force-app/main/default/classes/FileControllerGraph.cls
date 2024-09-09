@@ -187,17 +187,29 @@ public class FileControllerGraph {
         String directoryPath = settings.get('SharePoint_Directory_Path');
         String siteId = getSiteId(siteUrl, directoryPath);
         String pathToRemove = 'sites/XansiumUATTestSite/Shared%20Documents/';
-
-        if (filePath.endsWith('/' + fileName)) {
+    
+        // Get the actual file name with extension from the filePath
+        String actualFileNameWithExtension = filePath.substring(filePath.lastIndexOf('/') + 1);
+    
+        // If the fileName provided doesn't have an extension, assume it's just the base name
+        // Compare the provided fileName with the actual file name in the filePath (with extension)
+        if (filePath.endsWith('/' + actualFileNameWithExtension) && actualFileNameWithExtension.startsWith(fileName)) {
+            // Remove the duplicate filename from filePath if it's repeated
             filePath = filePath.substring(0, filePath.lastIndexOf('/'));
         }
-
+    
+        // Remove the directory path if it's present
         if (filePath.contains(pathToRemove)) {
             filePath = filePath.replace(pathToRemove, '');
         }
-
-        
-        String deleteUrl = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/drive/root:/' + filePath + '/' + fileName;
+    
+        // Trim any trailing slashes from the filePath
+        if (filePath.endsWith('/')) {
+            filePath = filePath.substring(0, filePath.length() - 1);
+        }
+    
+        // Construct the final delete URL
+        String deleteUrl = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/drive/root:/' + filePath + '/' + actualFileNameWithExtension;
         
         HttpRequest req = new HttpRequest();
         req.setEndpoint(deleteUrl);
@@ -206,12 +218,14 @@ public class FileControllerGraph {
         
         Http http = new Http();
         HttpResponse res = http.send(req);
-
-        
+    
         if (res.getStatusCode() == 204) {
             System.debug('File deleted successfully.');
+        } else if (res.getStatusCode() == 404) {
+            throw new AuraHandledException('File not found: The specified file does not exist or has already been deleted.');
         } else {
             System.debug('File deletion failed: ' + res.getStatus() + ' ' + res.getBody());
+            throw new AuraHandledException('File deletion failed: ' + res.getStatus() + ' ' + res.getBody());
         }
     }
 
@@ -651,12 +665,14 @@ public class FileControllerGraph {
             
             // Fetch listItem information
             Map<String, String> listItemInfo = getListItemInfo(siteId, documentId);
+            String directURL = listItemInfo.get('directURL');
             String webUrl = (String)jsonResponse.get('webUrl');
             
             // Construct and return a structured response
             Map<String, Object> response = new Map<String, Object>();
             response.put('documentId', documentId);
             response.put('webUrl', webUrl);
+            response.put('directURL', directURL);
             response.put('fileName', fileName);
             response.put('fileSize', String.valueOf(fileContent.length()));
             response.put('fileExtension', fileName.substringAfterLast('.'));
