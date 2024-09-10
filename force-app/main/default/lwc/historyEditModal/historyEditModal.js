@@ -229,11 +229,22 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
                                     this.correspondenceWith = null;
                                     this.draft = null;
                                     this.originalDocumentId = null;
-                                    refreshApex(this.wiredRelatedItemsResult);
+                                    return refreshApex(this.wiredRelatedItemsResult);
+                                })
+                                .then(() => {
+                                    // After refreshing, re-fetch the data
+                                    return getSHDocuments({ parentId: this.record.Id });
+                                })
+                                .then((freshData) => {
+                                    this.relatedItems = freshData.map(doc => ({
+                                        ...doc,
+                                        FileSize__c: this.formatFileSize(doc.FileSize__c),
+                                        formattedCreatedTime: this.formatDate(doc.Created_Time__c)
+                                    }));
                                 })
                                 .catch(error => {
-                                    console.log('Error deleting SHDocument record', error);
-                                    this.showToast('Error', 'Error deleting SHDocument record', 'error');
+                                    console.log('Error deleting SHDocument record or refreshing data', error);
+                                    this.showToast('Error', 'Error deleting SHDocument record or refreshing data', 'error');
                                 });
                         })
                         .catch(error => {
@@ -263,10 +274,22 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
             .then(() => {
                 this.fileName = null;
                 this.fileData = null; // Clear file data after saving
+                return refreshApex(this.wiredRelatedItemsResult);
+            })
+            .then(() => {
+                // After refreshing, re-fetch the data
+                return getSHDocuments({ parentId: this.record.Id });
+            })
+            .then((freshData) => {
+                this.relatedItems = freshData.map(doc => ({
+                    ...doc,
+                    FileSize__c: this.formatFileSize(doc.FileSize__c),
+                    formattedCreatedTime: this.formatDate(doc.Created_Time__c)
+                }));
             })
             .catch(error => {
-                console.log('Error saving record or uploading document', error);
-                this.showToast('Error', 'Error saving record or uploading document: ' + error, 'error');
+                console.log('Error saving record, uploading document, or refreshing data', error);
+                this.showToast('Error', 'Error saving record, uploading document, or refreshing data: ' + error, 'error');
             });
     }
 
@@ -281,13 +304,24 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
             updateRecord({ fields })
                 .then(() => {
                     this.showToast('Success', 'Document metadata updated successfully', 'success');
-                    refreshApex(this.wiredRelatedItemsResult);
+                    return refreshApex(this.wiredRelatedItemsResult);
+                })
+                .then(() => {
+                    // After refreshing, re-fetch the data
+                    return getSHDocuments({ parentId: this.record.Id });
+                })
+                .then((freshData) => {
+                    this.relatedItems = freshData.map(doc => ({
+                        ...doc,
+                        FileSize__c: this.formatFileSize(doc.FileSize__c),
+                        formattedCreatedTime: this.formatDate(doc.Created_Time__c)
+                    }));
                     this.closeSubModal();
                     resolve();
                 })
                 .catch(error => {
-                    console.error('Error updating SHDocument record:', error);
-                    this.showToast('Error', 'Error updating document metadata: ' + error.body.message, 'error');
+                    console.error('Error updating SHDocument record or refreshing data:', error);
+                    this.showToast('Error', 'Error updating document metadata or refreshing data: ' + error.body.message, 'error');
                     reject(error);
                 });
         });
