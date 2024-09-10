@@ -9,20 +9,21 @@ import updateAssets from '@salesforce/apex/EstateDataController.updateAssets';
 import updateLiabilities from '@salesforce/apex/EstateDataController.updateLiabilities';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { refreshApex } from '@salesforce/apex';
+import { updateRecord } from 'lightning/uiRecordApi';
 
 export default class EstateGrid extends LightningElement {
     @track accrualsColumns = [
-        { label: 'Date of Death Value', fieldName: 'Date_of_Death_Value__c', type: 'currency', editable: true },
-        { label: 'Accruals Asset Value', fieldName: 'Accruals_Asset_Value__c', type: 'currency', editable: true },
-        { label: 'Asset Holder Name & Ref Number', fieldName: 'Asset_Holder_Name_and_Ref_Number__c', type: 'text', editable: true },
-        { label: 'Value of Assets Collected', fieldName: 'Value_of_Assets_Collected__c', type: 'currency', editable: true },
+        { label: 'Date of Death Value', fieldName: 'Date_of_Death_Value__c', type: 'currency', editable: true, sortable: true },
+        { label: 'Accruals Asset Value', fieldName: 'Accruals_Asset_Value__c', type: 'currency', editable: true, sortable: true },
+        { label: 'Asset Holder Name & Ref Number', fieldName: 'Asset_Holder_Name_and_Ref_Number__c', type: 'text', editable: true, sortable: true },
+        { label: 'Value of Assets Collected', fieldName: 'Value_of_Assets_Collected__c', type: 'currency', editable: true, sortable: true },
     ];
 
     @track liabilitiesColumns = [
-        { label: 'Liability at Date of Death', fieldName: 'Liability_at_Date_of_Death__c', type: 'currency', editable: true },
-        { label: 'Accruals Liability Value', fieldName: 'Accruals_Liability_Value__c', type: 'currency', editable: true },
-        { label: 'Liability Owed To & Reason', fieldName: 'Liability_owed_to_and_reason__c', type: 'text', editable: true },
-        { label: 'Liabilities Paid', fieldName: 'Liabilities_Paid__c', type: 'currency', editable: true },
+        { label: 'Liability at Date of Death', fieldName: 'Liability_at_Date_of_Death__c', type: 'currency', editable: true, sortable: true },
+        { label: 'Accruals Liability Value', fieldName: 'Accruals_Liability_Value__c', type: 'currency', editable: true, sortable: true },
+        { label: 'Liability Owed To & Reason', fieldName: 'Liability_owed_to_and_reason__c', type: 'text', editable: true, sortable: true },
+        { label: 'Liabilities Paid', fieldName: 'Liabilities_Paid__c', type: 'currency', editable: true, sortable: true },
     ];
 
     @api recordId;
@@ -34,6 +35,9 @@ export default class EstateGrid extends LightningElement {
     @track draftValuesAssets = [];
     @track draftValuesLiabilities = [];
     isRecordIdAvailable = false;
+
+    @track sortedBy;
+    @track sortedDirection = 'asc';
 
     estateAccData = {
         Assets__r: [],
@@ -243,5 +247,39 @@ export default class EstateGrid extends LightningElement {
                 variant: variant
             })
         );
+    }
+
+    handleSort(event) {
+        this.sortedBy = event.detail.fieldName;
+        this.sortedDirection = event.detail.sortDirection;
+        this.sortData(event.target.name);
+    }
+
+    sortData(tableName) {
+        let data = tableName === 'assets_datatable' ? [...this.estateAccData.Assets__r] : [...this.estateAccData.Liabilities__r];
+        let fieldName = this.sortedBy;
+        let sortDirection = this.sortedDirection;
+
+        const key = (a) => {
+            if (a[fieldName] == null) return '';
+            return typeof a[fieldName] === 'string' ? a[fieldName].toLowerCase() : a[fieldName];
+        };
+
+        const reverse = sortDirection === 'asc' ? 1 : -1;
+
+        data.sort((a, b) => {
+            a = key(a);
+            b = key(b);
+            if (typeof a === 'number' && typeof b === 'number') {
+                return reverse * (a - b);
+            }
+            return reverse * ((a > b) - (b > a));
+        });
+
+        if (tableName === 'assets_datatable') {
+            this.estateAccData = { ...this.estateAccData, Assets__r: data };
+        } else {
+            this.estateAccData = { ...this.estateAccData, Liabilities__r: data };
+        }
     }
 }

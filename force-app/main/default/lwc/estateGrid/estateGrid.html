@@ -13,7 +13,10 @@
                         resize-column-disabled
                         show-row-number-column
                         draft-values={draftValuesAssets}
-                        onsave={handleSaveAssets}>
+                        onsave={handleSaveAssets}
+                        sorted-by={sortedBy}
+                        sorted-direction={sortedDirection}
+                        onsort={handleSort}>
                     </lightning-datatable>
                 </div>
 
@@ -29,7 +32,10 @@
                         resize-column-disabled
                         show-row-number-column
                         draft-values={draftValuesLiabilities}
-                        onsave={handleSaveLiabilities}>
+                        onsave={handleSaveLiabilities}
+                        sorted-by={sortedBy}
+                        sorted-direction={sortedDirection}
+                        onsort={handleSort}>
                     </lightning-datatable>
                 </div>
             </div>
