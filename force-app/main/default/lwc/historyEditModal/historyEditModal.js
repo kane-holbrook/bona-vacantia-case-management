@@ -149,12 +149,23 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
         if (result.data) {
             this.relatedItems = result.data.map(doc => ({
                 ...doc,
-                FileSize__c: this.formatFileSize(doc.FileSize__c)
+                FileSize__c: this.formatFileSize(doc.FileSize__c),
+                formattedCreatedTime: this.formatDate(doc.Created_Time__c)
             }));
         } else if (result.error) {
             console.error('Error fetching related items:', result.error);
             this.showToast('Error', 'Error fetching related items', 'error');
         }
+    }
+
+    formatDate(dateString) {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
     }
 
     handleInputChange(event) {
