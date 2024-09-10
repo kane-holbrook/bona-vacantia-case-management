@@ -1,7 +1,8 @@
 import { LightningElement, track } from 'lwc';
+import { NavigationMixin } from 'lightning/navigation';
 import getFlowMetadata from '@salesforce/apex/FlowMetadataController.getFlowMetadata';
 
-export default class CaseCreationContainer extends LightningElement {
+export default class CaseCreationContainer extends NavigationMixin(LightningElement) {
     @track currentStep = 0;
     @track steps = [];
     @track progressValue = 0;
@@ -48,7 +49,7 @@ export default class CaseCreationContainer extends LightningElement {
     handleStatusChange(event) {
         const status = event.detail.status;
         if (status === 'FINISHED') {
-            window.location.href = 'https://governmentlegaldepartment--sandbox.sandbox.lightning.force.com/lightning/o/BV_Case__c/list?filterName=My_Cases';
+            window.location.href = '/lightning/o/BV_Case__c/list?filterName=All';
         }
     }
 
