@@ -45,12 +45,24 @@
                 <!-- Estates Balance Box -->
                 <div class="slds-col slds-size_1-of-2 custom-box estates-balance-box">
                     <span class="slds-text-title_bold">Total Accruals Date of Death Value: </span>
-                    <span class="slds-text-body_regular">£{estateAccData.Date_of_Death_Summary__c}</span>
+                    <lightning-formatted-number 
+                        value={estateAccData.Date_of_Death_Summary__c}
+                        format-style="currency"
+                        currency-code="GBP"
+                        currency-display-as="symbol"
+                        class="slds-text-body_regular">
+                    </lightning-formatted-number>
                 </div>
                 <!-- Accruals Balance Box -->
                 <div class="slds-col slds-size_1-of-2 custom-box accruals-balance-box">
                     <span class="slds-text-title_bold">Total Liabilities Date of Death Value: </span>
-                    <span class="slds-text-body_regular">£{estateAccData.Liability_at_Date_of_Death_Summary__c}</span>
+                    <lightning-formatted-number 
+                        value={estateAccData.Liability_at_Date_of_Death_Summary__c}
+                        format-style="currency"
+                        currency-code="GBP"
+                        currency-display-as="symbol"
+                        class="slds-text-body_regular">
+                    </lightning-formatted-number>
                 </div>
             </div>
 
@@ -110,7 +122,13 @@
                 <!-- Net Value Box -->
                 <div class="slds-col slds-size_1-of-2 custom-box net-value-box">
                     <span class="slds-text-title_bold">Net Value: </span>
-                    <span class="slds-text-body_regular">£{estateAccData.Net_Value__c}</span>
+                    <lightning-formatted-number 
+                        value={estateAccData.Net_Value__c}
+                        format-style="currency"
+                        currency-code="GBP"
+                        currency-display-as="symbol"
+                        class="slds-text-body_regular">
+                    </lightning-formatted-number>
                 </div>
             </div>
         <!-- Save Button Footer -->
