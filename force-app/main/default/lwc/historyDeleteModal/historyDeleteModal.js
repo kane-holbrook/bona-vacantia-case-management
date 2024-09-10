@@ -36,14 +36,21 @@ export default class HistoryDeleteModal extends LightningElement {
             })
             .then(() => {
                 // If SharePoint folder deletion is successful, delete the Salesforce record
-                return deleteRecord(this.record.Id);
+                const deletePromises = [deleteRecord(this.record.Id)];
+                
+                // If EmailMessageId__c is present, also delete the EmailMessage
+                if (this.record.EmailMessageId__c) {
+                    deletePromises.push(deleteRecord(this.record.EmailMessageId__c));
+                }
+                
+                return Promise.all(deletePromises);
             })
             .then(() => {
-                this.showToast('Success', 'Record and associated SharePoint folder deleted successfully', 'success');
+                this.showToast('Success', 'Record, associated SharePoint folder, and related EmailMessage (if any) deleted successfully', 'success');
                 this.dispatchEvent(new CustomEvent('delete'));
             })
             .catch(error => {
-                this.showToast('Error', 'Error deleting record and SharePoint folder: ' + error.body.message, 'error');
+                this.showToast('Error', 'Error deleting record, SharePoint folder, or related EmailMessage: ' + error.body.message, 'error');
             });
     }
 

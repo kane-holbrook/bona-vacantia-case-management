@@ -715,7 +715,6 @@ public class FileControllerGraph {
             System.debug('Folder deleted successfully.');
         } else if (res.getStatusCode() == 404) {
             System.debug('Folder not found: ' + folderPath);
-            throw new AuraHandledException('Failed to delete folder: ' + res.getStatus() + ' ' + res.getBody());
         } else {
             throw new AuraHandledException('Failed to delete folder: ' + res.getStatus() + ' ' + res.getBody());
         }
