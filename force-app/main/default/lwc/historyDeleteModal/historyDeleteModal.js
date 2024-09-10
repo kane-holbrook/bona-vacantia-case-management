@@ -1,6 +1,8 @@
 import { LightningElement, track, api } from 'lwc';
 import { deleteRecord } from 'lightning/uiRecordApi';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import deleteSharePointFolder from '@salesforce/apex/FileControllerGraph.deleteSharePointFolder';
+import getBVCaseData from '@salesforce/apex/EstateDataController.getBVCaseData';
 
 export default class HistoryDeleteModal extends LightningElement {
     @api record;
@@ -22,13 +24,26 @@ export default class HistoryDeleteModal extends LightningElement {
 
     @api
     deleteRecord() {
-        deleteRecord(this.record.Id)
+        console.log(this.record);
+        console.log('deleting record');
+
+        // First, get the BV Case Data
+        getBVCaseData({ recordId: this.record.BV_Case__c })
+            .then(caseData => {
+                // Then, delete the SharePoint folder
+                const folderPath = `${caseData.Name}/${this.record.Id}`;
+                return deleteSharePointFolder({ folderPath: folderPath });
+            })
             .then(() => {
-                this.showToast('Success', 'Record deleted successfully', 'success');
+                // If SharePoint folder deletion is successful, delete the Salesforce record
+                return deleteRecord(this.record.Id);
+            })
+            .then(() => {
+                this.showToast('Success', 'Record and associated SharePoint folder deleted successfully', 'success');
                 this.dispatchEvent(new CustomEvent('delete'));
             })
             .catch(error => {
-                this.showToast('Error', 'Error deleting record: ' + error.body.message, 'error');
+                this.showToast('Error', 'Error deleting record and SharePoint folder: ' + error.body.message, 'error');
             });
     }
 

@@ -694,6 +694,33 @@ public class FileControllerGraph {
         }
     }
 
+    @AuraEnabled
+    public static void deleteSharePointFolder(String folderPath) {
+        Map<String, String> settings = getSharePointSettings();
+        String siteUrl = settings.get('SharePoint_Site_URL');
+        String directoryPath = settings.get('SharePoint_Directory_Path');
+        String siteId = getSiteId(siteUrl, directoryPath);
+        
+        String deleteUrl = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/drive/root:/' + folderPath;
+        
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint(deleteUrl);
+        req.setMethod('DELETE');
+        req.setHeader('Accept', 'application/json');
+        
+        Http http = new Http();
+        HttpResponse res = http.send(req);
+        
+        if (res.getStatusCode() == 204) {
+            System.debug('Folder deleted successfully.');
+        } else if (res.getStatusCode() == 404) {
+            System.debug('Folder not found: ' + folderPath);
+            throw new AuraHandledException('Failed to delete folder: ' + res.getStatus() + ' ' + res.getBody());
+        } else {
+            throw new AuraHandledException('Failed to delete folder: ' + res.getStatus() + ' ' + res.getBody());
+        }
+    }
+
     public void veryTemporaryTest(){
         integer i = 0;
         i = i + 1;
