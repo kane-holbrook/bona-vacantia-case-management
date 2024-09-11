@@ -12,6 +12,7 @@ import groupHistoryRecords from '@salesforce/apex/HistoryController.groupHistory
 import ungroupHistoryRecords from '@salesforce/apex/HistoryController.ungroupHistoryRecords';
 import updateParentHistoryRecords from '@salesforce/apex/HistoryController.updateParentHistoryRecords';
 import swapParentChildIfNecessary from '@salesforce/apex/HistoryController.swapParentChildIfNecessary';
+import { subscribe, unsubscribe, onError, setDebugFlag, isEmpEnabled } from 'lightning/empApi';
 
 
 export default class HistoryList extends NavigationMixin(LightningElement) {
@@ -50,11 +51,61 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
         { label: 'My history', value: 'myHistory' }
     ];
 
+    subscription = {};
+    channelName = '/event/EmailSentEvent__e';
+
     connectedCallback() {
         this.recordId = getRecordId();
         this.fetchCurrentUserId();
         this.refreshHistoryItems();
         this.fetchSharePointSettings();
+        this.registerErrorListener();
+        this.handleSubscribe();
+    }
+
+    disconnectedCallback() {
+        this.handleUnsubscribe();
+    }
+
+    // Handles subscribe button click
+    handleSubscribe() {
+        // Callback triggered whenever a new event message is received
+        const messageCallback = (response) => {
+            console.log('New message received: ', JSON.stringify(response));
+            // Process the event message here
+            this.handleEmailSentEvent(response.data.payload);
+        };
+
+        // Invoke subscribe method of empApi. Pass reference to messageCallback
+        subscribe(this.channelName, -1, messageCallback).then(response => {
+            // Response contains the subscription information on subscribe call
+            console.log('Subscription request sent to: ', JSON.stringify(response.channel));
+            this.subscription = response;
+
+            console.log('subscription', this.subscription);
+        });
+    }
+
+    handleUnsubscribe() {
+        unsubscribe(this.subscription, response => {
+            console.log('unsubscribe() response: ', JSON.stringify(response));
+        });
+    }
+
+    registerErrorListener() {
+        // Invoke onError empApi method
+        onError(error => {
+            console.log('Received error from server: ', JSON.stringify(error));
+        });
+    }
+
+    handleEmailSentEvent(eventData) {
+        console.log('Email sent event received:', eventData);
+        // Check if the email is related to the current record
+        if (eventData.RecordId__c && eventData.RecordId__c.startsWith(this.recordId)) {
+            console.log('Refreshing history items due to email sent event');
+            this.refreshHistoryItems();
+        }
     }
 
     fetchCurrentUserId() {
@@ -208,6 +259,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
         }
     }
 
+    @api
     refreshHistoryItems() {
         refreshApex(this.wiredHistoryItemsResult);
         this.resetCheckboxStates();
@@ -1245,5 +1297,11 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
         } else {
             return (size / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
         }
+    }
+
+    handleEmailSent() {
+        // Refresh the history items when an email is sent
+        this.refreshHistoryItems();
+        this.resetCheckboxStates();
     }
 }
