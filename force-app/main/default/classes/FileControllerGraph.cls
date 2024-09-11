@@ -6,7 +6,11 @@ public class FileControllerGraph {
         String siteUrl = settings.get('SharePoint_Site_URL');
         String directoryPath = settings.get('SharePoint_Directory_Path');
         String siteId = getSiteId(siteUrl, directoryPath);
-        String encodedFileName = encodeFileName(fileName);
+        
+        // Check if file already exists and generate a unique name
+        String uniqueFileName = getUniqueFileName(siteId, filePath, fileName);
+        String encodedFileName = encodeFileName(uniqueFileName);
+        
         String uploadUrl = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/drive/root:/' + filePath + '/' + encodedFileName + ':/content';
         
         HttpRequest req = new HttpRequest();
@@ -636,7 +640,11 @@ public class FileControllerGraph {
         String siteUrl = settings.get('SharePoint_Site_URL');
         String directoryPath = settings.get('SharePoint_Directory_Path');
         String siteId = getSiteId(siteUrl, directoryPath);
-        String encodedFileName = encodeFileName(fileName);
+        
+        // Check if file already exists and generate a unique name
+        String uniqueFileName = getUniqueFileName(siteId, filePath, fileName);
+        String encodedFileName = encodeFileName(uniqueFileName);
+        
         String uploadUrl = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/drive/root:/' + filePath + '/' + encodedFileName + ':/content';
         
         HttpRequest req = new HttpRequest();
@@ -718,6 +726,34 @@ public class FileControllerGraph {
         } else {
             throw new AuraHandledException('Failed to delete folder: ' + res.getStatus() + ' ' + res.getBody());
         }
+    }
+
+    private static String getUniqueFileName(String siteId, String filePath, String fileName) {
+        String baseName = fileName.substringBeforeLast('.');
+        String extension = fileName.substringAfterLast('.');
+        String currentName = fileName;
+        Integer counter = 1;
+
+        while (fileExists(siteId, filePath, currentName)) {
+            currentName = baseName + '(' + counter + ').' + extension;
+            counter++;
+        }
+
+        return currentName;
+    }
+
+    private static Boolean fileExists(String siteId, String filePath, String fileName) {
+        String checkUrl = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/drive/root:/' + filePath + '/' + fileName;
+        
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint(checkUrl);
+        req.setMethod('GET');
+        req.setHeader('Accept', 'application/json');
+        
+        Http http = new Http();
+        HttpResponse res = http.send(req);
+        
+        return res.getStatusCode() == 200;
     }
 
     public void veryTemporaryTest(){
