@@ -141,6 +141,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
             this.historyItems = result.data.map(item => {
                 const history = item.history || {};
                 const emailMessage = item.EmailMessage || {};
+                const shDocuments = history.SHDocuments__r || [];
 
                 const mergedRecord = {
                     ...history,
@@ -170,7 +171,10 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
                     parentId: history.Parent_History_Record__c || null,
                     isSelected: false,
                     children: [],
-                    hasChildren: history.Case_History__r && history.Case_History__r.length > 0
+                    hasChildren: history.Case_History__r && history.Case_History__r.length > 0,
+                    firstDocumentType: shDocuments.length > 0 ? shDocuments[0].DocumentType__c : '',
+                    totalFileSize: this.calculateTotalFileSize(shDocuments),
+                    firstDocumentDraft: shDocuments.length > 0 ? (shDocuments[0].Draft__c ? 'Yes' : 'No') : '',
                 };
 
                 recordsMap[history.Id] = mergedRecord;
@@ -1284,14 +1288,16 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
         });
     }
 
+    calculateTotalFileSize(documents) {
+        const totalSize = documents.reduce((sum, doc) => sum + (doc.FileSize__c || 0), 0);
+        return this.formatFileSize(totalSize);
+    }
+
     formatFileSize(size) {
-        if (!size) {
-            return '';
-        }
         if (size < 1024) {
             return size + ' B';
         } else if (size < 1024 * 1024) {
-            return (size / 1024).toFixed(2) + ' kB';
+            return (size / 1024).toFixed(2) + ' KB';
         } else if (size < 1024 * 1024 * 1024) {
             return (size / (1024 * 1024)).toFixed(2) + ' MB';
         } else {

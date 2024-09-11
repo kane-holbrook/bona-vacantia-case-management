@@ -89,3 +89,12 @@ th.document-type, th.case-officer {
     max-width: 30rem;
     vertical-align: middle;
 }
+
+/* Add or modify styles as needed */
+.document-type,
+.file-size {
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
