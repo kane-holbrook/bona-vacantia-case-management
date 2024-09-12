@@ -31,6 +31,7 @@ import APPLICANT_FIELD from '@salesforce/schema/BV_Case__c.Applicant__c';
 import REPLY_DUE_FIELD from '@salesforce/schema/BV_Case__c.Reply_Due__c';
 import CASE_NAME_FIELD from '@salesforce/schema/BV_Case__c.Case_Name__c';
 import CASE_NUMBER_FIELD from '@salesforce/schema/BV_Case__c.Case_Number__c';
+import OWNER_ID_FIELD from '@salesforce/schema/BV_Case__c.OwnerId';
 import getCaseDetail from '@salesforce/apex/CaseOfficerController.getCaseDetail';
 import fetchFilesFromSharePoint from '@salesforce/apex/FileControllerGraph.fetchFilesFromSharePoint';
 import { getRecordId } from 'c/sharedService';
@@ -385,20 +386,20 @@ export default class CaseOfficerButtons extends LightningElement {
     }
 
     handleCaseOfficerSave(event) {
-        const newCaseOfficer = event.detail;
+        const { name: newCaseOfficer, id: newOwnerId } = event.detail;
 
         this.loadCaseDetailRecord().then(() => {
             if (this.caseDetailId) {
                 // Update existing Case_Detail__c record
-                this.updateCaseDetail(newCaseOfficer);
+                this.updateCaseDetail(newCaseOfficer, newOwnerId);
             } else {
                 // Create new Case_Detail__c record
-                this.createCaseDetail(newCaseOfficer);
+                this.createCaseDetail(newCaseOfficer, newOwnerId);
             }
         });
     }
 
-    createCaseDetail(newCaseOfficer) {
+    createCaseDetail(newCaseOfficer, newOwnerId) {
         const fields = {};
         fields[CURRENT_OFFICER_FIELD.fieldApiName] = newCaseOfficer;
         fields[DATE_OFFICER_FIELD.fieldApiName] = new Date().toISOString();
@@ -416,7 +417,8 @@ export default class CaseOfficerButtons extends LightningElement {
                 });
                 this.dispatchEvent(event);
                 console.log('Case_Detail__c created successfully with Id: ' + this.caseDetailId);
-                // Optionally, handle further actions like notifying the user
+                // Now update the BV_Case__c record to change the owner
+                this.updateBVCaseOwner(newOwnerId);
             })
             .catch(error => {
                 console.error('Error creating Case_Detail__c:', error);
@@ -424,7 +426,7 @@ export default class CaseOfficerButtons extends LightningElement {
             });
     }
 
-    updateCaseDetail(newCaseOfficer) {
+    updateCaseDetail(newCaseOfficer, newOwnerId) {
         const fields = {};
         fields['Id'] = this.caseDetailId;
 
@@ -474,11 +476,41 @@ export default class CaseOfficerButtons extends LightningElement {
                     composed: true // Allow the event to cross the shadow DOM boundary
                 });
                 this.dispatchEvent(event);
-                // Optionally, handle further actions like notifying the user
+                // Now update the BV_Case__c record to change the owner
+                this.updateBVCaseOwner(newOwnerId);
             })
             .catch(error => {
                 console.error('Error updating Case_Detail__c:', error);
                 // Optionally, handle error like showing an error message to the user
+            });
+    }
+
+    updateBVCaseOwner(newOwnerId) {
+        const fields = {};
+        fields['Id'] = this.recordId;
+        fields[OWNER_ID_FIELD.fieldApiName] = newOwnerId;
+
+        const recordInput = { fields };
+        updateRecord(recordInput)
+            .then(() => {
+                console.log('BV_Case__c owner updated successfully');
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Success',
+                        message: 'Case Officer and Owner updated successfully',
+                        variant: 'success'
+                    })
+                );
+                // Dispatch the caseofficersaved event
+                this.dispatchEvent(new CustomEvent('caseofficersaved', {
+                    detail: { recordId: this.recordId },
+                    bubbles: true,
+                    composed: true
+                }));
+            })
+            .catch(error => {
+                console.error('Error updating BV_Case__c owner:', error);
+                // Handle error
             });
     }
 
