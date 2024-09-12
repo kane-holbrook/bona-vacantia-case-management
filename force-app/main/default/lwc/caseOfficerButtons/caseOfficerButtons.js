@@ -134,12 +134,19 @@ export default class CaseOfficerButtons extends LightningElement {
                     { actionId: '7', label: 'Change Disclaimer', disabled: false },
                     { actionId: '8', label: 'Archive Search', disabled: false }
                 ];
-            } else if (recordTypeDeveloperName === 'CONV' || recordTypeDeveloperName === 'GENE') {
+            } else if (recordTypeDeveloperName === 'CONV') {
                 this.actions = [
                     { actionId: '1', label: 'Put away', disabled: false },
                     { actionId: '2', label: 'Re-open case', disabled: false },
                     { actionId: '3', label: 'Re-allocate case', disabled: false },
-                    { actionId: '4', label: 'Change case category', disabled: false }
+                    { actionId: '4', label: 'Change case category', disabled: false },
+                    { actionId: '6', label: 'LM case review', disabled: false }
+                ];
+            } else if (recordTypeDeveloperName === 'GENE') {
+                this.actions = [
+                    { actionId: '1', label: 'Put away', disabled: false },
+                    { actionId: '2', label: 'Re-open case', disabled: false },
+                    { actionId: '3', label: 'Re-allocate case', disabled: false }
                 ];
             } else if (recordTypeDeveloperName === 'FOIR') {
                 this.actions = [
