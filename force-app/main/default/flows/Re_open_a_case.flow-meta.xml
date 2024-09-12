@@ -5,7 +5,7 @@
         <name>Set_Case_Officer_Collection</name>
         <label>Set Case Officer Collection</label>
         <locationX>138</locationX>
-        <locationY>998</locationY>
+        <locationY>782</locationY>
         <assignmentItems>
             <assignToReference>updatedCaseOfficerCollection</assignToReference>
             <operator>Add</operator>
@@ -21,7 +21,7 @@
         <name>Set_Case_Officer_Fields</name>
         <label>Set Case Officer Fields</label>
         <locationX>138</locationX>
-        <locationY>890</locationY>
+        <locationY>674</locationY>
         <assignmentItems>
             <assignToReference>Loop_Case_Officer_Details.Reopened_By__c</assignToReference>
             <operator>Assign</operator>
@@ -75,7 +75,7 @@
     <decisions>
         <name>Do_you_wish_to_re_open_the_case</name>
         <label>Do you wish to re-open the case?</label>
-        <locationX>710</locationX>
+        <locationX>314</locationX>
         <locationY>350</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
@@ -89,7 +89,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Do_you_wish_to_leave_the_case_open</targetReference>
+                <targetReference>Get_Case_Officer_History_Record</targetReference>
             </connector>
             <label>Yes</label>
         </rules>
@@ -101,40 +101,6 @@
                 <operator>EqualTo</operator>
                 <rightValue>
                     <elementReference>No</elementReference>
-                </rightValue>
-            </conditions>
-            <label>No</label>
-        </rules>
-    </decisions>
-    <decisions>
-        <name>Open_the_case</name>
-        <label>Open the case?</label>
-        <locationX>314</locationX>
-        <locationY>566</locationY>
-        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
-        <rules>
-            <name>Yes_Decision</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Leave_open</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <elementReference>Yes_Leave_Open</elementReference>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Get_Case_Officer_History_Record</targetReference>
-            </connector>
-            <label>Yes</label>
-        </rules>
-        <rules>
-            <name>No_Decision</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Leave_open</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <elementReference>No_Leave_Open</elementReference>
                 </rightValue>
             </conditions>
             <label>No</label>
@@ -152,7 +118,7 @@
         <name>Loop_Case_Officer_Details</name>
         <label>Loop Case Officer Details</label>
         <locationX>50</locationX>
-        <locationY>782</locationY>
+        <locationY>566</locationY>
         <collectionReference>Get_Case_Officer_History_Record</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector>
@@ -185,7 +151,7 @@
         <name>Create_a_history_record</name>
         <label>Create a history record</label>
         <locationX>50</locationX>
-        <locationY>1298</locationY>
+        <locationY>1082</locationY>
         <inputAssignments>
             <field>Action__c</field>
             <value>
@@ -222,7 +188,7 @@
     <recordLookups>
         <name>Get_BV_Case</name>
         <label>Get BV Case</label>
-        <locationX>710</locationX>
+        <locationX>314</locationX>
         <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -250,7 +216,7 @@
         <name>Get_Case_Officer_History_Record</name>
         <label>Get Case Officer History Record</label>
         <locationX>50</locationX>
-        <locationY>674</locationY>
+        <locationY>458</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Loop_Case_Officer_Details</targetReference>
@@ -280,39 +246,16 @@
         <name>Update_Case_Officer_Record</name>
         <label>Update Case Officer Record</label>
         <locationX>50</locationX>
-        <locationY>1190</locationY>
+        <locationY>974</locationY>
         <connector>
             <targetReference>Create_a_history_record</targetReference>
         </connector>
         <inputReference>updatedCaseOfficerCollection</inputReference>
     </recordUpdates>
     <screens>
-        <name>Do_you_wish_to_leave_the_case_open</name>
-        <label>Do you wish to leave the case open?</label>
-        <locationX>314</locationX>
-        <locationY>458</locationY>
-        <allowBack>true</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
-        <connector>
-            <targetReference>Open_the_case</targetReference>
-        </connector>
-        <fields>
-            <name>Leave_open</name>
-            <choiceReferences>Yes_Leave_Open</choiceReferences>
-            <choiceReferences>No_Leave_Open</choiceReferences>
-            <dataType>String</dataType>
-            <fieldText>Leave open?</fieldText>
-            <fieldType>RadioButtons</fieldType>
-            <isRequired>false</isRequired>
-        </fields>
-        <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
-    </screens>
-    <screens>
         <name>Question</name>
         <label>Question</label>
-        <locationX>710</locationX>
+        <locationX>314</locationX>
         <locationY>242</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -338,13 +281,13 @@
         <showHeader>true</showHeader>
     </screens>
     <start>
-        <locationX>584</locationX>
+        <locationX>188</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Get_BV_Case</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <variables>
         <name>caseCompletedDate</name>
         <dataType>Date</dataType>

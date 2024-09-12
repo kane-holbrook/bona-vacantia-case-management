@@ -208,7 +208,7 @@
             <targetReference>Insert_outline_of_the_matter_on_which_you_are_seeking_Counsels_opinion</targetReference>
         </connector>
     </start>
-    <status>Active</status>
+    <status>Draft</status>
     <variables>
         <name>caseReference</name>
         <dataType>String</dataType>

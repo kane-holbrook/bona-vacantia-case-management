@@ -4,7 +4,7 @@
     <assignments>
         <name>setValuesForDocGen</name>
         <label>Set valuesForDocGen</label>
-        <locationX>1326</locationX>
+        <locationX>2382</locationX>
         <locationY>650</locationY>
         <assignmentItems>
             <assignToReference>valuesForDocGen</assignToReference>
@@ -20,7 +20,7 @@
     <decisions>
         <name>Document_Type_to_Generate</name>
         <label>Document Type to Generate</label>
-        <locationX>1238</locationX>
+        <locationX>2294</locationX>
         <locationY>242</locationY>
         <defaultConnector>
             <targetReference>Loop_subflow_values</targetReference>
@@ -161,6 +161,126 @@
             </connector>
             <label>FOLLOW.1</label>
         </rules>
+        <rules>
+            <name>LMREV</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Generate_a_document_flow_LWC.selectedDocumentType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>LMREV</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>LM_Review_Flow_LMREV</targetReference>
+            </connector>
+            <label>LMREV</label>
+        </rules>
+        <rules>
+            <name>withdraw</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Generate_a_document_flow_LWC.selectedDocumentType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>withdraw</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Letter_to_probate_registry_withdrawing_grant_application_withdraw</targetReference>
+            </connector>
+            <label>withdraw</label>
+        </rules>
+        <rules>
+            <name>Search</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Generate_a_document_flow_LWC.selectedDocumentType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Search</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Calendar_search_Search</targetReference>
+            </connector>
+            <label>Search</label>
+        </rules>
+        <rules>
+            <name>FOLLOW_2</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Generate_a_document_flow_LWC.selectedDocumentType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>FOLLOW.2</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Following_on_grant_subject_testate_FOLLOW_2</targetReference>
+            </connector>
+            <label>FOLLOW.2</label>
+        </rules>
+        <rules>
+            <name>ACRKIN</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Generate_a_document_flow_LWC.selectedDocumentType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>ACRKIN</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Balance_due_to_kin_Accruals_Note_ACRKIN</targetReference>
+            </connector>
+            <label>ACRKIN</label>
+        </rules>
+        <rules>
+            <name>ACRKIN2</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Generate_a_document_flow_LWC.selectedDocumentType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>ACRKIN2</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Balance_due_to_kin_Accruals_No_VAT_ACRKIN2</targetReference>
+            </connector>
+            <label>ACRKIN2</label>
+        </rules>
+        <rules>
+            <name>ACCOUNT</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Generate_a_document_flow_LWC.selectedDocumentType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Account</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Request_to_BV_Finance_for_Estates_account_Account</targetReference>
+            </connector>
+            <label>Account</label>
+        </rules>
+        <rules>
+            <name>DEBON_1</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Generate_a_document_flow_LWC.selectedDocumentType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>DEBON.1</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>De_bonis_non_grant_application_subject_interstate_DEBON_1</targetReference>
+            </connector>
+            <label>DEBON.1</label>
+        </rules>
     </decisions>
     <environments>Default</environments>
     <interviewLabel>Generate a document {!$Flow.CurrentDateTime}</interviewLabel>
@@ -168,7 +288,7 @@
     <loops>
         <name>Loop_subflow_values</name>
         <label>Loop subflow values</label>
-        <locationX>1238</locationX>
+        <locationX>2294</locationX>
         <locationY>542</locationY>
         <collectionReference>subflowValues</collectionReference>
         <iterationOrder>Asc</iterationOrder>
@@ -201,7 +321,7 @@
     <screens>
         <name>Generate_a_document</name>
         <label>Select a document to generate</label>
-        <locationX>1238</locationX>
+        <locationX>2294</locationX>
         <locationY>134</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -235,11 +355,11 @@
     <screens>
         <name>Generated_document</name>
         <label>Generated document</label>
-        <locationX>1238</locationX>
+        <locationX>2294</locationX>
         <locationY>842</locationY>
-        <allowBack>true</allowBack>
+        <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
+        <allowPause>false</allowPause>
         <connector>
             <targetReference>Open_generated_document</targetReference>
         </connector>
@@ -281,11 +401,11 @@
     <screens>
         <name>Open_generated_document</name>
         <label>Open generated document</label>
-        <locationX>1238</locationX>
+        <locationX>2294</locationX>
         <locationY>950</locationY>
-        <allowBack>true</allowBack>
+        <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
+        <allowPause>false</allowPause>
         <fields>
             <name>opengenerateddocumentlwc</name>
             <extensionName>c:generateOpenDocumentFlow</extensionName>
@@ -300,17 +420,65 @@
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
         </fields>
-        <showFooter>true</showFooter>
+        <showFooter>false</showFooter>
         <showHeader>true</showHeader>
     </screens>
     <start>
-        <locationX>1112</locationX>
+        <locationX>2168</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Generate_a_document</targetReference>
         </connector>
     </start>
     <status>Active</status>
+    <subflows>
+        <name>Balance_due_to_kin_Accruals_No_VAT_ACRKIN2</name>
+        <label>Balance due to kin - Accruals No VAT (ACRKIN2)</label>
+        <locationX>3746</locationX>
+        <locationY>350</locationY>
+        <connector>
+            <targetReference>Loop_subflow_values</targetReference>
+        </connector>
+        <flowName>Balance_due_to_kin_Accruals_No_VAT_ACRKIN2</flowName>
+        <inputAssignments>
+            <name>recordId</name>
+            <value>
+                <elementReference>Generate_a_document_flow_LWC.caseId</elementReference>
+            </value>
+        </inputAssignments>
+        <outputAssignments>
+            <assignToReference>historyRecordId</assignToReference>
+            <name>historyRecordId</name>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>subflowValues</assignToReference>
+            <name>subflowValues</name>
+        </outputAssignments>
+    </subflows>
+    <subflows>
+        <name>Balance_due_to_kin_Accruals_Note_ACRKIN</name>
+        <label>Balance due to kin - Accruals Note (ACRKIN)</label>
+        <locationX>3482</locationX>
+        <locationY>350</locationY>
+        <connector>
+            <targetReference>Loop_subflow_values</targetReference>
+        </connector>
+        <flowName>Balance_due_to_kin_Accruals_Note_ACRKIN</flowName>
+        <inputAssignments>
+            <name>recordId</name>
+            <value>
+                <elementReference>Generate_a_document_flow_LWC.caseId</elementReference>
+            </value>
+        </inputAssignments>
+        <outputAssignments>
+            <assignToReference>historyRecordId</assignToReference>
+            <name>historyRecordId</name>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>subflowValues</assignToReference>
+            <name>subflowValues</name>
+        </outputAssignments>
+    </subflows>
     <subflows>
         <name>Blank_document_BLANK</name>
         <label>Blank document (BLANK)</label>
@@ -329,6 +497,30 @@
         <outputAssignments>
             <assignToReference>historyRecordId</assignToReference>
             <name>historyRecordId</name>
+        </outputAssignments>
+    </subflows>
+    <subflows>
+        <name>Calendar_search_Search</name>
+        <label>Calendar search (Search)</label>
+        <locationX>2954</locationX>
+        <locationY>350</locationY>
+        <connector>
+            <targetReference>Loop_subflow_values</targetReference>
+        </connector>
+        <flowName>Calendar_search_SEARCH</flowName>
+        <inputAssignments>
+            <name>recordId</name>
+            <value>
+                <elementReference>Generate_a_document_flow_LWC.caseId</elementReference>
+            </value>
+        </inputAssignments>
+        <outputAssignments>
+            <assignToReference>historyRecordId</assignToReference>
+            <name>historyRecordId</name>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>subflowValues</assignToReference>
+            <name>subflowValues</name>
         </outputAssignments>
     </subflows>
     <subflows>
@@ -353,6 +545,30 @@
         <outputAssignments>
             <assignToReference>subflowValues</assignToReference>
             <name>storedFieldValues</name>
+        </outputAssignments>
+    </subflows>
+    <subflows>
+        <name>De_bonis_non_grant_application_subject_interstate_DEBON_1</name>
+        <label>De bonis non grant application - subject interstate (DEBON.1)</label>
+        <locationX>4274</locationX>
+        <locationY>350</locationY>
+        <connector>
+            <targetReference>Loop_subflow_values</targetReference>
+        </connector>
+        <flowName>De_bonis_non_grant_application_subject_interstate_DEBON_1</flowName>
+        <inputAssignments>
+            <name>recordId</name>
+            <value>
+                <elementReference>Generate_a_document_flow_LWC.caseId</elementReference>
+            </value>
+        </inputAssignments>
+        <outputAssignments>
+            <assignToReference>historyRecordId</assignToReference>
+            <name>historyRecordId</name>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>subflowValues</assignToReference>
+            <name>subflowValues</name>
         </outputAssignments>
     </subflows>
     <subflows>
@@ -388,6 +604,30 @@
             <targetReference>Loop_subflow_values</targetReference>
         </connector>
         <flowName>Following_on_grant_subject_interstate_FOLLOW_1</flowName>
+        <inputAssignments>
+            <name>recordId</name>
+            <value>
+                <elementReference>Generate_a_document_flow_LWC.caseId</elementReference>
+            </value>
+        </inputAssignments>
+        <outputAssignments>
+            <assignToReference>historyRecordId</assignToReference>
+            <name>historyRecordId</name>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>subflowValues</assignToReference>
+            <name>subflowValues</name>
+        </outputAssignments>
+    </subflows>
+    <subflows>
+        <name>Following_on_grant_subject_testate_FOLLOW_2</name>
+        <label>Following on grant - subject testate (FOLLOW.2)</label>
+        <locationX>3218</locationX>
+        <locationY>350</locationY>
+        <connector>
+            <targetReference>Loop_subflow_values</targetReference>
+        </connector>
+        <flowName>Following_on_grant_subject_testate_FOLLOW_2</flowName>
         <inputAssignments>
             <name>recordId</name>
             <value>
@@ -452,6 +692,54 @@
         </outputAssignments>
     </subflows>
     <subflows>
+        <name>Letter_to_probate_registry_withdrawing_grant_application_withdraw</name>
+        <label>Letter to probate registry withdrawing grant application (withdraw)</label>
+        <locationX>2690</locationX>
+        <locationY>350</locationY>
+        <connector>
+            <targetReference>Loop_subflow_values</targetReference>
+        </connector>
+        <flowName>Letter_to_probate_registry_withdrawing_grant_application_WITHDRAW</flowName>
+        <inputAssignments>
+            <name>recordId</name>
+            <value>
+                <elementReference>Generate_a_document_flow_LWC.caseId</elementReference>
+            </value>
+        </inputAssignments>
+        <outputAssignments>
+            <assignToReference>historyRecordId</assignToReference>
+            <name>historyRecordId</name>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>subflowValues</assignToReference>
+            <name>subflowValues</name>
+        </outputAssignments>
+    </subflows>
+    <subflows>
+        <name>LM_Review_Flow_LMREV</name>
+        <label>LM Review Flow (LMREV)</label>
+        <locationX>2426</locationX>
+        <locationY>350</locationY>
+        <connector>
+            <targetReference>Loop_subflow_values</targetReference>
+        </connector>
+        <flowName>LM_Review_Flow</flowName>
+        <inputAssignments>
+            <name>recordId</name>
+            <value>
+                <elementReference>Generate_a_document_flow_LWC.caseId</elementReference>
+            </value>
+        </inputAssignments>
+        <outputAssignments>
+            <assignToReference>historyRecordId</assignToReference>
+            <name>historyRecordId</name>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>subflowValues</assignToReference>
+            <name>subflowValues</name>
+        </outputAssignments>
+    </subflows>
+    <subflows>
         <name>Minute_Minute</name>
         <label>Minute (Minute)</label>
         <locationX>1106</locationX>
@@ -497,6 +785,30 @@
         <outputAssignments>
             <assignToReference>subflowValues</assignToReference>
             <name>storedFieldValues</name>
+        </outputAssignments>
+    </subflows>
+    <subflows>
+        <name>Request_to_BV_Finance_for_Estates_account_Account</name>
+        <label>Request to BV Finance for Estates account (Account)</label>
+        <locationX>4010</locationX>
+        <locationY>350</locationY>
+        <connector>
+            <targetReference>Loop_subflow_values</targetReference>
+        </connector>
+        <flowName>Request_to_BV_Finance_for_Estates_account_ACCOUNT</flowName>
+        <inputAssignments>
+            <name>recordId</name>
+            <value>
+                <elementReference>Generate_a_document_flow_LWC.caseId</elementReference>
+            </value>
+        </inputAssignments>
+        <outputAssignments>
+            <assignToReference>historyRecordId</assignToReference>
+            <name>historyRecordId</name>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>subflowValues</assignToReference>
+            <name>subflowValues</name>
         </outputAssignments>
     </subflows>
     <subflows>

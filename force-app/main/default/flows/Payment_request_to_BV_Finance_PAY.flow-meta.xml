@@ -1,6 +1,85 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>61.0</apiVersion>
+    <assignments>
+        <name>Store_field_values</name>
+        <label>Store field values</label>
+        <locationX>176</locationX>
+        <locationY>998</locationY>
+        <assignmentItems>
+            <assignToReference>storedFieldValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>amountOfRemittance: {!Enter_amount_of_remittance1};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>storedFieldValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>payeeName: {!Enter_payees_name1};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>storedFieldValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>caseName: {!caseName};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>storedFieldValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>reasonForPayment: {!Reason_for_payment1};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>storedFieldValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>administering: {!administeringFormula};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>storedFieldValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>typeOfPayment: {!typeOfPaymentFormula};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>storedFieldValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>letterRef: {!Enter_invoice_letter_ref1};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>storedFieldValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>letterDate: {!Enter_invoice_letter_date1};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>storedFieldValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>officerName: {!officerName};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>storedFieldValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>officerGrade: {!officerGrade};</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Create_history_record</targetReference>
+        </connector>
+    </assignments>
     <choices>
         <name>Disbursement</name>
         <choiceText>Disbursement</choiceText>
@@ -34,6 +113,16 @@
         </value>
     </choices>
     <environments>Default</environments>
+    <formulas>
+        <name>administeringFormula</name>
+        <dataType>String</dataType>
+        <expression>IF( {!Administering1} = &quot;Yes&quot;, &quot;True&quot;, &quot;False&quot; )</expression>
+    </formulas>
+    <formulas>
+        <name>typeOfPaymentFormula</name>
+        <dataType>String</dataType>
+        <expression>IF( {!Type_of_payment1} = &quot;Estates&quot;, &quot;True&quot;, &quot;False&quot; )</expression>
+    </formulas>
     <interviewLabel>Payment request to BV Finance (PAY) {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Payment request to BV Finance (PAY)</label>
     <processMetadataValues>
@@ -55,6 +144,55 @@
         </value>
     </processMetadataValues>
     <processType>Flow</processType>
+    <recordCreates>
+        <name>Create_history_record</name>
+        <label>Create history record</label>
+        <locationX>176</locationX>
+        <locationY>1106</locationY>
+        <assignRecordIdToReference>historyRecordId</assignRecordIdToReference>
+        <inputAssignments>
+            <field>Action__c</field>
+            <value>
+                <stringValue>Payment Request to + {!caseReference}</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>BV_Case__c</field>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Date_Inserted__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Case_History__c</object>
+    </recordCreates>
+    <recordLookups>
+        <name>Get_case</name>
+        <label>Get case data</label>
+        <locationX>176</locationX>
+        <locationY>890</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Store_field_values</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <object>BV_Case__c</object>
+        <outputAssignments>
+            <assignToReference>caseReference</assignToReference>
+            <field>Name</field>
+        </outputAssignments>
+    </recordLookups>
     <screens>
         <name>Administering</name>
         <label>Administering?</label>
@@ -108,6 +246,9 @@
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Get_case</targetReference>
+        </connector>
         <fields>
             <name>Enter_invoice_letter_date1</name>
             <dataType>Date</dataType>
@@ -210,5 +351,54 @@
             <targetReference>Enter_amount_of_remittance</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
+    <variables>
+        <name>caseName</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>caseReference</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>historyRecordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>officerGrade</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>officerName</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>recordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>storedFieldValues</name>
+        <dataType>String</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
 </Flow>

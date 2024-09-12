@@ -2719,6 +2719,15 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <expression>TRIM(right({!Aliases_Template}, (LEN({!Aliases_Template}) - 1)))</expression>
     </formulas>
     <formulas>
+        <name>Disclosure_Formula</name>
+        <dataType>String</dataType>
+        <expression>IF(
+    NOT(ISBLANK({!FirstMethodDisclosure})), 
+    {!FirstMethodDisclosure}, 
+    {!Enter_method_of_disclosure}
+)</expression>
+    </formulas>
+    <formulas>
         <name>Follow_Up_Name</name>
         <dataType>String</dataType>
         <expression>{!New_FOI_Record.Foi_No__c} &amp; &quot; (FOLLOW UP)&quot;</expression>
@@ -10652,7 +10661,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                 <fieldType>Region</fieldType>
                 <fields>
                     <name>Disclosure_Review_Fields</name>
-                    <fieldText>&lt;p&gt;&lt;strong&gt;Case type selection&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Case_type_selection}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Date disclosed&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Date_disclosed}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Method of disclosure&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!FirstMethodDisclosure}&lt;/p&gt;</fieldText>
+                    <fieldText>&lt;p&gt;&lt;strong&gt;Case type selection&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Case_type_selection}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Date disclosed&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Date_disclosed}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Method of disclosure&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Disclosure_Formula}&lt;/p&gt;</fieldText>
                     <fieldType>DisplayText</fieldType>
                 </fields>
                 <inputParameters>
@@ -12718,6 +12727,13 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>Enter_method_of_disclosure</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
         <isOutput>false</isOutput>
     </variables>
     <variables>

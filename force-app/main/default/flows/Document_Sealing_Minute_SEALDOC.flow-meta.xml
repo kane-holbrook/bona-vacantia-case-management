@@ -5,7 +5,7 @@
         <name>Store_field_values</name>
         <label>Store field values</label>
         <locationX>176</locationX>
-        <locationY>566</locationY>
+        <locationY>674</locationY>
         <assignmentItems>
             <assignToReference>storedFieldValues</assignToReference>
             <operator>Add</operator>
@@ -17,7 +17,7 @@
             <assignToReference>storedFieldValues</assignToReference>
             <operator>Add</operator>
             <value>
-                <stringValue>numberOfShares: {!OK};</stringValue>
+                <stringValue>numberOfShares: {!SHA10};</stringValue>
             </value>
         </assignmentItems>
         <assignmentItems>
@@ -77,7 +77,7 @@
         <name>Create_a_history_record</name>
         <label>Create a history record</label>
         <locationX>176</locationX>
-        <locationY>674</locationY>
+        <locationY>782</locationY>
         <assignRecordIdToReference>historyRecordId</assignRecordIdToReference>
         <connector>
             <targetReference>Create_a_task_record</targetReference>
@@ -106,7 +106,7 @@
         <name>Create_a_task_record</name>
         <label>Create a task record</label>
         <locationX>176</locationX>
-        <locationY>782</locationY>
+        <locationY>890</locationY>
         <inputAssignments>
             <field>Assigned_To__c</field>
             <value>
@@ -150,7 +150,7 @@
         <name>Get_case_data</name>
         <label>Get case data</label>
         <locationX>176</locationX>
-        <locationY>350</locationY>
+        <locationY>458</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Get_case_details_case_details</targetReference>
@@ -177,7 +177,7 @@
         <name>Get_case_details_case_details</name>
         <label>Get case details (case details)</label>
         <locationX>176</locationX>
-        <locationY>458</locationY>
+        <locationY>566</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Store_field_values</targetReference>
@@ -226,7 +226,7 @@
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Get_case_data</targetReference>
+            <targetReference>Stocks_Shares</targetReference>
         </connector>
         <fields>
             <name>Select_as_required1</name>
@@ -234,6 +234,27 @@
             <dataType>String</dataType>
             <fieldText>Select as required</fieldText>
             <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Stocks_Shares</name>
+        <label>Stocks/Shares</label>
+        <locationX>176</locationX>
+        <locationY>350</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Get_case_data</targetReference>
+        </connector>
+        <fields>
+            <name>SHA10</name>
+            <dataType>String</dataType>
+            <fieldText>Number of Shares</fieldText>
+            <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
         </fields>
         <showFooter>true</showFooter>

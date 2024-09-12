@@ -266,6 +266,82 @@
         </value>
     </processMetadataValues>
     <processType>Flow</processType>
+    <recordCreates>
+        <name>Copy_2_of_Create_a_history_record</name>
+        <label>Create a history record</label>
+        <locationX>710</locationX>
+        <locationY>1190</locationY>
+        <inputAssignments>
+            <field>Action__c</field>
+            <value>
+                <stringValue>HoD Approve: Cleared for Publishing set as Yes</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>BV_Case__c</field>
+            <value>
+                <elementReference>caseId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Case_Officer__c</field>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Date_Inserted__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Last_updated__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Case_History__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordCreates>
+        <name>Create_a_history_record</name>
+        <label>Create a history record</label>
+        <locationX>94</locationX>
+        <locationY>1190</locationY>
+        <inputAssignments>
+            <field>Action__c</field>
+            <value>
+                <stringValue>HoD Approve: Cleared for Publishing set as No</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>BV_Case__c</field>
+            <value>
+                <elementReference>caseId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Case_Officer__c</field>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Date_Inserted__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Last_updated__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Case_History__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
     <recordLookups>
         <name>Copy_1_of_Get_Hidden_Screen_Record</name>
         <label>Get Hidden Screen Record</label>
@@ -361,6 +437,9 @@
         <label>Update hidden screen</label>
         <locationX>710</locationX>
         <locationY>1082</locationY>
+        <connector>
+            <targetReference>Copy_2_of_Create_a_history_record</targetReference>
+        </connector>
         <inputReference>ClearedForPublishingYesCollection</inputReference>
     </recordUpdates>
     <recordUpdates>
@@ -368,6 +447,9 @@
         <label>Update hidden screen</label>
         <locationX>94</locationX>
         <locationY>1082</locationY>
+        <connector>
+            <targetReference>Create_a_history_record</targetReference>
+        </connector>
         <inputReference>ClearedForPublishingCollection</inputReference>
     </recordUpdates>
     <screens>
@@ -423,7 +505,7 @@
             <targetReference>Get_Hidden_Screen_Record</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <variables>
         <name>caseId</name>
         <dataType>String</dataType>

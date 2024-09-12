@@ -1,6 +1,185 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>61.0</apiVersion>
+    <assignments>
+        <name>Store_field_values_for_outcome_no</name>
+        <label>Store field values for outcome no</label>
+        <locationX>314</locationX>
+        <locationY>674</locationY>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>forename: {!caseForename};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>surname: {!caseSurname};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>caseReference: {!caseReference};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>adminCosts: {!adminCosts};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>vatFormula: {!vatFormula};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>conveyancingFormula: {!conveyancingFormula};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>conveyancingCosts: {!conveyancingCosts};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>litigationFormula: {!litigationFormula};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>litigationCosts: {!litigationCosts};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>username: {!username};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>currentDate: {!currentDate};</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Copy_2_of_Create_history_record</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Store_field_values_for_outcome_yes</name>
+        <label>Store field values for outcome yes</label>
+        <locationX>50</locationX>
+        <locationY>782</locationY>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>forename: {!caseForename};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>surname: {!caseSurname};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>caseReference: {!caseReference};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>adminCosts: {!adminCosts};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>vatFormula: {!vatFormula};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>conveyancingFormula: {!conveyancingFormula};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>conveyancingCosts: {!conveyancingCosts};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>litigationFormula: {!litigationFormula};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>litigationCosts: {!litigationCosts};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>username: {!username};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>currentDate: {!currentDate};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>FE01: {!Enter_date_of_Certainty_search1};</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Create_history_record</targetReference>
+        </connector>
+    </assignments>
     <choices>
         <name>No</name>
         <choiceText>No</choiceText>
@@ -63,6 +242,32 @@
         </rules>
     </decisions>
     <environments>Default</environments>
+    <formulas>
+        <name>conveyancingFormula</name>
+        <dataType>Boolean</dataType>
+        <expression>if({!conveyancingCosts}&gt;0.00,True,False)</expression>
+    </formulas>
+    <formulas>
+        <name>currentDate</name>
+        <dataType>String</dataType>
+        <expression>TEXT(TODAY())</expression>
+    </formulas>
+    <formulas>
+        <name>daysAdd14</name>
+        <dataType>Date</dataType>
+        <expression>TODAY()+14</expression>
+    </formulas>
+    <formulas>
+        <name>litigationFormula</name>
+        <dataType>Boolean</dataType>
+        <expression>if({!litigationCosts}&gt;0.00,True,False)</expression>
+    </formulas>
+    <formulas>
+        <name>vatFormula</name>
+        <dataType>Number</dataType>
+        <expression>{!adminCosts}*0.2</expression>
+        <scale>2</scale>
+    </formulas>
     <interviewLabel>Request to BV Finance for Estates account (ACCOUNT) {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Request to BV Finance for Estates account (ACCOUNT)</label>
     <processMetadataValues>
@@ -84,6 +289,304 @@
         </value>
     </processMetadataValues>
     <processType>Flow</processType>
+    <recordCreates>
+        <name>Copy_1_of_Create_task_record</name>
+        <label>Copy 1 of Create task record</label>
+        <locationX>314</locationX>
+        <locationY>890</locationY>
+        <inputAssignments>
+            <field>Assigned_To__c</field>
+            <value>
+                <elementReference>caseOfficer</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>BV_Case_Lookup__c</field>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Date_Inserted__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Due_Date__c</field>
+            <value>
+                <elementReference>daysAdd14</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Name</field>
+            <value>
+                <stringValue>Estate account received?</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Priority__c</field>
+            <value>
+                <stringValue>High</stringValue>
+            </value>
+        </inputAssignments>
+        <object>BV_Task__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordCreates>
+        <name>Copy_2_of_Create_history_record</name>
+        <label>Copy 2 of Create history record</label>
+        <locationX>314</locationX>
+        <locationY>782</locationY>
+        <connector>
+            <targetReference>Copy_1_of_Create_task_record</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>Action__c</field>
+            <value>
+                <stringValue>Asked BV Finance for an estate account</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>BV_Case__c</field>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Case_Officer__c</field>
+            <value>
+                <elementReference>caseOfficer</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Date_Inserted__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Case_History__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordCreates>
+        <name>Create_history_record</name>
+        <label>Create history record</label>
+        <locationX>50</locationX>
+        <locationY>890</locationY>
+        <connector>
+            <targetReference>Create_task_record</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>Action__c</field>
+            <value>
+                <stringValue>Asked BV Finance for an estate account</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>BV_Case__c</field>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Case_Officer__c</field>
+            <value>
+                <elementReference>caseOfficer</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Date_Inserted__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Case_History__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordCreates>
+        <name>Create_task_record</name>
+        <label>Create task record</label>
+        <locationX>50</locationX>
+        <locationY>998</locationY>
+        <inputAssignments>
+            <field>Assigned_To__c</field>
+            <value>
+                <elementReference>caseOfficer</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>BV_Case_Lookup__c</field>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Date_Inserted__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Due_Date__c</field>
+            <value>
+                <elementReference>daysAdd14</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Name</field>
+            <value>
+                <stringValue>Estate account received?</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Priority__c</field>
+            <value>
+                <stringValue>High</stringValue>
+            </value>
+        </inputAssignments>
+        <object>BV_Task__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordLookups>
+        <name>Copy_1_of_Get_case</name>
+        <label>Copy 1 of Get case</label>
+        <locationX>314</locationX>
+        <locationY>458</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Copy_1_of_Get_user</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <object>BV_Case__c</object>
+        <outputAssignments>
+            <assignToReference>caseOfficer</assignToReference>
+            <field>Case_Officer__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>conveyancingCosts</assignToReference>
+            <field>Conveyancing_Costs__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>caseForename</assignToReference>
+            <field>Forenames__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>litigationCosts</assignToReference>
+            <field>Litigation_Costs_Inc_Vat__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>caseReference</assignToReference>
+            <field>Name</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>caseSurname</assignToReference>
+            <field>Surname__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>adminCosts</assignToReference>
+            <field>Total_Administration_Costs__c</field>
+        </outputAssignments>
+    </recordLookups>
+    <recordLookups>
+        <name>Copy_1_of_Get_user</name>
+        <label>Copy 1 of Get user</label>
+        <locationX>314</locationX>
+        <locationY>566</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Store_field_values_for_outcome_no</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Profile.Id</elementReference>
+            </value>
+        </filters>
+        <object>User</object>
+        <outputAssignments>
+            <assignToReference>username</assignToReference>
+            <field>Username</field>
+        </outputAssignments>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_case</name>
+        <label>Get case</label>
+        <locationX>50</locationX>
+        <locationY>566</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_user</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <object>BV_Case__c</object>
+        <outputAssignments>
+            <assignToReference>caseOfficer</assignToReference>
+            <field>Case_Officer__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>conveyancingCosts</assignToReference>
+            <field>Conveyancing_Costs__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>caseForename</assignToReference>
+            <field>Forenames__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>litigationCosts</assignToReference>
+            <field>Litigation_Costs_Inc_Vat__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>caseReference</assignToReference>
+            <field>Name</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>caseSurname</assignToReference>
+            <field>Surname__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>adminCosts</assignToReference>
+            <field>Total_Administration_Costs__c</field>
+        </outputAssignments>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_user</name>
+        <label>Get user</label>
+        <locationX>50</locationX>
+        <locationY>674</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Store_field_values_for_outcome_yes</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Profile.Id</elementReference>
+            </value>
+        </filters>
+        <object>User</object>
+        <outputAssignments>
+            <assignToReference>username</assignToReference>
+            <field>Username</field>
+        </outputAssignments>
+    </recordLookups>
     <screens>
         <name>Copy_1_of_You_must_calculate_costs_or_ensure_details_entered_on_costs_screen_bef</name>
         <label>Copy 1 of You must calculate costs or ensure details entered on costs screen before producing this document</label>
@@ -92,6 +595,9 @@
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Copy_1_of_Get_case</targetReference>
+        </connector>
         <fields>
             <name>Copy_1_of_Youmustcalculatecostsorensuredetailsenteredoncostsscreenbeforeproduc1</name>
             <choiceReferences>OK</choiceReferences>
@@ -155,6 +661,9 @@
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Get_case</targetReference>
+        </connector>
         <fields>
             <name>Youmustcalculatecostsorensuredetailsenteredoncostsscreenbeforeproduc1</name>
             <choiceReferences>OK</choiceReferences>
@@ -173,5 +682,85 @@
             <targetReference>Was_a_Certainty_Will_search_completed</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
+    <variables>
+        <name>adminCosts</name>
+        <dataType>Number</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <scale>2</scale>
+    </variables>
+    <variables>
+        <name>caseForename</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>caseOfficer</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>caseReference</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>caseSurname</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>conveyancingCosts</name>
+        <dataType>Number</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <scale>2</scale>
+    </variables>
+    <variables>
+        <name>historyRecordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>litigationCosts</name>
+        <dataType>Number</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <scale>2</scale>
+    </variables>
+    <variables>
+        <name>recordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>subflowValues</name>
+        <dataType>String</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>username</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
 </Flow>
