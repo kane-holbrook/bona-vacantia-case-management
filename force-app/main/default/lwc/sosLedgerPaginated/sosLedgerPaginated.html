@@ -10,49 +10,9 @@
                                    onclick={toggleFilterSidebar}>
             </lightning-button-icon>
         </header>
-        <div class="slds-grid slds-wrap" style="background-color:#fafaf9; position:relative; overflow:hidden;">
-            <!-- Filter Sidebar (Box) -->
-            <template if:true={isFilterSidebarOpen}>
-                <div class="slds-box slds-theme_default slds-p-around_medium" style="position: absolute; top: 0; left: 0; right: 0; z-index: 999;">
-                    <h2 class="slds-text-heading_small">Filter</h2>
-                    <lightning-accordion allow-multiple-sections-open>
-                        <lightning-accordion-section label="Status">
-                            <div class="slds-form-element__control">
-                                <lightning-checkbox-group name="statusFilter"
-                                                          label="Select Status"
-                                                          options={statusOptions}
-                                                          value={statusFilter}
-                                                          onchange={handleStatusChange}>
-                                </lightning-checkbox-group>
-                            </div>
-                        </lightning-accordion-section>
-                        <lightning-accordion-section label="Date Range">
-                            <div class="slds-form-element__control">
-                                <lightning-input type="date" label="From Date" value={fromDate} onchange={handleFromDateChange}></lightning-input>
-                                <lightning-input type="date" label="To Date" value={toDate} onchange={handleToDateChange}></lightning-input>
-                            </div>
-                            <div class="slds-m-bottom_small slds-m-top_small">
-                                <lightning-button label="Clear Date Filters" onclick={clearDateFilters}></lightning-button>
-                            </div>
-                        </lightning-accordion-section>
-                        <lightning-accordion-section label="Description">
-                            <div class="slds-form-element__control">
-                                <lightning-input type="text" label="Description" onchange={handleDescriptionChange}></lightning-input>
-                            </div>
-                        </lightning-accordion-section>
-                        <lightning-accordion-section label="Amount">
-                            <div class="slds-form-element__control">
-                                <lightning-input type="number" label="Amount" onchange={handleAmountChange}></lightning-input>
-                            </div>
-                        </lightning-accordion-section>
-                    </lightning-accordion>
-                    <div class="slds-m-top_medium">
-                        <lightning-button label="Close" onclick={toggleFilterSidebar}></lightning-button>
-                    </div>
-                </div>
-            </template>
+        <div class="content-container">
             <!-- Main Content Area -->
-            <div class="slds-col slds-p-around_medium" style={getTableContainerStyle}>
+            <div class={mainContentClass}>
                 <!-- Ledger Table -->
                 <template if:true={isLoading}>
                     <div class="slds-align_absolute-center slds-m-around_medium">
@@ -114,6 +74,55 @@
                             Next
                         </button>
                     </div>
+                </div>
+            </div>
+
+            <!-- Filter Sidebar -->
+            <div class={filterSidebarClass}>
+                <div class="slds-panel__header">
+                    <h2 class="slds-panel__header-title slds-text-heading_small slds-truncate" title="Filter">Filter</h2>
+                    <div class="slds-panel__header-actions">
+                        <lightning-button-icon icon-name="utility:close"
+                                               variant="bare"
+                                               size="small"
+                                               title="Collapse Filter"
+                                               onclick={toggleFilterSidebar}
+                                               class="slds-panel__close">
+                        </lightning-button-icon>
+                    </div>
+                </div>
+                <div class="slds-panel__body">
+                    <lightning-accordion allow-multiple-sections-open>
+                        <lightning-accordion-section label="Status">
+                            <div class="slds-form-element__control">
+                                <lightning-checkbox-group name="statusFilter"
+                                                          label="Select Status"
+                                                          options={statusOptions}
+                                                          value={statusFilter}
+                                                          onchange={handleStatusChange}>
+                                </lightning-checkbox-group>
+                            </div>
+                        </lightning-accordion-section>
+                        <lightning-accordion-section label="Date Range">
+                            <div class="slds-form-element__control">
+                                <lightning-input type="date" label="From Date" value={fromDate} onchange={handleFromDateChange}></lightning-input>
+                                <lightning-input type="date" label="To Date" value={toDate} onchange={handleToDateChange}></lightning-input>
+                            </div>
+                            <div class="slds-m-bottom_small slds-m-top_small">
+                                <lightning-button label="Clear Date Filters" onclick={clearDateFilters}></lightning-button>
+                            </div>
+                        </lightning-accordion-section>
+                        <lightning-accordion-section label="Description">
+                            <div class="slds-form-element__control">
+                                <lightning-input type="text" label="Description" onchange={handleDescriptionChange}></lightning-input>
+                            </div>
+                        </lightning-accordion-section>
+                        <lightning-accordion-section label="Amount">
+                            <div class="slds-form-element__control">
+                                <lightning-input type="number" label="Amount" onchange={handleAmountChange}></lightning-input>
+                            </div>
+                        </lightning-accordion-section>
+                    </lightning-accordion>
                 </div>
             </div>
         </div>

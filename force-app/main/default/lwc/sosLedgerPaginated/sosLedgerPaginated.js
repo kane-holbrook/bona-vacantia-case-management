@@ -409,4 +409,12 @@ export default class SosLedger extends LightningElement {
             class: `slds-button ${this.currentPage === i + 1 ? 'slds-button_brand' : 'slds-button_neutral'}`
         }));
     }
+
+    get mainContentClass() {
+        return this.isFilterSidebarOpen ? 'main-content main-content-reduced' : 'main-content';
+    }
+
+    get filterSidebarClass() {
+        return this.isFilterSidebarOpen ? 'filter-sidebar filter-sidebar-visible' : 'filter-sidebar';
+    }
 }
