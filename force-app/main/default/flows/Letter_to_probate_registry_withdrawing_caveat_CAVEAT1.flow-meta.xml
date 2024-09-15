@@ -1,6 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>61.0</apiVersion>
+    <assignments>
+        <name>Store_field_values_for_outcome_yes</name>
+        <label>Store field values for outcome yes</label>
+        <locationX>176</locationX>
+        <locationY>350</locationY>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>voucherNumber: {!Enter_voucher_number1};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>dateOfApplication: {!Enter_date_of_caveat_application1};</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Create_history_records</targetReference>
+        </connector>
+    </assignments>
     <choices>
         <name>No</name>
         <choiceText>No</choiceText>
@@ -17,43 +40,6 @@
             <stringValue>Yes</stringValue>
         </value>
     </choices>
-    <decisions>
-        <name>Caveat_voucher_received2</name>
-        <label>Caveat voucher received?</label>
-        <locationX>314</locationX>
-        <locationY>242</locationY>
-        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
-        <rules>
-            <name>Selected_Yes</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Caveat_voucher_received1</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <elementReference>Yes</elementReference>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Enter_voucher_number</targetReference>
-            </connector>
-            <label>Selected Yes</label>
-        </rules>
-        <rules>
-            <name>Selected_No</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Caveat_voucher_received1</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <elementReference>No</elementReference>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Enter_date_of_caveat_application</targetReference>
-            </connector>
-            <label>Selected No</label>
-        </rules>
-    </decisions>
     <environments>Default</environments>
     <interviewLabel>Letter to probate registry withdrawing caveat (CAVEAT1) {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Letter to probate registry withdrawing caveat (CAVEAT1)</label>
@@ -76,37 +62,49 @@
         </value>
     </processMetadataValues>
     <processType>Flow</processType>
+    <recordCreates>
+        <name>Create_history_records</name>
+        <label>Create history records</label>
+        <locationX>176</locationX>
+        <locationY>458</locationY>
+        <assignRecordIdToReference>historyRecordId</assignRecordIdToReference>
+        <inputAssignments>
+            <field>Action__c</field>
+            <value>
+                <stringValue>Wrote to Probate Registry to withdraw Caveat</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>BV_Case__c</field>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Date_Inserted__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Last_updated__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Case_History__c</object>
+    </recordCreates>
     <screens>
-        <name>Caveat_voucher_received</name>
-        <label>Caveat voucher received?</label>
-        <locationX>314</locationX>
-        <locationY>134</locationY>
+        <name>Enter_date_of_caveat_application</name>
+        <label>Enter date of caveat application</label>
+        <locationX>176</locationX>
+        <locationY>242</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Caveat_voucher_received2</targetReference>
+            <targetReference>Store_field_values_for_outcome_yes</targetReference>
         </connector>
-        <fields>
-            <name>Caveat_voucher_received1</name>
-            <choiceReferences>Yes</choiceReferences>
-            <choiceReferences>No</choiceReferences>
-            <dataType>String</dataType>
-            <fieldText>Caveat voucher received?</fieldText>
-            <fieldType>RadioButtons</fieldType>
-            <isRequired>false</isRequired>
-        </fields>
-        <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
-    </screens>
-    <screens>
-        <name>Enter_date_of_caveat_application</name>
-        <label>Enter date of caveat application</label>
-        <locationX>314</locationX>
-        <locationY>350</locationY>
-        <allowBack>true</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
         <fields>
             <name>Enter_date_of_caveat_application1</name>
             <dataType>Date</dataType>
@@ -120,11 +118,14 @@
     <screens>
         <name>Enter_voucher_number</name>
         <label>Enter voucher number</label>
-        <locationX>50</locationX>
-        <locationY>350</locationY>
+        <locationX>176</locationX>
+        <locationY>134</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Enter_date_of_caveat_application</targetReference>
+        </connector>
         <fields>
             <name>Enter_voucher_number1</name>
             <dataType>Number</dataType>
@@ -137,11 +138,32 @@
         <showHeader>true</showHeader>
     </screens>
     <start>
-        <locationX>188</locationX>
+        <locationX>50</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Caveat_voucher_received</targetReference>
+            <targetReference>Enter_voucher_number</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
+    <variables>
+        <name>historyRecordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>recordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>subflowValues</name>
+        <dataType>String</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
 </Flow>

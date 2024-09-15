@@ -4,7 +4,7 @@
     <assignments>
         <name>setValuesForDocGen</name>
         <label>Set valuesForDocGen</label>
-        <locationX>2382</locationX>
+        <locationX>2514</locationX>
         <locationY>650</locationY>
         <assignmentItems>
             <assignToReference>valuesForDocGen</assignToReference>
@@ -20,7 +20,7 @@
     <decisions>
         <name>Document_Type_to_Generate</name>
         <label>Document Type to Generate</label>
-        <locationX>2294</locationX>
+        <locationX>2426</locationX>
         <locationY>242</locationY>
         <defaultConnector>
             <targetReference>Loop_subflow_values</targetReference>
@@ -281,6 +281,21 @@
             </connector>
             <label>DEBON.1</label>
         </rules>
+        <rules>
+            <name>Caveat1</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Generate_a_document_flow_LWC.selectedDocumentType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Caveat1</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Letter_to_probate_registry_withdrawing_caveat_Caveat1</targetReference>
+            </connector>
+            <label>Caveat1</label>
+        </rules>
     </decisions>
     <environments>Default</environments>
     <interviewLabel>Generate a document {!$Flow.CurrentDateTime}</interviewLabel>
@@ -288,7 +303,7 @@
     <loops>
         <name>Loop_subflow_values</name>
         <label>Loop subflow values</label>
-        <locationX>2294</locationX>
+        <locationX>2426</locationX>
         <locationY>542</locationY>
         <collectionReference>subflowValues</collectionReference>
         <iterationOrder>Asc</iterationOrder>
@@ -321,7 +336,7 @@
     <screens>
         <name>Generate_a_document</name>
         <label>Select a document to generate</label>
-        <locationX>2294</locationX>
+        <locationX>2426</locationX>
         <locationY>134</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -355,7 +370,7 @@
     <screens>
         <name>Generated_document</name>
         <label>Generated document</label>
-        <locationX>2294</locationX>
+        <locationX>2426</locationX>
         <locationY>842</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
@@ -401,7 +416,7 @@
     <screens>
         <name>Open_generated_document</name>
         <label>Open generated document</label>
-        <locationX>2294</locationX>
+        <locationX>2426</locationX>
         <locationY>950</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
@@ -424,7 +439,7 @@
         <showHeader>true</showHeader>
     </screens>
     <start>
-        <locationX>2168</locationX>
+        <locationX>2300</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Generate_a_document</targetReference>
@@ -689,6 +704,30 @@
         <outputAssignments>
             <assignToReference>subflowValues</assignToReference>
             <name>storedFieldValues</name>
+        </outputAssignments>
+    </subflows>
+    <subflows>
+        <name>Letter_to_probate_registry_withdrawing_caveat_Caveat1</name>
+        <label>Letter to probate registry withdrawing caveat (Caveat1)</label>
+        <locationX>4538</locationX>
+        <locationY>350</locationY>
+        <connector>
+            <targetReference>Loop_subflow_values</targetReference>
+        </connector>
+        <flowName>Letter_to_probate_registry_withdrawing_caveat_CAVEAT1</flowName>
+        <inputAssignments>
+            <name>recordId</name>
+            <value>
+                <elementReference>Generate_a_document_flow_LWC.caseId</elementReference>
+            </value>
+        </inputAssignments>
+        <outputAssignments>
+            <assignToReference>historyRecordId</assignToReference>
+            <name>historyRecordId</name>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>subflowValues</assignToReference>
+            <name>subflowValues</name>
         </outputAssignments>
     </subflows>
     <subflows>
