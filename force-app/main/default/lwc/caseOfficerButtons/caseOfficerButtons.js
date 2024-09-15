@@ -636,14 +636,14 @@ export default class CaseOfficerButtons extends LightningElement {
         if (flowOutput['requireCaroline'] === 'No') {
             emailBody = `
                 <p>I approve this FOI response.</p>
-                <p>This does not need to be seen by Caroline.</p>
+                <p>This does not need to be seen by Head of Division.</p>
                 <p>Regards,</p>
                 <p>${this.currentUserFullName || 'FOI Team'}</p>
             `;
         } else {
             emailBody = `
                 <p>${message} ${tf06}</p>
-                <p>Please use the 'Send to HoD' button on the Front Cover for Caroline's approval.</p>
+                <p>Please use the 'Send to HoD' button on the Front Cover for Head of Division's approval.</p>
                 <p>Regards,</p>
                 <p>${this.currentUserFullName || 'FOI Team'}</p>
             `;
