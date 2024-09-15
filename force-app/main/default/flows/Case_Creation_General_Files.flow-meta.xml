@@ -1395,7 +1395,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <name>Create_General_Records</name>
         <label>Create General Records</label>
         <locationX>182</locationX>
-        <locationY>1190</locationY>
+        <locationY>1298</locationY>
         <connector>
             <targetReference>Add_Documents</targetReference>
         </connector>
@@ -1610,7 +1610,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <name>Add_Documents</name>
         <label>Add Documents</label>
         <locationX>182</locationX>
-        <locationY>1298</locationY>
+        <locationY>1406</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1635,7 +1635,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <name>Case_Summary_General</name>
         <label>Case Summary</label>
         <locationX>182</locationX>
-        <locationY>1082</locationY>
+        <locationY>1190</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1833,7 +1833,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Case_Summary_General</targetReference>
+            <targetReference>Review_and_Confirm</targetReference>
         </connector>
         <fields>
             <name>Name_of_File_General</name>
@@ -1945,8 +1945,14 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                 <fields>
                     <name>Informant_Method_General</name>
                     <dataType>String</dataType>
+                    <defaultValue>
+                        <elementReference>DisclosureMethod</elementReference>
+                    </defaultValue>
                     <fieldText>Method</fieldText>
                     <fieldType>InputField</fieldType>
+                    <isDisabled>
+                        <booleanValue>true</booleanValue>
+                    </isDisabled>
                     <isRequired>false</isRequired>
                 </fields>
                 <inputParameters>
@@ -2083,6 +2089,89 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             <fieldText>Method of Disclosure</fieldText>
             <fieldType>DropdownBox</fieldType>
             <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Review_and_Confirm</name>
+        <label>Review and Confirm</label>
+        <locationX>182</locationX>
+        <locationY>1082</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Case_Summary_General</targetReference>
+        </connector>
+        <fields>
+            <name>Disclosure_Details</name>
+            <fieldText>Disclosure Details</fieldText>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>Disclosure_Details_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <name>DT_DD</name>
+                    <fieldText>&lt;p&gt;&lt;strong&gt;Date Disclosed&lt;/strong&gt;&lt;span class=&quot;ql-cursor&quot;&gt;﻿&lt;/span&gt;&lt;/p&gt;&lt;p&gt;{!Enter_Disclosure_Date_General}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Method of Disclosure&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!DisclosureMethod}&lt;/p&gt;</fieldText>
+                    <fieldType>DisplayText</fieldType>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>12</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithHeader</regionContainerType>
+        </fields>
+        <fields>
+            <name>Informant_Details</name>
+            <fieldText>Informant Details</fieldText>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>Informant_Details_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <name>DT_ID</name>
+                    <fieldText>&lt;p&gt;&lt;strong&gt;Informant Name&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Informant_General}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Informant Address&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Informant_Address_Line_1_General}&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;{!Informant_Address_Line_2_General}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;{!Informant_Address_Line_3_General}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;{!Informant_Address_Line_4_General}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;{!Informant_Postcode_General}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Informant Contact Name&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Informant_Contact_Name_General}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Informant Type&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Informant_Type_General}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Informant &lt;/strong&gt;&lt;strong&gt;Reference&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Informant_Ref_General}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Informant Salutation&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Informant_Salutation_General}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Informant Telephone&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Telephone_informant_field}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Informant Mobile Number&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Mobile_informant_field}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Informant Fax Number&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Informant_Fax_Number_General}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Informant Email&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Informant_Email_Address_General}&lt;/p&gt;</fieldText>
+                    <fieldType>DisplayText</fieldType>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>12</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithHeader</regionContainerType>
+        </fields>
+        <fields>
+            <name>File_Details</name>
+            <fieldText>File Details</fieldText>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>File_Details_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <name>File_Details_DT</name>
+                    <fieldText>&lt;p&gt;&lt;strong&gt;Name of File&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Name_of_File_General}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Date of Death / Dissolution&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Date_of_Death_Dissolution_General}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Other Information&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Other_Information_General}&lt;/p&gt;</fieldText>
+                    <fieldType>DisplayText</fieldType>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>12</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithHeader</regionContainerType>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>

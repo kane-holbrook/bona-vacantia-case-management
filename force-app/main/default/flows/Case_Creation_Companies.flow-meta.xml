@@ -314,6 +314,30 @@
         </value>
     </choices>
     <choices>
+        <name>Cashplus</name>
+        <choiceText>Cashplus</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Cashplus</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Cater_Allen</name>
+        <choiceText>Cater Allen</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Cater Allen</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Clydesdale</name>
+        <choiceText>Clydesdale</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Clydesdale</stringValue>
+        </value>
+    </choices>
+    <choices>
         <name>Co_operative_Bank</name>
         <choiceText>Co-operative Bank</choiceText>
         <dataType>String</dataType>
@@ -762,6 +786,14 @@
         </value>
     </choices>
     <choices>
+        <name>HMRC</name>
+        <choiceText>HMRC</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>HMRC</stringValue>
+        </value>
+    </choices>
+    <choices>
         <name>HSBC</name>
         <choiceText>HSBC</choiceText>
         <dataType>String</dataType>
@@ -775,6 +807,14 @@
         <dataType>String</dataType>
         <value>
             <stringValue>Husband</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>ICICI_Bank</name>
+        <choiceText>ICICI Bank</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>ICICI Bank</stringValue>
         </value>
     </choices>
     <choices>
@@ -919,6 +959,22 @@
         <dataType>String</dataType>
         <value>
             <stringValue>Mesdames</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Metro</name>
+        <choiceText>Metro</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Metro</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Mettle</name>
+        <choiceText>Mettle</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Mettle</stringValue>
         </value>
     </choices>
     <choices>
@@ -1271,6 +1327,14 @@
         </value>
     </choices>
     <choices>
+        <name>Starling</name>
+        <choiceText>Starling</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Starling</stringValue>
+        </value>
+    </choices>
+    <choices>
         <name>Status_test</name>
         <choiceText>Status test</choiceText>
         <dataType>String</dataType>
@@ -1284,6 +1348,14 @@
         <dataType>String</dataType>
         <value>
             <stringValue>Surviving Civil Partner</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Tide</name>
+        <choiceText>Tide</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Tide</stringValue>
         </value>
     </choices>
     <choices>
@@ -1340,6 +1412,14 @@
         <dataType>String</dataType>
         <value>
             <stringValue>Widower</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Worldpay</name>
+        <choiceText>Worldpay</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Worldpay</stringValue>
         </value>
     </choices>
     <choices>
@@ -1486,7 +1566,7 @@
         <locationX>1854</locationX>
         <locationY>2462</locationY>
         <defaultConnector>
-            <targetReference>Case_Officer_Selection_Comp</targetReference>
+            <targetReference>Review_Screen_Company_Case_Creation</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>No</defaultConnectorLabel>
         <rules>
@@ -1945,7 +2025,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <name>Create_Bank_Building_Society_Record</name>
         <label>Create Bank / Building Society Record</label>
         <locationX>182</locationX>
-        <locationY>2162</locationY>
+        <locationY>2054</locationY>
         <connector>
             <targetReference>Create_CB_History_Record</targetReference>
         </connector>
@@ -1986,7 +2066,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <name>Create_Case_Officer_Record_Comp</name>
         <label>Create Case Officer Record</label>
         <locationX>1854</locationX>
-        <locationY>3302</locationY>
+        <locationY>3410</locationY>
         <inputAssignments>
             <field>BV_Case__c</field>
             <value>
@@ -2038,7 +2118,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <name>Create_CB_History_Record</name>
         <label>Create History Record</label>
         <locationX>182</locationX>
-        <locationY>2270</locationY>
+        <locationY>2162</locationY>
         <inputAssignments>
             <field>Action__c</field>
             <value>
@@ -2399,7 +2479,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <name>Create_Company_Record</name>
         <label>Create Company Record</label>
         <locationX>1854</locationX>
-        <locationY>2978</locationY>
+        <locationY>3086</locationY>
         <connector>
             <targetReference>Add_Documents_Comp_Screen</targetReference>
         </connector>
@@ -2728,7 +2808,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <name>Create_Company_Referral_Record</name>
         <label>Create Company Referral Record</label>
         <locationX>182</locationX>
-        <locationY>1946</locationY>
+        <locationY>1838</locationY>
         <connector>
             <targetReference>Add_Documents_CB</targetReference>
         </connector>
@@ -2835,7 +2915,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <name>Former_Names_Record</name>
         <label>Former Names Record</label>
         <locationX>1854</locationX>
-        <locationY>3194</locationY>
+        <locationY>3302</locationY>
         <connector>
             <targetReference>Create_Case_Officer_Record_Comp</targetReference>
         </connector>
@@ -2848,37 +2928,37 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <inputAssignments>
             <field>Date_Changed_To_Current_Name__c</field>
             <value>
-                <elementReference>Date_change_Current_Name_Comp</elementReference>
+                <elementReference>FN_Date_change_Current_Name_Comp</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
             <field>Date_Changed_To_Former_Name__c</field>
             <value>
-                <elementReference>Date_change_Former_Name_Comp</elementReference>
+                <elementReference>FN_Date_change_Former_Name_Comp</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
             <field>Date_Changed_To_Previous_Name__c</field>
             <value>
-                <elementReference>Date_change_Previous_Name_Comp</elementReference>
+                <elementReference>FN_Date_change_Previous_Name_Comp</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
             <field>Former_Name__c</field>
             <value>
-                <elementReference>Former_Name_Comp</elementReference>
+                <elementReference>FN_Former_Name_Comp</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
             <field>Name_At_Incorporation__c</field>
             <value>
-                <elementReference>Name_at_Incorporation_Comp</elementReference>
+                <elementReference>FN_Name_at_Incorporation_Comp</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
             <field>Previous_Name__c</field>
             <value>
-                <elementReference>Previous_Name_Comp</elementReference>
+                <elementReference>FN_Previous_Name_Comp</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -3088,7 +3168,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <name>Add_Documents_CB</name>
         <label>Add Documents</label>
         <locationX>182</locationX>
-        <locationY>2054</locationY>
+        <locationY>1946</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -3116,7 +3196,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <name>Add_Documents_Comp_Screen</name>
         <label>Add Documents</label>
         <locationX>1854</locationX>
-        <locationY>3086</locationY>
+        <locationY>3194</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -3149,7 +3229,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Company_Name_Referral_Screen</targetReference>
+            <targetReference>Company_Office_Referral_Screen</targetReference>
         </connector>
         <fields>
             <name>Amount_Collected</name>
@@ -3166,7 +3246,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <name>Case_Officer_Selection_Comp</name>
         <label>Case Officer Selection</label>
         <locationX>1854</locationX>
-        <locationY>2762</locationY>
+        <locationY>2870</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -3231,7 +3311,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <name>Case_Summary_Comp</name>
         <label>Case Summary</label>
         <locationX>1854</locationX>
-        <locationY>2870</locationY>
+        <locationY>2978</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -4089,14 +4169,14 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                     <choiceReferences>Other</choiceReferences>
                     <dataType>String</dataType>
                     <defaultValue>
-                        <elementReference>Type_of_Company_Comp</elementReference>
+                        <elementReference>Type_of_Company_Referral</elementReference>
                     </defaultValue>
                     <fieldText>Type</fieldText>
                     <fieldType>DropdownBox</fieldType>
                     <isDisabled>
                         <booleanValue>true</booleanValue>
                     </isDisabled>
-                    <isRequired>false</isRequired>
+                    <isRequired>true</isRequired>
                 </fields>
                 <fields>
                     <name>Company_No_Comp</name>
@@ -4138,7 +4218,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                     <dataType>String</dataType>
                     <fieldText>Postcode</fieldText>
                     <fieldType>InputField</fieldType>
-                    <isRequired>false</isRequired>
+                    <isRequired>true</isRequired>
                 </fields>
                 <fields>
                     <name>Date_Dissolved_Comp</name>
@@ -4211,7 +4291,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                     <dataType>Date</dataType>
                     <fieldText>Disclaimer Date</fieldText>
                     <fieldType>InputField</fieldType>
-                    <isRequired>false</isRequired>
+                    <isRequired>true</isRequired>
                 </fields>
                 <inputParameters>
                     <name>width</name>
@@ -4257,36 +4337,15 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <showHeader>true</showHeader>
     </screens>
     <screens>
-        <name>Company_Name_Referral_Screen</name>
-        <label>Company Name</label>
+        <name>Company_Office_Referral_Screen</name>
+        <label>Company Details</label>
         <locationX>182</locationX>
         <locationY>1514</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Enter_Disclaimer_Referral_Screen</targetReference>
-        </connector>
-        <fields>
-            <name>Enter_Company_Name_Referral</name>
-            <dataType>String</dataType>
-            <fieldText>Enter Company Name</fieldText>
-            <fieldType>InputField</fieldType>
-            <isRequired>true</isRequired>
-        </fields>
-        <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
-    </screens>
-    <screens>
-        <name>Company_Office_Referral_Screen</name>
-        <label>Company Details</label>
-        <locationX>182</locationX>
-        <locationY>1730</locationY>
-        <allowBack>true</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
-        <connector>
-            <targetReference>Select_allocated_case_officer_screen</targetReference>
+            <targetReference>Review_Screen_Cash_Balance</targetReference>
         </connector>
         <fields>
             <name>Company_Office_Referral_Screen_Section1</name>
@@ -4354,7 +4413,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                     <dataType>String</dataType>
                     <fieldText>Postcode</fieldText>
                     <fieldType>InputField</fieldType>
-                    <isRequired>false</isRequired>
+                    <isRequired>true</isRequired>
                 </fields>
                 <fields>
                     <name>Date_Dissolved_Referral</name>
@@ -4425,15 +4484,9 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                 <fields>
                     <name>Disclaimer_Date_Referral</name>
                     <dataType>Date</dataType>
-                    <defaultValue>
-                        <elementReference>Enter_Disclaimer_Date_Referral</elementReference>
-                    </defaultValue>
                     <fieldText>Disclaimer Date</fieldText>
                     <fieldType>InputField</fieldType>
-                    <isDisabled>
-                        <booleanValue>true</booleanValue>
-                    </isDisabled>
-                    <isRequired>false</isRequired>
+                    <isRequired>true</isRequired>
                 </fields>
                 <inputParameters>
                     <name>width</name>
@@ -4605,27 +4658,6 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <showHeader>true</showHeader>
     </screens>
     <screens>
-        <name>Enter_Disclaimer_Referral_Screen</name>
-        <label>Enter Disclaimer Date</label>
-        <locationX>182</locationX>
-        <locationY>1622</locationY>
-        <allowBack>true</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
-        <connector>
-            <targetReference>Company_Office_Referral_Screen</targetReference>
-        </connector>
-        <fields>
-            <name>Enter_Disclaimer_Date_Referral</name>
-            <dataType>Date</dataType>
-            <fieldText>Enter Disclaimer Date</fieldText>
-            <fieldType>InputField</fieldType>
-            <isRequired>true</isRequired>
-        </fields>
-        <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
-    </screens>
-    <screens>
         <name>Enter_Disclosure_Date_PA_Screen</name>
         <label>Enter Disclosure Date</label>
         <locationX>1194</locationX>
@@ -4676,45 +4708,45 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Case_Officer_Selection_Comp</targetReference>
+            <targetReference>Review_Screen_Company_Case_Creation</targetReference>
         </connector>
         <fields>
-            <name>Date_change_Current_Name_Comp</name>
+            <name>FN_Date_change_Current_Name_Comp</name>
             <dataType>Date</dataType>
             <fieldText>Date changed to current name</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
         </fields>
         <fields>
-            <name>Former_Name_Comp</name>
+            <name>FN_Former_Name_Comp</name>
             <dataType>String</dataType>
             <fieldText>Former Name</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
         </fields>
         <fields>
-            <name>Date_change_Former_Name_Comp</name>
+            <name>FN_Date_change_Former_Name_Comp</name>
             <dataType>Date</dataType>
             <fieldText>Date changed to former name</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
         </fields>
         <fields>
-            <name>Previous_Name_Comp</name>
+            <name>FN_Previous_Name_Comp</name>
             <dataType>String</dataType>
             <fieldText>Previous Name</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
         </fields>
         <fields>
-            <name>Date_change_Previous_Name_Comp</name>
+            <name>FN_Date_change_Previous_Name_Comp</name>
             <dataType>Date</dataType>
             <fieldText>Date changed to previous name</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
         </fields>
         <fields>
-            <name>Name_at_Incorporation_Comp</name>
+            <name>FN_Name_at_Incorporation_Comp</name>
             <dataType>String</dataType>
             <fieldText>Name at Incorporation</fieldText>
             <fieldType>InputField</fieldType>
@@ -4845,6 +4877,9 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                 <fields>
                     <name>Informant_Comp</name>
                     <dataType>String</dataType>
+                    <defaultValue>
+                        <elementReference>ShippingStreet</elementReference>
+                    </defaultValue>
                     <fieldText>Informant</fieldText>
                     <fieldType>InputField</fieldType>
                     <isRequired>true</isRequired>
@@ -4852,6 +4887,9 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                 <fields>
                     <name>Informant_Address_Line_1_Comp</name>
                     <dataType>String</dataType>
+                    <defaultValue>
+                        <elementReference>ShippingStreet</elementReference>
+                    </defaultValue>
                     <fieldText>Address Line 1</fieldText>
                     <fieldType>InputField</fieldType>
                     <isRequired>true</isRequired>
@@ -4859,6 +4897,9 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                 <fields>
                     <name>Informant_Address_Line_2_Comp</name>
                     <dataType>String</dataType>
+                    <defaultValue>
+                        <elementReference>ShippingCity</elementReference>
+                    </defaultValue>
                     <fieldText>Address Line 2</fieldText>
                     <fieldType>InputField</fieldType>
                     <isRequired>false</isRequired>
@@ -4866,6 +4907,9 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                 <fields>
                     <name>Informant_Address_Line_3_Comp</name>
                     <dataType>String</dataType>
+                    <defaultValue>
+                        <elementReference>ShippingCountry</elementReference>
+                    </defaultValue>
                     <fieldText>Address Line 3</fieldText>
                     <fieldType>InputField</fieldType>
                     <isRequired>false</isRequired>
@@ -4880,9 +4924,12 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                 <fields>
                     <name>Informant_Postcode_Comp</name>
                     <dataType>String</dataType>
+                    <defaultValue>
+                        <elementReference>ShippingPostalCode</elementReference>
+                    </defaultValue>
                     <fieldText>Postcode</fieldText>
                     <fieldType>InputField</fieldType>
-                    <isRequired>false</isRequired>
+                    <isRequired>true</isRequired>
                 </fields>
                 <inputParameters>
                     <name>width</name>
@@ -5168,10 +5215,176 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <showHeader>true</showHeader>
     </screens>
     <screens>
+        <name>Review_Screen_Cash_Balance</name>
+        <label>Review Screen (Cash Balance)</label>
+        <locationX>182</locationX>
+        <locationY>1622</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Select_allocated_case_officer_screen</targetReference>
+        </connector>
+        <fields>
+            <name>Bank_Details</name>
+            <fieldText>Bank Details</fieldText>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>Bank_Details_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <name>DT_Details</name>
+                    <fieldText>&lt;p&gt;&lt;strong&gt;Bank Choice&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!BankChoice}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Spreadsheet Number&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!SpreadsheetNumber}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Amount Collected&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Amount_Collected}&lt;/p&gt;</fieldText>
+                    <fieldType>DisplayText</fieldType>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>12</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithHeader</regionContainerType>
+        </fields>
+        <fields>
+            <name>Company_Details</name>
+            <fieldText>Company Details</fieldText>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>Company_Details_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <name>DT_Company_Details</name>
+                    <fieldText>&lt;p&gt;&lt;strong&gt;Company Name&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Reg_Name_Referral}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Company Type&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Type_of_Company_Referral}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Company Number&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Company_No_Referral}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Company Address&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Reg_Office_Address_1_Referral}&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;color: rgb(68, 68, 68); background-color: rgb(255, 255, 255);&quot;&gt;{!Reg_Office_Address_2_Referral}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;color: rgb(68, 68, 68); background-color: rgb(255, 255, 255);&quot;&gt;{!Reg_Office_Address_3_Referral}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;color: rgb(68, 68, 68); background-color: rgb(255, 255, 255);&quot;&gt;{!Reg_Office_Address_4_Referral}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;{!Company_Postcode_Referral}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Date Dissolved&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Date_Dissolved_Referral}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Section of Act&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Section_of_Act_Referral}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Disclaimer Date&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Disclaimer_Date_Referral}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Incorporated Date&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Incorporated_Referral}&lt;/p&gt;</fieldText>
+                    <fieldType>DisplayText</fieldType>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>12</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithHeader</regionContainerType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Review_Screen_Company_Case_Creation</name>
+        <label>Review Screen (Company Case Creation)</label>
+        <locationX>1854</locationX>
+        <locationY>2762</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Case_Officer_Selection_Comp</targetReference>
+        </connector>
+        <fields>
+            <name>Disclosure_Details</name>
+            <fieldText>Disclosure Details</fieldText>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>Disclosure_Details_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <name>DT_Disclosure_Details_Comp</name>
+                    <fieldText>&lt;p&gt;&lt;strong&gt;Disclosure Date&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Enter_Disclosure_Date_Comp}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Method of Disclosure&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!DisclosureMethod}&lt;/p&gt;</fieldText>
+                    <fieldType>DisplayText</fieldType>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>12</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithHeader</regionContainerType>
+        </fields>
+        <fields>
+            <name>Informant_Details</name>
+            <fieldText>Informant Details</fieldText>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>Informant_Details_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <name>DT_Informant_Details_Comp</name>
+                    <fieldText>&lt;p&gt;&lt;strong&gt;Informant Name&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Informant_Comp}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Informant Address&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;color: rgb(68, 68, 68); background-color: rgb(255, 255, 255);&quot;&gt;{!Informant_Address_Line_1_Comp}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;color: rgb(68, 68, 68); background-color: rgb(255, 255, 255);&quot;&gt;{!Informant_Address_Line_2_Comp}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;color: rgb(68, 68, 68); background-color: rgb(255, 255, 255);&quot;&gt;{!Informant_Address_Line_3_Comp}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;color: rgb(68, 68, 68); background-color: rgb(255, 255, 255);&quot;&gt;{!Informant_Address_Line_4_Comp}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;{!Informant_Postcode_Comp}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Informant Contact Name&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Informant_Contact_Name_Comp}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Informant Type&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Informant_Type_Comp}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Informant &lt;/strong&gt;&lt;strong&gt;Reference&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Informant_Ref_Comp}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong style=&quot;color: rgb(68, 68, 68); background-color: rgb(255, 255, 255);&quot;&gt;Informant Salutation&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Informant_Saluation_Comp}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Informant Telephone&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;{!Informant_Telephone_Number_Comp}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Informant Mobile Number&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;{!Informant_Mobile_Number_Comp}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Informant Fax Number&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;{!Informant_Fax_Number_Comp}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Informant Email&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;{!Informant_Email_Address_Comp}&lt;/span&gt;&lt;/p&gt;</fieldText>
+                    <fieldType>DisplayText</fieldType>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>12</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithHeader</regionContainerType>
+        </fields>
+        <fields>
+            <name>Company_Details_Comp</name>
+            <fieldText>Company Details</fieldText>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>Company_Details_Comp_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <name>DT_Comp_Details_Comp</name>
+                    <fieldText>&lt;p&gt;&lt;strong&gt;Company Name&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Reg_Name_Comp}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Company Type&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Type_of_Company&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;_Comp&lt;/span&gt;}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Company Number&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Company_No_&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;_Comp&lt;/span&gt;}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Company Address&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Reg_Office_Address_1_Comp}&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;{!Reg_Office_Address_2&lt;/span&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;_Comp&lt;/span&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;{!Reg_Office_Address_3&lt;/span&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;_Comp&lt;/span&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;{!Reg_Office_Address_4&lt;/span&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;_Comp&lt;/span&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;{!Company_Postcode&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;_Comp&lt;/span&gt;}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Date Dissolved&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Date_Dissolved_&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;_Comp}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Section of Act&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Section_of_Act&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;_Comp&lt;/span&gt;}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Disclaimer Date&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Disclaimer_Date&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;_Comp&lt;/span&gt;}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Incorporated Date&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Incorporated&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;_Comp&lt;/span&gt;}&lt;/p&gt;</fieldText>
+                    <fieldType>DisplayText</fieldType>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>12</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithHeader</regionContainerType>
+        </fields>
+        <fields>
+            <name>Former_Names_Details</name>
+            <fieldText>Former Names Details</fieldText>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>Former_Names_Details_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <name>DT_Former_Names_Comp</name>
+                    <fieldText>&lt;p&gt;&lt;strong&gt;Date changed to current name&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!FN_Date_change_Current_Name_Comp}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Former Name&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!FN_Former_Name_Comp}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Date changed to former name&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!FN_Date_change_Former_Name_Comp}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Previous Name&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!FN_Previous_Name_Comp}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Date changed to previous name&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!FN_Date_change_Previous_Name_Comp}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Name at Incorporation&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!FN_Name_at_Incorporation_Comp}&lt;/p&gt;</fieldText>
+                    <fieldType>DisplayText</fieldType>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>12</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithHeader</regionContainerType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
         <name>Select_allocated_case_officer_screen</name>
         <label>Select allocated case officer</label>
         <locationX>182</locationX>
-        <locationY>1838</locationY>
+        <locationY>1730</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -5210,6 +5423,16 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             <choiceReferences>RBS</choiceReferences>
             <choiceReferences>Co_operative_Bank</choiceReferences>
             <choiceReferences>First_Data</choiceReferences>
+            <choiceReferences>Clydesdale</choiceReferences>
+            <choiceReferences>Metro</choiceReferences>
+            <choiceReferences>Tide</choiceReferences>
+            <choiceReferences>Starling</choiceReferences>
+            <choiceReferences>Cashplus</choiceReferences>
+            <choiceReferences>HMRC</choiceReferences>
+            <choiceReferences>Cater_Allen</choiceReferences>
+            <choiceReferences>Mettle</choiceReferences>
+            <choiceReferences>Worldpay</choiceReferences>
+            <choiceReferences>ICICI_Bank</choiceReferences>
             <choiceReferences>Other</choiceReferences>
             <dataType>String</dataType>
             <fieldText>Select Bank</fieldText>

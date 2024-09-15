@@ -1349,7 +1349,7 @@
         <name>Originating_Case_Type_Decision</name>
         <label>Originating Case Type Decision</label>
         <locationX>1106</locationX>
-        <locationY>1622</locationY>
+        <locationY>2138</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>Estate_Decision_Conv</name>
@@ -1419,6 +1419,68 @@
             <label>Company Decision</label>
         </rules>
     </decisions>
+    <decisions>
+        <name>Solicitor_select</name>
+        <label>Solicitor select</label>
+        <locationX>1106</locationX>
+        <locationY>1298</locationY>
+        <defaultConnector>
+            <targetReference>Purchaser_Solicitors_Screen_Conv</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Yes_solicitor</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Select_Solicitor_from_address_book_comp</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Yes</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Select_Solicitor_from_address_book</targetReference>
+            </connector>
+            <label>Yes</label>
+        </rules>
+    </decisions>
+    <dynamicChoiceSets>
+        <name>addressBookRecordChoiceSet</name>
+        <dataType>String</dataType>
+        <displayField>Name</displayField>
+        <object>Account</object>
+        <outputAssignments>
+            <assignToReference>ShippingName</assignToReference>
+            <field>Name</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>ShippingAddress</assignToReference>
+            <field>ShippingAddress</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>ShippingCity</assignToReference>
+            <field>ShippingCity</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>ShippingCountry</assignToReference>
+            <field>ShippingCountry</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>ShippingPostalCode</assignToReference>
+            <field>ShippingPostalCode</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>ShippingState</assignToReference>
+            <field>ShippingState</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>ShippingStreet</assignToReference>
+            <field>ShippingStreet</field>
+        </outputAssignments>
+        <sortField>Name</sortField>
+        <sortOrder>Desc</sortOrder>
+        <valueField>Id</valueField>
+    </dynamicChoiceSets>
     <environments>Default</environments>
     <formulas>
         <name>Clear_left_brackets_for_aliases</name>
@@ -1551,7 +1613,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <name>Conv_Create_Records</name>
         <label>Conv - Create Records</label>
         <locationX>1106</locationX>
-        <locationY>1298</locationY>
+        <locationY>1814</locationY>
         <connector>
             <targetReference>Create_Purchaser_Solicitors_Record</targetReference>
         </connector>
@@ -1712,7 +1774,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <name>Create_Purchaser_Solicitors_Record</name>
         <label>Create Purchaser Solicitors Record</label>
         <locationX>1106</locationX>
-        <locationY>1406</locationY>
+        <locationY>1922</locationY>
         <connector>
             <targetReference>Originating_Case_Type_Screen</targetReference>
         </connector>
@@ -1801,7 +1863,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <name>Create_Sale_Property_Record_Companies</name>
         <label>Create Sale Property Record - Companies</label>
         <locationX>1106</locationX>
-        <locationY>1946</locationY>
+        <locationY>2462</locationY>
         <connector>
             <targetReference>Add_Documents_Companies</targetReference>
         </connector>
@@ -1947,7 +2009,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <name>Create_Sale_Property_Record_Estates</name>
         <label>Create Sale Property Record - Estates</label>
         <locationX>842</locationX>
-        <locationY>1946</locationY>
+        <locationY>2462</locationY>
         <connector>
             <targetReference>Add_Documents_Estates</targetReference>
         </connector>
@@ -2621,7 +2683,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <name>Add_Documents_Companies</name>
         <label>Add Documents (Companies)</label>
         <locationX>1106</locationX>
-        <locationY>2054</locationY>
+        <locationY>2570</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -2646,7 +2708,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <name>Add_Documents_Estates</name>
         <label>Add Documents (Estates)</label>
         <locationX>842</locationX>
-        <locationY>2054</locationY>
+        <locationY>2570</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -2676,7 +2738,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Purchaser_Solicitors_Screen_Conv</targetReference>
+            <targetReference>Select_Solicitor_from_address_book_screen</targetReference>
         </connector>
         <fields>
             <name>Key_Name_Conv_After_Method</name>
@@ -3309,7 +3371,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <name>Company_Details_Conv_Comp_Screen</name>
         <label>Company Details</label>
         <locationX>1106</locationX>
-        <locationY>1730</locationY>
+        <locationY>2246</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -4144,7 +4206,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <name>Interstate_Details_Screen</name>
         <label>Interstate Details</label>
         <locationX>842</locationX>
-        <locationY>1730</locationY>
+        <locationY>2246</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -4678,7 +4740,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <name>Originating_Case_Type_Screen</name>
         <label>Originating Case Type?</label>
         <locationX>1106</locationX>
-        <locationY>1514</locationY>
+        <locationY>2030</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -4701,7 +4763,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <name>Purchaser_Solicitors_Screen_Conv</name>
         <label>Purchaser Solicitors</label>
         <locationX>1106</locationX>
-        <locationY>1190</locationY>
+        <locationY>1706</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -4710,22 +4772,30 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         </connector>
         <fields>
             <name>Solicitor_Conv</name>
-            <choiceReferences>Solicitor</choiceReferences>
             <dataType>String</dataType>
+            <defaultValue>
+                <elementReference>ShippingName</elementReference>
+            </defaultValue>
             <fieldText>Solicitor</fieldText>
-            <fieldType>DropdownBox</fieldType>
-            <isRequired>false</isRequired>
+            <fieldType>InputField</fieldType>
+            <isRequired>true</isRequired>
         </fields>
         <fields>
             <name>Solicitor_Address_Line_1_Conv</name>
             <dataType>String</dataType>
+            <defaultValue>
+                <elementReference>ShippingStreet</elementReference>
+            </defaultValue>
             <fieldText>Address Line 1</fieldText>
             <fieldType>InputField</fieldType>
-            <isRequired>false</isRequired>
+            <isRequired>true</isRequired>
         </fields>
         <fields>
             <name>Solicitor_Address_Line_2_Conv</name>
             <dataType>String</dataType>
+            <defaultValue>
+                <elementReference>ShippingCity</elementReference>
+            </defaultValue>
             <fieldText>Address Line 2</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
@@ -4733,6 +4803,9 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <fields>
             <name>Solicitor_Address_Line_3_Conv</name>
             <dataType>String</dataType>
+            <defaultValue>
+                <elementReference>ShippingCountry</elementReference>
+            </defaultValue>
             <fieldText>Address Line 3</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
@@ -4747,9 +4820,12 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <fields>
             <name>Solicitor_Postcode_Conv</name>
             <dataType>String</dataType>
+            <defaultValue>
+                <elementReference>ShippingPostalCode</elementReference>
+            </defaultValue>
             <fieldText>Postcode</fieldText>
             <fieldType>InputField</fieldType>
-            <isRequired>false</isRequired>
+            <isRequired>true</isRequired>
         </fields>
         <fields>
             <name>Purchaser_Solicitors_Screen_Conv_Section1</name>
@@ -4818,10 +4894,29 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <showHeader>true</showHeader>
     </screens>
     <screens>
+        <name>Review_the_solicitor</name>
+        <label>Review the solicitor</label>
+        <locationX>974</locationX>
+        <locationY>1514</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Purchaser_Solicitors_Screen_Conv</targetReference>
+        </connector>
+        <fields>
+            <name>DT_for_solicitor</name>
+            <fieldText>&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;﻿Solicitor Name&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!ShippingName}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Solicitor &lt;/strong&gt;&lt;strong&gt;Street&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!ShippingStreet}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Solicitor &lt;/strong&gt;&lt;strong&gt;City&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;{!ShippingCity}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Solicitor &lt;/strong&gt;&lt;strong&gt;Postal Code&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!ShippingPostalCode}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Solicitor &lt;/strong&gt;&lt;strong&gt;Country&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!ShippingCountry}&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
         <name>Sale_Property_Conv_Estate_Screen</name>
         <label>Sale Property</label>
         <locationX>842</locationX>
-        <locationY>1838</locationY>
+        <locationY>2354</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -5115,7 +5210,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <name>Sale_Property_Conv_Screen</name>
         <label>Sale Property</label>
         <locationX>1106</locationX>
-        <locationY>1838</locationY>
+        <locationY>2354</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -5994,6 +6089,52 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <showHeader>true</showHeader>
     </screens>
     <screens>
+        <name>Select_Solicitor_from_address_book</name>
+        <label>Select Solicitor from address book</label>
+        <locationX>974</locationX>
+        <locationY>1406</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Review_the_solicitor</targetReference>
+        </connector>
+        <fields>
+            <name>Select_a_solicitor_comp</name>
+            <choiceReferences>addressBookRecordChoiceSet</choiceReferences>
+            <extensionName>flowruntime:choiceLookup</extensionName>
+            <fieldText>Select a solicitor</fieldText>
+            <fieldType>ComponentChoice</fieldType>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Select_Solicitor_from_address_book_screen</name>
+        <label>Select Solicitor from address book?</label>
+        <locationX>1106</locationX>
+        <locationY>1190</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Solicitor_select</targetReference>
+        </connector>
+        <fields>
+            <name>Select_Solicitor_from_address_book_comp</name>
+            <choiceReferences>Yes</choiceReferences>
+            <choiceReferences>No</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Select Solicitor from address book?</fieldText>
+            <fieldType>DropdownBox</fieldType>
+            <isRequired>true</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
         <name>When_was_case_put_away_Conv</name>
         <label>When was case put away</label>
         <locationX>314</locationX>
@@ -6326,6 +6467,55 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <isCollection>false</isCollection>
         <isInput>false</isInput>
         <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>ShippingAddress</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>ShippingCity</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>ShippingCountry</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>ShippingName</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>ShippingPostalCode</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>ShippingState</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>ShippingStreet</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
     </variables>
     <variables>
         <name>singeAlias</name>
