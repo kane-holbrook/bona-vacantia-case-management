@@ -289,6 +289,8 @@ export default class DatabaseStandardRecordModal extends LightningElement {
             record.fields.forEach(field => {
                 if (field.isLookup && this.isSalesforceId(field.value)) {
                     this.updateAccountDisplay(field.value);
+                    this.accountId = field.value;
+                    this.populateAccountFields();
                 }
             });
         });
