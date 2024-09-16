@@ -36,7 +36,14 @@ export default class CaseDetails extends NavigationMixin(LightningElement) {
     }
 
     get deceasedName() {
-        return this.caseData.Forenames__c && this.caseData.Surname__c ? `${this.caseData.Forenames__c.value} ${this.caseData.Surname__c.value}` : 'No name specified';
+        const forenames = this.caseData.Forenames__c ? this.caseData.Forenames__c.value : '';
+        const surname = this.caseData.Surname__c ? this.caseData.Surname__c.value : '';
+        
+        if (forenames || surname) {
+            return `${forenames} ${surname}`.trim();
+        } else {
+            return 'No name specified';
+        }
     }
 
     get dateOfDeath() {
