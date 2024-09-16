@@ -17,7 +17,6 @@ const ACCOUNT_FIELDS = [
 export default class DatabaseStandardRecordModal extends LightningElement {
     @api recordId;
     @api objectApiName;
-    @api recordData = [];
     @api subRecordId;
     @api columns = [];
     @api columnLayoutStyle;
@@ -61,7 +60,32 @@ export default class DatabaseStandardRecordModal extends LightningElement {
         return this.record.data ? this.record.data.fields.RecordTypeId.value : this.recordTypeId;
     }
 
+    @api
+    get recordData() {
+        return this._recordData;
+    }
+    set recordData(value) {
+        this._recordData = value;
+        this.handleRecordDataChange();
+    }
+
+    handleRecordDataChange() {
+        if (this._recordData) {
+            this.processRecordData();
+        }
+    }
+
     async connectedCallback() {
+        try {
+            this.processRecordData();
+        } catch (error) {
+            console.error('Error in connectedCallback:', error);
+        } finally {
+            this.isLoading = false;
+        }
+    }
+
+    processRecordData() {
         try {
             if (!Array.isArray(this.recordData)) {
                 this.recordData = [this.recordData];
@@ -126,12 +150,11 @@ export default class DatabaseStandardRecordModal extends LightningElement {
                     })
             }));
 
-            await this.loadPicklistOptions();
+            this.loadPicklistOptions();
             this.splitFieldsByColumns();
+            this.checkForAccountIds();
         } catch (error) {
-            console.error('Error in connectedCallback:', error);
-        } finally {
-            this.isLoading = false;
+            console.error('Error in processRecordData:', error);
         }
     }
 
@@ -258,6 +281,16 @@ export default class DatabaseStandardRecordModal extends LightningElement {
         return null;
     }
 
+    checkForAccountIds() {
+        this.combinedData.forEach(record => {
+            record.fields.forEach(field => {
+                if (field.isLookup && this.isSalesforceId(field.value)) {
+                    this.updateAccountDisplay(field.value);
+                }
+            });
+        });
+    }
+
     updateAccountDisplay(accountId) {
         getAccountById({ accountId })
             .then(account => {
@@ -265,16 +298,17 @@ export default class DatabaseStandardRecordModal extends LightningElement {
                     this.combinedData = this.combinedData.map(record => ({
                         ...record,
                         fields: record.fields.map(field => {
-                            if (field.isLookup) {
+                            if (field.isLookup && field.value === accountId) {
                                 return {
                                     ...field,
-                                    value: account.Name, // Display the name
-                                    accountId: accountId // Keep the ID for any backend operations
+                                    value: account.Name,
+                                    accountId: accountId
                                 };
                             }
                             return field;
                         })
                     }));
+                    this.updateColumnFields();
                 }
             })
             .catch(error => {
