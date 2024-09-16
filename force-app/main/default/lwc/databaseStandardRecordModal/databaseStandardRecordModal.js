@@ -77,7 +77,7 @@ export default class DatabaseStandardRecordModal extends LightningElement {
 
     async connectedCallback() {
         try {
-            this.processRecordData();
+            await this.processRecordData(); // Await the processing of record data
         } catch (error) {
             console.error('Error in connectedCallback:', error);
         } finally {
@@ -85,7 +85,7 @@ export default class DatabaseStandardRecordModal extends LightningElement {
         }
     }
 
-    processRecordData() {
+    async processRecordData() {
         try {
             if (!Array.isArray(this.recordData)) {
                 this.recordData = [this.recordData];
@@ -150,7 +150,7 @@ export default class DatabaseStandardRecordModal extends LightningElement {
                     })
             }));
 
-            this.loadPicklistOptions();
+            await this.loadPicklistOptions(); // Await loading picklist options
             this.splitFieldsByColumns();
             this.checkForAccountIds();
         } catch (error) {
