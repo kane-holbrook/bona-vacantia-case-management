@@ -8,10 +8,14 @@
                 <div class="slds-media__body">
                     <h2 class="slds-card__header-title">
                         <span class="slds-truncate">
-                            <b>{caseNumber}</b>
+                            <b>{displayFields.field1}</b>
                             <span class="slds-m-left_large"><b>{caseTypeName}</b></span>
-                            <span class="slds-m-left_large"><b>Name: </b><span style="font-weight: normal;">{deceasedName}</span></span>
-                            <span class="slds-m-left_large"><b>DoD: </b><span style="font-weight: normal;">{dateOfDeath}</span></span>
+                            <template if:true={displayFields.field2}>
+                                <span class="slds-m-left_large"><b>{displayFields.label2} </b><span style="font-weight: normal;">{displayFields.field2}</span></span>
+                            </template>
+                            <template if:true={displayFields.field3}>
+                                <span class="slds-m-left_large"><b>{displayFields.label3} </b><span style="font-weight: normal;">{displayFields.field3}</span></span>
+                            </template>
                         </span>
                     </h2>
                 </div>
