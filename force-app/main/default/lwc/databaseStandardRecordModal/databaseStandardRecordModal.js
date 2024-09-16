@@ -11,7 +11,8 @@ const ACCOUNT_FIELDS = [
     'Account.Phone',
     'Account.ShippingStreet',
     'Account.ShippingCity',
-    'Account.ShippingPostalCode'
+    'Account.ShippingPostalCode',
+    'Account.ShippingCountry'
 ];
 
 export default class DatabaseStandardRecordModal extends LightningElement {
@@ -36,6 +37,8 @@ export default class DatabaseStandardRecordModal extends LightningElement {
     @track phone;
     @track addressLine1;
     @track addressLine2;
+    @track addressLine3;
+    @track addressLine4;
     @track city;
     @track postcode;
     @track searchResults = []; // Track search results for account lookup
@@ -385,14 +388,41 @@ export default class DatabaseStandardRecordModal extends LightningElement {
     // Populate the fields based on the selected account
     populateAccountFields() {
         if (this.account) {
+            console.log('Account:', this.account);
             const accountFields = this.account.fields;
-            const shippingAddress = accountFields.ShippingStreet.value || '';
-            const addressParts = shippingAddress.split(',');
+            const shippingStreet = accountFields.ShippingStreet.value || '';
+            const shippingCity = accountFields.ShippingCity.value || '';
+            const shippingPostalCode = accountFields.ShippingPostalCode.value || '';
+            const shippingCountry = accountFields.ShippingCountry.value || '';
 
-            this.addressLine1 = addressParts[0] || '';
-            this.addressLine2 = addressParts[1] || '';
-            this.city = accountFields.ShippingCity.value || '';
-            this.postcode = accountFields.ShippingPostalCode.value || '';
+            // Split the shipping street into parts
+            const streetParts = shippingStreet.split(',').map(part => part.trim());
+
+            // Populate address lines
+            this.addressLine1 = streetParts[0] || '';
+            this.addressLine2 = streetParts[1] || '';
+            this.addressLine3 = streetParts[2] || '';
+            this.addressLine4 = streetParts[3] || '';
+
+            // If city is not part of the street address, add it to addressLine3
+            if (shippingCity && !streetParts.includes(shippingCity)) {
+                if (this.addressLine3) {
+                    this.addressLine4 = this.addressLine3;
+                }
+                this.addressLine3 = shippingCity;
+            }
+
+            // Add country as the last line if present
+            if (shippingCountry) {
+                if (this.addressLine4) {
+                    this.addressLine4 += ', ' + shippingCountry;
+                } else {
+                    this.addressLine4 = shippingCountry;
+                }
+            }
+
+            this.city = shippingCity;
+            this.postcode = shippingPostalCode;
             this.phone = accountFields.Phone.value || '';
 
             this.updateCombinedData();
@@ -411,6 +441,10 @@ export default class DatabaseStandardRecordModal extends LightningElement {
                     updatedValue = this.addressLine1;
                 } else if (item.label && item.label.startsWith('Address Line 2')) {
                     updatedValue = this.addressLine2;
+                } else if (item.label && item.label.startsWith('Address Line 3')) {
+                    updatedValue = this.addressLine3;
+                } else if (item.label && item.label.startsWith('Address Line 4')) {
+                    updatedValue = this.addressLine4;
                 } else if (item.label && item.label.startsWith('City')) {
                     updatedValue = this.city;
                 } else if (item.fieldName && item.fieldName.startsWith('Postcode')) {
