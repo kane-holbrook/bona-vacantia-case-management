@@ -445,6 +445,12 @@
             </value>
         </inputAssignments>
         <inputAssignments>
+            <field>Last_updated__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
             <field>Name</field>
             <value>
                 <stringValue>Grant of Representation Received?</stringValue>

@@ -4,7 +4,7 @@
     <assignments>
         <name>setValuesForDocGen</name>
         <label>Set valuesForDocGen</label>
-        <locationX>2514</locationX>
+        <locationX>3174</locationX>
         <locationY>650</locationY>
         <assignmentItems>
             <assignToReference>valuesForDocGen</assignToReference>
@@ -20,7 +20,7 @@
     <decisions>
         <name>Document_Type_to_Generate</name>
         <label>Document Type to Generate</label>
-        <locationX>2426</locationX>
+        <locationX>3086</locationX>
         <locationY>242</locationY>
         <defaultConnector>
             <targetReference>Loop_subflow_values</targetReference>
@@ -296,6 +296,81 @@
             </connector>
             <label>Caveat1</label>
         </rules>
+        <rules>
+            <name>FIN02</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Generate_a_document_flow_LWC.selectedDocumentType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>FIN02</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Recover_liability_from_Crown_s_Nominee_account_FIN02</targetReference>
+            </connector>
+            <label>FIN02</label>
+        </rules>
+        <rules>
+            <name>PPORT</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Generate_a_document_flow_LWC.selectedDocumentType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>PPORT</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Letter_to_passport_office_returning_passports_PPORT</targetReference>
+            </connector>
+            <label>PPORT</label>
+        </rules>
+        <rules>
+            <name>ACCEA</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Generate_a_document_flow_LWC.selectedDocumentType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>ACCEA</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Accruals_Estates_Acct_Interest_Calc_ACCEA</targetReference>
+            </connector>
+            <label>ACCEA</label>
+        </rules>
+        <rules>
+            <name>REV1</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Generate_a_document_flow_LWC.selectedDocumentType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>REV1</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Case_review_record_sheet_REV1</targetReference>
+            </connector>
+            <label>REV1</label>
+        </rules>
+        <rules>
+            <name>BV5A</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Generate_a_document_flow_LWC.selectedDocumentType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>BV5A</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>To_Hospital_Hospice_re_kin_will_etc_BV5A</targetReference>
+            </connector>
+            <label>BV5A</label>
+        </rules>
     </decisions>
     <environments>Default</environments>
     <interviewLabel>Generate a document {!$Flow.CurrentDateTime}</interviewLabel>
@@ -303,7 +378,7 @@
     <loops>
         <name>Loop_subflow_values</name>
         <label>Loop subflow values</label>
-        <locationX>2426</locationX>
+        <locationX>3086</locationX>
         <locationY>542</locationY>
         <collectionReference>subflowValues</collectionReference>
         <iterationOrder>Asc</iterationOrder>
@@ -336,7 +411,7 @@
     <screens>
         <name>Generate_a_document</name>
         <label>Select a document to generate</label>
-        <locationX>2426</locationX>
+        <locationX>3086</locationX>
         <locationY>134</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -370,7 +445,7 @@
     <screens>
         <name>Generated_document</name>
         <label>Generated document</label>
-        <locationX>2426</locationX>
+        <locationX>3086</locationX>
         <locationY>842</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
@@ -416,7 +491,7 @@
     <screens>
         <name>Open_generated_document</name>
         <label>Open generated document</label>
-        <locationX>2426</locationX>
+        <locationX>3086</locationX>
         <locationY>950</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
@@ -439,13 +514,37 @@
         <showHeader>true</showHeader>
     </screens>
     <start>
-        <locationX>2300</locationX>
+        <locationX>2960</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Generate_a_document</targetReference>
         </connector>
     </start>
     <status>Active</status>
+    <subflows>
+        <name>Accruals_Estates_Acct_Interest_Calc_ACCEA</name>
+        <label>Accruals - Estates Acct &amp; Interest Calc (ACCEA)</label>
+        <locationX>5330</locationX>
+        <locationY>350</locationY>
+        <connector>
+            <targetReference>Loop_subflow_values</targetReference>
+        </connector>
+        <flowName>Accruals_Estates_Acct_Interest_Calc_ACCEA</flowName>
+        <inputAssignments>
+            <name>recordId</name>
+            <value>
+                <elementReference>Generate_a_document_flow_LWC.caseId</elementReference>
+            </value>
+        </inputAssignments>
+        <outputAssignments>
+            <assignToReference>historyRecordId</assignToReference>
+            <name>historyRecordId</name>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>subflowValues</assignToReference>
+            <name>subflowValues</name>
+        </outputAssignments>
+    </subflows>
     <subflows>
         <name>Balance_due_to_kin_Accruals_No_VAT_ACRKIN2</name>
         <label>Balance due to kin - Accruals No VAT (ACRKIN2)</label>
@@ -523,6 +622,30 @@
             <targetReference>Loop_subflow_values</targetReference>
         </connector>
         <flowName>Calendar_search_SEARCH</flowName>
+        <inputAssignments>
+            <name>recordId</name>
+            <value>
+                <elementReference>Generate_a_document_flow_LWC.caseId</elementReference>
+            </value>
+        </inputAssignments>
+        <outputAssignments>
+            <assignToReference>historyRecordId</assignToReference>
+            <name>historyRecordId</name>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>subflowValues</assignToReference>
+            <name>subflowValues</name>
+        </outputAssignments>
+    </subflows>
+    <subflows>
+        <name>Case_review_record_sheet_REV1</name>
+        <label>Case review record sheet (REV1)</label>
+        <locationX>5594</locationX>
+        <locationY>350</locationY>
+        <connector>
+            <targetReference>Loop_subflow_values</targetReference>
+        </connector>
+        <flowName>Case_review_record_sheet_REV1</flowName>
         <inputAssignments>
             <name>recordId</name>
             <value>
@@ -683,6 +806,30 @@
         </outputAssignments>
     </subflows>
     <subflows>
+        <name>Letter_to_passport_office_returning_passports_PPORT</name>
+        <label>Letter to passport office returning passports (PPORT)</label>
+        <locationX>5066</locationX>
+        <locationY>350</locationY>
+        <connector>
+            <targetReference>Loop_subflow_values</targetReference>
+        </connector>
+        <flowName>Letter_to_passport_office_returning_passports_PPORT</flowName>
+        <inputAssignments>
+            <name>recordId</name>
+            <value>
+                <elementReference>Generate_a_document_flow_LWC.caseId</elementReference>
+            </value>
+        </inputAssignments>
+        <outputAssignments>
+            <assignToReference>historyRecordId</assignToReference>
+            <name>historyRecordId</name>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>subflowValues</assignToReference>
+            <name>subflowValues</name>
+        </outputAssignments>
+    </subflows>
+    <subflows>
         <name>Letter_to_probate_registry_re_missing_off_copies_PROB</name>
         <label>Letter to probate registry re: missing off. copies (PROB)</label>
         <locationX>1634</locationX>
@@ -827,6 +974,30 @@
         </outputAssignments>
     </subflows>
     <subflows>
+        <name>Recover_liability_from_Crown_s_Nominee_account_FIN02</name>
+        <label>Recover liability from Crown&apos;s Nominee account (FIN02)</label>
+        <locationX>4802</locationX>
+        <locationY>350</locationY>
+        <connector>
+            <targetReference>Loop_subflow_values</targetReference>
+        </connector>
+        <flowName>Recover_liability_from_Crown_s_Nominee_account_FIN02</flowName>
+        <inputAssignments>
+            <name>recordId</name>
+            <value>
+                <elementReference>Generate_a_document_flow_LWC.caseId</elementReference>
+            </value>
+        </inputAssignments>
+        <outputAssignments>
+            <assignToReference>historyRecordId</assignToReference>
+            <name>historyRecordId</name>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>subflowValues</assignToReference>
+            <name>subflowValues</name>
+        </outputAssignments>
+    </subflows>
+    <subflows>
         <name>Request_to_BV_Finance_for_Estates_account_Account</name>
         <label>Request to BV Finance for Estates account (Account)</label>
         <locationX>4010</locationX>
@@ -859,6 +1030,30 @@
             <targetReference>Loop_subflow_values</targetReference>
         </connector>
         <flowName>Telephone_note_TELNOTE</flowName>
+        <inputAssignments>
+            <name>recordId</name>
+            <value>
+                <elementReference>Generate_a_document_flow_LWC.caseId</elementReference>
+            </value>
+        </inputAssignments>
+        <outputAssignments>
+            <assignToReference>historyRecordId</assignToReference>
+            <name>historyRecordId</name>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>subflowValues</assignToReference>
+            <name>subflowValues</name>
+        </outputAssignments>
+    </subflows>
+    <subflows>
+        <name>To_Hospital_Hospice_re_kin_will_etc_BV5A</name>
+        <label>To Hospital/Hospice re kin, will etc. (BV5A)</label>
+        <locationX>5858</locationX>
+        <locationY>350</locationY>
+        <connector>
+            <targetReference>Loop_subflow_values</targetReference>
+        </connector>
+        <flowName>To_Hospital_Hospice_re_kin_will_etc_BV5A</flowName>
         <inputAssignments>
             <name>recordId</name>
             <value>

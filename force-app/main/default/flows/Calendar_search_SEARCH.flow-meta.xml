@@ -320,9 +320,21 @@
             </value>
         </inputAssignments>
         <inputAssignments>
+            <field>Case_Officer__c</field>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
             <field>Date_Inserted__c</field>
             <value>
                 <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Last_updated__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
             </value>
         </inputAssignments>
         <object>Case_History__c</object>
@@ -349,9 +361,21 @@
             </value>
         </inputAssignments>
         <inputAssignments>
+            <field>Case_Officer__c</field>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
             <field>Date_Inserted__c</field>
             <value>
                 <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Last_updated__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
             </value>
         </inputAssignments>
         <object>Case_History__c</object>
@@ -393,7 +417,7 @@
         <inputAssignments>
             <field>Assigned_To__c</field>
             <value>
-                <elementReference>caseOfficer</elementReference>
+                <elementReference>$User.Id</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -437,7 +461,7 @@
         <inputAssignments>
             <field>Assigned_To__c</field>
             <value>
-                <elementReference>caseOfficer</elementReference>
+                <elementReference>$User.Id</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>

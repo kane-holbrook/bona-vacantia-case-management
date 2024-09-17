@@ -1,5 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Get_Case_Number_and_increment</name>
+        <label>Get Case Number and increment</label>
+        <locationX>380</locationX>
+        <locationY>4694</locationY>
+        <actionName>BVCaseNumberHelper</actionName>
+        <actionType>apex</actionType>
+        <connector>
+            <targetReference>Create_BV_Case</targetReference>
+        </connector>
+        <flowTransactionModel>Automatic</flowTransactionModel>
+        <outputParameters>
+            <assignToReference>NextCaseNumber</assignToReference>
+            <name>output</name>
+        </outputParameters>
+    </actionCalls>
     <apiVersion>61.0</apiVersion>
     <assignments>
         <name>Assign_Alias_to_List_of_Aliases</name>
@@ -53,7 +69,7 @@
         <name>Assign_new_occupier_address_to_a_List</name>
         <label>Assign new occupier address to a List</label>
         <locationX>468</locationX>
-        <locationY>5534</locationY>
+        <locationY>5642</locationY>
         <assignmentItems>
             <assignToReference>allOccupiersAddressesListWithId</assignToReference>
             <operator>Add</operator>
@@ -69,7 +85,7 @@
         <name>Assign_new_other_addresses_to_a_List</name>
         <label>Assign new other addresses to a List</label>
         <locationX>468</locationX>
-        <locationY>5942</locationY>
+        <locationY>6050</locationY>
         <assignmentItems>
             <assignToReference>allOtherAddressListWIthId</assignToReference>
             <operator>Add</operator>
@@ -117,7 +133,7 @@
         <name>Assign_the_new_Alias_to_List_of_Aliases</name>
         <label>Assign the new Alias to List of Aliases</label>
         <locationX>468</locationX>
-        <locationY>5126</locationY>
+        <locationY>5234</locationY>
         <assignmentItems>
             <assignToReference>allAliasesListWithId</assignToReference>
             <operator>Add</operator>
@@ -358,7 +374,7 @@
         <name>Set_BV_Case_ID_To_Aliases</name>
         <label>Set BV Case ID to Aliases</label>
         <locationX>468</locationX>
-        <locationY>5018</locationY>
+        <locationY>5126</locationY>
         <assignmentItems>
             <assignToReference>Loop_Aliases.BV_Case__c</assignToReference>
             <operator>Assign</operator>
@@ -374,7 +390,7 @@
         <name>Set_BV_Case_ID_to_Occupiers_Addresses</name>
         <label>Set BV Case ID to Occupiers Addresses</label>
         <locationX>468</locationX>
-        <locationY>5426</locationY>
+        <locationY>5534</locationY>
         <assignmentItems>
             <assignToReference>Loop_Occupiers_Addresses.BV_Case__c</assignToReference>
             <operator>Assign</operator>
@@ -390,7 +406,7 @@
         <name>Set_BV_Case_ID_to_Other_Addresses</name>
         <label>Set BV Case ID to Other Addresses</label>
         <locationX>468</locationX>
-        <locationY>5834</locationY>
+        <locationY>5942</locationY>
         <assignmentItems>
             <assignToReference>Loop_Other_Addresses.BV_Case__c</assignToReference>
             <operator>Assign</operator>
@@ -1747,7 +1763,7 @@
         <name>If_BV1A</name>
         <label>If BV1A</label>
         <locationX>380</locationX>
-        <locationY>6566</locationY>
+        <locationY>6674</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>Yes_BV1A</name>
@@ -1794,7 +1810,7 @@
         <name>Is_a_kin_claim</name>
         <label>Is a kin claim?</label>
         <locationX>182</locationX>
-        <locationY>6674</locationY>
+        <locationY>6782</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>Yes_is_Kin_Claim</name>
@@ -2029,7 +2045,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <name>Loop_Aliases</name>
         <label>Loop Aliases</label>
         <locationX>380</locationX>
-        <locationY>4910</locationY>
+        <locationY>5018</locationY>
         <collectionReference>allAliases_List</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector>
@@ -2057,7 +2073,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <name>Loop_Occupiers_Addresses</name>
         <label>Loop Occupiers Addresses</label>
         <locationX>380</locationX>
-        <locationY>5318</locationY>
+        <locationY>5426</locationY>
         <collectionReference>allOccupiersAddresses</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector>
@@ -2085,7 +2101,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <name>Loop_Other_Addresses</name>
         <label>Loop Other Addresses</label>
         <locationX>380</locationX>
-        <locationY>5726</locationY>
+        <locationY>5834</locationY>
         <collectionReference>allOtherAddresses</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector>
@@ -2132,7 +2148,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <name>Create_Aliases</name>
         <label>Create Aliases</label>
         <locationX>380</locationX>
-        <locationY>6350</locationY>
+        <locationY>6458</locationY>
         <connector>
             <targetReference>Create_Case_Officer</targetReference>
         </connector>
@@ -2142,7 +2158,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <name>Create_BV_Case</name>
         <label>Create BV_Case__c</label>
         <locationX>380</locationX>
-        <locationY>4694</locationY>
+        <locationY>4802</locationY>
         <connector>
             <targetReference>Add_documents</targetReference>
         </connector>
@@ -2327,6 +2343,18 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             </value>
         </inputAssignments>
         <inputAssignments>
+            <field>Name</field>
+            <value>
+                <elementReference>NextCaseNumber</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Name__c</field>
+            <value>
+                <elementReference>NextCaseNumber</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
             <field>OwnerId</field>
             <value>
                 <elementReference>case_officer_select_estates.selectedCaseOfficer</elementReference>
@@ -2381,7 +2409,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <name>Create_Case_Officer</name>
         <label>Create Case Officer</label>
         <locationX>380</locationX>
-        <locationY>6458</locationY>
+        <locationY>6566</locationY>
         <connector>
             <targetReference>If_BV1A</targetReference>
         </connector>
@@ -2410,7 +2438,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <name>Create_occupiers_addresses</name>
         <label>Create occupiers addresses</label>
         <locationX>380</locationX>
-        <locationY>6134</locationY>
+        <locationY>6242</locationY>
         <connector>
             <targetReference>Create_other_addresses</targetReference>
         </connector>
@@ -2420,7 +2448,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <name>Create_other_addresses</name>
         <label>Create other addresses</label>
         <locationX>380</locationX>
-        <locationY>6242</locationY>
+        <locationY>6350</locationY>
         <connector>
             <targetReference>Create_Aliases</targetReference>
         </connector>
@@ -2430,7 +2458,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <name>Create_Task</name>
         <label>Create Task</label>
         <locationX>50</locationX>
-        <locationY>6998</locationY>
+        <locationY>7106</locationY>
         <inputAssignments>
             <field>Assigned_To__c</field>
             <value>
@@ -2589,7 +2617,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <name>Add_documents</name>
         <label>Add documents</label>
         <locationX>380</locationX>
-        <locationY>4802</locationY>
+        <locationY>4910</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -2665,7 +2693,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Create_BV_Case</targetReference>
+            <targetReference>Get_Case_Number_and_increment</targetReference>
         </connector>
         <fields>
             <name>Display_progress_select_case_officer</name>
@@ -2765,7 +2793,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <name>Enter_Due_Date_Screen</name>
         <label>Enter Due Date</label>
         <locationX>50</locationX>
-        <locationY>6890</locationY>
+        <locationY>6998</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -3401,7 +3429,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <name>Priority_of_Task</name>
         <label>Priority of Task</label>
         <locationX>50</locationX>
-        <locationY>6782</locationY>
+        <locationY>6890</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -3951,6 +3979,13 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <isCollection>false</isCollection>
         <isInput>false</isInput>
         <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>NextCaseNumber</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
     </variables>
     <variables>
         <name>Occupiers_Address_Text_Data</name>

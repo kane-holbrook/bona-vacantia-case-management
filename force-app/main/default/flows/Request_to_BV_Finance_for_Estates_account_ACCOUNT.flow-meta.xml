@@ -338,6 +338,7 @@
         <label>Copy 2 of Create history record</label>
         <locationX>314</locationX>
         <locationY>782</locationY>
+        <assignRecordIdToReference>historyRecordId</assignRecordIdToReference>
         <connector>
             <targetReference>Copy_1_of_Create_task_record</targetReference>
         </connector>
@@ -366,13 +367,13 @@
             </value>
         </inputAssignments>
         <object>Case_History__c</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordCreates>
     <recordCreates>
         <name>Create_history_record</name>
         <label>Create history record</label>
         <locationX>50</locationX>
         <locationY>890</locationY>
+        <assignRecordIdToReference>historyRecordId</assignRecordIdToReference>
         <connector>
             <targetReference>Create_task_record</targetReference>
         </connector>
@@ -401,7 +402,6 @@
             </value>
         </inputAssignments>
         <object>Case_History__c</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordCreates>
     <recordCreates>
         <name>Create_task_record</name>
@@ -514,7 +514,7 @@
         <object>User</object>
         <outputAssignments>
             <assignToReference>username</assignToReference>
-            <field>Username</field>
+            <field>Name</field>
         </outputAssignments>
     </recordLookups>
     <recordLookups>
@@ -584,7 +584,7 @@
         <object>User</object>
         <outputAssignments>
             <assignToReference>username</assignToReference>
-            <field>Username</field>
+            <field>Name</field>
         </outputAssignments>
     </recordLookups>
     <screens>

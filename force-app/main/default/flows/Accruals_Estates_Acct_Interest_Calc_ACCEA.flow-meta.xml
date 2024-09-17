@@ -286,6 +286,11 @@
         <expression>TEXT(TODAY())</expression>
     </formulas>
     <formulas>
+        <name>daysAdd14</name>
+        <dataType>Date</dataType>
+        <expression>TODAY()+14</expression>
+    </formulas>
+    <formulas>
         <name>vatFormula</name>
         <dataType>Number</dataType>
         <expression>{!costAdm}*0.2</expression>
@@ -336,13 +341,19 @@
         <inputAssignments>
             <field>Case_Officer__c</field>
             <value>
-                <elementReference>caseOfficer</elementReference>
+                <elementReference>$User.Id</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
             <field>Date_Inserted__c</field>
             <value>
                 <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Last_updated__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
             </value>
         </inputAssignments>
         <object>Case_History__c</object>
@@ -372,9 +383,15 @@
         </inputAssignments>
         <inputAssignments>
             <field>Due_Date__c</field>
+            <value>
+                <elementReference>daysAdd14</elementReference>
+            </value>
         </inputAssignments>
         <inputAssignments>
             <field>Priority__c</field>
+            <value>
+                <stringValue>High</stringValue>
+            </value>
         </inputAssignments>
         <object>BV_Task__c</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
@@ -440,13 +457,13 @@
             <field>Id</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>$Profile.Id</elementReference>
+                <elementReference>$User.Id</elementReference>
             </value>
         </filters>
         <object>User</object>
         <outputAssignments>
             <assignToReference>username</assignToReference>
-            <field>Username</field>
+            <field>Name</field>
         </outputAssignments>
     </recordLookups>
     <screens>
@@ -586,7 +603,7 @@
             <targetReference>Was_a_Certainty_Will_search_completed</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <variables>
         <name>caseForename</name>
         <dataType>String</dataType>

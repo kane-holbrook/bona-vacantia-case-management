@@ -147,13 +147,19 @@
         <inputAssignments>
             <field>Case_Officer__c</field>
             <value>
-                <elementReference>caseOfficer</elementReference>
+                <elementReference>$User.Id</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
             <field>Date_Inserted__c</field>
             <value>
                 <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Last_updated__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
             </value>
         </inputAssignments>
         <object>Case_History__c</object>
@@ -207,13 +213,13 @@
             <field>Id</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>$Profile.Id</elementReference>
+                <elementReference>$User.Id</elementReference>
             </value>
         </filters>
         <object>User</object>
         <outputAssignments>
             <assignToReference>username</assignToReference>
-            <field>Username</field>
+            <field>Name</field>
         </outputAssignments>
     </recordLookups>
     <screens>
@@ -311,7 +317,7 @@
             <targetReference>Enter_balance_on_estate_account</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <variables>
         <name>caseForename</name>
         <dataType>String</dataType>

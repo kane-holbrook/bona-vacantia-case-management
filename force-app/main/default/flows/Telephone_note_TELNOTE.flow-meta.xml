@@ -160,7 +160,7 @@
         <inputAssignments>
             <field>Action__c</field>
             <value>
-                <stringValue>Telephone call IN - {!Enter_name_of_person_calling_you1}</stringValue>
+                <stringValue>Telephone call IN</stringValue>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -172,13 +172,19 @@
         <inputAssignments>
             <field>Case_Officer__c</field>
             <value>
-                <elementReference>currentOfficer</elementReference>
+                <elementReference>$User.Id</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
             <field>Date_Inserted__c</field>
             <value>
                 <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Last_updated__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
             </value>
         </inputAssignments>
         <object>Case_History__c</object>
@@ -192,7 +198,7 @@
         <inputAssignments>
             <field>Action__c</field>
             <value>
-                <stringValue>Telephone call OUT - {!Enter_name_of_person_calling_you1}</stringValue>
+                <stringValue>Telephone call OUT</stringValue>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -204,13 +210,19 @@
         <inputAssignments>
             <field>Case_Officer__c</field>
             <value>
-                <elementReference>currentOfficer</elementReference>
+                <elementReference>$User.Id</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
             <field>Date_Inserted__c</field>
             <value>
                 <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Last_updated__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
             </value>
         </inputAssignments>
         <object>Case_History__c</object>

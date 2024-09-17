@@ -1,7 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>61.0</apiVersion>
+    <assignments>
+        <name>Store_field_values</name>
+        <label>Store field values</label>
+        <locationX>176</locationX>
+        <locationY>458</locationY>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>caseReference: {!caseReference};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>forename: {!caseForename};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>surname: {!caseSurname};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>amountOfLiability: {!Enter_amount_of_liability1};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>username: {!username};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>currentDate: {!currentDate};</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Create_history_record</targetReference>
+        </connector>
+    </assignments>
     <environments>Default</environments>
+    <formulas>
+        <name>currentDate</name>
+        <dataType>Date</dataType>
+        <expression>TODAY()</expression>
+    </formulas>
     <interviewLabel>Recover liability from Crown&apos;s Nominee account (FIN02) {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Recover liability from Crown&apos;s Nominee account (FIN02)</label>
     <processMetadataValues>
@@ -23,6 +79,98 @@
         </value>
     </processMetadataValues>
     <processType>Flow</processType>
+    <recordCreates>
+        <name>Create_history_record</name>
+        <label>Create history record</label>
+        <locationX>176</locationX>
+        <locationY>566</locationY>
+        <inputAssignments>
+            <field>Action__c</field>
+            <value>
+                <stringValue>Recover liability from Crown Share</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>BV_Case__c</field>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Case_Officer__c</field>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Date_Inserted__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Last_updated__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Case_History__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordLookups>
+        <name>Get_case</name>
+        <label>Get case</label>
+        <locationX>176</locationX>
+        <locationY>242</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_user</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <object>BV_Case__c</object>
+        <outputAssignments>
+            <assignToReference>caseForename</assignToReference>
+            <field>Forenames__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>caseReference</assignToReference>
+            <field>Name</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>caseSurname</assignToReference>
+            <field>Surname__c</field>
+        </outputAssignments>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_user</name>
+        <label>Get user</label>
+        <locationX>176</locationX>
+        <locationY>350</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Store_field_values</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </filters>
+        <object>User</object>
+        <outputAssignments>
+            <assignToReference>username</assignToReference>
+            <field>Name</field>
+        </outputAssignments>
+    </recordLookups>
     <screens>
         <name>Enter_amount_of_liability</name>
         <label>Enter amount of liability - £</label>
@@ -31,6 +179,9 @@
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Get_case</targetReference>
+        </connector>
         <fields>
             <name>Enter_amount_of_liability1</name>
             <dataType>Currency</dataType>
@@ -49,5 +200,54 @@
             <targetReference>Enter_amount_of_liability</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
+    <variables>
+        <name>caseForename</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>caseReference</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>caseSurname</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>historyRecordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>recordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>subflowValues</name>
+        <dataType>String</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>username</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
 </Flow>
