@@ -529,6 +529,7 @@ export default class TaskDetail extends LightningElement {
         if (event.detail.status === 'FINISHED') {
             // Handle flow completion
             this.isFlowModalOpen = false;
+            this.refreshTemplateData(); // Refresh generated documents
         }
     }
 
