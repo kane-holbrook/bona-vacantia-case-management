@@ -112,28 +112,22 @@ export default class TaskDetail extends LightningElement {
         const { error, data } = result;
         if (data) {
             this.subTasks = data.map(record => {
-                // Parse the waiting period data from WAITING_PERIOD_FIELD, if it exists
-                let waitingPeriodData = {
-                    waitingPeriodInputValue: '',
-                    waitingPeriodTimeValue: '',
-                    beforeAfterValue: '',
-                    dateInsertedSelected: ''
-                };
-    
-                if (record.Waiting_Period_Data__c) {  // Assuming the subtask has a WAITING_PERIOD_FIELD equivalent
+                let waitingPeriod = '';
+                
+                if (record.Waiting_Period_Data__c) {
                     try {
                         const parsedData = JSON.parse(record.Waiting_Period_Data__c);
-                        waitingPeriodData = {
-                            waitingPeriodInputValue: parsedData.waitingPeriodInputValue || '',
-                            waitingPeriodTimeValue: parsedData.waitingPeriodTimeValue || '',
-                            beforeAfterValue: parsedData.beforeAfterValue || '',
-                            dateInsertedSelected: parsedData.dateInsertedSelected || ''
-                        };
+                        waitingPeriod = `${parsedData.waitingPeriodInputValue} ${parsedData.waitingPeriodTimeValue} ${parsedData.beforeAfterValue} ${parsedData.dateInsertedSelected}`;
                     } catch (error) {
                         console.error('Error parsing WAITING_PERIOD_FIELD for subtask:', error);
                     }
+                } else if (record.Date_Inserted__c && record.Due_Date__c) {
+                    const dateInserted = new Date(record.Date_Inserted__c);
+                    const dueDate = new Date(record.Due_Date__c);
+                    const daysDifference = this.calculateDaysDifference(dateInserted, dueDate);
+                    waitingPeriod = `${daysDifference} days After Date Inserted`;
                 }
-    
+
                 return {
                     ...record,
                     isOpen: false,
@@ -142,7 +136,7 @@ export default class TaskDetail extends LightningElement {
                     formattedDateInserted: this.formatDate(record.Date_Inserted__c),
                     formattedDueDate: this.formatDate(record.Due_Date__c),
                     Assigned_To_Name: '',
-                    Waiting_Period__c: `${waitingPeriodData.waitingPeriodInputValue} ${waitingPeriodData.waitingPeriodTimeValue} ${waitingPeriodData.beforeAfterValue} ${waitingPeriodData.dateInsertedSelected}`,
+                    Waiting_Period__c: waitingPeriod,
                     Comments: record.Comments__c
                 };
             });
@@ -214,7 +208,7 @@ export default class TaskDetail extends LightningElement {
         getUserNames({ userIds })
             .then(result => {
                 // Map the result (Id -> Name) back to the caseHistoryData
-                this.caseHistoryData = this.caseHistoryData.map(item => {
+                this.caseHistoryData = this.caseHistoryData.map(item => { 
                     return { 
                         ...item, 
                         Case_Officer_Name: result[item.Case_Officer__c] || 'Unknown Officer'
@@ -402,8 +396,28 @@ export default class TaskDetail extends LightningElement {
     }
 
     get waitingPeriod() {
-        // ${waitingPeriodData.waitingPeriodInputValue} ${waitingPeriodData.waitingPeriodTimeValue} ${waitingPeriodData.beforeAfterValue} ${waitingPeriodData.dateInsertedSelected}
-        return this.waitingPeriodInputValue + ' ' + this.waitingPeriodTimeValue + ' ' + this.beforeAfterValue + ' ' + this.dateInsertedSelected;
+        if (this.task) {
+            const waitingPeriodDataStr = getFieldValue(this.task, WAITING_PERIOD_FIELD);
+            if (waitingPeriodDataStr) {
+                const waitingPeriodData = JSON.parse(waitingPeriodDataStr);
+                return `${waitingPeriodData.waitingPeriodInputValue} ${waitingPeriodData.waitingPeriodTimeValue} ${waitingPeriodData.beforeAfterValue} ${waitingPeriodData.dateInsertedSelected}`;
+            } else {
+                const dateInserted = new Date(getFieldValue(this.task, TASK_DATE_INSERTED_FIELD));
+                const dueDate = new Date(getFieldValue(this.task, TASK_DUE_DATE_FIELD));
+                if (dateInserted && dueDate) {
+                    const daysDifference = this.calculateDaysDifference(dateInserted, dueDate);
+                    return `${daysDifference} days After Date Inserted`;
+                }
+            }
+        }
+        return '';
+    }
+
+    // New method to calculate days difference
+    calculateDaysDifference(startDate, endDate) {
+        const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+        const diffDays = Math.round(Math.abs((startDate - endDate) / oneDay));
+        return diffDays;
     }
 
     get modalHeader() {
