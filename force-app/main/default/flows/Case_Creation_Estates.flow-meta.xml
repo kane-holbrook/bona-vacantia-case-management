@@ -2543,6 +2543,10 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             <assignToReference>BVCaseRecordTypeId</assignToReference>
             <field>RecordTypeId</field>
         </outputAssignments>
+        <outputAssignments>
+            <assignToReference>Record_Type_Dev_Name</assignToReference>
+            <field>Record_Type_Dev_Name__c</field>
+        </outputAssignments>
     </recordLookups>
     <recordLookups>
         <name>Get_Case_Officer_RecordTypeId</name>
@@ -3716,7 +3720,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             <targetReference>Get_BV_Case_RecordTypeId</targetReference>
         </connector>
     </start>
-    <status>Active</status>
+    <status>Draft</status>
     <textTemplates>
         <name>Aliases_Template</name>
         <isViewedAsPlainText>false</isViewedAsPlainText>
@@ -4003,6 +4007,13 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
     </variables>
     <variables>
         <name>Other_Addresses_Text_Data</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>Record_Type_Dev_Name</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>

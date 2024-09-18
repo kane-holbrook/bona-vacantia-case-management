@@ -2884,6 +2884,11 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <fields>
+            <name>DT_12</name>
+            <fieldText>&lt;p&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Select Case&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Method of Disclosure&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;(Optional) Select Solicitor from Address Book&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Purchaser Solicitors&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Select a Case Officer&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Originating Case Type&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Review Case Type Details&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Sale Property&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;(Optional) Add Documents&lt;/strong&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
             <name>file_upload_companies</name>
             <extensionName>c:fileUpload</extensionName>
             <fieldType>ComponentInstance</fieldType>
@@ -2908,6 +2913,11 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
+        <fields>
+            <name>DT_13</name>
+            <fieldText>&lt;p&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Select Case&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Method of Disclosure&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;(Optional) Select Solicitor from Address Book&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Purchaser Solicitors&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Select a Case Officer&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Originating Case Type&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Review Case Type Details&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Sale Property&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;(Optional) Add Documents&lt;/strong&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
         <fields>
             <name>file_upload_estates</name>
             <extensionName>c:fileUpload</extensionName>
@@ -4207,6 +4217,11 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             <targetReference>If_Other_Method_of_Disclosure</targetReference>
         </connector>
         <fields>
+            <name>DT_2</name>
+            <fieldText>&lt;p&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Select Case&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Method of Disclosure&lt;/strong&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; (Optional) Select Solicitor from Address Book &amp;gt; Purchaser Solicitors &amp;gt; Select a Case Officer &amp;gt; Originating Case Type &amp;gt; Review Case Type Details &amp;gt; Sale Property &amp;gt; (Optional) Add Documents&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
             <name>Method_of_Disclosure_Conv_Choice</name>
             <choiceReferences>BV18</choiceReferences>
             <choiceReferences>Memo</choiceReferences>
@@ -4312,13 +4327,18 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             <targetReference>Originating_Case_Type_Decision</targetReference>
         </connector>
         <fields>
+            <name>DT_9</name>
+            <fieldText>&lt;p&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Select Case&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Method of Disclosure&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;(Optional) Select Solicitor from Address Book&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Purchaser Solicitors&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Select a Case Officer&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Originating Case Type&lt;/strong&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; Review Case Type Details &amp;gt; Sale Property &amp;gt; (Optional) Add Documents&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
             <name>Originating_Case_Type_Conv</name>
             <choiceReferences>Estate</choiceReferences>
             <choiceReferences>Company</choiceReferences>
             <dataType>String</dataType>
             <fieldText>Originating Case Type?</fieldText>
             <fieldType>DropdownBox</fieldType>
-            <isRequired>false</isRequired>
+            <isRequired>true</isRequired>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
@@ -4334,6 +4354,11 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <connector>
             <targetReference>Conv_Create_Records</targetReference>
         </connector>
+        <fields>
+            <name>DT_6</name>
+            <fieldText>&lt;p&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Select Case&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Method of Disclosure&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;(Optional) Select Solicitor from Address Book&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Purchaser Solicitors&lt;/strong&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; Select a Case Officer &amp;gt; Originating Case Type &amp;gt; Review Case Type Details &amp;gt; Sale Property &amp;gt; (Optional) Add Documents&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
         <fields>
             <name>Solicitor_Conv</name>
             <dataType>String</dataType>
@@ -4469,6 +4494,11 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             <targetReference>Sale_Property_Conv_Screen</targetReference>
         </connector>
         <fields>
+            <name>DT_10</name>
+            <fieldText>&lt;p&gt;&lt;em style=&quot;color: rgb(68, 68, 68); background-color: rgb(255, 255, 255);&quot;&gt;Select Case&lt;/em&gt;&lt;span style=&quot;color: rgb(68, 68, 68); background-color: rgb(255, 255, 255);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;color: rgb(68, 68, 68); background-color: rgb(255, 255, 255);&quot;&gt;Method of Disclosure&lt;/em&gt;&lt;span style=&quot;color: rgb(68, 68, 68); background-color: rgb(255, 255, 255);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;color: rgb(68, 68, 68); background-color: rgb(255, 255, 255);&quot;&gt;(Optional) Select Solicitor from Address Book&lt;/em&gt;&lt;span style=&quot;color: rgb(68, 68, 68); background-color: rgb(255, 255, 255);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;color: rgb(68, 68, 68); background-color: rgb(255, 255, 255);&quot;&gt;Purchaser Solicitors&lt;/em&gt;&lt;span style=&quot;color: rgb(68, 68, 68); background-color: rgb(255, 255, 255);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;color: rgb(68, 68, 68); background-color: rgb(255, 255, 255);&quot;&gt;Select a Case Officer&lt;/em&gt;&lt;span style=&quot;color: rgb(68, 68, 68); background-color: rgb(255, 255, 255);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;color: rgb(68, 68, 68); background-color: rgb(255, 255, 255);&quot;&gt;Originating Case Type&lt;/em&gt;&lt;span style=&quot;color: rgb(68, 68, 68); background-color: rgb(255, 255, 255);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;strong style=&quot;color: rgb(68, 68, 68); background-color: rgb(255, 255, 255);&quot;&gt;Review Case Type Details&lt;/strong&gt;&lt;span style=&quot;color: rgb(68, 68, 68); background-color: rgb(255, 255, 255);&quot;&gt; &amp;gt; Sale Property &amp;gt; (Optional) Add Documents&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
             <name>Company_Details_Header</name>
             <fieldText>Company Details</fieldText>
             <fieldType>RegionContainer</fieldType>
@@ -4505,6 +4535,11 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <connector>
             <targetReference>Sale_Property_Conv_Estate_Screen</targetReference>
         </connector>
+        <fields>
+            <name>DT_15</name>
+            <fieldText>&lt;p&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Select Case&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Method of Disclosure&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;(Optional) Select Solicitor from Address Book&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Purchaser Solicitors&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Select a Case Officer&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Originating Case Type&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Review Case Type Details&lt;/strong&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; Sale Property &amp;gt; (Optional) Add Documents&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
         <fields>
             <name>Intestate_Details</name>
             <fieldText>Intestate Details</fieldText>
@@ -4543,6 +4578,11 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             <targetReference>Purchaser_Solicitors_Screen_Conv</targetReference>
         </connector>
         <fields>
+            <name>DT_5</name>
+            <fieldText>&lt;p&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Select Case&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Method of Disclosure&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;(Optional) Select Solicitor from Address Book&lt;/strong&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; Purchaser Solicitors &amp;gt; Select a Case Officer &amp;gt; Originating Case Type &amp;gt; Review Case Type Details &amp;gt; Sale Property &amp;gt; (Optional) Add Documents&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
             <name>DT_for_solicitor</name>
             <fieldText>&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;﻿Solicitor Name&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!ShippingName}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Solicitor &lt;/strong&gt;&lt;strong&gt;Street&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!ShippingStreet}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Solicitor &lt;/strong&gt;&lt;strong&gt;City&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;{!ShippingCity}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Solicitor &lt;/strong&gt;&lt;strong&gt;Postal Code&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!ShippingPostalCode}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Solicitor &lt;/strong&gt;&lt;strong&gt;Country&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!ShippingCountry}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
@@ -4561,6 +4601,11 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <connector>
             <targetReference>Create_Sale_Property_Record_Estates</targetReference>
         </connector>
+        <fields>
+            <name>DT_14</name>
+            <fieldText>&lt;p&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Select Case&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Method of Disclosure&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;(Optional) Select Solicitor from Address Book&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Purchaser Solicitors&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Select a Case Officer&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Originating Case Type&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Review Case Type Details&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Sale Property&lt;/strong&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; (Optional) Add Documents&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
         <fields>
             <name>Sale_Property_Conv_Estate_Screen_Section1</name>
             <fieldType>RegionContainer</fieldType>
@@ -4855,6 +4900,11 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <connector>
             <targetReference>Create_Sale_Property_Record_Companies</targetReference>
         </connector>
+        <fields>
+            <name>DT_11</name>
+            <fieldText>&lt;p&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Select Case&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Method of Disclosure&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;(Optional) Select Solicitor from Address Book&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Purchaser Solicitors&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Select a Case Officer&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Originating Case Type&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Review Case Type Details&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Sale Property&lt;/strong&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; (Optional) Add Documents&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
         <fields>
             <name>Sale_Property_Conv_Screen_Section1</name>
             <fieldType>RegionContainer</fieldType>
@@ -5738,6 +5788,11 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             <targetReference>Method_of_Disclosure_Conv</targetReference>
         </connector>
         <fields>
+            <name>DT_1</name>
+            <fieldText>&lt;p&gt;&lt;strong&gt;Select Case&lt;/strong&gt; &amp;gt; Method of Disclosure &amp;gt; (Optional) Select Solicitor from Address Book &amp;gt; Purchaser Solicitors &amp;gt; Select a Case Officer &amp;gt; Originating Case Type &amp;gt; Review Case Type Details &amp;gt; Sale Property &amp;gt; (Optional) Add Documents&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
             <name>Choose_a_case</name>
             <choiceReferences>BVCaseRecordChoiceSet</choiceReferences>
             <extensionName>flowruntime:choiceLookup</extensionName>
@@ -5761,6 +5816,11 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             <targetReference>Create_Case_Officer_Record</targetReference>
         </connector>
         <fields>
+            <name>DT_7</name>
+            <fieldText>&lt;p&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Select Case&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Method of Disclosure&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;(Optional) Select Solicitor from Address Book&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Purchaser Solicitors&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Select a Case Officer&lt;/strong&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; Originating Case Type &amp;gt; Review Case Type Details &amp;gt; Sale Property &amp;gt; (Optional) Add Documents&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
             <name>Case_Officer_Selection</name>
             <extensionName>c:caseOfficerSelector</extensionName>
             <fieldType>ComponentInstance</fieldType>
@@ -5782,6 +5842,11 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <connector>
             <targetReference>Review_the_solicitor</targetReference>
         </connector>
+        <fields>
+            <name>DT_4</name>
+            <fieldText>&lt;p&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Select Case&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Method of Disclosure&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;(Optional) Select Solicitor from Address Book&lt;/strong&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; Purchaser Solicitors &amp;gt; Select a Case Officer &amp;gt; Originating Case Type &amp;gt; Review Case Type Details &amp;gt; Sale Property &amp;gt; (Optional) Add Documents&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
         <fields>
             <name>Select_a_solicitor_comp</name>
             <choiceReferences>addressBookRecordChoiceSet</choiceReferences>
@@ -5805,6 +5870,11 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <connector>
             <targetReference>Solicitor_select</targetReference>
         </connector>
+        <fields>
+            <name>DT_3</name>
+            <fieldText>&lt;p&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Select Case&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;em style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Method of Disclosure&lt;/em&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; &lt;/span&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;(Optional) Select Solicitor from Address Book&lt;/strong&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt; &amp;gt; Purchaser Solicitors &amp;gt; Select a Case Officer &amp;gt; Originating Case Type &amp;gt; Review Case Type Details &amp;gt; Sale Property &amp;gt; (Optional) Add Documents&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
         <fields>
             <name>Select_Solicitor_from_address_book_comp</name>
             <choiceReferences>Yes</choiceReferences>
