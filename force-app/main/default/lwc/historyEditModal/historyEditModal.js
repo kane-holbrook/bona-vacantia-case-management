@@ -5,7 +5,7 @@ import { NavigationMixin } from 'lightning/navigation';
 import { getRecordId } from 'c/sharedService';
 import CASE_HISTORY_OBJECT from '@salesforce/schema/Case_History__c';
 import ID_FIELD from '@salesforce/schema/Case_History__c.Id';
-import DATE_INSERTED_FIELD from '@salesforce/schema/Case_History__c.Date_Inserted__c';
+import DATE_INSERTED_FIELD from '@salesforce/schema/Case_History__c.Date_Inserted_Time__c';
 import ACTION_FIELD from '@salesforce/schema/Case_History__c.Action__c';
 import DETAILS_FIELD from '@salesforce/schema/Case_History__c.Details__c';
 import FLAG_IMPORTANT_FIELD from '@salesforce/schema/Case_History__c.Flag_as_important__c';
@@ -90,7 +90,7 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
     ];
 
     connectedCallback() {
-        this.dateInserted = this.record.Date_Inserted__c || this.getTodayDate();
+        this.dateInserted = this.record.Date_Inserted_Time__c || this.getCurrentDateTime();
         this.description = this.record.Action__c || '';
         this.details = this.record.Details__c || '';
         this.flagImportant = this.record.Flag_as_important__c || false;
@@ -172,7 +172,11 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
         const field = event.target.name;
 
         if (field === 'date-inserted') {
-            this.dateInserted = event.target.value;
+            // Convert the input value to full ISO 8601 format
+            const inputDate = new Date(event.target.value);
+            // Ensure the date is interpreted as UK time
+            const ukDate = new Date(inputDate.toLocaleString("en-US", {timeZone: "Europe/London"}));
+            this.dateInserted = ukDate.toISOString();
         } else if (field === 'description') {
             this.description = event.target.value;
         } else if (field === 'details') {
@@ -638,12 +642,10 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
         return allValid;
     }
 
-    getTodayDate() {
-        const today = new Date();
-        const yyyy = today.getFullYear();
-        const mm = String(today.getMonth() + 1).padStart(2, '0');
-        const dd = String(today.getDate()).padStart(2, '0');
-        return `${yyyy}-${mm}-${dd}`;
+    getCurrentDateTime() {
+        const now = new Date();
+        const ukTime = new Date(now.toLocaleString("en-US", {timeZone: "Europe/London"}));
+        return ukTime.toISOString(); // This will return the full ISO 8601 format
     }
 
     handleImport() {

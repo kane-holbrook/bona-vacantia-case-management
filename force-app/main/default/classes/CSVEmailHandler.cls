@@ -549,7 +549,7 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
         Case_History__c caseHistory = new Case_History__c();
         caseHistory.Action__c = caseRecord.Name; // Set Action to the Company Name
         caseHistory.BV_Case__c = caseRecord.Id; // Lookup to the BV Case
-        caseHistory.Date_Inserted__c = Date.today(); // Set current date for Date Inserted
+        caseHistory.Date_Inserted_Time__c = DateTime.now(); // Set current date for Date Inserted
         caseHistory.Last_updated__c = DateTime.now(); // Set current date for Last Updated
         caseHistory.Details__c = caseRecord.Company_No__c; // Set Details to the Company Number (Optional)
         

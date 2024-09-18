@@ -32,7 +32,7 @@ public class EmailMessageHandler {
                 caseHistory.Action__c = em.Subject;
                 caseHistory.Details__c = em.TextBody;
                 caseHistory.Case_Officer__c = UserInfo.getUserId();
-                caseHistory.Date_Inserted__c = System.today();
+                caseHistory.Date_Inserted_Time__c = DateTime.now();
                 caseHistory.Last_updated__c = System.now();
                 caseHistory.EmailMessageId__c = em.Id; // Store the EmailMessage ID in the text field
                 caseHistories.add(caseHistory);

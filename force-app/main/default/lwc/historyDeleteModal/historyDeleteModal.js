@@ -14,7 +14,7 @@ export default class HistoryDeleteModal extends LightningElement {
     @track user;
 
     connectedCallback() {
-        this.date = this.record.Date_Inserted__c || '';
+        this.date = this.record.Date_Inserted_Time__c || '';
         this.action = this.record.Action__c || '';
         this.documentType = this.record.Document_Type__c || '';
         this.correspondence = this.record.Correspondence__c || '';

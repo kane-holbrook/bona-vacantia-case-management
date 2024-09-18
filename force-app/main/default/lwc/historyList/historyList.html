@@ -100,7 +100,7 @@
                                         </button>
                                     </th>
                                     <th class="date" scope="col">
-                                        <button class="slds-button slds-button_reset slds-truncate slds-cell-fixed" title="Date" onclick={handleSort} data-column="Date_Inserted__c">
+                                        <button class="slds-button slds-button_reset slds-truncate slds-cell-fixed" title="Date" onclick={handleSort} data-column="Date_Inserted_Time__c">
                                             Date
                                             <template if:true={isSortedByDate}>
                                                 <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
@@ -184,7 +184,7 @@
                                         </td>
                                         <td class="date" data-label="Date">
                                             <div class="slds-grid slds-align_absolute-center">
-                                                <lightning-formatted-date-time value={item.Date_Inserted__c} year="numeric" month="2-digit" day="2-digit" day-style="2-digit" month-style="2-digit" timezone="UTC"></lightning-formatted-date-time>
+                                                <lightning-formatted-date-time value={item.Date_Inserted_Time__c} year="numeric" month="2-digit" day="2-digit" day-style="2-digit" month-style="2-digit" timezone="UTC"></lightning-formatted-date-time>
                                             </div>
                                         </td>
                                         <td class="action-truncrate" data-label="Action">{item.Action__c}</td>
