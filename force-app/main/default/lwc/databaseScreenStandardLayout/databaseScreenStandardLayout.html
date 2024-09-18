@@ -101,7 +101,7 @@
                                     <div class="slds-p-around_x-small expanded-section" key={row.Id} data-rowid={row.Id} style="display:none;">
                                         <div class="slds-grid slds-wrap slds-gutters">
                                             <template if:true={isTwoColumnLayout}>
-                                                <div class="slds-col slds-size_1-of-2" style="padding-right: 15rem;">
+                                                <div class="slds-col slds-size_1-of-2">
                                                     <template for:each={row.fullData.leftFields} for:item="field">
                                                         <template if:true={field.insertDivider}>
                                                             <div class="slds-section slds-m-vertical_large" style="border-top: 1px solid #d8dde6;" key={field.dividerKey}></div>
@@ -122,7 +122,7 @@
                                                         <br key={field.valueKey}/>
                                                     </template>
                                                 </div>
-                                                <div class="slds-col slds-size_1-of-2" style="padding-left: 15rem;">
+                                                <div class="slds-col slds-size_1-of-2 slds-p-left_medium">
                                                     <template for:each={row.fullData.rightFields} for:item="field">
                                                         <template if:true={field.insertDivider}>
                                                             <div class="slds-section slds-m-vertical_large" style="border-top: 1px solid #d8dde6;" key={field.dividerKey}></div>
