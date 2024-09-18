@@ -95,9 +95,9 @@
             </value>
         </inputAssignments>
         <inputAssignments>
-            <field>Date_Inserted__c</field>
+            <field>Date_Inserted_Time__c</field>
             <value>
-                <elementReference>$Flow.CurrentDate</elementReference>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>

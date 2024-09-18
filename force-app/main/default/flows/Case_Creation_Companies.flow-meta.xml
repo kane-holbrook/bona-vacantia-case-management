@@ -2211,9 +2211,9 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             </value>
         </inputAssignments>
         <inputAssignments>
-            <field>Date_Inserted__c</field>
+            <field>Date_Inserted_Time__c</field>
             <value>
-                <elementReference>$Flow.CurrentDate</elementReference>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
