@@ -1,0 +1,16 @@
+<aura:component implements="lightning:homeTemplate" description="Two equal width columns">
+    <aura:attribute name="left" type="Aura.Component[]" />
+    <aura:attribute name="right" type="Aura.Component[]" />
+
+    <div>
+        <lightning:layout>
+            <lightning:layoutItem size="6" class="slds-p-left_small slds-p-right_small">
+                {!v.left}
+            </lightning:layoutItem>
+            <lightning:layoutItem size="6" class="slds-p-left_small slds-p-right_small">
+                {!v.right}
+            </lightning:layoutItem>
+        </lightning:layout>
+    </div>
+    
+</aura:component>
