@@ -1,5 +1,6 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
+import { CurrentPageReference } from "lightning/navigation";
 import getTasksByCaseId from '@salesforce/apex/TaskController.getTasksByCaseId';
 import getOpenTasksByUser from '@salesforce/apex/TaskController.getOpenTasksByUser';
 import getOtherTasksByCaseId from '@salesforce/apex/TaskController.getOtherTasksByCaseId';
@@ -43,10 +44,22 @@ export default class TaskList extends LightningElement {
         'Due_Date__c' : 'Due Date'
     };
 
+    @wire(CurrentPageReference)
+    pageRef;
+
     connectedCallback() {
         this.recordId = getRecordId();
         this.fetchCurrentUserId();
         this.refreshTaskItems();
+        this.checkForTaskIdInUrl();
+    }
+
+    checkForTaskIdInUrl() {
+        if (this.pageRef && this.pageRef.state.c__taskId) {
+            const urlTaskId = this.pageRef.state.c__taskId;
+            this.currentRecordId = urlTaskId;
+            this.isTaskDetailVisible = true;
+        }
     }
 
     fetchCurrentUserId() {

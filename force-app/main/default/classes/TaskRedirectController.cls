@@ -14,8 +14,9 @@ public class TaskRedirectController {
     public PageReference redirectToCase() {
         if (task.BV_Case_Lookup__c != null) {
             Id caseId = task.BV_Case_Lookup__c;
-            PageReference casePage = new PageReference('/' + caseId);
-            casePage.setRedirect(true);
+            String url = '/lightning/r/BV_Case__c/' + caseId + '/view?c__taskId=' + task.Id;
+            PageReference casePage = new PageReference(url);
+            casePage.setRedirect(false);
             return casePage;
         } else {
             ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'No related case found.'));
