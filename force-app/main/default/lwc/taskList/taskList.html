@@ -1,9 +1,9 @@
 <template>
     <template if:true={isTaskDetailVisible}>
         <div class="slds-m-bottom_medium">
-            <a onclick={handleTaskDetailClose} class="slds-text-heading_small" style="color: #1d70b8;">
+            <a onclick={handleTaskDetailClose} class="slds-text-heading_small slds-grid slds-grid_vertical-align-center" style="color: #1d70b8;">
                 <lightning-icon icon-name="utility:back" size="x-small" class="slds-m-right_x-small back-arrow"></lightning-icon>
-                Return to task list
+                <span>Return to task list</span>
             </a>
         </div>
         <c-task-detail record-id={currentRecordId} onclose={handleTaskDetailClose} ontaskdeleted={handleTaskDetailClose}></c-task-detail>
