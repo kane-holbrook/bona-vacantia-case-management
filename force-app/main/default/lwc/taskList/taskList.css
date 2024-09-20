@@ -60,3 +60,7 @@ table tr:hover td {
     background-color: inherit;     
     opacity: 1.0;
 }
+
+.back-arrow {
+    --slds-c-icon-color-foreground-default: #1d70b8;
+}
