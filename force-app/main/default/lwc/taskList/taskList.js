@@ -27,6 +27,7 @@ export default class TaskList extends LightningElement {
     @track isTaskDetailVisible = false;
     @track dateFilterFrom = null;  // Start date for filtering
     @track dateFilterTo = null;    // End date for filtering
+    @track isLastUpdated = false;
     wiredTaskItemsResult;
     userNames = {};
 
@@ -183,7 +184,10 @@ export default class TaskList extends LightningElement {
             
             if (validItems.length === 0) {
                 this.lastUpdated = 'No updates available';
+                this.isLastUpdated = false;
                 return;
+            } else {
+                this.isLastUpdated = true;
             }
     
             const latestItem = validItems.reduce((latest, item) => {
