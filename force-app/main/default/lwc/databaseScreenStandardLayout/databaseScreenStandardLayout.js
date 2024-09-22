@@ -28,6 +28,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
     @track populatedLeftColumnFields = [];
     @track populatedRightColumnFields = [];
     @track relatedAccounts;
+    @track databaseScreenHeading;
 
     hasDataBeenUpdated = false;
     isModalOpen = false;
@@ -413,6 +414,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
             // We want to see how many columns the section has, so we need to read the "columns" attribute
             this.sectionsMain.forEach(section => {
                 this.columnLayoutStyle = section.columns;
+                this.databaseScreenHeading = section.heading;
             });
 
             // Populate left and right columns for expanded view

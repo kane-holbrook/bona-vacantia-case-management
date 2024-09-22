@@ -25,6 +25,7 @@ export default class DatabaseStandardRecordModal extends LightningElement {
     @api emptySpaceRowIndex;
     @api originalLeftColumnFields;
     @api originalRightColumnFields;
+    @api heading;
     @track combinedData = [];
     @track leftColumnFields = [];
     @track rightColumnFields = [];
@@ -334,7 +335,7 @@ export default class DatabaseStandardRecordModal extends LightningElement {
 
     performSearch() {
         if (this.searchTerm.length >= 2) {
-            getAccountSearchResults({ searchTerm: this.searchTerm })
+            getAccountSearchResults({ searchTerm: this.searchTerm, heading: this.heading })
                 .then(results => {
                     this.searchResults = results;
                     console.log('Results:', results);

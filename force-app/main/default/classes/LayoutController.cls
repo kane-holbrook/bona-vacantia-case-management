@@ -445,20 +445,48 @@ public with sharing class LayoutController {
     // }
 
     @AuraEnabled(cacheable=true)
-    public static List<Account> getAccountSearchResults(String searchTerm) {
+    public static List<Account> getAccountSearchResults(String searchTerm, String heading) {
         // Check if search term is provided
         if (String.isBlank(searchTerm)) {
             return new List<Account>(); // Return empty list if no search term is provided
         }
         
-        // Query the Account object for matching records, filtering by Account Name
-        String likeSearchTerm = '%' + String.escapeSingleQuotes(searchTerm) + '%';
-        List<Account> accounts = [
-            SELECT Id, Name, Phone, ShippingStreet, ShippingCity, ShippingPostalCode 
-            FROM Account 
-            WHERE Name LIKE :likeSearchTerm
-            LIMIT 10
+        // Remove '[DEV]' suffix from the heading if present
+        heading = heading.replace(' [DEV]', '');
+        
+        // Query the AddressBookMapping__mdt to get the Account Type based on the heading
+        String exactHeading = String.escapeSingleQuotes(heading);
+        List<AddressBookMapping__mdt> accountTypeMappings = [
+            SELECT Type__c 
+            FROM AddressBookMapping__mdt
+            WHERE Label = :exactHeading
+            LIMIT 1
         ];
+        
+        String accountType = accountTypeMappings.isEmpty() ? null : accountTypeMappings[0].Type__c;
+        
+        // Query the Account object for matching records
+        String likeSearchTerm = '%' + String.escapeSingleQuotes(searchTerm) + '%';
+        List<Account> accounts;
+        
+        if (accountType != null) {
+            // If there's a match with the metadata, filter by Account Name and Type
+            accounts = [
+                SELECT Id, Name, Phone, ShippingStreet, ShippingCity, ShippingPostalCode 
+                FROM Account 
+                WHERE Name LIKE :likeSearchTerm
+                AND Type = :accountType
+                LIMIT 10
+            ];
+        } else {
+            // If there's no match with the metadata, fetch all records with a similar Name, regardless of type
+            accounts = [
+                SELECT Id, Name, Phone, ShippingStreet, ShippingCity, ShippingPostalCode 
+                FROM Account 
+                WHERE Name LIKE :likeSearchTerm
+                LIMIT 10
+            ];
+        }
         
         return accounts;
     }
