@@ -1,0 +1,8 @@
+<design:component label="Multi-Column Layout">
+    <flexipage:template>
+        <flexipage:region name="firstRow" label="First Row" defaultWidth="LARGE" />
+        <flexipage:region name="secondRow" label="Second Row" defaultWidth="LARGE" />
+        <flexipage:region name="thirdRowLeft" label="Third Row Left" defaultWidth="MEDIUM" />
+        <flexipage:region name="thirdRowRight" label="Third Row Right" defaultWidth="MEDIUM" />
+    </flexipage:template>
+</design:component>

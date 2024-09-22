@@ -4,7 +4,7 @@
             Date Inserted
         </label>
         <div class="slds-form-element__control">
-            <lightning-input type="date" name="date-inserted" value={dateInserted} onchange={handleInputChange} required></lightning-input>
+            <lightning-input type="datetime" name="date-inserted" value={dateInserted} onchange={handleInputChange} required></lightning-input>
         </div>
     </div>
     <div class="slds-form-element slds-m-around_medium">
@@ -86,10 +86,10 @@
                             <div class="slds-truncate" title={item.FileSize__c}>{item.FileSize__c}</div>
                         </td>
                         <td data-label="Created Time">
-                            <div class="slds-truncate" title={item.Created_Time__c}>{item.Created_Time__c}</div>
+                            <div class="slds-truncate" title={item.Created_Time__c}>{item.formattedCreatedTime}</div>
                         </td>
                         <td data-label="Actions">
-                            <lightning-button-menu alternative-text="Show actions" icon-name="utility:down" data-id={item.Id} menu-alignment="right" onselect={handleRowAction}>
+                            <lightning-button-menu alternative-text="Show actions" icon-name="utility:down" data-id={item.Id} menu-alignment="auto" onselect={handleRowAction}>
                                 <lightning-menu-item label="View / edit file" value="viewEditFile" data-id={item.Id}></lightning-menu-item>
                                 <lightning-menu-item label="View / edit details" value="viewEditDetails" data-id={item.Id}></lightning-menu-item>
                                 <lightning-menu-item label="Convert to PDF" value="convertToPDF" data-id={item.Id}></lightning-menu-item>

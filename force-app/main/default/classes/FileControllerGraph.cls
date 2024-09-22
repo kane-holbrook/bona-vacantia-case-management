@@ -1,12 +1,16 @@
 public class FileControllerGraph {
 
     @AuraEnabled(cacheable=false)
-    public static String uploadFileToSharePoint(String filePath, String fileName, String fileContent, String documentType) {
+    public static Map<String, String> uploadFileToSharePoint(String filePath, String fileName, String fileContent, String documentType) {
         Map<String, String> settings = getSharePointSettings();
         String siteUrl = settings.get('SharePoint_Site_URL');
         String directoryPath = settings.get('SharePoint_Directory_Path');
         String siteId = getSiteId(siteUrl, directoryPath);
-        String encodedFileName = encodeFileName(fileName);
+        
+        // Check if file already exists and generate a unique name
+        String uniqueFileName = getUniqueFileName(siteId, filePath, fileName);
+        String encodedFileName = encodeFileName(uniqueFileName);
+        
         String uploadUrl = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/drive/root:/' + filePath + '/' + encodedFileName + ':/content';
         
         HttpRequest req = new HttpRequest();
@@ -28,21 +32,29 @@ public class FileControllerGraph {
         Http http = new Http();
         HttpResponse res = http.send(req);
         
+        Map<String, String> result = new Map<String, String>();
+        
         if (res.getStatusCode() == 201 || res.getStatusCode() == 200) {
             System.debug('File uploaded successfully.');
-            // Extract the ID from the response
-            Map<String, Object> result = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
-            String itemId = (String) result.get('id');
+            // Extract the ID and WebURL from the response
+            Map<String, Object> responseBody = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
+            String itemId = (String) responseBody.get('id');
+            String webUrl = (String) responseBody.get('webUrl');
             // Fetch listItem information
             Map<String, String> listItemInfo = getListItemInfo(siteId, itemId);
             String listId = listItemInfo.get('listId');
             String listItemId = listItemInfo.get('listItemId');
+            String directURL = listItemInfo.get('directURL');
             tagDocument(siteId, listId, listItemId, fileName, documentType);
-            return itemId; // Return the document ID
+            result.put('id', itemId);
+            result.put('webUrl', webUrl);
+            result.put('directURL', directURL);
         } else {
             System.debug('File upload failed: ' + res.getStatus() + ' ' + res.getBody());
-            return null;
+            result.put('error', 'File upload failed: ' + res.getStatus());
         }
+        
+        return result;
     }
     
     private static Boolean isBase64String(String content) {
@@ -134,13 +146,15 @@ public class FileControllerGraph {
             Map<String, Object> result = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
             System.debug(JSON.serializePretty(result));
             Map<String, Object> parentReference = (Map<String, Object>) result.get('parentReference');
-            System.debug('parentReference: ' + parentReference);
+            System.debug(JSON.serializePretty(parentReference));
             String listId = (String) parentReference.get('id');
+            String directURL = (String) result.get('webUrl');
             String listItemId = (String) result.get('id');
             Map<String, String> listItemInfo = new Map<String, String>();
             String getListIdByName = getListIdByName(siteId, 'Documents');
             listItemInfo.put('listId', getListIdByName);
             listItemInfo.put('listItemId', listItemId);
+            listItemInfo.put('directURL', directURL);
             return listItemInfo;
         } else {
             throw new CalloutException('Failed to get list item information: ' + res.getStatus() + ' ' + res.getBody());
@@ -176,8 +190,30 @@ public class FileControllerGraph {
         String siteUrl = settings.get('SharePoint_Site_URL');
         String directoryPath = settings.get('SharePoint_Directory_Path');
         String siteId = getSiteId(siteUrl, directoryPath);
-        
-        String deleteUrl = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/drive/root:/' + filePath + '/' + fileName;
+        String pathToRemove = 'sites/XansiumUATTestSite/Shared%20Documents/';
+    
+        // Get the actual file name with extension from the filePath
+        String actualFileNameWithExtension = filePath.substring(filePath.lastIndexOf('/') + 1);
+    
+        // If the fileName provided doesn't have an extension, assume it's just the base name
+        // Compare the provided fileName with the actual file name in the filePath (with extension)
+        if (filePath.endsWith('/' + actualFileNameWithExtension) && actualFileNameWithExtension.startsWith(fileName)) {
+            // Remove the duplicate filename from filePath if it's repeated
+            filePath = filePath.substring(0, filePath.lastIndexOf('/'));
+        }
+    
+        // Remove the directory path if it's present
+        if (filePath.contains(pathToRemove)) {
+            filePath = filePath.replace(pathToRemove, '');
+        }
+    
+        // Trim any trailing slashes from the filePath
+        if (filePath.endsWith('/')) {
+            filePath = filePath.substring(0, filePath.length() - 1);
+        }
+    
+        // Construct the final delete URL
+        String deleteUrl = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/drive/root:/' + filePath + '/' + actualFileNameWithExtension;
         
         HttpRequest req = new HttpRequest();
         req.setEndpoint(deleteUrl);
@@ -186,11 +222,14 @@ public class FileControllerGraph {
         
         Http http = new Http();
         HttpResponse res = http.send(req);
-        
+    
         if (res.getStatusCode() == 204) {
             System.debug('File deleted successfully.');
+        } else if (res.getStatusCode() == 404) {
+            throw new AuraHandledException('File not found: The specified file does not exist or has already been deleted.');
         } else {
             System.debug('File deletion failed: ' + res.getStatus() + ' ' + res.getBody());
+            throw new AuraHandledException('File deletion failed: ' + res.getStatus() + ' ' + res.getBody());
         }
     }
 
@@ -554,10 +593,10 @@ public class FileControllerGraph {
             String base64FileContent = EncodingUtil.base64Encode(contentVersion.VersionData);
     
             String documentType = 'Email Attachment'; // Adjust as needed
-            String documentId = uploadFileToSharePoint(folderPath, fileNameWithExtension, base64FileContent, documentType);
+            Map<String, String> uploadResult = uploadFileToSharePoint(folderPath, fileNameWithExtension, base64FileContent, documentType);
     
-            if (documentId != null) {
-                SHDocument__c shDocument = createSHDocumentRecord(caseHistoryId, contentVersion, documentId, normalizedCaseName);
+            if (uploadResult != null && uploadResult.containsKey('id')) {
+                SHDocument__c shDocument = createSHDocumentRecord(caseHistoryId, contentVersion, uploadResult, normalizedCaseName);
                 shDocumentsToInsert.add(shDocument);
             }
         }
@@ -569,18 +608,17 @@ public class FileControllerGraph {
         return true;
     }
     
-    private static SHDocument__c createSHDocumentRecord(Id caseHistoryId, ContentVersion contentVersion, String documentId, String caseName) {
-        Map<String, String> settings = getSharePointSettings();
-    
+    private static SHDocument__c createSHDocumentRecord(Id caseHistoryId, ContentVersion contentVersion, Map<String, String> uploadResult, String caseName) {
         SHDocument__c shDocument = new SHDocument__c();
         shDocument.Case_History__c = caseHistoryId;
-        shDocument.DocumentID__c = documentId;
+        shDocument.DocumentID__c = uploadResult.get('id');
         shDocument.Name = contentVersion.Title;
         shDocument.Document_Name__c = contentVersion.Title;
         shDocument.DocumentType__c = 'Email Attachment'; // Adjust as needed
         shDocument.FileSize__c = contentVersion.ContentSize;
         shDocument.DocumentExtension__c = contentVersion.FileExtension;
-        shDocument.ServerRelativeURL__c = '/' + settings.get('SharePoint_Directory_Path') + '/Shared%20Documents/' + caseName + '/' + caseHistoryId + '/' + contentVersion.Title + '.' + contentVersion.FileExtension;
+        shDocument.ServerRelativeURL__c = uploadResult.get('webUrl');
+        shDocument.DirectURL__c = uploadResult.get('directURL');
         return shDocument;
     }
 
@@ -602,7 +640,11 @@ public class FileControllerGraph {
         String siteUrl = settings.get('SharePoint_Site_URL');
         String directoryPath = settings.get('SharePoint_Directory_Path');
         String siteId = getSiteId(siteUrl, directoryPath);
-        String encodedFileName = encodeFileName(fileName);
+        
+        // Check if file already exists and generate a unique name
+        String uniqueFileName = getUniqueFileName(siteId, filePath, fileName);
+        String encodedFileName = encodeFileName(uniqueFileName);
+        
         String uploadUrl = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/drive/root:/' + filePath + '/' + encodedFileName + ':/content';
         
         HttpRequest req = new HttpRequest();
@@ -631,12 +673,14 @@ public class FileControllerGraph {
             
             // Fetch listItem information
             Map<String, String> listItemInfo = getListItemInfo(siteId, documentId);
+            String directURL = listItemInfo.get('directURL');
             String webUrl = (String)jsonResponse.get('webUrl');
             
             // Construct and return a structured response
             Map<String, Object> response = new Map<String, Object>();
             response.put('documentId', documentId);
             response.put('webUrl', webUrl);
+            response.put('directURL', directURL);
             response.put('fileName', fileName);
             response.put('fileSize', String.valueOf(fileContent.length()));
             response.put('fileExtension', fileName.substringAfterLast('.'));
@@ -656,6 +700,60 @@ public class FileControllerGraph {
         } catch (Exception e) {
             throw new AuraHandledException('Error finding SHDocument__c: ' + e.getMessage());
         }
+    }
+
+    @AuraEnabled
+    public static void deleteSharePointFolder(String folderPath) {
+        Map<String, String> settings = getSharePointSettings();
+        String siteUrl = settings.get('SharePoint_Site_URL');
+        String directoryPath = settings.get('SharePoint_Directory_Path');
+        String siteId = getSiteId(siteUrl, directoryPath);
+        
+        String deleteUrl = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/drive/root:/' + folderPath;
+        
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint(deleteUrl);
+        req.setMethod('DELETE');
+        req.setHeader('Accept', 'application/json');
+        
+        Http http = new Http();
+        HttpResponse res = http.send(req);
+        
+        if (res.getStatusCode() == 204) {
+            System.debug('Folder deleted successfully.');
+        } else if (res.getStatusCode() == 404) {
+            System.debug('Folder not found: ' + folderPath);
+        } else {
+            throw new AuraHandledException('Failed to delete folder: ' + res.getStatus() + ' ' + res.getBody());
+        }
+    }
+
+    private static String getUniqueFileName(String siteId, String filePath, String fileName) {
+        String baseName = fileName.substringBeforeLast('.');
+        String extension = fileName.substringAfterLast('.');
+        String currentName = fileName;
+        Integer counter = 1;
+
+        while (fileExists(siteId, filePath, currentName)) {
+            currentName = baseName + '(' + counter + ').' + extension;
+            counter++;
+        }
+
+        return currentName;
+    }
+
+    private static Boolean fileExists(String siteId, String filePath, String fileName) {
+        String checkUrl = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/drive/root:/' + filePath + '/' + fileName;
+        
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint(checkUrl);
+        req.setMethod('GET');
+        req.setHeader('Accept', 'application/json');
+        
+        Http http = new Http();
+        HttpResponse res = http.send(req);
+        
+        return res.getStatusCode() == 200;
     }
 
     public void veryTemporaryTest(){

@@ -10,6 +10,14 @@
         </value>
     </choices>
     <choices>
+        <name>B1_Freehold_Leasehold_Property</name>
+        <choiceText>B1 - Freehold/Leasehold Property</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>B1 - Freehold/Leasehold Property</stringValue>
+        </value>
+    </choices>
+    <choices>
         <name>B_Freehold_Leasehold_Property</name>
         <choiceText>B - Freehold/Leasehold Property</choiceText>
         <dataType>String</dataType>
@@ -23,6 +31,14 @@
         <dataType>String</dataType>
         <value>
             <stringValue>C1 - Freedom of Information Request</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>C1_Net_Estate_over_15_000</name>
+        <choiceText>C1 - Net Estate over £15,000</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>C1 - Net Estate over £15,000</stringValue>
         </value>
     </choices>
     <choices>
@@ -106,6 +122,14 @@
         </value>
     </choices>
     <choices>
+        <name>J_Freedom_of_Information_Request</name>
+        <choiceText>J - Freedom of Information Request</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>J - Freedom of Information Request</stringValue>
+        </value>
+    </choices>
+    <choices>
         <name>L_Limitation_Period_Cases</name>
         <choiceText>L - Limitation Period Cases</choiceText>
         <dataType>String</dataType>
@@ -159,6 +183,22 @@
         <dataType>String</dataType>
         <value>
             <stringValue>P - Pre-1997 Case</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Q1_Initial_Enquiries</name>
+        <choiceText>Q1 - Initial Enquiries</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Q1 - Initial Enquiries</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Q2_Pre_Admin_Enquiries</name>
+        <choiceText>Q2 - Pre Admin Enquiries</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Q2 - Pre Admin Enquiries</stringValue>
         </value>
     </choices>
     <choices>
@@ -218,7 +258,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Information</targetReference>
+                <targetReference>Select_a_new_case_type</targetReference>
             </connector>
             <label>Yes</label>
         </rules>
@@ -257,11 +297,78 @@
         </value>
     </processMetadataValues>
     <processType>Flow</processType>
+    <recordCreates>
+        <name>Create_a_history_record_for_case_category_changed</name>
+        <label>Create a history record</label>
+        <locationX>50</locationX>
+        <locationY>566</locationY>
+        <connector>
+            <targetReference>Update_BV_Case_Category</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>Action__c</field>
+            <value>
+                <stringValue>Case category changed from {!originalCaseCategory} to {!Select_a_case_type}</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>BV_Case__c</field>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Case_Officer__c</field>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Date_Inserted_Time__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Last_updated__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Case_History__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordLookups>
+        <name>Get_BV_Case_Category</name>
+        <label>Get BV Case Category</label>
+        <locationX>50</locationX>
+        <locationY>458</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Create_a_history_record_for_case_category_changed</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <object>BV_Case__c</object>
+        <outputAssignments>
+            <assignToReference>originalCaseCategory</assignToReference>
+            <field>Case_Type__c</field>
+        </outputAssignments>
+    </recordLookups>
     <recordUpdates>
         <name>Update_BV_Case_Category</name>
         <label>Update BV Case Category</label>
         <locationX>50</locationX>
         <locationY>674</locationY>
+        <connector>
+            <targetReference>Case_Category_Changed_To</targetReference>
+        </connector>
         <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>
@@ -282,39 +389,14 @@
         <name>Case_Category_Changed_To</name>
         <label>Case Category Changed To</label>
         <locationX>50</locationX>
-        <locationY>566</locationY>
+        <locationY>782</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
-        <connector>
-            <targetReference>Update_BV_Case_Category</targetReference>
-        </connector>
         <fields>
             <name>Case_category_changed_display_text</name>
             <fieldText>&lt;p&gt;Case category changed to {!Select_a_case_type}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
-        </fields>
-        <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
-    </screens>
-    <screens>
-        <name>Information</name>
-        <label>Information</label>
-        <locationX>50</locationX>
-        <locationY>350</locationY>
-        <allowBack>true</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
-        <connector>
-            <targetReference>Select_a_new_case_type</targetReference>
-        </connector>
-        <fields>
-            <name>Select_new_case_type</name>
-            <choiceReferences>Ok</choiceReferences>
-            <dataType>String</dataType>
-            <fieldText>Select new case type</fieldText>
-            <fieldType>RadioButtons</fieldType>
-            <isRequired>false</isRequired>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
@@ -346,37 +428,42 @@
         <name>Select_a_new_case_type</name>
         <label>Select a new case type</label>
         <locationX>50</locationX>
-        <locationY>458</locationY>
+        <locationY>350</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Case_Category_Changed_To</targetReference>
+            <targetReference>Get_BV_Case_Category</targetReference>
         </connector>
         <fields>
             <name>Select_a_case_type</name>
-            <choiceReferences>R_BV_Registry_queries</choiceReferences>
-            <choiceReferences>B_Freehold_Leasehold_Property</choiceReferences>
-            <choiceReferences>C_Net_Estate_over_5000_pre_January</choiceReferences>
-            <choiceReferences>D_Net_Estate_less_than_5000_pre_Jan_2009</choiceReferences>
             <choiceReferences>A_SRA_Intestate</choiceReferences>
-            <choiceReferences>Q_Query</choiceReferences>
-            <choiceReferences>G_General</choiceReferences>
-            <choiceReferences>NE_Northern_Ireland</choiceReferences>
-            <choiceReferences>Y_Kin_Claims</choiceReferences>
-            <choiceReferences>F_Collect</choiceReferences>
-            <choiceReferences>M_Costs_Case</choiceReferences>
-            <choiceReferences>L_Limitation_Period_Cases</choiceReferences>
-            <choiceReferences>D1_Net_Estate_under_5000</choiceReferences>
-            <choiceReferences>D2_Net_Estate_over_5000_under_15_000</choiceReferences>
-            <choiceReferences>C1_Freedom_of_Information_Request</choiceReferences>
-            <choiceReferences>YA_Reopened_Other</choiceReferences>
-            <choiceReferences>D3_Net_Estate_under_15_000</choiceReferences>
-            <choiceReferences>P_Pre_1997_Case</choiceReferences>
-            <choiceReferences>D4_Net_Estate_Under_15k_collection_only</choiceReferences>
+            <choiceReferences>B_Freehold_Leasehold_Property</choiceReferences>
+            <choiceReferences>B1_Freehold_Leasehold_Property</choiceReferences>
+            <choiceReferences>C_Net_Estate_over_5000_pre_January</choiceReferences>
+            <choiceReferences>C1_Net_Estate_over_15_000</choiceReferences>
             <choiceReferences>C2_Net_Estate_over_15_000_no_grant_required</choiceReferences>
             <choiceReferences>C4_Net_Estate_over_15_000_collection_only</choiceReferences>
+            <choiceReferences>D_Net_Estate_less_than_5000_pre_Jan_2009</choiceReferences>
+            <choiceReferences>D1_Net_Estate_under_5000</choiceReferences>
+            <choiceReferences>D2_Net_Estate_over_5000_under_15_000</choiceReferences>
+            <choiceReferences>D3_Net_Estate_under_15_000</choiceReferences>
+            <choiceReferences>D4_Net_Estate_Under_15k_collection_only</choiceReferences>
+            <choiceReferences>F_Collect</choiceReferences>
+            <choiceReferences>G_General</choiceReferences>
+            <choiceReferences>J_Freedom_of_Information_Request</choiceReferences>
+            <choiceReferences>L_Limitation_Period_Cases</choiceReferences>
+            <choiceReferences>M_Costs_Case</choiceReferences>
+            <choiceReferences>NE_Northern_Ireland</choiceReferences>
+            <choiceReferences>P_Pre_1997_Case</choiceReferences>
+            <choiceReferences>Q_Query</choiceReferences>
+            <choiceReferences>Q1_Initial_Enquiries</choiceReferences>
+            <choiceReferences>Q2_Pre_Admin_Enquiries</choiceReferences>
+            <choiceReferences>R_BV_Registry_queries</choiceReferences>
+            <choiceReferences>Y_Kin_Claims</choiceReferences>
+            <choiceReferences>YA_Reopened_Other</choiceReferences>
             <dataType>String</dataType>
+            <defaultSelectedChoiceReference>Q_Query</defaultSelectedChoiceReference>
             <fieldText>Select a case type</fieldText>
             <fieldType>DropdownBox</fieldType>
             <isRequired>false</isRequired>
@@ -392,6 +479,13 @@
         </connector>
     </start>
     <status>Active</status>
+    <variables>
+        <name>originalCaseCategory</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
     <variables>
         <name>recordId</name>
         <dataType>String</dataType>

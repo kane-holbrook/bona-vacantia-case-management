@@ -4,6 +4,7 @@ import searchUsers from '@salesforce/apex/TaskController.searchUsers';
 export default class ReAllocateCase extends LightningElement {
     @track isModalOpen = false;
     @track newCaseOfficer = ''; // This will now store the selected officer's name
+    @track newCaseOfficerId = ''; // Add this line to store the User Id
     @track searchTerm = '';
     @track filteredCaseOfficerOptions = [];
 
@@ -22,7 +23,10 @@ export default class ReAllocateCase extends LightningElement {
 
     handleSave() {
         const selectedEvent = new CustomEvent('save', {
-            detail: this.newCaseOfficer // This will pass the officer's name
+            detail: {
+                name: this.newCaseOfficer,
+                id: this.newCaseOfficerId
+            }
         });
 
         this.dispatchEvent(selectedEvent);
@@ -39,7 +43,7 @@ export default class ReAllocateCase extends LightningElement {
             searchUsers({ searchTerm: this.searchTerm })
                 .then((result) => {
                     this.filteredCaseOfficerOptions = result.map((user) => {
-                        return { label: user.Name, value: user.Name }; // Both label and value are the officer's name
+                        return { label: user.Name, value: user.Id };
                     });
                 })
                 .catch((error) => {
@@ -52,7 +56,9 @@ export default class ReAllocateCase extends LightningElement {
 
     selectCaseOfficer(event) {
         const selectedCaseOfficerName = event.currentTarget.dataset.label;
+        const selectedCaseOfficerId = event.currentTarget.dataset.value;
         this.newCaseOfficer = selectedCaseOfficerName;
+        this.newCaseOfficerId = selectedCaseOfficerId;
         this.searchTerm = selectedCaseOfficerName;
         this.filteredCaseOfficerOptions = [];
     }

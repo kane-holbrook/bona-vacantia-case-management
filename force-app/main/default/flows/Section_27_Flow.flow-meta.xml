@@ -78,6 +78,9 @@
         <label>Create a history record</label>
         <locationX>50</locationX>
         <locationY>458</locationY>
+        <connector>
+            <targetReference>Update_Section_Case_27_details</targetReference>
+        </connector>
         <inputAssignments>
             <field>Action__c</field>
             <value>
@@ -91,14 +94,54 @@
             </value>
         </inputAssignments>
         <inputAssignments>
-            <field>Date_Inserted__c</field>
+            <field>Date_Inserted_Time__c</field>
             <value>
-                <elementReference>$Flow.CurrentDate</elementReference>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
             </value>
         </inputAssignments>
         <object>Case_History__c</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordCreates>
+    <recordUpdates>
+        <name>Update_Section_Case_27_details</name>
+        <label>Update Section Case 27 details screen</label>
+        <locationX>50</locationX>
+        <locationY>566</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Record_Type_Dev_Name__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Estates_Section_27_Details</stringValue>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Check_Box__c</field>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Publish__c</field>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Submitted_Date__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <object>BV_Case__c</object>
+    </recordUpdates>
     <screens>
         <name>Confirmation</name>
         <label>Confirmation</label>

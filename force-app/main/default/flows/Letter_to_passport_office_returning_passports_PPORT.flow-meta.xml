@@ -1,6 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>61.0</apiVersion>
+    <assignments>
+        <name>Store_field_values</name>
+        <label>Store field values</label>
+        <locationX>176</locationX>
+        <locationY>782</locationY>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>username: {!username};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>forename: {!forenameFormula};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>surname: {!surnameFormula};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>day: {!day}</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>month: {!month};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>year: {!year};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>townAndCountry: {!Enter_deceased_s_town_and_country_of_birth1};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>passportNo: {!Enter_passport_number1};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>deathCertificateNo: {!deathCertificateFormula};</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Create_history_record</targetReference>
+        </connector>
+    </assignments>
     <choices>
         <name>OK</name>
         <choiceText>OK</choiceText>
@@ -10,6 +82,39 @@
         </value>
     </choices>
     <environments>Default</environments>
+    <formulas>
+        <name>day</name>
+        <dataType>Number</dataType>
+        <expression>DAY({!dateOfBirth})</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>deathCertificateFormula</name>
+        <dataType>String</dataType>
+        <expression>UPPER({!Enter_death_certificate_number_eg_BAB673159})</expression>
+    </formulas>
+    <formulas>
+        <name>forenameFormula</name>
+        <dataType>String</dataType>
+        <expression>UPPER({!caseForename})</expression>
+    </formulas>
+    <formulas>
+        <name>month</name>
+        <dataType>Number</dataType>
+        <expression>MONTH({!dateOfBirth})</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>surnameFormula</name>
+        <dataType>String</dataType>
+        <expression>UPPER({!caseSurname})</expression>
+    </formulas>
+    <formulas>
+        <name>year</name>
+        <dataType>Number</dataType>
+        <expression>YEAR({!dateOfBirth})</expression>
+        <scale>0</scale>
+    </formulas>
     <interviewLabel>Letter to passport office returning passports (PPORT) {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Letter to passport office returning passports (PPORT)</label>
     <processMetadataValues>
@@ -31,6 +136,98 @@
         </value>
     </processMetadataValues>
     <processType>Flow</processType>
+    <recordCreates>
+        <name>Create_history_record</name>
+        <label>Create history record</label>
+        <locationX>176</locationX>
+        <locationY>890</locationY>
+        <assignRecordIdToReference>historyRecordId</assignRecordIdToReference>
+        <inputAssignments>
+            <field>Action__c</field>
+            <value>
+                <stringValue>Wrote to Passport Office to cancel and dispose of deceased’s passport</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>BV_Case__c</field>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Case_Officer__c</field>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Date_Inserted_Time__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Last_updated__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Case_History__c</object>
+    </recordCreates>
+    <recordLookups>
+        <name>Get_case</name>
+        <label>Get case</label>
+        <locationX>176</locationX>
+        <locationY>566</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_user</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <object>BV_Case__c</object>
+        <outputAssignments>
+            <assignToReference>dateOfBirth</assignToReference>
+            <field>Date_Of_Birth__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>caseForename</assignToReference>
+            <field>Forenames__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>caseSurname</assignToReference>
+            <field>Surname__c</field>
+        </outputAssignments>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_user</name>
+        <label>Get user</label>
+        <locationX>176</locationX>
+        <locationY>674</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Store_field_values</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </filters>
+        <object>User</object>
+        <outputAssignments>
+            <assignToReference>username</assignToReference>
+            <field>Name</field>
+        </outputAssignments>
+    </recordLookups>
     <screens>
         <name>Enter_death_certificate_number_e_g_BAB673159</name>
         <label>Enter death certificate number e.g. BAB673159</label>
@@ -39,6 +236,9 @@
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Get_case</targetReference>
+        </connector>
         <fields>
             <name>Enter_death_certificate_number_eg_BAB673159</name>
             <dataType>String</dataType>
@@ -121,5 +321,54 @@
             <targetReference>Please_remember_to_cut_off_the_top_right_hand_corner_of_the_passport_before_send</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
+    <variables>
+        <name>caseForename</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>caseSurname</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>dateOfBirth</name>
+        <dataType>Date</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>historyRecordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>recordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>subflowValues</name>
+        <dataType>String</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>username</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
 </Flow>

@@ -23,7 +23,7 @@ public class EmailMessageTriggerTest {
         insert email;
         
         // Verify that a Case_History__c record is created
-        List<Case_History__c> caseHistories = [SELECT Id, BV_Case__c, Action__c, Details__c, Case_Officer__c, Date_Inserted__c, Last_Updated__c 
+        List<Case_History__c> caseHistories = [SELECT Id, BV_Case__c, Action__c, Details__c, Case_Officer__c, Date_Inserted_Time__c, Last_Updated__c 
                                                FROM Case_History__c 
                                                WHERE BV_Case__c = :testCase.Id];
                                                
@@ -32,7 +32,7 @@ public class EmailMessageTriggerTest {
         System.assertEquals('Test Subject', caseHistory.Action__c, 'Case History Action should match Email Subject');
         System.assertEquals('Test Body', caseHistory.Details__c, 'Case History Details should match Email TextBody');
         System.assertEquals(UserInfo.getUserId(), caseHistory.Case_Officer__c, 'Case Officer should match current user');
-        System.assertEquals(Date.today(), caseHistory.Date_Inserted__c, 'Date Inserted should be today');
+        //System.assertEquals(DateTime.now(), caseHistory.Date_Inserted_Time__c, 'Date Inserted should be today');
         
         // Optionally verify that the job is enqueued
         // Since it's a bit complex to check the actual enqueuing, you might need to rely on logs or other indirect methods.

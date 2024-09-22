@@ -12,6 +12,7 @@ import groupHistoryRecords from '@salesforce/apex/HistoryController.groupHistory
 import ungroupHistoryRecords from '@salesforce/apex/HistoryController.ungroupHistoryRecords';
 import updateParentHistoryRecords from '@salesforce/apex/HistoryController.updateParentHistoryRecords';
 import swapParentChildIfNecessary from '@salesforce/apex/HistoryController.swapParentChildIfNecessary';
+import { subscribe, unsubscribe, onError, setDebugFlag, isEmpEnabled } from 'lightning/empApi';
 
 
 export default class HistoryList extends NavigationMixin(LightningElement) {
@@ -29,7 +30,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     @track dateTo = null;
     @track sortOrder = 'asc';
     @track sortOrderIcon = 'utility:arrowup';
-    @track sortedBy = 'Date_Inserted__c';
+    @track sortedBy = 'Date_Inserted_Time__c';
     @track selectedHistoryType = 'allHistory';  // Default selection
     @track currentUserId;  // To store the current user's ID
     @track selectedRecordDetails = '';
@@ -40,6 +41,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     @track isUngroupDisabled = true;
     @track isGroupDisabled = true;
     @track expandedItems = new Map();
+    @track newCase = true;
 
     wiredHistoryItemsResult;
     userNames = {};
@@ -49,11 +51,61 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
         { label: 'My history', value: 'myHistory' }
     ];
 
+    subscription = {};
+    channelName = '/event/EmailSentEvent__e';
+
     connectedCallback() {
         this.recordId = getRecordId();
         this.fetchCurrentUserId();
         this.refreshHistoryItems();
         this.fetchSharePointSettings();
+        this.registerErrorListener();
+        this.handleSubscribe();
+    }
+
+    disconnectedCallback() {
+        this.handleUnsubscribe();
+    }
+
+    // Handles subscribe button click
+    handleSubscribe() {
+        // Callback triggered whenever a new event message is received
+        const messageCallback = (response) => {
+            console.log('New message received: ', JSON.stringify(response));
+            // Process the event message here
+            this.handleEmailSentEvent(response.data.payload);
+        };
+
+        // Invoke subscribe method of empApi. Pass reference to messageCallback
+        subscribe(this.channelName, -1, messageCallback).then(response => {
+            // Response contains the subscription information on subscribe call
+            console.log('Subscription request sent to: ', JSON.stringify(response.channel));
+            this.subscription = response;
+
+            console.log('subscription', this.subscription);
+        });
+    }
+
+    handleUnsubscribe() {
+        unsubscribe(this.subscription, response => {
+            console.log('unsubscribe() response: ', JSON.stringify(response));
+        });
+    }
+
+    registerErrorListener() {
+        // Invoke onError empApi method
+        onError(error => {
+            console.log('Received error from server: ', JSON.stringify(error));
+        });
+    }
+
+    handleEmailSentEvent(eventData) {
+        console.log('Email sent event received:', eventData);
+        // Check if the email is related to the current record
+        if (eventData.RecordId__c && eventData.RecordId__c.startsWith(this.recordId)) {
+            console.log('Refreshing history items due to email sent event');
+            this.refreshHistoryItems();
+        }
     }
 
     fetchCurrentUserId() {
@@ -89,12 +141,13 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
             this.historyItems = result.data.map(item => {
                 const history = item.history || {};
                 const emailMessage = item.EmailMessage || {};
+                const shDocuments = history.SHDocuments__r || [];
 
                 const mergedRecord = {
                     ...history,
                     Id: history.Id || '',
                     BV_Case__c: history.BV_Case__c || '',
-                    Date_Inserted__c: history.Date_Inserted__c || '',
+                    Date_Inserted_Time__c: history.Date_Inserted_Time__c || '',
                     Details__c: history.Details__c || '',
                     Action__c: history.Action__c || '',
                     Case_Officer__c: history.Case_Officer__c || '',
@@ -118,7 +171,10 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
                     parentId: history.Parent_History_Record__c || null,
                     isSelected: false,
                     children: [],
-                    hasChildren: history.Case_History__r && history.Case_History__r.length > 0
+                    hasChildren: history.Case_History__r && history.Case_History__r.length > 0,
+                    firstDocumentType: shDocuments.length > 0 ? shDocuments[0].DocumentType__c : '',
+                    totalFileSize: this.calculateTotalFileSize(shDocuments),
+                    firstDocumentDraft: shDocuments.length > 0 ? (shDocuments[0].Draft__c ? 'Yes' : 'No') : '',
                 };
 
                 recordsMap[history.Id] = mergedRecord;
@@ -131,7 +187,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
                                 ...childRecord,
                                 Id: childRecord.Id || '',
                                 BV_Case__c: childRecord.BV_Case__c || '',
-                                Date_Inserted__c: childRecord.Date_Inserted__c || '',
+                                Date_Inserted_Time__c: childRecord.Date_Inserted_Time__c || '',
                                 Details__c: childRecord.Details__c || '',
                                 Action__c: childRecord.Action__c || '',
                                 Case_Officer__c: childRecord.Case_Officer__c || '',
@@ -153,7 +209,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
                             recordsMap[childRecord.Id] = childMergedRecord;
                             return childMergedRecord; // Return the actual child record, not null
                         })
-                        .sort((a, b) => new Date(a.Date_Inserted__c) - new Date(b.Date_Inserted__c)); // Sort by Date_Inserted__c ascending
+                        .sort((a, b) => new Date(a.Date_Inserted_Time__c) - new Date(b.Date_Inserted_Time__c)); // Sort by Date_Inserted_Time__c ascending
                 }                
 
                 return mergedRecord;
@@ -207,6 +263,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
         }
     }
 
+    @api
     refreshHistoryItems() {
         refreshApex(this.wiredHistoryItemsResult);
         this.resetCheckboxStates();
@@ -246,6 +303,9 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
                 const diffInDays = Math.floor(diffInMinutes / 1440);
                 this.lastUpdated = `${diffInDays} day${diffInDays > 1 ? 's' : ''} ago`;
             }
+        } else if(this.newCase){
+            this.lastUpdated = 'No updates available';
+            return;
         } else {
             // If all items are deleted or historyItems is empty, calculate the time difference from the last action (which is now)
             const diffInMinutes = Math.floor((now - this.lastActionTime) / 60000);
@@ -407,7 +467,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
         if (deletedRecord && deletedRecord.children.length > 0) {
             // If there are children, find the oldest child to be the new parent
             const oldestChild = deletedRecord.children.reduce((oldest, child) => {
-                return new Date(child.Date_Inserted__c) < new Date(oldest.Date_Inserted__c) ? child : oldest;
+                return new Date(child.Date_Inserted_Time__c) < new Date(oldest.Date_Inserted_Time__c) ? child : oldest;
             }, deletedRecord.children[0]);
     
             const remainingChildrenIds = deletedRecord.children
@@ -454,6 +514,10 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
         this.isModalOpen = false;
         this.showToast('Success', 'Record saved successfully', 'success');
 
+        if(this.newCase = true){
+            this.newCase = false;
+        }
+
         if(this.currentRecordId) {
             const { recordId, dateInserted, isParent } = event.detail;
 
@@ -475,7 +539,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
                 originalRecord.isSelected = false;
                 originalRecord.children.forEach(child => child.isSelected = false);
                 // Only call swapParentChildIfNecessary if the date has changed and the record is in a group
-                if (originalRecord.Date_Inserted__c !== dateInserted &&
+                if (originalRecord.Date_Inserted_Time__c !== dateInserted &&
                     (originalRecord.Parent_History_Record__c || (originalRecord.children && originalRecord.children.length > 0))) {
         
                     swapParentChildIfNecessary({
@@ -525,8 +589,8 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
             let flattenedItems = this.historyItems.flatMap(item => [item, ...item.children]);
     
             flattenedItems.sort((a, b) => {
-                const dateA = new Date(a.Date_Inserted__c);
-                const dateB = new Date(b.Date_Inserted__c);
+                const dateA = new Date(a.Date_Inserted_Time__c);
+                const dateB = new Date(b.Date_Inserted_Time__c);
     
                 if (dateA < dateB) {
                     return this.sortOrder === 'asc' ? -1 : 1;
@@ -659,8 +723,8 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
             ) : true;
     
             const dateMatch = (
-                (!this.dateFrom || new Date(item.Date_Inserted__c ?? 0) >= this.dateFrom) &&
-                (!this.dateTo || new Date(item.Date_Inserted__c ?? 0) <= this.dateTo)
+                (!this.dateFrom || new Date(item.Date_Inserted_Time__c ?? 0) >= this.dateFrom) &&
+                (!this.dateTo || new Date(item.Date_Inserted_Time__c ?? 0) <= this.dateTo)
             );
     
             const historyTypeMatch = this.selectedHistoryType === 'allHistory' ||
@@ -680,8 +744,8 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
                         ) : true;
     
                         const childDateMatch = (
-                            (!this.dateFrom || new Date(child.Date_Inserted__c ?? 0) >= this.dateFrom) &&
-                            (!this.dateTo || new Date(child.Date_Inserted__c ?? 0) <= this.dateTo)
+                            (!this.dateFrom || new Date(child.Date_Inserted_Time__c ?? 0) >= this.dateFrom) &&
+                            (!this.dateTo || new Date(child.Date_Inserted_Time__c ?? 0) <= this.dateTo)
                         );
     
                         const childHistoryTypeMatch = this.selectedHistoryType === 'allHistory' ||
@@ -868,7 +932,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
         }
     
         const parentRecord = selectedRecords.reduce((oldest, item) => {
-            return new Date(item.Date_Inserted__c) < new Date(oldest.Date_Inserted__c) ? item : oldest;
+            return new Date(item.Date_Inserted_Time__c) < new Date(oldest.Date_Inserted_Time__c) ? item : oldest;
         });
     
         const childRecordIds = selectedRecords
@@ -1078,7 +1142,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     // Utility function to find the oldest child
     findOldestChild(childRecords) {
         return childRecords.reduce((oldest, child) => {
-            return new Date(child.Date_Inserted__c) < new Date(oldest.Date_Inserted__c) ? child : oldest;
+            return new Date(child.Date_Inserted_Time__c) < new Date(oldest.Date_Inserted_Time__c) ? child : oldest;
         }, childRecords[0]);
     }
     
@@ -1162,7 +1226,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     
     get sortedByText() {
         const fieldLabelMap = {
-            'Date_Inserted__c': 'Date Inserted',
+            'Date_Inserted_Time__c': 'Date Inserted',
             'Action__c': 'Action',
             'Notes__c': 'Notes',
             'DocumentType__c': 'Document Type',
@@ -1178,7 +1242,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
     }
 
     get isSortedByDate() {
-        return this.sortedBy === 'Date_Inserted__c';
+        return this.sortedBy === 'Date_Inserted_Time__c';
     }
 
     get isSortedByAction() {
@@ -1219,23 +1283,31 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
 
         const emailQuickActionComponent = this.template.querySelector('c-email-quick-action');
         emailQuickActionComponent.invoke({
-            HtmlBody: `Please find the details of the record below:<br><br>Date: ${record.Date_Inserted__c}<br>Action: ${record.Action__c}<br>Document Type: ${record.documentType}<br>File Size: ${record.fileSize}<br>Draft: ${record.draft}<br>Case Officer: ${record.Case_Officer_Name}<br><br>Notes:<br>${record.notes}`,
+            HtmlBody: `Please find the details of the record below:<br><br>Date: ${record.Date_Inserted_Time__c}<br>Action: ${record.Action__c}<br>Document Type: ${record.documentType}<br>File Size: ${record.fileSize}<br>Draft: ${record.draft}<br>Case Officer: ${record.Case_Officer_Name}<br><br>Notes:<br>${record.notes}`,
             Subject: `Forwarding Record: ${record.Action__c}`
         });
     }
 
+    calculateTotalFileSize(documents) {
+        const totalSize = documents.reduce((sum, doc) => sum + (doc.FileSize__c || 0), 0);
+        return this.formatFileSize(totalSize);
+    }
+
     formatFileSize(size) {
-        if (!size) {
-            return '';
-        }
         if (size < 1024) {
             return size + ' B';
         } else if (size < 1024 * 1024) {
-            return (size / 1024).toFixed(2) + ' kB';
+            return (size / 1024).toFixed(2) + ' KB';
         } else if (size < 1024 * 1024 * 1024) {
             return (size / (1024 * 1024)).toFixed(2) + ' MB';
         } else {
             return (size / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
         }
+    }
+
+    handleEmailSent() {
+        // Refresh the history items when an email is sent
+        this.refreshHistoryItems();
+        this.resetCheckboxStates();
     }
 }

@@ -1,6 +1,103 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>61.0</apiVersion>
+    <assignments>
+        <name>Store_field_attributes</name>
+        <label>Store field attributes</label>
+        <locationX>50</locationX>
+        <locationY>1430</locationY>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>forename: {!caseForename};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>surname: {!caseSurname};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>additionalName: {!additionalName}</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>caseReference: {!caseReference};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>waiveCrownShare: {!waiveCrownShare};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>groundsForPayment: {!Enter_grounds_for_payment_please_quote_relevant_chapter_of_the_Practice_Guide2};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>ledgerBalance: {!Enter_ledger_balance2};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>outstandingAssets: {!Enter_value_of_outstanding_assets_if_any2};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>lessCosts: {!lessCosts};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>appCosts: {!Enter_application_costs2};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>sumCosts: {!sumCosts1};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>valueOfNetEstate: {!valueOfNetEstate1};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>nameOfApplicant: {!Enter_name_of_applicant2};</stringValue>
+            </value>
+        </assignmentItems>
+    </assignments>
     <choices>
         <name>Eighth</name>
         <choiceText>Eighth</choiceText>
@@ -68,8 +165,8 @@
     <decisions>
         <name>Are_you_granting_the_residue3</name>
         <label>Are you granting the residue?</label>
-        <locationX>94</locationX>
-        <locationY>998</locationY>
+        <locationX>314</locationX>
+        <locationY>1322</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>Selected_Yes</name>
@@ -81,6 +178,9 @@
                     <elementReference>Yes</elementReference>
                 </rightValue>
             </conditions>
+            <connector>
+                <targetReference>Store_field_attributes</targetReference>
+            </connector>
             <label>Selected Yes</label>
         </rules>
         <rules>
@@ -102,8 +202,8 @@
     <decisions>
         <name>Are_you_granting_the_residue7</name>
         <label>Are you granting the residue?</label>
-        <locationX>710</locationX>
-        <locationY>1106</locationY>
+        <locationX>1106</locationX>
+        <locationY>1430</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>Selected_Yes7</name>
@@ -136,8 +236,8 @@
     <decisions>
         <name>Waive_Crown_Share2</name>
         <label>Waive Crown Share?</label>
-        <locationX>600</locationX>
-        <locationY>242</locationY>
+        <locationX>974</locationX>
+        <locationY>566</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>Selected_Yes2</name>
@@ -171,6 +271,40 @@
         </rules>
     </decisions>
     <environments>Default</environments>
+    <formulas>
+        <name>additionalName</name>
+        <dataType>String</dataType>
+        <expression>if({!detailSurname}&lt;&gt;&quot;&quot;,&quot; otherwise &quot;+{!detailForename}+&quot; &quot;+{!detailSurname},&quot;&quot;)</expression>
+    </formulas>
+    <formulas>
+        <name>lessCosts</name>
+        <dataType>Number</dataType>
+        <expression>{!vatFormula}+{!adminCosts}+{!conveyancingCosts}+{!litigationCosts}</expression>
+        <scale>2</scale>
+    </formulas>
+    <formulas>
+        <name>sumCosts1</name>
+        <dataType>Number</dataType>
+        <expression>{!lessCosts}+{!Enter_application_costs2}</expression>
+        <scale>2</scale>
+    </formulas>
+    <formulas>
+        <name>valueOfNetEstate1</name>
+        <dataType>Number</dataType>
+        <expression>{!Enter_ledger_balance2}+{!Enter_value_of_outstanding_assets_if_any2}-{!sumCosts1}</expression>
+        <scale>2</scale>
+    </formulas>
+    <formulas>
+        <name>vatFormula</name>
+        <dataType>Number</dataType>
+        <expression>{!adminCosts}*0.2</expression>
+        <scale>2</scale>
+    </formulas>
+    <formulas>
+        <name>waiveCrownShare</name>
+        <dataType>Boolean</dataType>
+        <expression>if({!Waive_Crown_Share1}=&quot;Yes&quot;,True,False)</expression>
+    </formulas>
     <interviewLabel>Discretionary Payments submission BV99 (BV99) {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Discretionary Payments submission BV99 (BV99)</label>
     <processMetadataValues>
@@ -192,11 +326,108 @@
         </value>
     </processMetadataValues>
     <processType>Flow</processType>
+    <recordLookups>
+        <name>Get_case</name>
+        <label>Get case</label>
+        <locationX>974</locationX>
+        <locationY>134</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_case_detail</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <object>BV_Case__c</object>
+        <outputAssignments>
+            <assignToReference>conveyancingCosts</assignToReference>
+            <field>Conveyancing_Costs__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>caseForename</assignToReference>
+            <field>Forenames__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>litigationCosts</assignToReference>
+            <field>Litigation_Costs_Inc_Vat__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>caseReference</assignToReference>
+            <field>Name</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>caseSurname</assignToReference>
+            <field>Surname__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>adminCosts</assignToReference>
+            <field>Total_Administration_Costs__c</field>
+        </outputAssignments>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_case_detail</name>
+        <label>Get case detail</label>
+        <locationX>974</locationX>
+        <locationY>242</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_user</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>BV_Case__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <object>Case_Detail__c</object>
+        <outputAssignments>
+            <assignToReference>detailForename</assignToReference>
+            <field>Forenames__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>detailSurname</assignToReference>
+            <field>Surname__c</field>
+        </outputAssignments>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_user</name>
+        <label>Get user</label>
+        <locationX>974</locationX>
+        <locationY>350</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Waive_Crown_Share</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </filters>
+        <object>User</object>
+        <outputAssignments>
+            <assignToReference>title</assignToReference>
+            <field>Title</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>username</assignToReference>
+            <field>Username</field>
+        </outputAssignments>
+    </recordLookups>
     <screens>
         <name>Are_you_granting_the_residue</name>
         <label>Are you granting the residue?</label>
-        <locationX>94</locationX>
-        <locationY>890</locationY>
+        <locationX>314</locationX>
+        <locationY>1214</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -218,8 +449,8 @@
     <screens>
         <name>Are_you_granting_the_residue4</name>
         <label>Are you granting the residue?</label>
-        <locationX>710</locationX>
-        <locationY>998</locationY>
+        <locationX>1106</locationX>
+        <locationY>1322</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -241,8 +472,8 @@
     <screens>
         <name>Copy_1_of_Enter_application_costs</name>
         <label>Copy 1 of Enter application costs</label>
-        <locationX>710</locationX>
-        <locationY>674</locationY>
+        <locationX>1106</locationX>
+        <locationY>998</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -263,8 +494,8 @@
     <screens>
         <name>Copy_1_of_Enter_ledger_balance</name>
         <label>Copy 1 of Enter ledger balance</label>
-        <locationX>710</locationX>
-        <locationY>458</locationY>
+        <locationX>1106</locationX>
+        <locationY>782</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -285,8 +516,8 @@
     <screens>
         <name>Copy_1_of_Enter_name_of_applicant</name>
         <label>Copy 1 of Enter name of applicant</label>
-        <locationX>710</locationX>
-        <locationY>890</locationY>
+        <locationX>1106</locationX>
+        <locationY>1214</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -306,8 +537,8 @@
     <screens>
         <name>Copy_1_of_Enter_suggested_grant</name>
         <label>Copy 1 of Enter suggested grant</label>
-        <locationX>666</locationX>
-        <locationY>1214</locationY>
+        <locationX>1106</locationX>
+        <locationY>1538</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -325,8 +556,8 @@
     <screens>
         <name>Copy_1_of_Enter_value_of_outstanding_assets_if_any</name>
         <label>Copy 1 of Enter value of outstanding assets, if any</label>
-        <locationX>710</locationX>
-        <locationY>566</locationY>
+        <locationX>1106</locationX>
+        <locationY>890</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -347,8 +578,8 @@
     <screens>
         <name>Copy_2_of_Enter_grounds_for_payment_please_quote_relevant_chapter_of_the_Practic</name>
         <label>Copy 2 of Enter grounds for payment - please quote relevant chapter of the Practice Guide</label>
-        <locationX>710</locationX>
-        <locationY>350</locationY>
+        <locationX>1106</locationX>
+        <locationY>674</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -368,8 +599,8 @@
     <screens>
         <name>Enter_application_costs</name>
         <label>Enter application costs</label>
-        <locationX>94</locationX>
-        <locationY>674</locationY>
+        <locationX>314</locationX>
+        <locationY>998</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -390,8 +621,8 @@
     <screens>
         <name>Enter_grounds_for_payment_please_quote_relevant_chapter_of_the_Practice_Guide</name>
         <label>Enter grounds for payment - please quote relevant chapter of the Practice Guide</label>
-        <locationX>94</locationX>
-        <locationY>350</locationY>
+        <locationX>314</locationX>
+        <locationY>674</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -411,8 +642,8 @@
     <screens>
         <name>Enter_ledger_balance</name>
         <label>Enter ledger balance</label>
-        <locationX>94</locationX>
-        <locationY>458</locationY>
+        <locationX>314</locationX>
+        <locationY>782</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -433,8 +664,8 @@
     <screens>
         <name>Enter_name_of_applicant</name>
         <label>Enter name of applicant</label>
-        <locationX>94</locationX>
-        <locationY>782</locationY>
+        <locationX>314</locationX>
+        <locationY>1106</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -454,8 +685,8 @@
     <screens>
         <name>Enter_suggested_grant</name>
         <label>Enter suggested grant</label>
-        <locationX>50</locationX>
-        <locationY>1106</locationY>
+        <locationX>314</locationX>
+        <locationY>1430</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -473,8 +704,8 @@
     <screens>
         <name>Enter_value_of_outstanding_assets_if_any</name>
         <label>Enter value of outstanding assets, if any</label>
-        <locationX>94</locationX>
-        <locationY>566</locationY>
+        <locationX>314</locationX>
+        <locationY>890</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -495,8 +726,8 @@
     <screens>
         <name>Select_fraction_of_Crown_Share</name>
         <label>Select fraction of Crown Share</label>
-        <locationX>710</locationX>
-        <locationY>782</locationY>
+        <locationX>1106</locationX>
+        <locationY>1106</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -522,8 +753,8 @@
     <screens>
         <name>Waive_Crown_Share</name>
         <label>Waive Crown Share?</label>
-        <locationX>600</locationX>
-        <locationY>134</locationY>
+        <locationX>974</locationX>
+        <locationY>458</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -543,11 +774,105 @@
         <showHeader>true</showHeader>
     </screens>
     <start>
-        <locationX>474</locationX>
+        <locationX>848</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Waive_Crown_Share</targetReference>
+            <targetReference>Get_case</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Obsolete</status>
+    <variables>
+        <name>adminCosts</name>
+        <dataType>Number</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <scale>2</scale>
+    </variables>
+    <variables>
+        <name>caseForename</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>caseReference</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>caseSurname</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>conveyancingCosts</name>
+        <dataType>Number</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <scale>2</scale>
+    </variables>
+    <variables>
+        <name>detailForename</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>detailSurname</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>historyRecordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>litigationCosts</name>
+        <dataType>Number</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <scale>2</scale>
+    </variables>
+    <variables>
+        <name>recordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>subflowValues</name>
+        <dataType>String</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>title</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>username</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
 </Flow>

@@ -1,6 +1,11 @@
 <template>
     <template if:true={isTaskDetailVisible}>
-        <a onclick={handleTaskDetailClose} class="slds-text-body_small">Return to task list</a>
+        <div class="slds-m-bottom_medium">
+            <a onclick={handleTaskDetailClose} class="slds-text-heading_small slds-grid slds-grid_vertical-align-center" style="color: #1d70b8;">
+                <lightning-icon icon-name="utility:back" size="x-small" class="slds-m-right_x-small back-arrow"></lightning-icon>
+                <span>Return to task list</span>
+            </a>
+        </div>
         <c-task-detail record-id={currentRecordId} onclose={handleTaskDetailClose} ontaskdeleted={handleTaskDetailClose}></c-task-detail>
     </template>
     <template if:false={isTaskDetailVisible}>
@@ -32,7 +37,12 @@
             <div class="slds-card__body slds-p-horizontal_small slds-p-vertical_medium">
                 <div class="slds-text-body_small slds-m-bottom_medium slds-grid slds-wrap slds-grid_align-end">
                     <div class="slds-col slds-size_1-of-2">
-                        {filteredTaskItems.length} tasks - {sortedByText} - Updated {lastUpdated}
+                        <template if:false={isLastUpdated}>
+                            {filteredTaskItems.length} tasks - {sortedByText} - {lastUpdated}
+                        </template>
+                        <template if:true={isLastUpdated}>
+                            {filteredTaskItems.length} tasks - {sortedByText} - Updated {lastUpdated}
+                        </template>
                     </div>
                     <div class="slds-col slds-size_1-of-2 slds-grid slds-wrap slds-grid_align-end">
                         <lightning-input type="text" placeholder="Search tasks" variant="label-hidden" class="slds-m-bottom_small slds-col slds-size_1-of-3 slds-m-right_small" onchange={handleSearchInputChange} value={searchKey}></lightning-input>

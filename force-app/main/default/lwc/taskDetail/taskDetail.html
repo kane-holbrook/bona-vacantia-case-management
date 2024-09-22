@@ -222,8 +222,8 @@
                                     <template for:each={caseHistoryData} for:item="history">
                                         <tr key={history.Id} class="slds-hint-parent">
                                             <td data-label="Date">
-                                                <div class="slds-truncate" title={history.Date_Inserted__c}>
-                                                    <lightning-formatted-date-time value={history.Date_Inserted__c} day="numeric" month="numeric" year="numeric"></lightning-formatted-date-time>
+                                                <div class="slds-truncate" title={history.Date_Inserted_Time__c}>
+                                                    <lightning-formatted-date-time value={history.Date_Inserted_Time__c} day="numeric" month="numeric" year="numeric"></lightning-formatted-date-time>
                                                 </div>
                                             </td>
                                             <td data-label="Action">

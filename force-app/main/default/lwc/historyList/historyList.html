@@ -30,7 +30,12 @@
             <!-- First Line: Items count and Refresh button -->
             <div class="slds-text-body_small slds-grid slds-wrap slds-grid_align-spread">
                 <div class="slds-col slds-size_1-of-2">
-                    {filteredHistoryItems.length} items - {sortedByText} - Updated {lastUpdated}
+                    <template if:true = {newCase}>
+                        {filteredHistoryItems.length} items - {sortedByText} - {lastUpdated}
+                    </template>
+                    <template if:false = {newCase}>
+                        {filteredHistoryItems.length} items - {sortedByText} - Updated {lastUpdated}
+                    </template>
                     <lightning-button-icon icon-name="utility:refresh" size="small" alternative-text="Refresh" onclick={refreshHistoryItems} class="slds-m-bottom_small slds-m-right_small slds-col slds-size_1-of-12 slds-m-left_small"></lightning-button-icon>
                 </div>
             </div>
@@ -95,7 +100,7 @@
                                         </button>
                                     </th>
                                     <th class="date" scope="col">
-                                        <button class="slds-button slds-button_reset slds-truncate slds-cell-fixed" title="Date" onclick={handleSort} data-column="Date_Inserted__c">
+                                        <button class="slds-button slds-button_reset slds-truncate slds-cell-fixed" title="Date" onclick={handleSort} data-column="Date_Inserted_Time__c">
                                             Date
                                             <template if:true={isSortedByDate}>
                                                 <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
@@ -179,7 +184,7 @@
                                         </td>
                                         <td class="date" data-label="Date">
                                             <div class="slds-grid slds-align_absolute-center">
-                                                <lightning-formatted-date-time value={item.Date_Inserted__c} year="numeric" month="2-digit" day="2-digit" day-style="2-digit" month-style="2-digit" timezone="UTC"></lightning-formatted-date-time>
+                                                <lightning-formatted-date-time value={item.Date_Inserted_Time__c} year="numeric" month="2-digit" day="2-digit" day-style="2-digit" month-style="2-digit" timezone="UTC"></lightning-formatted-date-time>
                                             </div>
                                         </td>
                                         <td class="action-truncrate" data-label="Action">{item.Action__c}</td>
@@ -188,9 +193,9 @@
                                                 <lightning-icon icon-name="utility:check" alternative-text="Has Details" size="x-small"></lightning-icon>
                                             </template>
                                         </td>
-                                        <td class="document-type" data-label="Document Type">{item.documentType}</td>
-                                        <td class="file-size" data-label="File Size">{item.fileSize}</td>
-                                        <td data-label="Draft">{item.draft}</td>
+                                        <td class="document-type" data-label="Document Type">{item.firstDocumentType}</td>
+                                        <td class="file-size" data-label="File Size">{item.totalFileSize}</td>
+                                        <td data-label="Draft">{item.firstDocumentDraft}</td>
                                         <td data-label="Case Officer">{item.Case_Officer_Name}</td>
                                         <td data-label="Actions">
                                             <lightning-button-menu alternative-text="Actions" icon-name="utility:down" menu-alignment="right">

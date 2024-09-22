@@ -104,6 +104,44 @@
     </processMetadataValues>
     <processType>Flow</processType>
     <recordCreates>
+        <name>Create_a_history_record</name>
+        <label>Create a history record</label>
+        <locationX>50</locationX>
+        <locationY>998</locationY>
+        <inputAssignments>
+            <field>Action__c</field>
+            <value>
+                <stringValue>Disclaimer date was changed to {!Disclaimer_date}</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>BV_Case__c</field>
+            <value>
+                <elementReference>caseId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Case_Officer__c</field>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Date_Inserted_Time__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Last_updated__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Case_History__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordCreates>
         <name>Create_BV_Task_1_month</name>
         <label>Create BV Task 1 month</label>
         <locationX>50</locationX>
@@ -267,6 +305,9 @@
         <label>Create BV Task next week</label>
         <locationX>50</locationX>
         <locationY>890</locationY>
+        <connector>
+            <targetReference>Create_a_history_record</targetReference>
+        </connector>
         <inputAssignments>
             <field>Assigned_To__c</field>
             <value>
@@ -387,7 +428,7 @@
             <targetReference>Question</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <variables>
         <name>caseId</name>
         <dataType>String</dataType>

@@ -1,5 +1,6 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
+import { CurrentPageReference } from "lightning/navigation";
 import getTasksByCaseId from '@salesforce/apex/TaskController.getTasksByCaseId';
 import getOpenTasksByUser from '@salesforce/apex/TaskController.getOpenTasksByUser';
 import getOtherTasksByCaseId from '@salesforce/apex/TaskController.getOtherTasksByCaseId';
@@ -26,6 +27,7 @@ export default class TaskList extends LightningElement {
     @track isTaskDetailVisible = false;
     @track dateFilterFrom = null;  // Start date for filtering
     @track dateFilterTo = null;    // End date for filtering
+    @track isLastUpdated = false;
     wiredTaskItemsResult;
     userNames = {};
 
@@ -43,10 +45,22 @@ export default class TaskList extends LightningElement {
         'Due_Date__c' : 'Due Date'
     };
 
+    @wire(CurrentPageReference)
+    pageRef;
+
     connectedCallback() {
         this.recordId = getRecordId();
         this.fetchCurrentUserId();
         this.refreshTaskItems();
+        this.checkForTaskIdInUrl();
+    }
+
+    checkForTaskIdInUrl() {
+        if (this.pageRef && this.pageRef.state.c__taskId) {
+            const urlTaskId = this.pageRef.state.c__taskId;
+            this.currentRecordId = urlTaskId;
+            this.isTaskDetailVisible = true;
+        }
     }
 
     fetchCurrentUserId() {
@@ -170,7 +184,10 @@ export default class TaskList extends LightningElement {
             
             if (validItems.length === 0) {
                 this.lastUpdated = 'No updates available';
+                this.isLastUpdated = false;
                 return;
+            } else {
+                this.isLastUpdated = true;
             }
     
             const latestItem = validItems.reduce((latest, item) => {

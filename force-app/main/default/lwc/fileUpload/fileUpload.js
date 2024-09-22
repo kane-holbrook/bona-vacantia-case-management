@@ -162,6 +162,7 @@ export default class FileUpload extends NavigationMixin(LightningElement) {
                         Title: response.fileName,
                         Id: response.documentId,
                         ServerRelativeUrl: response.webUrl,
+                        DirectURL: response.directUrl,
                         fileExtensionType: response.fileExtension.toLowerCase(),
                         previewPath: response.webUrl
                     };
@@ -196,6 +197,7 @@ export default class FileUpload extends NavigationMixin(LightningElement) {
             Case_History__c: caseHistoryId,
             DocumentID__c: uploadResponse.documentId, // From uploadFileToSharePointCaseCreation response
             ServerRelativeURL__c: uploadResponse.webUrl, // From uploadFileToSharePointCaseCreation response
+            DirectURL__c: uploadResponse.directURL, // From uploadFileToSharePointCaseCreation response
             Document_Name__c: uploadResponse.fileName, // From uploadFileToSharePointCaseCreation response
             FileSize__c: uploadResponse.fileSize, // Assuming fileSize comes from the response
             DocumentExtension__c: uploadResponse.fileExtension.toLowerCase(), // From response
@@ -220,7 +222,7 @@ export default class FileUpload extends NavigationMixin(LightningElement) {
         const fields = {
             BV_Case__c: this.recordId,
             Action__c: 'Case Creation Document',
-            Date_Inserted__c: new Date(),
+            Date_Inserted_Time__c: DateTime.now(),
             Last_updated__c: new Date()
         };
     
@@ -271,8 +273,8 @@ export default class FileUpload extends NavigationMixin(LightningElement) {
 
     confirmSharepointDeleteFile() {
         if (this.fileToDelete) {
-            const folderPath = `${this.bvCaseName}/${this.caseHistoryId}`; // Use caseHistoryId in the path
-            deleteSharepointFile({ filePath: folderPath, fileName: this.fileToDelete })
+            const folderPath = `${this.bvCaseName}/${this.caseHistoryId}/${this.fileToDelete}`;
+            deleteSharepointFile({ filePath: folderPath, fileName: '' })
                 .then(() => {
                     // Remove the file from the list
                     const deletedFile = this.files.find(file => file.Title === this.fileToDelete);

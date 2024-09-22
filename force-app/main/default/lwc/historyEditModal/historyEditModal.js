@@ -5,7 +5,7 @@ import { NavigationMixin } from 'lightning/navigation';
 import { getRecordId } from 'c/sharedService';
 import CASE_HISTORY_OBJECT from '@salesforce/schema/Case_History__c';
 import ID_FIELD from '@salesforce/schema/Case_History__c.Id';
-import DATE_INSERTED_FIELD from '@salesforce/schema/Case_History__c.Date_Inserted__c';
+import DATE_INSERTED_FIELD from '@salesforce/schema/Case_History__c.Date_Inserted_Time__c';
 import ACTION_FIELD from '@salesforce/schema/Case_History__c.Action__c';
 import DETAILS_FIELD from '@salesforce/schema/Case_History__c.Details__c';
 import FLAG_IMPORTANT_FIELD from '@salesforce/schema/Case_History__c.Flag_as_important__c';
@@ -28,6 +28,7 @@ import DOCUMENT_CORRESPONDENCE_WITH_FIELD from '@salesforce/schema/SHDocument__c
 import DOCUMENT_DRAFT_FIELD from '@salesforce/schema/SHDocument__c.Draft__c';
 import SERVER_RELATIVE_URL_FIELD from '@salesforce/schema/SHDocument__c.ServerRelativeURL__c';
 import DOCUMENT_FILE_SIZE_FIELD from '@salesforce/schema/SHDocument__c.FileSize__c';
+import DIRECT_URL_FIELD from '@salesforce/schema/SHDocument__c.DirectURL__c';
 import CASE_HISTORY_FIELD from '@salesforce/schema/SHDocument__c.Case_History__c';
 import CREATED_TIME_FIELD from '@salesforce/schema/SHDocument__c.Created_Time__c';
 
@@ -89,7 +90,7 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
     ];
 
     connectedCallback() {
-        this.dateInserted = this.record.Date_Inserted__c || this.getTodayDate();
+        this.dateInserted = this.record.Date_Inserted_Time__c || this.getCurrentDateTime();
         this.description = this.record.Action__c || '';
         this.details = this.record.Details__c || '';
         this.flagImportant = this.record.Flag_as_important__c || false;
@@ -148,7 +149,8 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
         if (result.data) {
             this.relatedItems = result.data.map(doc => ({
                 ...doc,
-                FileSize__c: this.formatFileSize(doc.FileSize__c)
+                FileSize__c: this.formatFileSize(doc.FileSize__c),
+                formattedCreatedTime: this.formatDate(doc.Created_Time__c)
             }));
         } else if (result.error) {
             console.error('Error fetching related items:', result.error);
@@ -156,11 +158,25 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
         }
     }
 
+    formatDate(dateString) {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+    }
+
     handleInputChange(event) {
         const field = event.target.name;
 
         if (field === 'date-inserted') {
-            this.dateInserted = event.target.value;
+            // Convert the input value to full ISO 8601 format
+            const inputDate = new Date(event.target.value);
+            // Ensure the date is interpreted as UK time
+            const ukDate = new Date(inputDate.toLocaleString("en-US", {timeZone: "Europe/London"}));
+            this.dateInserted = ukDate.toISOString();
         } else if (field === 'description') {
             this.description = event.target.value;
         } else if (field === 'details') {
@@ -217,11 +233,22 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
                                     this.correspondenceWith = null;
                                     this.draft = null;
                                     this.originalDocumentId = null;
-                                    refreshApex(this.wiredRelatedItemsResult);
+                                    return refreshApex(this.wiredRelatedItemsResult);
+                                })
+                                .then(() => {
+                                    // After refreshing, re-fetch the data
+                                    return getSHDocuments({ parentId: this.record.Id });
+                                })
+                                .then((freshData) => {
+                                    this.relatedItems = freshData.map(doc => ({
+                                        ...doc,
+                                        FileSize__c: this.formatFileSize(doc.FileSize__c),
+                                        formattedCreatedTime: this.formatDate(doc.Created_Time__c)
+                                    }));
                                 })
                                 .catch(error => {
-                                    console.log('Error deleting SHDocument record', error);
-                                    this.showToast('Error', 'Error deleting SHDocument record', 'error');
+                                    console.log('Error deleting SHDocument record or refreshing data', error);
+                                    this.showToast('Error', 'Error deleting SHDocument record or refreshing data', 'error');
                                 });
                         })
                         .catch(error => {
@@ -251,10 +278,22 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
             .then(() => {
                 this.fileName = null;
                 this.fileData = null; // Clear file data after saving
+                return refreshApex(this.wiredRelatedItemsResult);
+            })
+            .then(() => {
+                // After refreshing, re-fetch the data
+                return getSHDocuments({ parentId: this.record.Id });
+            })
+            .then((freshData) => {
+                this.relatedItems = freshData.map(doc => ({
+                    ...doc,
+                    FileSize__c: this.formatFileSize(doc.FileSize__c),
+                    formattedCreatedTime: this.formatDate(doc.Created_Time__c)
+                }));
             })
             .catch(error => {
-                console.log('Error saving record or uploading document', error);
-                this.showToast('Error', 'Error saving record or uploading document: ' + error, 'error');
+                console.log('Error saving record, uploading document, or refreshing data', error);
+                this.showToast('Error', 'Error saving record, uploading document, or refreshing data: ' + error, 'error');
             });
     }
 
@@ -269,13 +308,24 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
             updateRecord({ fields })
                 .then(() => {
                     this.showToast('Success', 'Document metadata updated successfully', 'success');
-                    refreshApex(this.wiredRelatedItemsResult);
+                    return refreshApex(this.wiredRelatedItemsResult);
+                })
+                .then(() => {
+                    // After refreshing, re-fetch the data
+                    return getSHDocuments({ parentId: this.record.Id });
+                })
+                .then((freshData) => {
+                    this.relatedItems = freshData.map(doc => ({
+                        ...doc,
+                        FileSize__c: this.formatFileSize(doc.FileSize__c),
+                        formattedCreatedTime: this.formatDate(doc.Created_Time__c)
+                    }));
                     this.closeSubModal();
                     resolve();
                 })
                 .catch(error => {
-                    console.error('Error updating SHDocument record:', error);
-                    this.showToast('Error', 'Error updating document metadata: ' + error.body.message, 'error');
+                    console.error('Error updating SHDocument record or refreshing data:', error);
+                    this.showToast('Error', 'Error updating document metadata or refreshing data: ' + error.body.message, 'error');
                     reject(error);
                 });
         });
@@ -301,10 +351,10 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
                         documentType: this.documentType
                     });
                 })
-                .then((serverRelativeUrl) => {
-                    this.serverRelativeURL = serverRelativeUrl;
+                .then((result) => {
+                    this.serverRelativeURL = result.webUrl;
                     this.showToast('Success', 'File uploaded successfully', 'success');
-                    return this.createSHDocumentRecord(this.record.Id, folderName, serverRelativeUrl);
+                    return this.createSHDocumentRecord(this.record.Id, folderName, result.id, result.webUrl, result.directURL);
                 })
                 .then(() => {
                     refreshApex(this.wiredRelatedItemsResult);
@@ -318,7 +368,7 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
         });
     }
 
-    createSHDocumentRecord(historyRecordId, folderName, documentId) {
+    createSHDocumentRecord(historyRecordId, folderName, documentId, webUrl, directURL) {
         const shDocumentFields = {
             [SHDOCUMENT_NAME_FIELD.fieldApiName]: this.fileName,
             [DOCUMENT_EXTENSION_FIELD.fieldApiName]: this.fileName.split('.').pop(),
@@ -327,7 +377,8 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
             [DOCUMENT_FILE_SIZE_FIELD.fieldApiName]: this.fileSize,
             [DOCUMENT_CORRESPONDENCE_WITH_FIELD.fieldApiName]: this.correspondenceWith,
             [DOCUMENT_DRAFT_FIELD.fieldApiName]: this.draft,
-            [SERVER_RELATIVE_URL_FIELD.fieldApiName]: this.sharePointDirectoryPath + '/' + 'Shared%20Documents' + '/' + folderName + '/' + this.fileName,
+            [SERVER_RELATIVE_URL_FIELD.fieldApiName]: webUrl,
+            [DIRECT_URL_FIELD.fieldApiName]: directURL,
             [CREATED_TIME_FIELD.fieldApiName]: new Date(),
             [CASE_HISTORY_FIELD.fieldApiName]: historyRecordId
         };
@@ -412,8 +463,6 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
         const actionName = event.detail.value;
         const relatedItemId = event.target.dataset.id;
     
-        console.log('Action:', actionName, 'Related Item Id:', relatedItemId);
-    
         if (actionName === 'viewEditFile') {
             this.handleViewEditFile(relatedItemId);
         } else if (actionName === 'viewEditDetails') {
@@ -430,13 +479,9 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
         if (selectedItem && selectedItem.ServerRelativeURL__c) {
             let serverRelativeURL = selectedItem.ServerRelativeURL__c;
     
-            // Apply double encoding only to the file name
-            serverRelativeURL = this.doubleEncodeFileName(serverRelativeURL);
-    
-            // Construct the full URL
+            // Construct the full URL without double encoding
             let url = serverRelativeURL.startsWith('http') ? serverRelativeURL : `${this.sharePointSiteUrl}/${serverRelativeURL}`;
-    
-            console.log('serverRelativeURL', url);
+
             if (url) {
                 window.open(url, '_blank');
             } else {
@@ -445,31 +490,13 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
         } else {
             this.showToast('Error', 'File URL not found.', 'error');
         }
-    }
-    
-    
-
-    doubleEncodeFileName(url) {
-        // Split the URL by slashes to isolate the file name (last part)
-        let parts = url.split('/');
-        let fileName = parts.pop(); // Get the file name (last part of the URL)
-    
-        // Double encode only the file name and leave the rest of the URL intact
-        fileName = encodeURIComponent(fileName).replace(/%20/g, '%2520').replace(/%23/g, '%2523');
-    
-        // Rejoin the parts with the double-encoded file name
-        return parts.join('/') + '/' + fileName;
-    }
-    
-    
+    } 
 
     handleConvertToPDF(relatedItemId) {
         const selectedItem = this.relatedItems.find(item => item.Id === relatedItemId);
 
         if (selectedItem) {
             this.contentDocumentId = selectedItem.DocumentID__c;
-
-            console.log('Document ID:', this.contentDocumentId);
             this.isConvertToPDFModalOpen = true; // Open the modal with the PDF conversion component
         } else {
             this.showToast('Error', 'Document ID not found for this item.', 'error');
@@ -483,8 +510,17 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
     handleDeleteRelatedItem(relatedItemId) {
         const selectedItem = this.relatedItems.find(item => item.Id === relatedItemId);
         if (selectedItem) {
-            const serverRelativeURL = selectedItem.ServerRelativeURL__c;
-            const fileName = selectedItem.Name;
+            let serverRelativeURL = selectedItem.DirectURL__c;
+            let fileName = selectedItem.Name;
+
+            // Strip away the unnecessary parts of the URL
+            const urlParts = serverRelativeURL.split('/Shared%20Documents/');
+            if (urlParts.length > 1) {
+                serverRelativeURL = urlParts[1];
+            }
+
+            fileName = this.encodeFileName(fileName);
+            console.log('serverRelativeURL', serverRelativeURL);
 
             deleteSharepointFile({ filePath: serverRelativeURL, fileName })
                 .then(() => {
@@ -516,6 +552,58 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
             this.isSubModalOpen = true; // Open the modal to view/edit the item
         }
     }
+
+    doubleEncodeFileName(url) {
+        // Split the URL by slashes to isolate the file name (last part)
+        let parts = url.split('/');
+        let fileName = parts.pop(); // Get the file name (last part of the URL)
+    
+        // Double encode only the file name and leave the rest of the URL intact
+        fileName = encodeURIComponent(fileName)
+        .replace(/%20/g, '%2520')
+        .replace(/%23/g, '%2523')
+        .replace(/%26/g, '%2526')
+        .replace(/%3F/g, '%253F')
+        .replace(/%25/g, '%2525')
+        .replace(/%7B/g, '%257B')
+        .replace(/%7D/g, '%257D')
+        .replace(/%5E/g, '%255E')
+        .replace(/%5B/g, '%255B')
+        .replace(/%5D/g, '%255D') 
+        .replace(/%60/g, '%2560')
+        .replace(/%27/g, '%2527');
+
+        // for some reason, the encodeURIComponent adds in an extra 25 FOR NO REASON - so get rid of that 25
+        fileName = fileName.replace(/%2525([0-9A-F]{2})/g, '%25$1');
+    
+        // Rejoin the parts with the double-encoded file name
+        return parts.join('/') + '/' + fileName;
+    }
+
+    encodeFileName(fileName) {
+        // Encode the file name using encodeURIComponent to handle special characters
+    
+        // Double encode only the file name and leave the rest of the URL intact
+        fileName = encodeURIComponent(fileName)
+        .replace(/%20/g, '%2520')
+        .replace(/%23/g, '%2523')
+        .replace(/%26/g, '%2526')
+        .replace(/%3F/g, '%253F')
+        .replace(/%25/g, '%2525')
+        .replace(/%7B/g, '%257B')
+        .replace(/%7D/g, '%257D')
+        .replace(/%5E/g, '%255E')
+        .replace(/%5B/g, '%255B')
+        .replace(/%5D/g, '%255D') 
+        .replace(/%60/g, '%2560')
+        .replace(/%27/g, '%2527');
+
+        // for some reason, the encodeURIComponent adds in an extra 25 FOR NO REASON - so get rid of that 25
+        fileName = fileName.replace(/%2525([0-9A-F]{2})/g, '%25$1');
+
+        return fileName;
+    }
+    
 
     closeModal() {
         this.isSubModalOpen = false;
@@ -554,12 +642,10 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
         return allValid;
     }
 
-    getTodayDate() {
-        const today = new Date();
-        const yyyy = today.getFullYear();
-        const mm = String(today.getMonth() + 1).padStart(2, '0');
-        const dd = String(today.getDate()).padStart(2, '0');
-        return `${yyyy}-${mm}-${dd}`;
+    getCurrentDateTime() {
+        const now = new Date();
+        const ukTime = new Date(now.toLocaleString("en-US", {timeZone: "Europe/London"}));
+        return ukTime.toISOString(); // This will return the full ISO 8601 format
     }
 
     handleImport() {

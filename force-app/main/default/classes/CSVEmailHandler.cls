@@ -112,6 +112,7 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
                     // After insertion, create Case_History__c records for each case
                     for (BV_Case__c insertedCase : casesToInsert) {
                         createCaseHistoryForCase(insertedCase); // Create a Case History record for each case
+                        createBankBuildingSociety(insertedCase);
                     }
                 }
 
@@ -549,11 +550,31 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
         Case_History__c caseHistory = new Case_History__c();
         caseHistory.Action__c = caseRecord.Name; // Set Action to the Company Name
         caseHistory.BV_Case__c = caseRecord.Id; // Lookup to the BV Case
-        caseHistory.Date_Inserted__c = Date.today(); // Set current date for Date Inserted
+        caseHistory.Date_Inserted_Time__c = DateTime.now(); // Set current date for Date Inserted
         caseHistory.Last_updated__c = DateTime.now(); // Set current date for Last Updated
         caseHistory.Details__c = caseRecord.Company_No__c; // Set Details to the Company Number (Optional)
+
+        System.debug('ID - ' + caseHistory.BV_Case__c);
         
         insert caseHistory; // Insert the Case History record
+    }
+
+    private void createBankBuildingSociety(BV_Case__c caseRecord) {
+        AssetLiability__c assetLiability = new AssetLiability__c();
+        assetLiability.BV_Case__c = caseRecord.Id;
+        assetLiability.Balance__c = caseRecord.Amount_Collected__c;
+
+        RecordType assetRecordType = [
+        SELECT Id 
+        FROM RecordType 
+        WHERE DeveloperName = 'Companies_Bank_Building_society' 
+        AND SObjectType = 'AssetLiability__c' 
+        LIMIT 1
+        ];
+
+        assetLiability.RecordTypeId = assetRecordType.Id;
+        
+        insert assetLiability;
     }
     
 }

@@ -1,7 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>61.0</apiVersion>
+    <assignments>
+        <name>Store_field_values</name>
+        <label>Store field values</label>
+        <locationX>176</locationX>
+        <locationY>458</locationY>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>dateAppliedFor: {!dateAppliedForCasting};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>applicationFee: {!applicationFeeCasting};</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Create_history_record</targetReference>
+        </connector>
+    </assignments>
     <environments>Default</environments>
+    <formulas>
+        <name>applicationFeeCasting</name>
+        <dataType>String</dataType>
+        <expression>TEXT({!Please_enter_date_applied_for1})</expression>
+    </formulas>
+    <formulas>
+        <name>dateAppliedForCasting</name>
+        <dataType>String</dataType>
+        <expression>TEXT({!Please_enter_application_fee1})</expression>
+    </formulas>
+    <formulas>
+        <name>daysAdd28</name>
+        <dataType>Date</dataType>
+        <expression>TODAY () + 28</expression>
+    </formulas>
     <interviewLabel>Letter to probate registry withdrawing grant application (WITHDRAW) {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Letter to probate registry withdrawing grant application (WITHDRAW)</label>
     <processMetadataValues>
@@ -23,6 +61,96 @@
         </value>
     </processMetadataValues>
     <processType>Flow</processType>
+    <recordCreates>
+        <name>Create_history_record</name>
+        <label>Create history record</label>
+        <locationX>176</locationX>
+        <locationY>566</locationY>
+        <assignRecordIdToReference>historyRecordId</assignRecordIdToReference>
+        <connector>
+            <targetReference>Create_task_record</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>Action__c</field>
+            <value>
+                <stringValue>Letter to Probate Registry withdrawing grant application</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>BV_Case__c</field>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Date_Inserted_Time__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Case_History__c</object>
+    </recordCreates>
+    <recordCreates>
+        <name>Create_task_record</name>
+        <label>Create task record</label>
+        <locationX>176</locationX>
+        <locationY>674</locationY>
+        <inputAssignments>
+            <field>Assigned_To__c</field>
+            <value>
+                <elementReference>caseOfficer</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>BV_Case_Lookup__c</field>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Date_Inserted__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Due_Date__c</field>
+            <value>
+                <elementReference>daysAdd28</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Priority__c</field>
+            <value>
+                <stringValue>High</stringValue>
+            </value>
+        </inputAssignments>
+        <object>BV_Task__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordLookups>
+        <name>Get_case</name>
+        <label>Get case</label>
+        <locationX>176</locationX>
+        <locationY>350</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Store_field_values</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <object>BV_Case__c</object>
+        <outputAssignments>
+            <assignToReference>caseOfficer</assignToReference>
+            <field>Case_Officer__c</field>
+        </outputAssignments>
+    </recordLookups>
     <screens>
         <name>Please_enter_application_fee</name>
         <label>Please enter application fee</label>
@@ -31,6 +159,9 @@
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Get_case</targetReference>
+        </connector>
         <fields>
             <name>Please_enter_application_fee1</name>
             <dataType>Currency</dataType>
@@ -70,5 +201,33 @@
             <targetReference>Please_enter_date_applied_for</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
+    <variables>
+        <name>caseOfficer</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>historyRecordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>recordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>subflowValues</name>
+        <dataType>String</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
 </Flow>

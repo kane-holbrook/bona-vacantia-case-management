@@ -3,6 +3,21 @@
     <apiVersion>61.0</apiVersion>
     <environments>Default</environments>
     <formulas>
+        <name>Add14WorkingDays</name>
+        <dataType>Date</dataType>
+        <expression>CASE(
+    MOD(TODAY() - DATE(1985,6,24), 7), 
+    0, TODAY() + 20,  /* Sunday */
+    1, TODAY() + 18,  /* Monday */
+    2, TODAY() + 18,  /* Tuesday */
+    3, TODAY() + 18,  /* Wednesday */
+    4, TODAY() + 18,  /* Thursday */
+    5, TODAY() + 18,  /* Friday */
+    6, TODAY() + 22,  /* Saturday */
+    TODAY()
+)</expression>
+    </formulas>
+    <formulas>
         <name>AddDays</name>
         <dataType>Date</dataType>
         <expression>TODAY() + 21</expression>
@@ -29,10 +44,51 @@
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
     <recordCreates>
+        <name>Create_a_history_record</name>
+        <label>Create a history record</label>
+        <locationX>176</locationX>
+        <locationY>431</locationY>
+        <inputAssignments>
+            <field>Action__c</field>
+            <value>
+                <stringValue>An archive search was performed</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>BV_Case__c</field>
+            <value>
+                <elementReference>$Record.RelatedToId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Case_Officer__c</field>
+            <value>
+                <elementReference>$Record.CreatedById</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Date_Inserted_Time__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Last_updated__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Case_History__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordCreates>
         <name>Create_BV_Task_New</name>
         <label>Create BV Task</label>
         <locationX>176</locationX>
         <locationY>323</locationY>
+        <connector>
+            <targetReference>Create_a_history_record</targetReference>
+        </connector>
         <inputAssignments>
             <field>Assigned_To__c</field>
             <value>
@@ -54,7 +110,7 @@
         <inputAssignments>
             <field>Due_Date__c</field>
             <value>
-                <elementReference>$Flow.CurrentDate</elementReference>
+                <elementReference>Add14WorkingDays</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>

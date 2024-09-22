@@ -2,14 +2,16 @@ public with sharing class HistoryController {
     @AuraEnabled(cacheable=true)
     public static List<Map<String, Object>> getHistoryItems(String recordId) {
     
-        // Fetch Case_History__c records
-        List<Case_History__c> historyItems = [SELECT Id, BV_Case__c, Date__c, Date_Inserted__c, Details__c, Action__c, Case_Officer__c, Flag_as_important__c, Last_updated__c, EmailMessageId__c,
-                            (SELECT Id, BV_Case__c, Date_Inserted__c, Date__c, Details__c, Action__c, Case_Officer__c, Flag_as_important__c, Last_updated__c 
-                             FROM Case_History__r),
+        // Fetch Case_History__c records, now sorted by Date_Inserted_Time__c
+        List<Case_History__c> historyItems = [SELECT Id, BV_Case__c, Date__c, Date_Inserted_Time__c, Details__c, Action__c, Case_Officer__c, Flag_as_important__c, Last_updated__c, EmailMessageId__c,
+                            (SELECT Id, BV_Case__c, Date_Inserted_Time__c, Date__c, Details__c, Action__c, Case_Officer__c, Flag_as_important__c, Last_updated__c 
+                             FROM Case_History__r
+                             ORDER BY Date_Inserted_Time__c ASC),
                             (SELECT Id, Name, DocumentID__c, DocumentExtension__c, DocumentType__c, ServerRelativeURL__c, FileContent__c, FileSize__c, Correspondence_With__c, Draft__c, Created_Time__c
                              FROM SHDocuments__r)
                     FROM Case_History__c 
-                    WHERE BV_Case__c = :recordId AND Parent_History_Record__c = NULL];
+                    WHERE BV_Case__c = :recordId AND Parent_History_Record__c = NULL
+                    ORDER BY Date_Inserted_Time__c ASC];
     
         // Collect EmailMessageIds
         Set<Id> emailMessageIds = new Set<Id>();
@@ -44,7 +46,7 @@ public with sharing class HistoryController {
 
     @AuraEnabled(cacheable=true)
     public static List<Case_History__c> getHistoryVersions(Id historyItemId) {
-        return [SELECT Id, BV_Case__c, Date_Inserted__c, Date__c, Details__c, Action__c, Document_Type__c, Correspondence_With__c, Draft__c, Case_Officer__c, Flag_as_important__c, Last_updated__c
+        return [SELECT Id, BV_Case__c, Date_Inserted_Time__c, Date__c, Details__c, Action__c, Document_Type__c, Correspondence_With__c, Draft__c, Case_Officer__c, Flag_as_important__c, Last_updated__c
                 FROM Case_History__c 
                 WHERE Parent_History_Record__c = :historyItemId];
     }
@@ -52,7 +54,7 @@ public with sharing class HistoryController {
     @AuraEnabled(cacheable=true)
     public static List<SHDocument__c> getSHDocuments(Id parentId) {
         return [
-            SELECT Id, Name, DocumentID__c, DocumentExtension__c, DocumentType__c, ServerRelativeURL__c, FileContent__c, FileSize__c, Correspondence_With__c, Draft__c, Created_Time__c
+            SELECT Id, Name, DocumentID__c, DocumentExtension__c, DocumentType__c, ServerRelativeURL__c, FileContent__c, FileSize__c, Correspondence_With__c, Draft__c, Created_Time__c, DirectURL__c
             FROM SHDocument__c
             WHERE Case_History__c = :parentId
         ];
@@ -99,7 +101,7 @@ public with sharing class HistoryController {
 
         // Fetch Case_History__c records where BV_Task__c matches the provided taskId
         List<Case_History__c> historyItems = [
-            SELECT Id, Date__c, Date_Inserted__c, Details__c, Action__c, Case_Officer__c, Flag_as_important__c, Last_updated__c
+            SELECT Id, Date__c, Date_Inserted_Time__c, Details__c, Action__c, Case_Officer__c, Flag_as_important__c, Last_updated__c
             FROM Case_History__c 
             WHERE BV_Task__c = :taskId
             ORDER BY Date__c DESC
@@ -199,8 +201,8 @@ public with sharing class HistoryController {
     public static Id swapParentChildIfNecessary(Id recordId, Date newDate, Boolean isParent) {
         // Fetch the record (could be parent or child)
         Case_History__c record = [
-            SELECT Id, Parent_History_Record__c, Date_Inserted__c, BV_Case__c,
-                (SELECT Id, Date_Inserted__c FROM Case_History__r ORDER BY Date_Inserted__c ASC)
+            SELECT Id, Parent_History_Record__c, Date_Inserted_Time__c, BV_Case__c,
+                (SELECT Id, Date_Inserted_Time__c FROM Case_History__r ORDER BY Date_Inserted_Time__c ASC)
             FROM Case_History__c 
             WHERE Id = :recordId LIMIT 1
         ];
@@ -210,13 +212,13 @@ public with sharing class HistoryController {
         // Scenario 1: Child record is updated with an earlier date
         if (!isParent && record.Parent_History_Record__c != null) {
             Case_History__c parentRecord = [
-                SELECT Id, Date_Inserted__c, 
+                SELECT Id, Date_Inserted_Time__c, 
                     (SELECT Id FROM Case_History__r) 
                 FROM Case_History__c 
                 WHERE Id = :record.Parent_History_Record__c LIMIT 1
             ];
 
-            if (newDate < parentRecord.Date_Inserted__c) {
+            if (newDate < parentRecord.Date_Inserted_Time__c) {
                 performParentChildSwap(record, parentRecord, newDate);
                 newParentId = record.Id;  // The child becomes the new parent
             }
@@ -226,8 +228,8 @@ public with sharing class HistoryController {
         if (isParent && record.Case_History__r.size() > 0) {
             Case_History__c earliestChild = record.Case_History__r[0];
 
-            if (newDate > earliestChild.Date_Inserted__c) {
-                performParentChildSwap(earliestChild, record, earliestChild.Date_Inserted__c);
+            if (newDate > earliestChild.Date_Inserted_Time__c) {
+                performParentChildSwap(earliestChild, record, earliestChild.Date_Inserted_Time__c);
                 newParentId = earliestChild.Id;  // The earliest child becomes the new parent
             }
         }
@@ -235,7 +237,7 @@ public with sharing class HistoryController {
         return newParentId;  // Return the ID of the new parent
     }
 
-    private static void performParentChildSwap(Case_History__c newParent, Case_History__c oldParent, Date newParentDate) {
+    private static void performParentChildSwap(Case_History__c newParent, Case_History__c oldParent, DateTime newParentDate) {
         List<Case_History__c> recordsToUpdate = new List<Case_History__c>();
 
         // Reassign the old parent's children to the new parent
@@ -252,7 +254,7 @@ public with sharing class HistoryController {
 
         // New parent gets updated (date and parent-child relationship)
         newParent.Parent_History_Record__c = null;
-        newParent.Date_Inserted__c = newParentDate;
+        newParent.Date_Inserted_Time__c = newParentDate;
         recordsToUpdate.add(newParent);
 
         // Ensure no duplicate IDs in the recordsToUpdate list

@@ -145,7 +145,9 @@ public with sharing class PDFTron_ContentVersionController {
     
                 // Get the webUrl to construct ServerRelativeURL__c
                 String webUrl = (String)jsonResponse.get('webUrl');
+                String directURL = ListItemInfo.get('directURL');
                 listItemInfo.put('webUrl', webUrl);
+                listItemInfo.put('directURL', directURL);
                 listItemInfo.put('fileName', fileName);
                 listItemInfo.put('fileSize', String.valueOf(fileContent.size()));
                 listItemInfo.put('fileExtension', fileName.substringAfterLast('.'));
@@ -176,6 +178,7 @@ public with sharing class PDFTron_ContentVersionController {
             shDocument.Case_History__c = historyRecordId;
             shDocument.DocumentID__c = listItemInfo.get('documentId');
             shDocument.ServerRelativeURL__c = listItemInfo.get('webUrl');
+            shDocument.DirectURL__c = listItemInfo.get('directURL');
             shDocument.Document_Name__c = listItemInfo.get('fileName');
             shDocument.FileSize__c = Integer.valueOf(listItemInfo.get('fileSize'));
             shDocument.DocumentExtension__c = listItemInfo.get('fileExtension');

@@ -1,0 +1,25 @@
+<aura:component implements="lightning:homeTemplate" access="global" description="Custom Multi-Column Layout">
+    <aura:attribute name="firstRow" type="Aura.Component[]" description="First row content" />
+    <aura:attribute name="secondRow" type="Aura.Component[]" description="Second row content" />
+    <aura:attribute name="thirdRowLeft" type="Aura.Component[]" description="Third row left column content" />
+    <aura:attribute name="thirdRowRight" type="Aura.Component[]" description="Third row right column content" />
+    
+    <div class="slds-grid slds-grid_vertical">
+        <div class="slds-col slds-size_12-of-12 slds-m-bottom_large">
+            {!v.firstRow}
+        </div>
+        
+        <div class="slds-col slds-size_12-of-12 slds-m-bottom_large">
+            {!v.secondRow}
+        </div>
+        
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-size_6-of-12 slds-p-right_x-small">
+                {!v.thirdRowLeft}
+            </div>
+            <div class="slds-col slds-size_6-of-12 slds-p-left_x-small">
+                {!v.thirdRowRight}
+            </div>
+        </div>
+    </div>
+</aura:component>

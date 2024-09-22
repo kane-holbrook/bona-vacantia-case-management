@@ -661,7 +661,7 @@
             <choiceReferences>Yes</choiceReferences>
             <choiceReferences>No</choiceReferences>
             <dataType>String</dataType>
-            <fieldText>Does the response need to be cleared by Caroline?</fieldText>
+            <fieldText>Does the response need to be cleared by Head of Division?</fieldText>
             <fieldType>RadioButtons</fieldType>
             <isRequired>false</isRequired>
         </fields>
@@ -744,7 +744,7 @@
             <targetReference>Question</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <variables>
         <name>AmendmentsMade</name>
         <dataType>String</dataType>

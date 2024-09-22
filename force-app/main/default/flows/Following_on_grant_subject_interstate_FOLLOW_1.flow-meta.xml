@@ -1,6 +1,178 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>61.0</apiVersion>
+    <assignments>
+        <name>Store_field_values</name>
+        <label>Store field values</label>
+        <locationX>176</locationX>
+        <locationY>2486</locationY>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>caseReference: {!caseReference};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>sealedCopiesNo: {!How_many_sealed_copies_do_you_want1};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>nameOfSubject: {!Enter_Name_Of_Subject_In_Whose_Estate_Our_Deceased_Has_An_Interest1};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>fullName: {!Please_enter_your_full_name1};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>lastResidenceOfSubject: {!Enter_last_residence_of_subject1};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>sameLocality: {!sameLocalityFormula};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>dateOfDeath: {!Enter_date_of_death_of_subject1};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>subjectAge: {!Enter_age_of_subject1};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>subjectDateOfBirth: {!Enter_date_of_birth_of_subject1};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>deceasedRelation: {!How_is_our_deceased_related_to_subject1};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>maritalStatus: {!Enter_marital_status_of_subject1};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>subjectGender: {!Enter_marital_status_of_subject1};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>valuesAndDetailsOfEstate: {!Enter_value_and_details_of_assets_of_the_estate_of_the_subject1};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>netValueOfEstate: {!nter_net_value_of_the_estate_of_the_subject};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>IHT205Required: {!Is_an_IHT205_required1};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>forename: {!caseForename};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>surname: {!caseSurname};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>additionalName: {!additionalNameFormula};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>title: {!title};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>titleFormulaAd: {!titleFormulaAd};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>titleFormulaEx: {!titleFormulaEx};</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Create_history_record</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Store_no_outcome_values</name>
+        <label>Store no outcome values</label>
+        <locationX>132</locationX>
+        <locationY>1106</locationY>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>addressOfDeath: {!concatenateAddressOfDeathFormula};</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Enter_age_of_subject</targetReference>
+        </connector>
+    </assignments>
     <choices>
         <name>Cousin</name>
         <choiceText>Cousin</choiceText>
@@ -109,7 +281,7 @@
         <name>Subject_died_in_same_locality_as_last_residence3</name>
         <label>Subject died in same locality as last residence?</label>
         <locationX>176</locationX>
-        <locationY>782</locationY>
+        <locationY>890</locationY>
         <defaultConnector>
             <targetReference>Enter_age_of_subject</targetReference>
         </defaultConnector>
@@ -140,12 +312,47 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Enter_date_of_death_of_subject</targetReference>
+                <targetReference>Enter_full_address_of_place_of_death_of_subject3</targetReference>
             </connector>
             <label>Selected No</label>
         </rules>
     </decisions>
     <environments>Default</environments>
+    <formulas>
+        <name>additionalNameFormula</name>
+        <dataType>String</dataType>
+        <expression>if({!detailSurname}&lt;&gt;&quot;&quot;,&quot; otherwise &quot;+{!detailForename}+&quot; &quot;+{!detailSurname},&quot;&quot;)</expression>
+    </formulas>
+    <formulas>
+        <name>concatenateAddressOfDeathFormula</name>
+        <dataType>String</dataType>
+        <expression>{!Enterfulladdressofplaceofdeathofsubject.street}+&quot;, &quot;+{!Enterfulladdressofplaceofdeathofsubject.city}+&quot;, &quot;+{!Enterfulladdressofplaceofdeathofsubject.postalCode}+&quot;, &quot;+{!Enterfulladdressofplaceofdeathofsubject.province}+&quot;, &quot;+{!Enterfulladdressofplaceofdeathofsubject.country}</expression>
+    </formulas>
+    <formulas>
+        <name>daysAdd28</name>
+        <dataType>Date</dataType>
+        <expression>TODAY () + 28</expression>
+    </formulas>
+    <formulas>
+        <name>sameLocalityFormula</name>
+        <dataType>String</dataType>
+        <expression>IF({!Subject_died_in_same_locality_as_last_residence1}=&quot;Yes&quot;, &quot;True&quot;, &quot;False&quot;)</expression>
+    </formulas>
+    <formulas>
+        <name>subjectGenderFormula</name>
+        <dataType>String</dataType>
+        <expression>if({!Gender_of_subject1}=&quot;Male&quot;, &quot;True&quot;, &quot;False&quot;)</expression>
+    </formulas>
+    <formulas>
+        <name>titleFormulaAd</name>
+        <dataType>Boolean</dataType>
+        <expression>if(BEGINS({!title}, &quot;Ad&quot;),True,False)</expression>
+    </formulas>
+    <formulas>
+        <name>titleFormulaEx</name>
+        <dataType>Boolean</dataType>
+        <expression>if(BEGINS({!title}, &quot;Ex&quot;),True,False)</expression>
+    </formulas>
     <interviewLabel>Following on grant - subject interstate (FOLLOW.1) {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Following on grant - subject interstate (FOLLOW.1)</label>
     <processMetadataValues>
@@ -167,11 +374,191 @@
         </value>
     </processMetadataValues>
     <processType>Flow</processType>
+    <recordCreates>
+        <name>Create_history_record</name>
+        <label>Create history record</label>
+        <locationX>176</locationX>
+        <locationY>2594</locationY>
+        <assignRecordIdToReference>historyRecordId</assignRecordIdToReference>
+        <connector>
+            <targetReference>Create_task_record</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>Action__c</field>
+            <value>
+                <stringValue>Following-on grant application</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>BV_Case__c</field>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Case_Officer__c</field>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Date_Inserted_Time__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Last_updated__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Case_History__c</object>
+    </recordCreates>
+    <recordCreates>
+        <name>Create_task_record</name>
+        <label>Create task record</label>
+        <locationX>176</locationX>
+        <locationY>2702</locationY>
+        <inputAssignments>
+            <field>Assigned_To__c</field>
+            <value>
+                <elementReference>currentCaseOfficer</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>BV_Case_Lookup__c</field>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Date_Inserted__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Due_Date__c</field>
+            <value>
+                <elementReference>daysAdd28</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Last_updated__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Name</field>
+            <value>
+                <stringValue>Grant of Representation Received?</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Priority__c</field>
+            <value>
+                <stringValue>High</stringValue>
+            </value>
+        </inputAssignments>
+        <object>BV_Task__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordLookups>
+        <name>Get_case</name>
+        <label>Get case</label>
+        <locationX>176</locationX>
+        <locationY>2162</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_case_case_details</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <object>BV_Case__c</object>
+        <outputAssignments>
+            <assignToReference>deceasedName</assignToReference>
+            <field>Deceased_name__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>caseForename</assignToReference>
+            <field>Forenames__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>caseReference</assignToReference>
+            <field>Name</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>caseSurname</assignToReference>
+            <field>Surname__c</field>
+        </outputAssignments>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_case_case_details</name>
+        <label>Get case (case details)</label>
+        <locationX>176</locationX>
+        <locationY>2270</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_user</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>BV_Case__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <object>Case_Detail__c</object>
+        <outputAssignments>
+            <assignToReference>currentCaseOfficer</assignToReference>
+            <field>Current_Officer__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>detailForename</assignToReference>
+            <field>Forenames__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>detailSurname</assignToReference>
+            <field>Surname__c</field>
+        </outputAssignments>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_user</name>
+        <label>Get user</label>
+        <locationX>176</locationX>
+        <locationY>2378</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Store_field_values</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </filters>
+        <object>User</object>
+        <outputAssignments>
+            <assignToReference>title</assignToReference>
+            <field>Title</field>
+        </outputAssignments>
+    </recordLookups>
     <screens>
         <name>Enter_age_of_subject</name>
         <label>Enter age of subject</label>
         <locationX>176</locationX>
-        <locationY>1190</locationY>
+        <locationY>1298</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -193,7 +580,7 @@
         <name>Enter_date_of_birth_of_subject</name>
         <label>Enter date of birth of subject</label>
         <locationX>176</locationX>
-        <locationY>1298</locationY>
+        <locationY>1406</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -213,13 +600,13 @@
     <screens>
         <name>Enter_date_of_death_of_subject</name>
         <label>Enter date of death of subject</label>
-        <locationX>132</locationX>
-        <locationY>890</locationY>
+        <locationX>176</locationX>
+        <locationY>674</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Enter_full_address_of_place_of_death_of_subject3</targetReference>
+            <targetReference>Subject_died_in_same_locality_as_last_residence</targetReference>
         </connector>
         <fields>
             <name>Enter_date_of_death_of_subject1</name>
@@ -240,7 +627,7 @@
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Enter_age_of_subject</targetReference>
+            <targetReference>Store_no_outcome_values</targetReference>
         </connector>
         <fields>
             <name>Enterfulladdressofplaceofdeathofsubject</name>
@@ -268,7 +655,7 @@
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Subject_died_in_same_locality_as_last_residence</targetReference>
+            <targetReference>Enter_date_of_death_of_subject</targetReference>
         </connector>
         <fields>
             <name>Enter_last_residence_of_subject1</name>
@@ -284,7 +671,7 @@
         <name>Enter_marital_status_of_subject</name>
         <label>Marital status of subject</label>
         <locationX>176</locationX>
-        <locationY>1406</locationY>
+        <locationY>1514</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -326,7 +713,7 @@
         <name>Enter_value_and_details_of_assets_of_the_estate_of_the_subject</name>
         <label>Enter value and details of assets of the estate of the subject</label>
         <locationX>176</locationX>
-        <locationY>1730</locationY>
+        <locationY>1838</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -346,7 +733,7 @@
         <name>Gender_of_subject</name>
         <label>Gender of subject?</label>
         <locationX>176</locationX>
-        <locationY>1514</locationY>
+        <locationY>1622</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -369,7 +756,7 @@
         <name>How_is_our_deceased_related_to_subject</name>
         <label>How is our deceased related to subject?</label>
         <locationX>176</locationX>
-        <locationY>1622</locationY>
+        <locationY>1730</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -420,13 +807,17 @@
         <name>Is_an_IHT205_required</name>
         <label>Is_an_IHT205_required?</label>
         <locationX>176</locationX>
-        <locationY>1946</locationY>
+        <locationY>2054</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Get_case</targetReference>
+        </connector>
         <fields>
             <name>Is_an_IHT205_required1</name>
-            <choiceReferences>OK</choiceReferences>
+            <choiceReferences>Yes</choiceReferences>
+            <choiceReferences>No</choiceReferences>
             <dataType>String</dataType>
             <fieldText>Is_an_IHT205_required?</fieldText>
             <fieldType>RadioButtons</fieldType>
@@ -439,7 +830,7 @@
         <name>nter_net_value_of_the_estate_of_the_subject_rounded_up_to_the_nearest_whole_thou</name>
         <label>Enter net value of the estate of the subject rounded up to the nearest whole thousand pounds</label>
         <locationX>176</locationX>
-        <locationY>1838</locationY>
+        <locationY>1946</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -504,7 +895,7 @@
         <name>Subject_died_in_same_locality_as_last_residence</name>
         <label>Subject died in same locality as last residence?</label>
         <locationX>176</locationX>
-        <locationY>674</locationY>
+        <locationY>782</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -530,5 +921,82 @@
             <targetReference>How_many_sealed_copies_do_you_want</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
+    <variables>
+        <name>caseForename</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>caseReference</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>caseSurname</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>currentCaseOfficer</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>deceasedName</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>detailForename</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>detailSurname</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>historyRecordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>recordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>subflowValues</name>
+        <dataType>String</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>title</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
 </Flow>
