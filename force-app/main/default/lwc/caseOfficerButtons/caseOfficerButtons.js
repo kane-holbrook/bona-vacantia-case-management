@@ -64,6 +64,7 @@ export default class CaseOfficerButtons extends LightningElement {
     @track isChangeDisclaimerDateOpen = false;
     @track recordTypeDeveloperName; // Holds the record type developer name
     @track isEstates = false;
+    @track documentType; // Holds the document type for LM case review
 
     actions = []; // Actions array will be set based on record type
 
@@ -114,7 +115,7 @@ export default class CaseOfficerButtons extends LightningElement {
             const recordTypeDeveloperName = await getRecordTypeDeveloperName({ recordTypeId });
             this.recordTypeDeveloperName = recordTypeDeveloperName;
     
-            // Set the actions based on record type
+            // Set the actions and document type based on record type
             if (recordTypeDeveloperName === 'ESTA') {
                 this.actions = [
                     { actionId: '1', label: 'Put away', disabled: false },
@@ -126,6 +127,7 @@ export default class CaseOfficerButtons extends LightningElement {
                     { actionId: '7', label: 'Section 27', disabled: false }
                 ];
                 this.isEstates = true;
+                this.documentType = 'LMREV';
             } else if (recordTypeDeveloperName === 'COMP') {
                 this.actions = [
                     { actionId: '1', label: 'Put away', disabled: false },
@@ -133,8 +135,10 @@ export default class CaseOfficerButtons extends LightningElement {
                     { actionId: '3', label: 'Re-allocate case', disabled: false },
                     { actionId: '4', label: 'Change case category', disabled: false },
                     { actionId: '7', label: 'Change Disclaimer', disabled: false },
-                    { actionId: '8', label: 'Archive Search', disabled: false }
+                    { actionId: '8', label: 'Archive Search', disabled: false },
+                    { actionId: '6', label: 'LM case review', disabled: false }
                 ];
+                this.documentType = 'LMCOMP';
             } else if (recordTypeDeveloperName === 'CONV') {
                 this.actions = [
                     { actionId: '1', label: 'Put away', disabled: false },
@@ -143,6 +147,7 @@ export default class CaseOfficerButtons extends LightningElement {
                     { actionId: '4', label: 'Change case category', disabled: false },
                     { actionId: '6', label: 'LM case review', disabled: false }
                 ];
+                this.documentType = 'LMCONV';
             } else if (recordTypeDeveloperName === 'GENE') {
                 this.actions = [
                     { actionId: '1', label: 'Put away', disabled: false },
@@ -229,16 +234,16 @@ export default class CaseOfficerButtons extends LightningElement {
             hiddenScreenControlsComponent.isEstates = this.isEstates;
             hiddenScreenControlsComponent.openModal();
         } else if (actionName === 'LM case review') {
-            // Fetch files from SharePoint for LMREV document type
+            // Fetch files from SharePoint for the appropriate document type
             const folderPath = `Templates`;
-            const documentType = 'LMREV';
-    
+            const documentType = this.documentType || 'LMREV'; // Default to LMREV if not set
+
             fetchFilesFromSharePoint({ folderPath: folderPath, documentType: documentType })
                 .then(result => {
                     console.log('Files from sharepoint:', result);
                     if (result && result.length > 0) {
                         const selectedDocument = result[0];
-    
+
                         // Populate flowInputs with selectedDocumentId and selectedDocumentType
                         this.flowInputs = [
                             {
@@ -252,11 +257,11 @@ export default class CaseOfficerButtons extends LightningElement {
                                 value: documentType
                             }
                         ];
-    
+
                         // Open the modal or flow for LM case review
                         this.isFlowModalOpen = true;
                     } else {
-                        console.warn('No files found for LMREV document type');
+                        console.warn('No files found for document type:', documentType);
                     }
                 })
                 .catch(error => {
