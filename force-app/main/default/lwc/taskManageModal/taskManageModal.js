@@ -400,11 +400,24 @@ export default class TaskManageModal extends LightningElement {
 
     @api
     handleSave() {
+        // Check for task description (Name)
         if (!this.task.Name || !this.task.Name.value.trim()) {
             this.dispatchEvent(
                 new ShowToastEvent({
                     title: 'Error',
                     message: 'Please enter a description of the task before saving.',
+                    variant: 'error',
+                }),
+            );
+            return;
+        }
+
+        // Check for due date
+        if (!this.task.Due_Date__c || !this.task.Due_Date__c.value) {
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Error',
+                    message: 'Please enter a due date before saving.',
                     variant: 'error',
                 }),
             );
