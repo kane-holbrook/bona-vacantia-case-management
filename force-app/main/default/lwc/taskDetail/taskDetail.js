@@ -438,6 +438,9 @@ export default class TaskDetail extends LightningElement {
     
         this.shouldShowDropdown = false;
         this.prepareFlowInputs();
+
+        // Clear the input field
+        this.searchTerm = '';
     }
     
     appendTemplateId(newListItemId) {
