@@ -58,6 +58,7 @@ export default class TaskDetail extends LightningElement {
     wiredSubTaskResult;
     wiredTaskTemplatesResult;
     wiredCaseHistoryResult;
+    wiredExistingTemplatesResult;
 
     @track isManageModalOpen = false;
     @track isDeleteModalOpen = false;
@@ -165,9 +166,6 @@ export default class TaskDetail extends LightningElement {
         if (data) {
             this.currentTemplateIds = getFieldValue(data, TASK_TEMPLATES_FIELD) || '';  // Store the IDs
             this.fetchTemplates();
-            if (this.currentTemplateIds) {
-                this.fetchExistingTemplates(this.currentTemplateIds);
-            }
         } else if (error) {
             this.dispatchEvent(
                 new ShowToastEvent({
@@ -257,32 +255,24 @@ export default class TaskDetail extends LightningElement {
             });
     }
 
-    fetchExistingTemplates(templateIds) {
-        fetchFilesByIds({ itemIds: templateIds })
-            .then(result => {
-                console.log('Existing Templates:', result);
-    
-                // Map result to the appropriate format
-                if (result && Array.isArray(result)) {
-                    this.existingTemplates = result.map(file => ({
-                        label: file.Document_x0020_Name || 'Unnamed File',
-                        value: file.id,
-                        type: file.DocumentType || 'Unknown Category',
-                        listItemId: file.listItemId
-                    }));
-                } else {
-                    this.existingTemplates = [];
-                }
-            })
-            .catch(error => {
-                this.dispatchEvent(
-                    new ShowToastEvent({
-                        title: 'Error fetching existing templates',
-                        message: error.body.message,
-                        variant: 'error',
-                    })
-                );
-            });
+    @wire(fetchFilesByIds, { itemIds: '$currentTemplateIds' })
+    wiredExistingTemplates({ data }) {
+        this.wiredExistingTemplatesResult = data;
+        if (data) {
+            console.log('Existing Templates:', data);
+
+            // Map result to the appropriate format
+            if (data && Array.isArray(data)) {
+                this.existingTemplates = data.map(file => ({
+                    label: file.Document_x0020_Name || 'Unnamed File',
+                    value: file.id,
+                    type: file.DocumentType || 'Unknown Category',
+                    listItemId: file.listItemId
+                }));
+            } else {
+                this.existingTemplates = [];
+            }
+        }
     }
 
     fetchSubTaskUserNames(subTasks) {
@@ -458,11 +448,11 @@ export default class TaskDetail extends LightningElement {
                 : newListItemId;
     
             // Update the task record
-            this.updateTaskTemplatesField();
+            this.updateTaskTemplatesField('add');
         }
     }
     
-    updateTaskTemplatesField() {
+    updateTaskTemplatesField(action) {
         const fields = {};
         fields.Id = this.recordId;
         fields[TASK_TEMPLATES_FIELD.fieldApiName] = this.currentTemplateIds;
@@ -471,10 +461,11 @@ export default class TaskDetail extends LightningElement {
     
         updateRecord(recordInput)
             .then(() => {
+                const message = action === 'add' ? 'Template added to task' : 'Template removed from task';
                 this.dispatchEvent(
                     new ShowToastEvent({
                         title: 'Success',
-                        message: 'Template added to task',
+                        message: message,
                         variant: 'success'
                     })
                 );
@@ -511,7 +502,9 @@ export default class TaskDetail extends LightningElement {
             this.currentTemplateIds = updatedTemplateArray.join(';');
             
             // Update the task record
-            this.updateTaskTemplatesField();
+            this.updateTaskTemplatesField('remove');
+            this.existingTemplates = [];
+            return refreshApex(this.wiredExistingTemplatesResult);
         } else {
             console.error('Template not found or listItemId missing.');
             this.dispatchEvent(
@@ -804,5 +797,4 @@ export default class TaskDetail extends LightningElement {
             this.shouldShowDropdown = false;
         }
     }
-    
 }
