@@ -308,9 +308,10 @@ export default class DatabaseStandardRecordModal extends LightningElement {
                                 return {
                                     ...field,
                                     value: account.Name,
-                                    accountId: accountId
+                                    accountId: accountId,
                                 };
                             }
+                            this.searchTerm = account.Name;
                             return field;
                         })
                     }));
@@ -356,6 +357,7 @@ export default class DatabaseStandardRecordModal extends LightningElement {
         const fieldName = event.currentTarget.dataset.fieldName;
         this.selectedAccount = { Id: selectedId, Name: selectedName };
         this.accountId = selectedId;
+        this.searchTerm = selectedName;
         this.searchResults = [];
 
         // Update the combinedData with the selected account
@@ -368,6 +370,7 @@ export default class DatabaseStandardRecordModal extends LightningElement {
         const fieldName = event.currentTarget.dataset.fieldName;
         this.selectedAccount = null;
         this.accountId = null;
+        this.searchTerm = '';
         this.updateCombinedDataWithSelectedAccount(fieldName);
     }
 
