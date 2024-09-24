@@ -756,6 +756,65 @@ public class FileControllerGraph {
         return res.getStatusCode() == 200;
     }
 
+    @AuraEnabled(cacheable=false)
+    public static Map<String, String> downloadFileFromSharePoint(String filePath) {
+        Map<String, String> settings = getSharePointSettings();
+        String siteUrl = settings.get('SharePoint_Site_URL');
+        String directoryPath = settings.get('SharePoint_Directory_Path');
+        String siteId = getSiteId(siteUrl, directoryPath);
+
+        String downloadUrl = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/drive/root:/' + filePath + ':/content';
+
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint(downloadUrl);
+        req.setMethod('GET');
+        req.setHeader('Accept', 'application/octet-stream');
+
+        Http http = new Http();
+        HttpResponse res = http.send(req);
+
+        Map<String, String> result = new Map<String, String>();
+
+        if (res.getStatusCode() == 200) {
+            Blob fileBlob = res.getBodyAsBlob();
+            String base64Content = EncodingUtil.base64Encode(fileBlob);
+            
+            // Extract the file name from the filePath
+            String fileName = extractFileName(filePath);
+
+            result.put('fileContent', base64Content);
+            result.put('fileName', fileName);
+        } else {
+            System.debug('File download failed: ' + res.getStatus() + ' ' + res.getBody());
+            result.put('error', 'File download failed: ' + res.getStatus());
+        }
+
+        return result;
+    }
+
+    private static String extractFileName(String filePath) {
+        String fileName = filePath;
+        if (filePath.contains('?')) {
+            String queryString = filePath.substring(filePath.indexOf('?') + 1);
+            Map<String, String> queryParams = new Map<String, String>();
+            for (String param : queryString.split('&')) {
+                List<String> keyValue = param.split('=');
+                if (keyValue.size() == 2) {
+                    queryParams.put(keyValue[0], keyValue[1]);
+                }
+            }
+            if (queryParams.containsKey('file')) {
+                fileName = queryParams.get('file');
+            } else {
+                fileName = filePath.substring(0, filePath.indexOf('?'));
+                fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
+            }
+        } else {
+            fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
+        }
+        return fileName;
+    }
+
     public void veryTemporaryTest(){
         integer i = 0;
         i = i + 1;
