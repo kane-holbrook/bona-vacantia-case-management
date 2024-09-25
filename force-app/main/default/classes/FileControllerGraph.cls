@@ -775,15 +775,26 @@ public class FileControllerGraph {
 
         Map<String, String> result = new Map<String, String>();
 
+        // Handle redirection if status code is 302
+        if (res.getStatusCode() == 302) {
+            String newLocation = res.getHeader('Location');
+            req.setEndpoint(newLocation);
+            res = http.send(req);
+        }
+
         if (res.getStatusCode() == 200) {
-            Blob fileBlob = res.getBodyAsBlob();
-            String base64Content = EncodingUtil.base64Encode(fileBlob);
+            String contentType = res.getHeader('Content-Type');
+            Blob fileContent = res.getBodyAsBlob();
             
             // Extract the file name from the filePath
             String fileName = extractFileName(filePath);
 
+            // Encode the file content to Base64
+            String base64Content = EncodingUtil.base64Encode(fileContent);
+
             result.put('fileContent', base64Content);
             result.put('fileName', fileName);
+            result.put('contentType', contentType);
         } else {
             System.debug('File download failed: ' + res.getStatus() + ' ' + res.getBody());
             result.put('error', 'File download failed: ' + res.getStatus());

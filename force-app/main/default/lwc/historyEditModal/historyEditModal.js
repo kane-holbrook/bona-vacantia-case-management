@@ -712,8 +712,17 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
 
     handleDownloadFile(relatedItemId) {
         const selectedItem = this.relatedItems.find(item => item.Id === relatedItemId);
-        if (selectedItem && selectedItem.ServerRelativeURL__c) {
-            downloadFileFromSharePoint({ filePath: selectedItem.ServerRelativeURL__c })
+        if (selectedItem && selectedItem.DirectURL__c) {
+            let serverRelativeURL = selectedItem.DirectURL__c;
+            let fileName = selectedItem.Name;
+
+            // Strip away the unnecessary parts of the URL
+            const urlParts = serverRelativeURL.split('/Shared%20Documents/');
+            if (urlParts.length > 1) {
+                serverRelativeURL = urlParts[1];
+            }
+
+            downloadFileFromSharePoint({ filePath: serverRelativeURL })
                 .then(result => {
                     const element = document.createElement('a');
                     element.href = 'data:application/octet-stream;base64,' + result.fileContent;
