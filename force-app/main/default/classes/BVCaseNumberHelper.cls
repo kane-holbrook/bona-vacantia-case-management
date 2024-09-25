@@ -1,46 +1,45 @@
 public class BVCaseNumberHelper {
-
-    // Make the method invocable from a Flow
-    @InvocableMethod(label='Get Next Case Number' description='Generates the next case number based on the latest cases')
-    public static List<String> getNextCaseNumber(List<String> request) {
-        List<String> caseNumberList = new List<String>();
+    @InvocableMethod(label='Get Next FOIR Number' description='Generates the next FOIR number based on the latest FOIR Numbers')
+    public static List<String> getFOIRNumber(List<String> RecordCaseType) {
+        List<String> FOIRNumberList = new List<String>();
 
         // Query the last 100 cases, sorted by CreatedDate descending
-        List<BV_Case__c> latestCases = [SELECT Name FROM BV_Case__c 
-                                        WHERE Name LIKE '%/1' 
+        List<BV_Case__c> FOIRCases = [SELECT Foi_No__c FROM BV_Case__c 
                                         ORDER BY CreatedDate DESC 
                                         LIMIT 100];
 
-        System.debug('Latest Cases: ' + latestCases);
-
-        // If there are no cases, return the first default case number
-        if (latestCases.isEmpty() || latestCases[0].Name == null) {
-            caseNumberList.add('1/1'); // Starting format in case there are no valid case numbers
-            return caseNumberList;
+        // If there are no cases, return the first default FOIR number
+        if (FOIRCases.isEmpty() || FOIRCases[0].Foi_No__c == null) {
+            String currentYear = String.valueOf(Date.today().year()).right(2);
+            FOIRNumberList.add('1/' + currentYear); // Starting format: "1/YY"
+            return FOIRNumberList;
         }
 
 
-        // Extract the case number from the most recent case
-        String lastCaseNumber = latestCases[0].Name;
+        // Extract the FOIR number from the most recent case
+        String lastFOIRNumber = FOIRCases[0].Foi_No__c;
 
-        // Case number is in the format "x/1"
-        List<String> caseNumberParts = lastCaseNumber.split('/');
+        // FOIR number is in the format "x/YY"
+        List<String> FOIRNumberParts = lastFOIRNumber.split('/');
 
-        if (caseNumberParts.size() == 2) {
+        if (FOIRNumberParts.size() == 2) {
             // Parse the first part as an integer
-            Integer firstPart = Integer.valueOf(caseNumberParts[0]);
+            Integer firstPart = Integer.valueOf(FOIRNumberParts[0]);
 
             // Increment the first part by 1
             firstPart += 1;
 
-            // Rebuild the new case number and return it
-            String newCaseNumber = firstPart + '/' + caseNumberParts[1];
-            caseNumberList.add(newCaseNumber);
-            return caseNumberList;
+            // Get the current year and extract the last two digits
+            String currentYear = String.valueOf(Date.today().year()).right(2);
+
+            // Rebuild the new FOIR number using the updated year
+            String newFOIRNumber = firstPart + '/' + currentYear;
+            FOIRNumberList.add(newFOIRNumber);
+            return FOIRNumberList;
         }
 
         // Fallback in case the case number format is incorrect
-        caseNumberList.add('Error: Invalid Case Number Format');
-        return caseNumberList;
+        FOIRNumberList.add('Error: Invalid Case Number Format');
+        return FOIRNumberList;
     }
 }
