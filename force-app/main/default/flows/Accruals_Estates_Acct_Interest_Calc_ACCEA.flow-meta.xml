@@ -2,10 +2,10 @@
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>61.0</apiVersion>
     <assignments>
-        <name>Store_field_values_for_no_outcome</name>
-        <label>Store field values for no outcome</label>
+        <name>Store_field_values</name>
+        <label>Store field values</label>
         <locationX>314</locationX>
-        <locationY>782</locationY>
+        <locationY>1082</locationY>
         <assignmentItems>
             <assignToReference>subflowValues</assignToReference>
             <operator>Add</operator>
@@ -31,7 +31,28 @@
             <assignToReference>subflowValues</assignToReference>
             <operator>Add</operator>
             <value>
-                <stringValue>costAdm: {!costAdm};</stringValue>
+                <stringValue>username: {!username};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>costAdministration: {!costAdministration};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>costConveyancing: {!costConveyancing};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>costLitigation: {!costLitigation};</stringValue>
             </value>
         </assignmentItems>
         <assignmentItems>
@@ -45,49 +66,14 @@
             <assignToReference>subflowValues</assignToReference>
             <operator>Add</operator>
             <value>
-                <stringValue>costConFormula: {!costConFormula};</stringValue>
+                <stringValue>costConveyancingFormula: {!costConveyancingFormula};</stringValue>
             </value>
         </assignmentItems>
         <assignmentItems>
             <assignToReference>subflowValues</assignToReference>
             <operator>Add</operator>
             <value>
-                <stringValue>costCon: {!costCon};</stringValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>subflowValues</assignToReference>
-            <operator>Add</operator>
-            <value>
-                <stringValue>costLitFormula: {!costLitFormula};</stringValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>subflowValues</assignToReference>
-            <operator>Add</operator>
-            <value>
-                <stringValue>costLit: {!costLit};</stringValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>subflowValues</assignToReference>
-            <operator>Add</operator>
-            <value>
-                <stringValue>datePayable: {!Copy_1_of_Enter_date_from_which_interest_is_payable2};</stringValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>subflowValues</assignToReference>
-            <operator>Add</operator>
-            <value>
-                <stringValue>cwsCompleted: False;</stringValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>subflowValues</assignToReference>
-            <operator>Add</operator>
-            <value>
-                <stringValue>username: {!username};</stringValue>
+                <stringValue>costLitigationFormula: {!costLitigationFormula};</stringValue>
             </value>
         </assignmentItems>
         <assignmentItems>
@@ -102,110 +88,56 @@
         </connector>
     </assignments>
     <assignments>
-        <name>Store_field_values_for_yes_outcome</name>
-        <label>Store field values for yes outcome</label>
-        <locationX>50</locationX>
-        <locationY>890</locationY>
+        <name>Store_field_values_for_No_outcome</name>
+        <label>Store field values for &apos;No&apos; outcome</label>
+        <locationX>314</locationX>
+        <locationY>566</locationY>
         <assignmentItems>
             <assignToReference>subflowValues</assignToReference>
             <operator>Add</operator>
             <value>
-                <stringValue>forename: {!caseForename};</stringValue>
+                <stringValue>dateInterestPayable: {!Copy_1_of_Enter_date_from_which_interest_is_payable2};</stringValue>
             </value>
         </assignmentItems>
         <assignmentItems>
             <assignToReference>subflowValues</assignToReference>
             <operator>Add</operator>
             <value>
-                <stringValue>surname: {!caseSurname};</stringValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>subflowValues</assignToReference>
-            <operator>Add</operator>
-            <value>
-                <stringValue>caseReference: {!caseReference};</stringValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>subflowValues</assignToReference>
-            <operator>Add</operator>
-            <value>
-                <stringValue>costAdm: {!costAdm};</stringValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>subflowValues</assignToReference>
-            <operator>Add</operator>
-            <value>
-                <stringValue>vatFormula: {!vatFormula};</stringValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>subflowValues</assignToReference>
-            <operator>Add</operator>
-            <value>
-                <stringValue>costConFormula: {!costConFormula};</stringValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>subflowValues</assignToReference>
-            <operator>Add</operator>
-            <value>
-                <stringValue>costCon: {!costCon};</stringValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>subflowValues</assignToReference>
-            <operator>Add</operator>
-            <value>
-                <stringValue>costLitFormula: {!costLitFormula};</stringValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>subflowValues</assignToReference>
-            <operator>Add</operator>
-            <value>
-                <stringValue>costLit: {!costLit};</stringValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>subflowValues</assignToReference>
-            <operator>Add</operator>
-            <value>
-                <stringValue>datePayable: {!Enter_date_from_which_interest_is_payable2};</stringValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>subflowValues</assignToReference>
-            <operator>Add</operator>
-            <value>
-                <stringValue>cwsCompleted: True;</stringValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>subflowValues</assignToReference>
-            <operator>Add</operator>
-            <value>
-                <stringValue>dateCompletedCWS: {!Enter_date_of_Certainty_search1};</stringValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>subflowValues</assignToReference>
-            <operator>Add</operator>
-            <value>
-                <stringValue>username: {!username};</stringValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>subflowValues</assignToReference>
-            <operator>Add</operator>
-            <value>
-                <stringValue>currentDate: {!currentDate};</stringValue>
+                <stringValue>completedCWS: False;</stringValue>
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Create_history_record</targetReference>
+            <targetReference>Get_case</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Store_field_values_for_Yes_outcome</name>
+        <label>Store field values for &apos;Yes&apos; outcome</label>
+        <locationX>50</locationX>
+        <locationY>674</locationY>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>dateInterestPayable: {!Enter_date_from_which_interest_is_payable2};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>dateOfCWS: {!Enter_date_of_Certainty_search1};</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>subflowValues</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>completedCWS: True;</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Get_case</targetReference>
         </connector>
     </assignments>
     <choices>
@@ -236,7 +168,7 @@
         <name>Was_a_Certainty_Will_search_completed2</name>
         <label>Was a Certainty Will search completed?</label>
         <locationX>314</locationX>
-        <locationY>458</locationY>
+        <locationY>242</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>Selected_Yes</name>
@@ -271,19 +203,14 @@
     </decisions>
     <environments>Default</environments>
     <formulas>
-        <name>costConFormula</name>
+        <name>costConveyancingFormula</name>
         <dataType>Boolean</dataType>
-        <expression>if({!costCon}&gt;0.00,True,False)</expression>
+        <expression>IF({!costConveyancing}&gt;0.00, True, False)</expression>
     </formulas>
     <formulas>
-        <name>costLitFormula</name>
+        <name>costLitigationFormula</name>
         <dataType>Boolean</dataType>
-        <expression>if({!costLit}&gt;0.00,True,False)</expression>
-    </formulas>
-    <formulas>
-        <name>currentDate</name>
-        <dataType>String</dataType>
-        <expression>TEXT(TODAY())</expression>
+        <expression>if({!costLitigation}&gt;0.00,True,False)</expression>
     </formulas>
     <formulas>
         <name>daysAdd14</name>
@@ -293,7 +220,7 @@
     <formulas>
         <name>vatFormula</name>
         <dataType>Number</dataType>
-        <expression>{!costAdm}*0.2</expression>
+        <expression>{!costAdministration}*0.2</expression>
         <scale>2</scale>
     </formulas>
     <interviewLabel>Accruals - Estates Acct &amp; Interest Calc (ACCEA) {!$Flow.CurrentDateTime}</interviewLabel>
@@ -321,7 +248,7 @@
         <name>Create_history_record</name>
         <label>Create history record</label>
         <locationX>314</locationX>
-        <locationY>1082</locationY>
+        <locationY>1190</locationY>
         <assignRecordIdToReference>historyRecordId</assignRecordIdToReference>
         <connector>
             <targetReference>Create_task_record</targetReference>
@@ -345,9 +272,9 @@
             </value>
         </inputAssignments>
         <inputAssignments>
-            <field>Date_Inserted_Time__c</field>
+            <field>Date_Inserted__c</field>
             <value>
-                <elementReference>$Flow.CurrentDateTime</elementReference>
+                <elementReference>$Flow.CurrentDate</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -362,11 +289,11 @@
         <name>Create_task_record</name>
         <label>Create task record</label>
         <locationX>314</locationX>
-        <locationY>1190</locationY>
+        <locationY>1298</locationY>
         <inputAssignments>
             <field>Assigned_To__c</field>
             <value>
-                <elementReference>caseOfficer</elementReference>
+                <elementReference>$User.Id</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -376,15 +303,27 @@
             </value>
         </inputAssignments>
         <inputAssignments>
-            <field>Date_Inserted_Time__c</field>
+            <field>Date_Inserted__c</field>
             <value>
-                <elementReference>$Flow.CurrentDateTime</elementReference>
+                <elementReference>$Flow.CurrentDate</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
             <field>Due_Date__c</field>
             <value>
                 <elementReference>daysAdd14</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Last_updated__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Name</field>
+            <value>
+                <stringValue>Interest Calculation Received?</stringValue>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -398,12 +337,12 @@
     </recordCreates>
     <recordLookups>
         <name>Get_case</name>
-        <label>Get case</label>
+        <label>Get BV Case</label>
         <locationX>314</locationX>
-        <locationY>242</locationY>
+        <locationY>866</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Get_user</targetReference>
+            <targetReference>Get_User</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -415,11 +354,7 @@
         </filters>
         <object>BV_Case__c</object>
         <outputAssignments>
-            <assignToReference>caseOfficer</assignToReference>
-            <field>Case_Officer__c</field>
-        </outputAssignments>
-        <outputAssignments>
-            <assignToReference>costCon</assignToReference>
+            <assignToReference>costConveyancing</assignToReference>
             <field>Conveyancing_Costs__c</field>
         </outputAssignments>
         <outputAssignments>
@@ -427,7 +362,7 @@
             <field>Forenames__c</field>
         </outputAssignments>
         <outputAssignments>
-            <assignToReference>costLit</assignToReference>
+            <assignToReference>costLitigation</assignToReference>
             <field>Litigation_Costs_Inc_Vat__c</field>
         </outputAssignments>
         <outputAssignments>
@@ -439,18 +374,18 @@
             <field>Surname__c</field>
         </outputAssignments>
         <outputAssignments>
-            <assignToReference>costAdm</assignToReference>
+            <assignToReference>costAdministration</assignToReference>
             <field>Total_Administration_Costs__c</field>
         </outputAssignments>
     </recordLookups>
     <recordLookups>
-        <name>Get_user</name>
-        <label>Get user</label>
+        <name>Get_User</name>
+        <label>Get User</label>
         <locationX>314</locationX>
-        <locationY>350</locationY>
+        <locationY>974</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Was_a_Certainty_Will_search_completed2</targetReference>
+            <targetReference>Store_field_values</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -470,12 +405,12 @@
         <name>Copy_1_of_Enter_date_from_which_interest_is_payable</name>
         <label>Copy 1 of Enter date from which interest is payable</label>
         <locationX>314</locationX>
-        <locationY>674</locationY>
+        <locationY>458</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Store_field_values_for_no_outcome</targetReference>
+            <targetReference>Store_field_values_for_No_outcome</targetReference>
         </connector>
         <fields>
             <name>Copy_1_of_Enter_date_from_which_interest_is_payable2</name>
@@ -491,7 +426,7 @@
         <name>Copy_1_of_You_must_calculate_costs_or_ensure_details_entered_on_costs_screen_bef</name>
         <label>Copy 1 of You must calculate costs or ensure details entered on costs screen before producing this document</label>
         <locationX>314</locationX>
-        <locationY>566</locationY>
+        <locationY>350</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -513,12 +448,12 @@
         <name>Enter_date_from_which_interest_is_payable1</name>
         <label>Enter date from which interest is payable</label>
         <locationX>50</locationX>
-        <locationY>782</locationY>
+        <locationY>566</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Store_field_values_for_yes_outcome</targetReference>
+            <targetReference>Store_field_values_for_Yes_outcome</targetReference>
         </connector>
         <fields>
             <name>Enter_date_from_which_interest_is_payable2</name>
@@ -534,7 +469,7 @@
         <name>Enter_date_of_Certainty_search</name>
         <label>Enter date of Certainty search</label>
         <locationX>50</locationX>
-        <locationY>566</locationY>
+        <locationY>350</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -560,7 +495,7 @@
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Get_case</targetReference>
+            <targetReference>Was_a_Certainty_Will_search_completed2</targetReference>
         </connector>
         <fields>
             <name>Was_a_Certainty_Will_search_completed1</name>
@@ -578,7 +513,7 @@
         <name>You_must_calculate_costs_or_ensure_details_entered_on_costs_screen_before_produc</name>
         <label>You must calculate costs or ensure details entered on costs screen before producing this document</label>
         <locationX>50</locationX>
-        <locationY>674</locationY>
+        <locationY>458</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -612,13 +547,6 @@
         <isOutput>false</isOutput>
     </variables>
     <variables>
-        <name>caseOfficer</name>
-        <dataType>String</dataType>
-        <isCollection>false</isCollection>
-        <isInput>false</isInput>
-        <isOutput>false</isOutput>
-    </variables>
-    <variables>
         <name>caseReference</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
@@ -633,7 +561,7 @@
         <isOutput>false</isOutput>
     </variables>
     <variables>
-        <name>costAdm</name>
+        <name>costAdministration</name>
         <dataType>Number</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
@@ -641,7 +569,7 @@
         <scale>2</scale>
     </variables>
     <variables>
-        <name>costCon</name>
+        <name>costConveyancing</name>
         <dataType>Number</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
@@ -649,12 +577,22 @@
         <scale>2</scale>
     </variables>
     <variables>
-        <name>costLit</name>
+        <name>costLitigation</name>
         <dataType>Number</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
         <isOutput>false</isOutput>
         <scale>2</scale>
+    </variables>
+    <variables>
+        <name>currentDate</name>
+        <dataType>Date</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <value>
+            <elementReference>$Flow.CurrentDate</elementReference>
+        </value>
     </variables>
     <variables>
         <name>historyRecordId</name>

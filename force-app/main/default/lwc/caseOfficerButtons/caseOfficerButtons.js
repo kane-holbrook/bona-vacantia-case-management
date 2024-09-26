@@ -370,7 +370,7 @@ export default class CaseOfficerButtons extends LightningElement {
                 <p>${this.currentUserFullName || 'FOI Team'}</p>
             `,
             Subject: `New FOI Request Assigned - BVFOI/${this.foiNo} - ${this.applicant}`,
-            ToAddress: caseOfficerName, // Assuming the case officer name is their email address
+            //ToAddress: caseOfficerName, // Assuming the case officer name is their email address
             CcAddress: 'BVFOI@governmentlegal.gov.uk'
         });
     }

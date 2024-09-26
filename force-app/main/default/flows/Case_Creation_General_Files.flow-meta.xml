@@ -5,7 +5,7 @@
         <name>Assign_disclosure_date</name>
         <label>Assign disclosure date</label>
         <locationX>182</locationX>
-        <locationY>350</locationY>
+        <locationY>458</locationY>
         <assignmentItems>
             <assignToReference>AssignDisclosureDate</assignToReference>
             <operator>Assign</operator>
@@ -1242,7 +1242,7 @@
         <name>Method_of_Disclosure_Choice_General</name>
         <label>Method of Disclosure Choice</label>
         <locationX>182</locationX>
-        <locationY>566</locationY>
+        <locationY>674</locationY>
         <defaultConnector>
             <targetReference>Informant_General_Screen</targetReference>
         </defaultConnector>
@@ -1392,29 +1392,43 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
     </processMetadataValues>
     <processType>Flow</processType>
     <recordCreates>
+        <name>Create_Case_Officer_Record</name>
+        <label>Create Case Officer Record</label>
+        <locationX>182</locationX>
+        <locationY>1406</locationY>
+        <inputAssignments>
+            <field>BV_Case__c</field>
+            <value>
+                <elementReference>Create_General_Records</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Current_Officer__c</field>
+            <value>
+                <elementReference>Enter_name_of_officer_General.newCaseOfficer</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>RecordTypeId</field>
+            <value>
+                <elementReference>CaseDetailCaseOfficerRecordTypeId</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Case_Detail__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordCreates>
         <name>Create_General_Records</name>
         <label>Create General Records</label>
         <locationX>182</locationX>
-        <locationY>1298</locationY>
+        <locationY>1190</locationY>
         <connector>
             <targetReference>Add_Documents</targetReference>
         </connector>
         <inputAssignments>
-            <field>Allocation_Date__c</field>
-            <value>
-                <elementReference>Allocated_Date_General</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
             <field>Case_Officer__c</field>
             <value>
-                <elementReference>Case_Officer_General</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Case_Type__c</field>
-            <value>
-                <elementReference>Case_Type_General</elementReference>
+                <elementReference>Enter_name_of_officer_General.newCaseOfficer</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -1424,27 +1438,9 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             </value>
         </inputAssignments>
         <inputAssignments>
-            <field>Date_Case_Opened__c</field>
-            <value>
-                <elementReference>Opened_Date_General</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
             <field>Date_Disclosed__c</field>
             <value>
                 <elementReference>Informant_Date_Disclosed_General</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Date_of_Death_or_Dissolution__c</field>
-            <value>
-                <elementReference>Date_of_Death_Dissolution_General</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Former_Ref__c</field>
-            <value>
-                <elementReference>Former_Ref_General</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -1526,39 +1522,9 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             </value>
         </inputAssignments>
         <inputAssignments>
-            <field>Key_Name__c</field>
-            <value>
-                <elementReference>Key_Name_General</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Last_Action_Date__c</field>
-            <value>
-                <elementReference>Last_Action_Date_General</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Last_Action__c</field>
-            <value>
-                <elementReference>Last_Action_General</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
             <field>Method__c</field>
             <value>
                 <elementReference>Method_of_Disclosure_General</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Name_of_file__c</field>
-            <value>
-                <elementReference>Name_of_File_General</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Other_Information__c</field>
-            <value>
-                <elementReference>Other_Information_General</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -1583,6 +1549,29 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordCreates>
     <recordLookups>
+        <name>Get_Case_Officer_RecordTypeId</name>
+        <label>Get Case Officer RecordTypeId</label>
+        <locationX>182</locationX>
+        <locationY>242</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Enter_Disclosure_Date_General_Screen</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Record_Type_Dev_Name__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Officer_History</stringValue>
+            </value>
+        </filters>
+        <object>Case_Detail__c</object>
+        <outputAssignments>
+            <assignToReference>CaseDetailCaseOfficerRecordTypeId</assignToReference>
+            <field>RecordTypeId</field>
+        </outputAssignments>
+    </recordLookups>
+    <recordLookups>
         <description>Same as Get BV Case RecordTypeId</description>
         <name>Get_General_RecordTypeId</name>
         <label>Get General RecordTypeId</label>
@@ -1590,7 +1579,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Enter_Disclosure_Date_General_Screen</targetReference>
+            <targetReference>Get_Case_Officer_RecordTypeId</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -1610,10 +1599,13 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <name>Add_Documents</name>
         <label>Add Documents</label>
         <locationX>182</locationX>
-        <locationY>1406</locationY>
+        <locationY>1298</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Create_Case_Officer_Record</targetReference>
+        </connector>
         <fields>
             <name>fileupload</name>
             <extensionName>c:fileUpload</extensionName>
@@ -1632,160 +1624,10 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <showHeader>true</showHeader>
     </screens>
     <screens>
-        <name>Case_Summary_General</name>
-        <label>Case Summary</label>
-        <locationX>182</locationX>
-        <locationY>1190</locationY>
-        <allowBack>true</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
-        <connector>
-            <targetReference>Create_General_Records</targetReference>
-        </connector>
-        <fields>
-            <name>Key_Name_General</name>
-            <dataType>String</dataType>
-            <fieldText>Key Name</fieldText>
-            <fieldType>InputField</fieldType>
-            <isRequired>true</isRequired>
-        </fields>
-        <fields>
-            <name>Case_Summary_General_Section1</name>
-            <fieldType>RegionContainer</fieldType>
-            <fields>
-                <name>Case_Summary_General_Section1_Column1</name>
-                <fieldType>Region</fieldType>
-                <fields>
-                    <name>Case_Type_General</name>
-                    <dataType>String</dataType>
-                    <defaultValue>
-                        <elementReference>General</elementReference>
-                    </defaultValue>
-                    <fieldText>Case Type</fieldText>
-                    <fieldType>InputField</fieldType>
-                    <isDisabled>
-                        <booleanValue>true</booleanValue>
-                    </isDisabled>
-                    <isRequired>false</isRequired>
-                </fields>
-                <fields>
-                    <name>Case_Officer_General</name>
-                    <dataType>String</dataType>
-                    <defaultValue>
-                        <elementReference>Enter_name_of_officer_General.newCaseOfficer</elementReference>
-                    </defaultValue>
-                    <fieldText>Case Officer</fieldText>
-                    <fieldType>InputField</fieldType>
-                    <isDisabled>
-                        <booleanValue>true</booleanValue>
-                    </isDisabled>
-                    <isRequired>false</isRequired>
-                </fields>
-                <fields>
-                    <name>Former_Ref_General</name>
-                    <dataType>String</dataType>
-                    <fieldText>Former Ref</fieldText>
-                    <fieldType>InputField</fieldType>
-                    <isRequired>false</isRequired>
-                </fields>
-                <inputParameters>
-                    <name>width</name>
-                    <value>
-                        <stringValue>9</stringValue>
-                    </value>
-                </inputParameters>
-                <isRequired>false</isRequired>
-            </fields>
-            <fields>
-                <name>Case_Summary_General_Section1_Column2</name>
-                <fieldType>Region</fieldType>
-                <fields>
-                    <name>Opened_Date_General</name>
-                    <dataType>Date</dataType>
-                    <defaultValue>
-                        <elementReference>TodayFormula</elementReference>
-                    </defaultValue>
-                    <fieldText>Opened Date</fieldText>
-                    <fieldType>InputField</fieldType>
-                    <isDisabled>
-                        <booleanValue>true</booleanValue>
-                    </isDisabled>
-                    <isRequired>false</isRequired>
-                </fields>
-                <fields>
-                    <name>Allocated_Date_General</name>
-                    <dataType>Date</dataType>
-                    <defaultValue>
-                        <elementReference>TodayFormula</elementReference>
-                    </defaultValue>
-                    <fieldText>Allocated Date</fieldText>
-                    <fieldType>InputField</fieldType>
-                    <isDisabled>
-                        <booleanValue>true</booleanValue>
-                    </isDisabled>
-                    <isRequired>false</isRequired>
-                </fields>
-                <inputParameters>
-                    <name>width</name>
-                    <value>
-                        <stringValue>3</stringValue>
-                    </value>
-                </inputParameters>
-                <isRequired>false</isRequired>
-            </fields>
-            <isRequired>false</isRequired>
-            <regionContainerType>SectionWithoutHeader</regionContainerType>
-        </fields>
-        <fields>
-            <name>Case_Summary_General_Section2</name>
-            <fieldType>RegionContainer</fieldType>
-            <fields>
-                <name>Case_Summary_General_Section2_Column1</name>
-                <fieldType>Region</fieldType>
-                <fields>
-                    <name>Last_Action_General</name>
-                    <dataType>String</dataType>
-                    <fieldText>Last Action</fieldText>
-                    <fieldType>InputField</fieldType>
-                    <isRequired>false</isRequired>
-                </fields>
-                <inputParameters>
-                    <name>width</name>
-                    <value>
-                        <stringValue>9</stringValue>
-                    </value>
-                </inputParameters>
-                <isRequired>false</isRequired>
-            </fields>
-            <fields>
-                <name>Case_Summary_General_Section2_Column2</name>
-                <fieldType>Region</fieldType>
-                <fields>
-                    <name>Last_Action_Date_General</name>
-                    <dataType>Date</dataType>
-                    <fieldText>Last Action Date</fieldText>
-                    <fieldType>InputField</fieldType>
-                    <isRequired>false</isRequired>
-                </fields>
-                <inputParameters>
-                    <name>width</name>
-                    <value>
-                        <stringValue>3</stringValue>
-                    </value>
-                </inputParameters>
-                <isRequired>false</isRequired>
-            </fields>
-            <isRequired>false</isRequired>
-            <regionContainerType>SectionWithoutHeader</regionContainerType>
-        </fields>
-        <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
-    </screens>
-    <screens>
         <name>Enter_Disclosure_Date_General_Screen</name>
         <label>Enter Disclosure Date</label>
         <locationX>182</locationX>
-        <locationY>242</locationY>
+        <locationY>350</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1806,7 +1648,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <name>Enter_name_of_Officer_General_Screen</name>
         <label>Enter name of Officer</label>
         <locationX>50</locationX>
-        <locationY>674</locationY>
+        <locationY>782</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1825,8 +1667,8 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <showHeader>true</showHeader>
     </screens>
     <screens>
-        <name>General_File_Details_Screen</name>
-        <label>General File Details</label>
+        <name>Informant_General_Screen</name>
+        <label>Informant</label>
         <locationX>182</locationX>
         <locationY>974</locationY>
         <allowBack>true</allowBack>
@@ -1834,41 +1676,6 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <allowPause>true</allowPause>
         <connector>
             <targetReference>Review_and_Confirm</targetReference>
-        </connector>
-        <fields>
-            <name>Name_of_File_General</name>
-            <dataType>String</dataType>
-            <fieldText>Name of File</fieldText>
-            <fieldType>InputField</fieldType>
-            <isRequired>false</isRequired>
-        </fields>
-        <fields>
-            <name>Date_of_Death_Dissolution_General</name>
-            <dataType>Date</dataType>
-            <fieldText>Date of Death / Dissolution</fieldText>
-            <fieldType>InputField</fieldType>
-            <isRequired>false</isRequired>
-        </fields>
-        <fields>
-            <name>Other_Information_General</name>
-            <dataType>String</dataType>
-            <fieldText>Other Information</fieldText>
-            <fieldType>InputField</fieldType>
-            <isRequired>false</isRequired>
-        </fields>
-        <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
-    </screens>
-    <screens>
-        <name>Informant_General_Screen</name>
-        <label>Informant</label>
-        <locationX>182</locationX>
-        <locationY>866</locationY>
-        <allowBack>true</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
-        <connector>
-            <targetReference>General_File_Details_Screen</targetReference>
         </connector>
         <fields>
             <name>Informant_General_Screen_Section1</name>
@@ -2073,7 +1880,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <name>Method_of_Disclosure_General_Screen</name>
         <label>Method of Disclosure</label>
         <locationX>182</locationX>
-        <locationY>458</locationY>
+        <locationY>566</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -2084,7 +1891,6 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             <name>Method_of_Disclosure_General</name>
             <choiceReferences>Letter</choiceReferences>
             <choiceReferences>BV_Officer</choiceReferences>
-            <choiceReferences>Docket_Book</choiceReferences>
             <dataType>String</dataType>
             <fieldText>Method of Disclosure</fieldText>
             <fieldType>DropdownBox</fieldType>
@@ -2102,7 +1908,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Case_Summary_General</targetReference>
+            <targetReference>Create_General_Records</targetReference>
         </connector>
         <fields>
             <name>Disclosure_Details</name>
@@ -2137,29 +1943,6 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                 <fields>
                     <name>DT_ID</name>
                     <fieldText>&lt;p&gt;&lt;strong&gt;Informant Name&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Informant_General}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Informant Address&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Informant_Address_Line_1_General}&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;{!Informant_Address_Line_2_General}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;{!Informant_Address_Line_3_General}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;{!Informant_Address_Line_4_General}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;{!Informant_Postcode_General}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Informant Contact Name&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Informant_Contact_Name_General}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Informant Type&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Informant_Type_General}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Informant &lt;/strong&gt;&lt;strong&gt;Reference&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Informant_Ref_General}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Informant Salutation&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Informant_Salutation_General}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Informant Telephone&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Telephone_informant_field}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Informant Mobile Number&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Mobile_informant_field}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Informant Fax Number&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Informant_Fax_Number_General}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Informant Email&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Informant_Email_Address_General}&lt;/p&gt;</fieldText>
-                    <fieldType>DisplayText</fieldType>
-                </fields>
-                <inputParameters>
-                    <name>width</name>
-                    <value>
-                        <stringValue>12</stringValue>
-                    </value>
-                </inputParameters>
-                <isRequired>false</isRequired>
-            </fields>
-            <isRequired>false</isRequired>
-            <regionContainerType>SectionWithHeader</regionContainerType>
-        </fields>
-        <fields>
-            <name>File_Details</name>
-            <fieldText>File Details</fieldText>
-            <fieldType>RegionContainer</fieldType>
-            <fields>
-                <name>File_Details_Column1</name>
-                <fieldType>Region</fieldType>
-                <fields>
-                    <name>File_Details_DT</name>
-                    <fieldText>&lt;p&gt;&lt;strong&gt;Name of File&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Name_of_File_General}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Date of Death / Dissolution&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Date_of_Death_Dissolution_General}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Other Information&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Other_Information_General}&lt;/p&gt;</fieldText>
                     <fieldType>DisplayText</fieldType>
                 </fields>
                 <inputParameters>
