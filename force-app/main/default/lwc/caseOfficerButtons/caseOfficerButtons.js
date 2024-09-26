@@ -506,7 +506,7 @@ export default class CaseOfficerButtons extends LightningElement {
                     })
                 );
                 // Dispatch the caseofficersaved event
-                this.dispatchEvent(new CustomEvent('caseofficersaved', {
+                this.dispatchEvent(new CustomEvent('flowfinished', {
                     detail: { recordId: this.recordId },
                     bubbles: true,
                     composed: true
@@ -621,6 +621,12 @@ export default class CaseOfficerButtons extends LightningElement {
             if (modalToClose) {
                 this[modalToClose] = false;
             }
+
+            // Dispatch a custom event to refresh the Case Officer History
+            this.dispatchEvent(new CustomEvent('flowfinished', {
+                bubbles: true,
+                composed: true
+            }));
         }
     }
 
@@ -635,7 +641,7 @@ export default class CaseOfficerButtons extends LightningElement {
         }
     
         let emailBody = '';
-
+    
         let replyDue = new Date(this.replyDue).toLocaleDateString('en-GB');
     
         if (flowOutput['requireCaroline'] === 'No') {
