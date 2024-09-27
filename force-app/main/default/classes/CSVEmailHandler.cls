@@ -590,6 +590,7 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
         assetLiability.Balance__c = cashBalance;
         assetLiability.Bank__c = bankName;
         assetLiability.Spreadsheet_Number__c = spreadsheetNumber;
+        assetLiability.Electronic_Referral__c = true;
 
         RecordType assetRecordType = [
         SELECT Id 
