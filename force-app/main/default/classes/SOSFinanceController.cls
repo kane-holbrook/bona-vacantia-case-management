@@ -54,7 +54,15 @@ public class SOSFinanceController
         public integer PERIOD { get; set; }
         public boolean POSTED { get; set; } 
         public string YEAR { get; set; }
-        
+    }
+
+    public class NewSOSCase
+    {
+        public string CLCODE { get; set; }
+        public string MATTERTYPE { get; set; }
+        public string MTCODE { get; set; }
+        public string REF { get; set; }
+        public string DESCRIPTION { get; set; }
     }
     
     public Response PostSlipResponse { get; set; }
@@ -235,6 +243,46 @@ public class SOSFinanceController
         
         if (res.getStatusCode() == 200) {
             System.debug('Posted slip');
+            return res.getBody();
+        } else {
+            System.debug('HTTP Request failed with status code: ' + res.getStatusCode() + ' ' + res.getBody());
+            return 'Error: ' + res.getStatusCode() + ' ' + res.getBody();
+        }
+    }
+
+    @AuraEnabled(cacheable=false)
+    public static String createNewSOSCase(String mtcode) {
+        // Create a new Response object for the API call
+        NewSOSCase r = new NewSOSCase();
+        
+        // Set the mtcode from the parameter
+        r.MtCode = mtcode;
+        
+        // Hardcode all other values
+        r.CLCODE = 'joe00005';
+        r.MATTERTYPE = '606';
+        r.REF = 'REF12345';
+        r.DESCRIPTION = 'This is a test description for the matter';
+
+        // Prepare the HTTP request
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint(sosEndpoint);
+        req.setMethod('PUT');
+        req.setHeader('Content-Type', 'application/json');
+        
+        // Serialize the Response object to JSON
+        String jsonBody = JSON.serialize(r);
+        req.setBody(jsonBody);
+
+        System.debug(LoggingLevel.ERROR, 'REQUEST JSON: ' + jsonBody);
+        
+        // Send the HTTP request
+        Http http = new Http();
+        HttpResponse res = http.send(req);
+        
+        // Process the response
+        if (res.getStatusCode() == 200) {
+            System.debug('New SOS case created successfully');
             return res.getBody();
         } else {
             System.debug('HTTP Request failed with status code: ' + res.getStatusCode() + ' ' + res.getBody());
