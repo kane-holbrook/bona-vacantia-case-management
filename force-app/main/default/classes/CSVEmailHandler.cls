@@ -171,6 +171,7 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
                 }
 
                 caseRecord.RecordTypeId = compRecordType.Id;
+                caseRecord.Case_Type__c = 'H3 - Electronic Bulk Referral';
     
                 caseRecord.Company_No__c = padCompanyNumber(columns[0]);
                 caseRecord.Name = columns[3].toUpperCase(); 
@@ -353,7 +354,6 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
         }
     }
     
-
     // Fetch the company name
     private String fetchCompanyName(String companyNumber) {
         String companyName = '';
