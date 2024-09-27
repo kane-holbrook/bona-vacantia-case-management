@@ -1,4 +1,8 @@
 global class CSVEmailHandler implements Messaging.InboundEmailHandler {
+    String bankName = '';
+    Integer spreadsheetNumber = 0;
+    Decimal cashBalance = 0;
+
     global Messaging.InboundEmailResult handleInboundEmail(Messaging.InboundEmail email, Messaging.InboundEnvelope envelope) {
         Messaging.InboundEmailResult result = new Messaging.InboundEmailResult();
 
@@ -26,7 +30,7 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
         if (csvAttachment != null) {
             // Convert the CSV file content to a string
             String csvContent = csvAttachment.body.toString();
-            
+
             // Parse the CSV and create cases
             List<String> errorMessages = new List<String>();
             List<String> duplicateInCSV = new List<String>();  // Declare duplicateInCSV here
@@ -112,7 +116,7 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
                     // After insertion, create Case_History__c records for each case
                     for (BV_Case__c insertedCase : casesToInsert) {
                         createCaseHistoryForCase(insertedCase); // Create a Case History record for each case
-                        createBankBuildingSociety(insertedCase);
+                        createBankBuildingSociety(insertedCase, bankName, spreadsheetNumber);
                     }
                 }
 
@@ -136,6 +140,27 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
     private List<Map<String, Object>> parseCSV(String csvContent, List<String> errorMessages) {
         List<Map<String, Object>> cases = new List<Map<String, Object>>();
         List<String> csvLines = csvContent.split('\n');
+
+        String bankAndSpreadsheetLine = csvLines[0];
+        List<String> bankAndSpreadsheetColumns = parseCSVLine(bankAndSpreadsheetLine);
+
+        if (bankAndSpreadsheetColumns.size() != 2) {
+            errorMessages.add('First line of the CSV must contain exactly two values: Bank Name and Spreadsheet Number.');
+            return cases;
+        }
+
+        bankName = bankAndSpreadsheetColumns[0];
+        String spreadsheetNumberStr = bankAndSpreadsheetColumns[1].trim();
+
+        try {
+            spreadsheetNumber = Integer.valueOf(spreadsheetNumberStr);
+        } catch (Exception e) {
+            errorMessages.add('Spreadsheet number is not a valid integer: ' + spreadsheetNumberStr);
+            return cases;
+        }
+
+        // Remove the first two values (Bank Name/Spreadsheet Number line)
+        csvLines.remove(0); 
         
         if (csvLines.size() <= 1) {
             errorMessages.add('CSV does not contain any data rows after the header.');
@@ -209,7 +234,7 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
     
                 try {
                     String amountCollected = columns[5].trim().replace(',', '');
-                    caseRecord.Amount_Collected__c = Decimal.valueOf(amountCollected);
+                    cashBalance = Decimal.valueOf(amountCollected);
                 } catch (Exception e) {
                     errorMessages.add('Row ' + i + ': Error converting Amount_Collected__c to Decimal: ' + columns[5]);
                     isValid = false;
@@ -559,10 +584,12 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
         insert caseHistory; // Insert the Case History record
     }
 
-    private void createBankBuildingSociety(BV_Case__c caseRecord) {
+    private void createBankBuildingSociety(BV_Case__c caseRecord, String bankName, Integer spreadsheetNumber) {
         AssetLiability__c assetLiability = new AssetLiability__c();
         assetLiability.BV_Case__c = caseRecord.Id;
-        assetLiability.Balance__c = caseRecord.Amount_Collected__c;
+        assetLiability.Balance__c = cashBalance;
+        assetLiability.Bank__c = bankName;
+        assetLiability.Spreadsheet_Number__c = spreadsheetNumber;
 
         RecordType assetRecordType = [
         SELECT Id 
