@@ -5,7 +5,6 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
 
     global Messaging.InboundEmailResult handleInboundEmail(Messaging.InboundEmail email, Messaging.InboundEnvelope envelope) {
         Messaging.InboundEmailResult result = new Messaging.InboundEmailResult();
-        System.debug('result: ' + result);
 
         String allowedDomain = 'governmentlegal.gov.uk';
         String senderDomain = email.fromAddress.substring(email.fromAddress.indexOf('@') + 1);
@@ -481,7 +480,7 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
     // Send a jurisdiction email
     private void sendJurisdictionEmail(String toAddress, List<String> notInJurisdiction, List<String> consultFCo, List<String> acceptedCompanies, List<String> existingCasesList, List<String> duplicateInCSV, Boolean casesInserted) {
         String subject = 'CSV Jurisdiction Results';
-        String body = '<p>The CSV file has been processed. Please see the results below:</p>';
+        String body = '<p>The CSV file has been processed from the bank of ' + bankName + ' with spreadsheet number of ' + spreadsheetNumber + ' - Please see the results below:</p>';
     
         if (!acceptedCompanies.isEmpty()) {
             body += '<p><em>The following companies have been accepted and processed into cases:</em><br>' + formatLinesForEmail(acceptedCompanies) + '</p>';
