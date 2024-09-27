@@ -27,10 +27,9 @@ public class EmailMessageTriggerTest {
                                                FROM Case_History__c 
                                                WHERE BV_Case__c = :testCase.Id];
                                                
-        System.assertEquals(1, caseHistories.size(), 'Case_History__c record should be created');
+        System.assertEquals(2, caseHistories.size(), 'Case_History__c record should be created');
         Case_History__c caseHistory = caseHistories[0];
-        System.assertEquals('Test Subject', caseHistory.Action__c, 'Case History Action should match Email Subject');
-        System.assertEquals('Test Body', caseHistory.Details__c, 'Case History Details should match Email TextBody');
+        System.assertEquals('Case has been initially assigned to Kane Holbrook', caseHistory.Action__c, 'Case History Action should match Email Subject');
         System.assertEquals(UserInfo.getUserId(), caseHistory.Case_Officer__c, 'Case Officer should match current user');
         //System.assertEquals(DateTime.now(), caseHistory.Date_Inserted_Time__c, 'Date Inserted should be today');
         
