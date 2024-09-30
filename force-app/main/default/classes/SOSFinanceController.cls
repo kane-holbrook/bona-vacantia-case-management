@@ -58,11 +58,23 @@ public class SOSFinanceController
 
     public class NewSOSCase
     {
-        public string CLCODE { get; set; }
-        public string MATTERTYPE { get; set; }
-        public string MTCODE { get; set; }
-        public string REF { get; set; }
-        public string DESCRIPTION { get; set; }
+        public string mattertype { get; set; }
+        public string mtcode { get; set; }
+        public string ref { get; set; }
+        public string description { get; set; }
+        public string address_1 { get; set; }
+        public string address_2 { get; set; }
+        public string town { get; set; }
+        public string county { get; set; }
+        public string postcode { get; set; }
+        public string forename { get; set; }
+        public string name { get; set; }
+        public string pitype { get; set; }
+        public string clcode { get; set; }
+        public string clname { get; set; }
+        public string clbranch { get; set; }
+        public string cltype { get; set; }
+        public string testmtcode { get; set; }
     }
     
     public Response PostSlipResponse { get; set; }
@@ -243,6 +255,8 @@ public class SOSFinanceController
         
         if (res.getStatusCode() == 200) {
             System.debug('Posted slip');
+            String responseBody = res.getBody();
+            System.debug('RESPONSE BODY: ' + responseBody);
             return res.getBody();
         } else {
             System.debug('HTTP Request failed with status code: ' + res.getStatusCode() + ' ' + res.getBody());
@@ -259,10 +273,22 @@ public class SOSFinanceController
         r.MtCode = mtcode;
         
         // Hardcode all other values
-        r.CLCODE = 'joe00005';
-        r.MATTERTYPE = '606';
-        r.REF = 'REF12345';
-        r.DESCRIPTION = 'This is a test description for the matter';
+        r.mattertype = '606';
+        r.ref = 'REF12345';
+        r.description = 'This is a test description for the matter';
+        r.address_1 = 'address 1';
+        r.address_2 = 'address 2';
+        r.town = 'town name';
+        r.county = 'country';
+        r.postcode = 'PO5 3DA';
+        r.forename = 'forename';
+        r.name = 'Name';
+        r.pitype = 'OR';
+        r.clcode = '';
+        r.clname = 'CLName';
+        r.clbranch = '001';
+        r.cltype = 'P';
+        r.testmtcode = '21609809';
 
         // Prepare the HTTP request
         HttpRequest req = new HttpRequest();
