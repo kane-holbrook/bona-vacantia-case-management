@@ -157,6 +157,7 @@ public class SOSFinanceController
         HttpRequest req = new HttpRequest();
         req.setEndpoint(sosEndpoint + '/' + encoded); // Replace with your API endpoint URL
         req.setMethod('GET');
+        req.setTimeout(120000); // Set timeout to 120 seconds (2 minutes)
         
         Http http = new Http();
         HttpResponse res = http.send(req);
