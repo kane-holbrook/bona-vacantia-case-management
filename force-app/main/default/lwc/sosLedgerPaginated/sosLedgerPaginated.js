@@ -47,52 +47,56 @@ export default class SosLedger extends LightningElement {
 
     transformData(data) {
         // First, transform the dsaccledger data
-        let transformedData = data.dsaccledger.map(item => ({
-            datePosted: new Date(item['POST-DATE']).toLocaleDateString('en-GB', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit'
-            }),
-            status: (item['POST-TYPE'] === 'DR' || item['POST-TYPE'] === 'CR') ? 'Actioned' : 'Posted',
-            officeDebit: item['OFFICE-DEBIT'],
-            officeCredit: item['OFFICE-CREDIT'],
-            accrualsDebit: item['CLIENT-DEBIT'],
-            accrualsCredit: item['CLIENT-CREDIT'],
-            description: item['NARRATIVE']?.trim(),
-        }));
+        let transformedData = data.dsaccledger
+            .filter(item => !item['UNDONE']) // Filter out items where UNDONE is true
+            .map(item => ({
+                datePosted: new Date(item['POST-DATE']).toLocaleDateString('en-GB', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit'
+                }),
+                status: (item['POST-TYPE'] === 'DR' || item['POST-TYPE'] === 'CR') ? 'Actioned' : 'Posted',
+                officeDebit: item['OFFICE-DEBIT'],
+                officeCredit: item['OFFICE-CREDIT'],
+                accrualsDebit: item['CLIENT-DEBIT'],
+                accrualsCredit: item['CLIENT-CREDIT'],
+                description: item['NARRATIVE']?.trim(),
+            }));
     
         // Then, transform and merge the dsPostSlipCreate data
         if (data.dsPostSlipCreate) {
-            const postSlipData = data.dsPostSlipCreate.map(item => {
-                let accrualsDebit = item['DRCR'] === 'DR' ? item['NET'] : 0;
-                let accrualsCredit = item['DRCR'] === 'CR' ? item['NET'] : 0;
-                const narrative = item['NARRATIVE']?.trim();
-    
-                // Apply the necessary adjustments to the accrualsDebit and accrualsCredit values
-                if (narrative.startsWith('EA2') || narrative.startsWith('EA3') || narrative.startsWith('EA4') || narrative.startsWith('EA5')) {
-                    accrualsCredit = item['NET'];
-                    accrualsDebit = 0;
-                } else if (narrative.startsWith('EL1') || narrative.startsWith('EL2') || narrative.startsWith('EL3') || narrative.startsWith('EL4') || narrative.startsWith('EL5')) {
-                    accrualsDebit = item['NET'];
-                    accrualsCredit = 0;
-                } else if (narrative.startsWith('Reversal EA') || narrative.startsWith('Reversal EL')) {
-                    [accrualsDebit, accrualsCredit] = [accrualsCredit, accrualsDebit];
-                }
-    
-                return {
-                    datePosted: new Date(item['DATE-CREATED']).toLocaleDateString('en-GB', {
-                        year: 'numeric',
-                        month: '2-digit',
-                        day: '2-digit'
-                    }),
-                    status: item['DRCR'] === 'DR' || item['DRCR'] === 'CR' ? 'Actioned' : 'Posted',
-                    officeDebit: 0,
-                    officeCredit: 0,
-                    accrualsDebit,
-                    accrualsCredit,
-                    description: narrative,
-                };
-            });
+            const postSlipData = data.dsPostSlipCreate
+                .filter(item => !item['UNDONE']) // Filter out items where UNDONE is true
+                .map(item => {
+                    let accrualsDebit = item['DRCR'] === 'DR' ? item['NET'] : 0;
+                    let accrualsCredit = item['DRCR'] === 'CR' ? item['NET'] : 0;
+                    const narrative = item['NARRATIVE']?.trim();
+        
+                    // Apply the necessary adjustments to the accrualsDebit and accrualsCredit values
+                    if (narrative.startsWith('EA2') || narrative.startsWith('EA3') || narrative.startsWith('EA4') || narrative.startsWith('EA5')) {
+                        accrualsCredit = item['NET'];
+                        accrualsDebit = 0;
+                    } else if (narrative.startsWith('EL1') || narrative.startsWith('EL2') || narrative.startsWith('EL3') || narrative.startsWith('EL4') || narrative.startsWith('EL5')) {
+                        accrualsDebit = item['NET'];
+                        accrualsCredit = 0;
+                    } else if (narrative.startsWith('Reversal EA') || narrative.startsWith('Reversal EL')) {
+                        [accrualsDebit, accrualsCredit] = [accrualsCredit, accrualsDebit];
+                    }
+        
+                    return {
+                        datePosted: new Date(item['DATE-CREATED']).toLocaleDateString('en-GB', {
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit'
+                        }),
+                        status: item['DRCR'] === 'DR' || item['DRCR'] === 'CR' ? 'Actioned' : 'Posted',
+                        officeDebit: 0,
+                        officeCredit: 0,
+                        accrualsDebit,
+                        accrualsCredit,
+                        description: narrative,
+                    };
+                });
     
             // Merge the two datasets
             transformedData = [...transformedData, ...postSlipData];
@@ -122,6 +126,7 @@ export default class SosLedger extends LightningElement {
         this.isLoading = true;
         getSOSData({ mtcode: this.bvCaseName })
             .then(result => {
+                console.log('Result:', result);
                 this.data = this.transformData(result);
                 this.filteredData = [...this.data];
                 this.isLoading = false;
@@ -311,7 +316,6 @@ export default class SosLedger extends LightningElement {
         })
         .then(result => {
             console.log('Reversal Success:', result);
-            window.location.reload();
         })
         .catch(error => {
             console.error('Reversal Error:', error);
