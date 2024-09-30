@@ -36,24 +36,25 @@ public class SOSFinanceController
 
     public class Response
     {
-        public string MtCode { get; set; }
         public boolean Errored { get; set; }
         public string ErrorMessage { get; set; }
         
-        public string BANK { get; set; } 
-        public string NET { get; set; }
-        public boolean CPD { get; set; } 
-        public string REFERENCE { get; set; }
-        public string BRANCH { get; set; }
-        public string DESCRIPTION { get; set; }
-        public string DRCR { get; set; }
-        public string INSTRUCTION { get; set; }
-        public string NARRATIVE { get; set; }
-        public string NOTES { get; set; }
-        public string PAYEE { get; set; }
-        public integer PERIOD { get; set; }
-        public boolean POSTED { get; set; } 
-        public string YEAR { get; set; }
+        public string mtcode { get; set; }
+        public string bank { get; set; } 
+        public string branch { get; set; }
+        public string drcr { get; set; } 
+        public string narrative { get; set; }
+        public decimal net { get; set; }
+        public string notes { get; set; }
+        public string payee { get; set; }
+        public string reference { get; set; }
+        public string fee_earner { get; set; }
+        public string nl_code { get; set; }
+        public string contra_code { get; set; }
+        public string post_type { get; set; }
+        public string user_id { get; set; } 
+        public string vat_code { get; set; }
+        public decimal vat_val { get; set; }
     }
 
     public class NewSOSCase
@@ -185,21 +186,22 @@ public class SOSFinanceController
         mtcode = MtCode.replace('_', '/');
 
         Response r = new Response();
-        r.MtCode = mtcode;
-        r.BANK = '01';
-        r.NET = Net;
-        r.CPD = false;
-        r.REFERENCE = Reference;
-        r.BRANCH = 'Test';
-        r.DESCRIPTION = 'Credit';
-        r.DRCR = Type;
-        r.INSTRUCTION = 'Test Instruction';
-        r.NARRATIVE = Narrative;
-        r.NOTES = 'Test Notes';
-        r.PAYEE = 'Test Payee';
-        r.PERIOD = 32;
-        r.POSTED = false;
-        r.YEAR = '2024';
+        r.mtcode = mtcode;
+        r.bank = '01';
+        r.branch = '001';
+        r.drcr = Type;
+        r.narrative = Narrative;
+        r.net = Decimal.valueOf(Net);
+        r.notes = 'Test Notes';
+        r.payee = 'Test Payee';
+        r.reference = Reference;
+        r.fee_earner = 'VM';
+        r.nl_code = '';
+        r.contra_code = '';
+        r.post_type = '01';
+        r.user_id = 'ISHELP';
+        r.vat_code = '';
+        r.vat_val = 300.00;
 
         String jsonString = JSON.serialize(r);
         req.setHeader('Content-Type', 'application/json');
@@ -229,21 +231,22 @@ public class SOSFinanceController
         mtcode = MtCode.replace('_', '/');
 
         Response r = new Response();
-        r.MtCode = mtcode;
-        r.BANK = '01';
-        r.NET = Net;
-        r.CPD = false;
-        r.REFERENCE = Reference;
-        r.BRANCH = 'Test';
-        r.DESCRIPTION = 'Credit';
-        r.DRCR = Type;
-        r.INSTRUCTION = 'Test Instruction';
-        r.NARRATIVE = 'Reversal of ' + Narrative;
-        r.NOTES = 'Test Notes';
-        r.PAYEE = 'Test Payee';
-        r.PERIOD = 32;
-        r.POSTED = false;
-        r.YEAR = '2024';
+        r.mtcode = mtcode;
+        r.bank = '01';
+        r.branch = '001';
+        r.drcr = Type;
+        r.narrative = 'Reversal ' + Narrative;
+        r.net = Decimal.valueOf(Net);
+        r.notes = 'Reversal of accrual';
+        r.payee = 'Reversal';
+        r.reference = 'Rev-' + Reference;
+        r.fee_earner = 'VM';
+        r.nl_code = '';
+        r.contra_code = '';
+        r.post_type = '01';
+        r.user_id = 'ISHELP';
+        r.vat_code = '';
+        r.vat_val = 0.00;
 
         String jsonString = JSON.serialize(r);
         req.setHeader('Content-Type', 'application/json');
