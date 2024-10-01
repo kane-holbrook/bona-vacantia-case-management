@@ -274,7 +274,7 @@ public class SOSFinanceController
         NewSOSCase r = new NewSOSCase();
         
         // Set the mtcode from the parameter
-        r.MtCode = mtcode;
+        r.mtcode = mtcode;
         
         // Hardcode all other values
         r.mattertype = '606';
@@ -318,6 +318,48 @@ public class SOSFinanceController
             System.debug('HTTP Request failed with status code: ' + res.getStatusCode() + ' ' + res.getBody());
             return 'Error: ' + res.getStatusCode() + ' ' + res.getBody();
         }
+    }
+
+    @InvocableMethod(label='Check Ledger Balance' description='Checks if officeDebit and accrualsDebit total to 0')
+    public static List<Boolean> checkTotalsZero(List<String> mtcodes) {
+        List<Boolean> results = new List<Boolean>();
+        
+        for (String mtcode : mtcodes) {
+            // Convert _ to /
+            mtcode = mtcode.replace('_', '/');
+
+            // Fetch the SOS data for the given mtcode
+            Map<String, Object> sosData = getSOSData(mtcode);
+
+            // Initialize variables to store the totals
+            Decimal officeTotal = 0;
+            Decimal accrualsTotal = 0;
+
+            // Calculate the officeTotal and accrualsTotal
+            if (sosData != null && sosData.containsKey('dsaccledger')) {
+                List<Object> ledgerData = (List<Object>)sosData.get('dsaccledger');
+                for (Object ledgerEntry : ledgerData) {
+                    Map<String, Object> entry = (Map<String, Object>)ledgerEntry;
+                    if (entry.containsKey('OFFICE-DEBIT')) {
+                        officeTotal += (Decimal)entry.get('OFFICE-DEBIT');
+                    }
+                    if (entry.containsKey('OFFICE-CREDIT')) {
+                        officeTotal -= (Decimal)entry.get('OFFICE-CREDIT');
+                    }
+                    if (entry.containsKey('CLIENT-DEBIT')) {
+                        accrualsTotal += (Decimal)entry.get('CLIENT-DEBIT');
+                    }
+                    if (entry.containsKey('CLIENT-CREDIT')) {
+                        accrualsTotal -= (Decimal)entry.get('CLIENT-CREDIT');
+                    }
+                }
+            }
+
+            // Check if both officeTotal and accrualsTotal are equal to 0
+            results.add(officeTotal == 0 && accrualsTotal == 0);
+        }
+
+        return results;
     }
 
     public void veryTemporaryTest(){
