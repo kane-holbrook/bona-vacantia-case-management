@@ -182,6 +182,7 @@ public class SOSFinanceController
         HttpRequest req = new HttpRequest();
         req.setEndpoint(sosEndpoint); // Replace with your API endpoint URL
         req.setMethod('POST');
+        req.setTimeout(120000);
 
         mtcode = MtCode.replace('_', '/');
 
@@ -201,7 +202,7 @@ public class SOSFinanceController
         r.post_type = '01';
         r.user_id = 'ISHELP';
         r.vat_code = '';
-        r.vat_val = 300.00;
+        r.vat_val = 0.00;
 
         String jsonString = JSON.serialize(r);
         req.setHeader('Content-Type', 'application/json');
