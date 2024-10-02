@@ -193,9 +193,9 @@ public class SOSFinanceController
         r.drcr = Type;
         r.narrative = Narrative;
         r.net = Decimal.valueOf(Net);
-        r.notes = 'Test Notes';
-        r.payee = 'Test Payee';
-        r.reference = Reference;
+        r.notes = '';
+        r.payee = '';
+        r.reference = '';
         r.fee_earner = 'VM';
         r.nl_code = '';
         r.contra_code = '';
@@ -238,9 +238,9 @@ public class SOSFinanceController
         r.drcr = Type;
         r.narrative = 'Reversal ' + Narrative;
         r.net = Decimal.valueOf(Net);
-        r.notes = 'Reversal of accrual';
-        r.payee = 'Reversal';
-        r.reference = 'Rev-' + Reference;
+        r.notes = '';
+        r.payee = '';
+        r.reference = '';
         r.fee_earner = 'VM';
         r.nl_code = '';
         r.contra_code = '';
