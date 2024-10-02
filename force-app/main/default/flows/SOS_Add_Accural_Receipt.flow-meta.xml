@@ -20,7 +20,7 @@
     <assignments>
         <name>Assign_Address_Property</name>
         <label>Assign Address</label>
-        <locationX>446</locationX>
+        <locationX>578</locationX>
         <locationY>674</locationY>
         <assignmentItems>
             <assignToReference>AddressType</assignToReference>
@@ -49,7 +49,7 @@
     <assignments>
         <name>Assign_Asset_Type</name>
         <label>Assign Asset Type</label>
-        <locationX>842</locationX>
+        <locationX>1018</locationX>
         <locationY>890</locationY>
         <assignmentItems>
             <assignToReference>AssetType</assignToReference>
@@ -59,13 +59,13 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Amount_to_receive_cash</targetReference>
+            <targetReference>Assign_Details</targetReference>
         </connector>
     </assignments>
     <assignments>
         <name>Assign_Asset_Type_2</name>
         <label>Assign Asset Type</label>
-        <locationX>1106</locationX>
+        <locationX>1282</locationX>
         <locationY>890</locationY>
         <assignmentItems>
             <assignToReference>AssetType</assignToReference>
@@ -75,13 +75,13 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Amount_to_receive_cash</targetReference>
+            <targetReference>Copy_2_of_Assign_Details</targetReference>
         </connector>
     </assignments>
     <assignments>
         <name>Assign_Asset_Type_3</name>
         <label>Assign Asset Type</label>
-        <locationX>1370</locationX>
+        <locationX>1546</locationX>
         <locationY>890</locationY>
         <assignmentItems>
             <assignToReference>AssetType</assignToReference>
@@ -97,7 +97,7 @@
     <assignments>
         <name>Assign_Asset_Type_Vehicle</name>
         <label>Assign Asset Type</label>
-        <locationX>4978</locationX>
+        <locationX>5154</locationX>
         <locationY>674</locationY>
         <assignmentItems>
             <assignToReference>AssetType</assignToReference>
@@ -108,6 +108,22 @@
         </assignmentItems>
         <connector>
             <targetReference>Amount_to_receive_vehicle</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Assign_Details</name>
+        <label>Assign Details</label>
+        <locationX>1018</locationX>
+        <locationY>998</locationY>
+        <assignmentItems>
+            <assignToReference>DetailsType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Account_Number_bank</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Amount_to_receive_cash</targetReference>
         </connector>
     </assignments>
     <assignments>
@@ -123,13 +139,13 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>asdasd</targetReference>
+            <targetReference>Amount_to_receive_property</targetReference>
         </connector>
     </assignments>
     <assignments>
         <name>Assign_Receipt</name>
         <label>Assign Receipt</label>
-        <locationX>3174</locationX>
+        <locationX>3262</locationX>
         <locationY>242</locationY>
         <assignmentItems>
             <assignToReference>ReceiptType</assignToReference>
@@ -161,7 +177,7 @@
     <assignments>
         <name>Assign_Type_Stocks</name>
         <label>Assign Type</label>
-        <locationX>4186</locationX>
+        <locationX>4362</locationX>
         <locationY>458</locationY>
         <assignmentItems>
             <assignToReference>AssignmentType</assignToReference>
@@ -183,7 +199,7 @@
             <assignToReference>AssetType</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>Select_land_type</elementReference>
+                <stringValue>{!Select_land_type} land</stringValue>
             </value>
         </assignmentItems>
         <connector>
@@ -193,7 +209,7 @@
     <assignments>
         <name>Copy_10_of_Assign_Asset_Type</name>
         <label>Assign Asset Type</label>
-        <locationX>4538</locationX>
+        <locationX>4714</locationX>
         <locationY>890</locationY>
         <assignmentItems>
             <assignToReference>AssetType</assignToReference>
@@ -203,13 +219,13 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Amount_to_receive_stocks</targetReference>
+            <targetReference>Copy_3_of_Assign_Details</targetReference>
         </connector>
     </assignments>
     <assignments>
         <name>Copy_12_of_Assign_Asset_Type</name>
         <label>Assign Asset Type</label>
-        <locationX>5682</locationX>
+        <locationX>5858</locationX>
         <locationY>866</locationY>
         <assignmentItems>
             <assignToReference>AssetType</assignToReference>
@@ -225,8 +241,8 @@
     <assignments>
         <name>Copy_1_of_Assign_amount_received</name>
         <label>Assign amount received</label>
-        <locationX>446</locationX>
-        <locationY>1406</locationY>
+        <locationX>578</locationX>
+        <locationY>1298</locationY>
         <assignmentItems>
             <assignToReference>AmountReceived</assignToReference>
             <operator>Assign</operator>
@@ -238,7 +254,7 @@
     <assignments>
         <name>Copy_1_of_Assign_Asset_Type</name>
         <label>Assign Asset Type</label>
-        <locationX>2162</locationX>
+        <locationX>2338</locationX>
         <locationY>998</locationY>
         <assignmentItems>
             <assignToReference>AssetType</assignToReference>
@@ -252,9 +268,25 @@
         </connector>
     </assignments>
     <assignments>
+        <name>Copy_1_of_Assign_Details</name>
+        <label>Assign Details</label>
+        <locationX>1810</locationX>
+        <locationY>1106</locationY>
+        <assignmentItems>
+            <assignToReference>DetailsType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Account_Number_bank</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Amount_to_receive_cash</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
         <name>Copy_1_of_Assign_Type</name>
         <label>Assign Type</label>
-        <locationX>446</locationX>
+        <locationX>578</locationX>
         <locationY>458</locationY>
         <assignmentItems>
             <assignToReference>AssignmentType</assignToReference>
@@ -270,8 +302,8 @@
     <assignments>
         <name>Copy_2_of_Assign_amount_received</name>
         <label>Assign amount received</label>
-        <locationX>2118</locationX>
-        <locationY>1382</locationY>
+        <locationX>2294</locationX>
+        <locationY>1490</locationY>
         <assignmentItems>
             <assignToReference>AmountReceived</assignToReference>
             <operator>Assign</operator>
@@ -283,13 +315,29 @@
     <assignments>
         <name>Copy_2_of_Assign_Asset_Type</name>
         <label>Assign Asset Type</label>
-        <locationX>1634</locationX>
+        <locationX>1810</locationX>
         <locationY>998</locationY>
         <assignmentItems>
             <assignToReference>AssetType</assignToReference>
             <operator>Assign</operator>
             <value>
                 <stringValue>NSI Account</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Copy_1_of_Assign_Details</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Copy_2_of_Assign_Details</name>
+        <label>Assign Details</label>
+        <locationX>1282</locationX>
+        <locationY>998</locationY>
+        <assignmentItems>
+            <assignToReference>DetailsType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Reference_cash</elementReference>
             </value>
         </assignmentItems>
         <connector>
@@ -309,13 +357,13 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>asdasd</targetReference>
+            <targetReference>Amount_to_receive_property</targetReference>
         </connector>
     </assignments>
     <assignments>
         <name>Copy_2_of_Assign_Type</name>
         <label>Assign Type</label>
-        <locationX>2118</locationX>
+        <locationX>2294</locationX>
         <locationY>458</locationY>
         <assignmentItems>
             <assignToReference>AssignmentType</assignToReference>
@@ -331,7 +379,7 @@
     <assignments>
         <name>Copy_3_of_Assign_amount_received</name>
         <label>Assign amount received</label>
-        <locationX>5682</locationX>
+        <locationX>5858</locationX>
         <locationY>1082</locationY>
         <assignmentItems>
             <assignToReference>AmountReceived</assignToReference>
@@ -344,7 +392,7 @@
     <assignments>
         <name>Copy_3_of_Assign_Asset_Type</name>
         <label>Assign Asset Type</label>
-        <locationX>1898</locationX>
+        <locationX>2074</locationX>
         <locationY>998</locationY>
         <assignmentItems>
             <assignToReference>AssetType</assignToReference>
@@ -358,10 +406,26 @@
         </connector>
     </assignments>
     <assignments>
+        <name>Copy_3_of_Assign_Details</name>
+        <label>Assign Details</label>
+        <locationX>4714</locationX>
+        <locationY>998</locationY>
+        <assignmentItems>
+            <assignToReference>DetailsType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Reference_unit_trusts</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Amount_to_receive_stocks</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
         <name>Copy_4_of_Assign_amount_received</name>
         <label>Assign amount received</label>
-        <locationX>4186</locationX>
-        <locationY>1382</locationY>
+        <locationX>4362</locationX>
+        <locationY>1490</locationY>
         <assignmentItems>
             <assignToReference>AmountReceived</assignToReference>
             <operator>Assign</operator>
@@ -373,7 +437,7 @@
     <assignments>
         <name>Copy_4_of_Assign_Asset_Type</name>
         <label>Assign Asset Type</label>
-        <locationX>2602</locationX>
+        <locationX>2778</locationX>
         <locationY>890</locationY>
         <assignmentItems>
             <assignToReference>AssetType</assignToReference>
@@ -387,9 +451,25 @@
         </connector>
     </assignments>
     <assignments>
+        <name>Copy_4_of_Assign_Details</name>
+        <label>Assign Details</label>
+        <locationX>3306</locationX>
+        <locationY>998</locationY>
+        <assignmentItems>
+            <assignToReference>DetailsType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Enter_court_funds_account_number</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Amount_to_receive_cash</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
         <name>Copy_4_of_Assign_Type</name>
         <label>Assign Type</label>
-        <locationX>4978</locationX>
+        <locationX>5154</locationX>
         <locationY>458</locationY>
         <assignmentItems>
             <assignToReference>AssignmentType</assignToReference>
@@ -405,7 +485,7 @@
     <assignments>
         <name>Copy_5_of_Assign_amount_received</name>
         <label>Assign amount received</label>
-        <locationX>4978</locationX>
+        <locationX>5154</locationX>
         <locationY>890</locationY>
         <assignmentItems>
             <assignToReference>AmountReceived</assignToReference>
@@ -418,7 +498,7 @@
     <assignments>
         <name>Copy_5_of_Assign_Asset_Type</name>
         <label>Assign Asset Type</label>
-        <locationX>3834</locationX>
+        <locationX>4010</locationX>
         <locationY>998</locationY>
         <assignmentItems>
             <assignToReference>AssetType</assignToReference>
@@ -428,13 +508,29 @@
             </value>
         </assignmentItems>
         <connector>
+            <targetReference>Copy_5_of_Assign_Details</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Copy_5_of_Assign_Details</name>
+        <label>Assign Details</label>
+        <locationX>4274</locationX>
+        <locationY>1190</locationY>
+        <assignmentItems>
+            <assignToReference>DetailsType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Copy_1_of_Policy_No</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
             <targetReference>Amount_to_receive_stocks</targetReference>
         </connector>
     </assignments>
     <assignments>
         <name>Copy_5_of_Assign_Type</name>
         <label>Assign Type</label>
-        <locationX>5682</locationX>
+        <locationX>5858</locationX>
         <locationY>458</locationY>
         <assignmentItems>
             <assignToReference>AssignmentType</assignToReference>
@@ -450,7 +546,7 @@
     <assignments>
         <name>Copy_6_of_Assign_Asset_Type</name>
         <label>Assign Asset Type</label>
-        <locationX>3130</locationX>
+        <locationX>3306</locationX>
         <locationY>890</locationY>
         <assignmentItems>
             <assignToReference>AssetType</assignToReference>
@@ -460,13 +556,13 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Amount_to_receive_cash</targetReference>
+            <targetReference>Copy_4_of_Assign_Details</targetReference>
         </connector>
     </assignments>
     <assignments>
         <name>Copy_7_of_Assign_Asset_Type</name>
         <label>Assign Asset Type</label>
-        <locationX>2866</locationX>
+        <locationX>3042</locationX>
         <locationY>782</locationY>
         <assignmentItems>
             <assignToReference>AssetType</assignToReference>
@@ -482,7 +578,7 @@
     <assignments>
         <name>Copy_8_of_Assign_Asset_Type</name>
         <label>Assign Asset Type</label>
-        <locationX>3570</locationX>
+        <locationX>3746</locationX>
         <locationY>890</locationY>
         <assignmentItems>
             <assignToReference>AssetType</assignToReference>
@@ -498,7 +594,7 @@
     <assignments>
         <name>Copy_9_of_Assign_Asset_Type</name>
         <label>Assign Asset Type</label>
-        <locationX>4098</locationX>
+        <locationX>4274</locationX>
         <locationY>998</locationY>
         <assignmentItems>
             <assignToReference>AssetType</assignToReference>
@@ -508,7 +604,7 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Amount_to_receive_stocks</targetReference>
+            <targetReference>Copy_5_of_Assign_Details</targetReference>
         </connector>
     </assignments>
     <choices>
@@ -1132,7 +1228,7 @@
     <decisions>
         <name>Asset_type_Decision</name>
         <label>Asset type Decision</label>
-        <locationX>2118</locationX>
+        <locationX>2294</locationX>
         <locationY>674</locationY>
         <defaultConnector>
             <targetReference>Amount_to_receive_cash</targetReference>
@@ -1247,10 +1343,10 @@
     <decisions>
         <name>IP_Decision</name>
         <label>IP Decision</label>
-        <locationX>4098</locationX>
+        <locationX>4274</locationX>
         <locationY>890</locationY>
         <defaultConnector>
-            <targetReference>Amount_to_receive_stocks</targetReference>
+            <targetReference>Copy_5_of_Assign_Details</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
@@ -1287,10 +1383,10 @@
     <decisions>
         <name>is_mobile_home</name>
         <label>is mobile home?</label>
-        <locationX>446</locationX>
+        <locationX>578</locationX>
         <locationY>890</locationY>
         <defaultConnector>
-            <targetReference>Assign_Property_Type</targetReference>
+            <targetReference>Amount_to_receive_property</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
@@ -1308,11 +1404,33 @@
             </connector>
             <label>Yes - is Mobile Home</label>
         </rules>
+        <rules>
+            <name>No_is_not_mobile_home</name>
+            <conditionLogic>or</conditionLogic>
+            <conditions>
+                <leftValueReference>Property_type_options</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Leasehold</elementReference>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Property_type_options</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Freehold</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Assign_Property_Type</targetReference>
+            </connector>
+            <label>No - is not mobile home</label>
+        </rules>
     </decisions>
     <decisions>
         <name>NSI_Decision</name>
         <label>NSI Decision</label>
-        <locationX>2030</locationX>
+        <locationX>2206</locationX>
         <locationY>890</locationY>
         <defaultConnector>
             <targetReference>Amount_to_receive_cash</targetReference>
@@ -1367,7 +1485,7 @@
     <decisions>
         <name>Personal_Effects_Decision_1</name>
         <label>Personal Effects Decision</label>
-        <locationX>5682</locationX>
+        <locationX>5858</locationX>
         <locationY>674</locationY>
         <defaultConnector>
             <targetReference>Copy_12_of_Assign_Asset_Type</targetReference>
@@ -1452,7 +1570,7 @@
     <decisions>
         <name>Receipt_asset_type_Decision</name>
         <label>Receipt/asset type Decision</label>
-        <locationX>3174</locationX>
+        <locationX>3262</locationX>
         <locationY>350</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
@@ -1549,7 +1667,7 @@
     <decisions>
         <name>Stocks_asset_type_decision</name>
         <label>Stocks asset type decision</label>
-        <locationX>4186</locationX>
+        <locationX>4362</locationX>
         <locationY>674</locationY>
         <defaultConnector>
             <targetReference>Amount_to_receive_stocks</targetReference>
@@ -1660,8 +1778,8 @@
     <screens>
         <name>Amount_to_receive_cash</name>
         <label>Amount to receive</label>
-        <locationX>2118</locationX>
-        <locationY>1274</locationY>
+        <locationX>2294</locationX>
+        <locationY>1382</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1702,7 +1820,7 @@
     <screens>
         <name>Amount_to_receive_personal_effects</name>
         <label>Amount to receive</label>
-        <locationX>5682</locationX>
+        <locationX>5858</locationX>
         <locationY>974</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -1723,8 +1841,8 @@
     <screens>
         <name>Amount_to_receive_property</name>
         <label>Amount to receive</label>
-        <locationX>446</locationX>
-        <locationY>1298</locationY>
+        <locationX>578</locationX>
+        <locationY>1190</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1744,8 +1862,8 @@
     <screens>
         <name>Amount_to_receive_stocks</name>
         <label>Amount to receive</label>
-        <locationX>4186</locationX>
-        <locationY>1274</locationY>
+        <locationX>4362</locationX>
+        <locationY>1382</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1765,7 +1883,7 @@
     <screens>
         <name>Amount_to_receive_vehicle</name>
         <label>Amount to receive</label>
-        <locationX>4978</locationX>
+        <locationX>5154</locationX>
         <locationY>782</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -1784,28 +1902,9 @@
         <showHeader>true</showHeader>
     </screens>
     <screens>
-        <name>asdasd</name>
-        <label>asdasd</label>
-        <locationX>446</locationX>
-        <locationY>1190</locationY>
-        <allowBack>true</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
-        <connector>
-            <targetReference>Amount_to_receive_property</targetReference>
-        </connector>
-        <fields>
-            <name>asd</name>
-            <fieldText>&lt;p&gt;{!PropertyDescription}&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-        </fields>
-        <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
-    </screens>
-    <screens>
         <name>Asset_type</name>
         <label>Asset type</label>
-        <locationX>2118</locationX>
+        <locationX>2294</locationX>
         <locationY>566</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -1833,7 +1932,7 @@
     <screens>
         <name>asset_type_stocks</name>
         <label>Asset type stocks</label>
-        <locationX>4186</locationX>
+        <locationX>4362</locationX>
         <locationY>566</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -1858,7 +1957,7 @@
     <screens>
         <name>Bank_Building_Society</name>
         <label>Bank/Building Society</label>
-        <locationX>842</locationX>
+        <locationX>1018</locationX>
         <locationY>782</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -2006,7 +2105,7 @@
     <screens>
         <name>Cash_bank</name>
         <label>Cash</label>
-        <locationX>1106</locationX>
+        <locationX>1282</locationX>
         <locationY>782</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -2119,7 +2218,7 @@
     <screens>
         <name>Courts_Funds_account_number</name>
         <label>Courts Funds account number</label>
-        <locationX>3130</locationX>
+        <locationX>3306</locationX>
         <locationY>782</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -2140,7 +2239,7 @@
     <screens>
         <name>Insurance_Policy_Copy</name>
         <label>Insurance Policy</label>
-        <locationX>4098</locationX>
+        <locationX>4274</locationX>
         <locationY>782</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -2271,7 +2370,7 @@
     <screens>
         <name>NSI_asset_type</name>
         <label>NSI asset type</label>
-        <locationX>2030</locationX>
+        <locationX>2206</locationX>
         <locationY>782</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -2295,7 +2394,7 @@
     <screens>
         <name>Other_Pension</name>
         <label>Other Pension</label>
-        <locationX>1370</locationX>
+        <locationX>1546</locationX>
         <locationY>782</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -2387,7 +2486,7 @@
     <screens>
         <name>Personal_effects_asset_type</name>
         <label>Personal effects asset type</label>
-        <locationX>5682</locationX>
+        <locationX>5858</locationX>
         <locationY>566</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -2413,7 +2512,7 @@
     <screens>
         <name>Property_details</name>
         <label>Property details</label>
-        <locationX>446</locationX>
+        <locationX>578</locationX>
         <locationY>566</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -2471,7 +2570,7 @@
     <screens>
         <name>Property_type</name>
         <label>Property type</label>
-        <locationX>446</locationX>
+        <locationX>578</locationX>
         <locationY>782</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -2495,7 +2594,7 @@
     <screens>
         <name>Receipt_asset_type</name>
         <label>Receipt/asset type</label>
-        <locationX>3174</locationX>
+        <locationX>3262</locationX>
         <locationY>134</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -2522,7 +2621,7 @@
     <screens>
         <name>Stocks_Shares</name>
         <label>Stocks/Shares</label>
-        <locationX>3570</locationX>
+        <locationX>3746</locationX>
         <locationY>782</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -2659,7 +2758,7 @@
     <screens>
         <name>Unit_Trusts_PEPS</name>
         <label>Unit Trusts/PEPS</label>
-        <locationX>4538</locationX>
+        <locationX>4714</locationX>
         <locationY>782</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -2768,7 +2867,7 @@
     <screens>
         <name>Utility_Company</name>
         <label>Utility Company</label>
-        <locationX>2602</locationX>
+        <locationX>2778</locationX>
         <locationY>782</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -2789,7 +2888,7 @@
     <screens>
         <name>Vehicle_input</name>
         <label>Vehicle input</label>
-        <locationX>4978</locationX>
+        <locationX>5154</locationX>
         <locationY>566</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -2931,28 +3030,13 @@
         <showHeader>true</showHeader>
     </screens>
     <start>
-        <locationX>3048</locationX>
+        <locationX>3136</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Receipt_asset_type</targetReference>
         </connector>
     </start>
     <status>Active</status>
-    <textTemplates>
-        <name>CashAssetDescription</name>
-        <isViewedAsPlainText>false</isViewedAsPlainText>
-        <text>&lt;p&gt;{!AssignmentType} {!AssetType}&lt;/p&gt;</text>
-    </textTemplates>
-    <textTemplates>
-        <name>LandDescription</name>
-        <isViewedAsPlainText>false</isViewedAsPlainText>
-        <text>&lt;p&gt;{!AssignmentType} {!AssetType} land {!AddressType}&lt;/p&gt;</text>
-    </textTemplates>
-    <textTemplates>
-        <name>PropertyDescription</name>
-        <isViewedAsPlainText>false</isViewedAsPlainText>
-        <text>&lt;p&gt;{!AssignmentType} {!AssetType} {!AddressType}&lt;/p&gt;</text>
-    </textTemplates>
     <variables>
         <name>AddressType</name>
         <dataType>String</dataType>
@@ -2976,6 +3060,13 @@
     </variables>
     <variables>
         <name>AssignmentType</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>DetailsType</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
