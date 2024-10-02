@@ -62,6 +62,7 @@ export default class CaseOfficerButtons extends LightningElement {
     @track isILOApproveModalOpen = false;
     @track isHODApproveModalOpen = false;
     @track isChangeDisclaimerDateOpen = false;
+    @track isPutAwayModalOpen = false;
     @track recordTypeDeveloperName; // Holds the record type developer name
     @track isEstates = false;
     @track documentType; // Holds the document type for LM case review
@@ -302,6 +303,20 @@ export default class CaseOfficerButtons extends LightningElement {
                 }
             ];
             this.isHODApproveModalOpen = true;
+        } else if (actionName === 'Put away') {
+            this.flowInputs = [
+                {
+                    name: 'caseId',
+                    type: 'String',
+                    value: this.recordId
+                },
+                {
+                    name: 'caseName',
+                    type: 'String',
+                    value: this.bvCaseName
+                }
+            ];
+            this.isPutAwayModalOpen = true;
         }
     }
 
@@ -554,6 +569,10 @@ export default class CaseOfficerButtons extends LightningElement {
     closeHODApproveModal() {
         this.isHODApproveModalOpen = false;
     }
+
+    handlePutAwayClose() {
+        this.isPutAwayModalOpen = false;
+    }
     
     handleFlowStatusChange(event) {
         if (event.detail.status === 'FINISHED') {
@@ -581,6 +600,10 @@ export default class CaseOfficerButtons extends LightningElement {
                 case 'Generate_a_document':
                     message = 'Document generated successfully';
                     modalToClose = 'isFlowModalOpen';
+                    break;
+                case 'Put_Away_a_Case':
+                    message = 'Case put away successfully';
+                    modalToClose = 'isPutAwayModalOpen';
                     break;
                 case 'ILO_Approve':
                 message = 'ILO approval process completed successfully';

@@ -1,5 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Check_ledger_balance</name>
+        <label>Check ledger balance</label>
+        <locationX>754</locationX>
+        <locationY>134</locationY>
+        <actionName>SOSFinanceController</actionName>
+        <actionType>apex</actionType>
+        <connector>
+            <targetReference>Ledger_balance_decision</targetReference>
+        </connector>
+        <flowTransactionModel>Automatic</flowTransactionModel>
+        <inputParameters>
+            <name>mtcodes</name>
+            <value>
+                <elementReference>caseName</elementReference>
+            </value>
+        </inputParameters>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </actionCalls>
     <apiVersion>61.0</apiVersion>
     <choices>
         <name>A_SRA_Intestate</name>
@@ -170,6 +189,22 @@
         </value>
     </choices>
     <choices>
+        <name>No_balance_remains</name>
+        <choiceText>No</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>No</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>No_net_value_under</name>
+        <choiceText>No</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>No</stringValue>
+        </value>
+    </choices>
+    <choices>
         <name>None_of_the_above</name>
         <choiceText>None of the above</choiceText>
         <dataType>String</dataType>
@@ -273,7 +308,342 @@
             <stringValue>Yes</stringValue>
         </value>
     </choices>
+    <choices>
+        <name>Yes_balance_remains</name>
+        <choiceText>Yes</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Yes</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Yes_net_value_under</name>
+        <choiceText>Yes</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Yes</stringValue>
+        </value>
+    </choices>
+    <decisions>
+        <name>Balance_remains_include_in_the_unclaimed_list</name>
+        <label>Balance remains include in the unclaimed list?</label>
+        <locationX>1062</locationX>
+        <locationY>1514</locationY>
+        <defaultConnector>
+            <targetReference>Check_if_years_to_be_retained_is_30</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>No_balance_remains_decision</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Balance_remains_include_in_the_unclaimed_list_input</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>No_balance_remains</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Copy_1_of_Update_BV_Case</targetReference>
+            </connector>
+            <label>No balance remains</label>
+        </rules>
+        <rules>
+            <name>Yes_balance_remains_decision</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Balance_remains_include_in_the_unclaimed_list_input</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Yes_balance_remains</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Check_if_years_to_be_retained_is_30</targetReference>
+            </connector>
+            <label>Yes balance remains</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_HID04_Open_Closed</name>
+        <label>Check HID04 (Open/Closed)</label>
+        <locationX>446</locationX>
+        <locationY>3146</locationY>
+        <defaultConnector>
+            <targetReference>Update_BV_Case_2</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Open_Closed_is_Closed</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>hiddenScreenOpenClosedStatus</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Closed</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Update_BV_Case_2</targetReference>
+            </connector>
+            <label>Open/Closed is Closed</label>
+        </rules>
+        <rules>
+            <name>Open_Closed_is_Open</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>hiddenScreenOpenClosedStatus</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue>Closed</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Create_a_history_record</targetReference>
+            </connector>
+            <label>Open/Closed is Open</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_if_years_to_be_retained_is_30</name>
+        <label>Check if years to be retained is 30</label>
+        <locationX>754</locationX>
+        <locationY>1898</locationY>
+        <defaultConnector>
+            <targetReference>Copy_2_of_File_put_away_message</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Retained_years_is_30</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Please_record_years_to_be_retained_select</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>X30</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Check_the_ledger_confirmation</targetReference>
+            </connector>
+            <label>Retained years is 30</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Copy_1_of_Check_HID04_Open_Closed</name>
+        <label>Copy 1 of Check HID04 (Open/Closed)</label>
+        <locationX>1062</locationX>
+        <locationY>2222</locationY>
+        <defaultConnector>
+            <targetReference>Copy_4_of_Update_BV_Case</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Copy_1_of_Open_Closed_is_Closed</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>hiddenScreenOpenClosedStatus</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Closed</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Copy_4_of_Update_BV_Case</targetReference>
+            </connector>
+            <label>Copy 1 of Open/Closed is Closed</label>
+        </rules>
+        <rules>
+            <name>Copy_1_of_Open_Closed_is_Open</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>hiddenScreenOpenClosedStatus</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Open</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Copy_1_of_Create_a_history_record</targetReference>
+            </connector>
+            <label>Copy 1 of Open/Closed is Open</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Decide_which_field_to_update_based_on_type</name>
+        <label>Decide which field to update based on type</label>
+        <locationX>754</locationX>
+        <locationY>1298</locationY>
+        <defaultConnector>
+            <targetReference>Check_if_years_to_be_retained_is_30</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Kin</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Select_one_of_the_following</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Kin_located</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Update_BV_Case</targetReference>
+            </connector>
+            <label>Kin</label>
+        </rules>
+        <rules>
+            <name>Will</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Select_one_of_the_following</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Will_located</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Copy_2_of_Update_BV_Case</targetReference>
+            </connector>
+            <label>Will</label>
+        </rules>
+        <rules>
+            <name>Insolvent</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Select_one_of_the_following</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Insolvent_NI</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Copy_3_of_Update_BV_Case</targetReference>
+            </connector>
+            <label>Insolvent</label>
+        </rules>
+        <rules>
+            <name>Inheritance</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Select_one_of_the_following</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Inheritance_Act_claim</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Balance_remains</targetReference>
+            </connector>
+            <label>Inheritance</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>If_Case_type_starts_with_D3</name>
+        <label>If Case type starts with D3</label>
+        <locationX>446</locationX>
+        <locationY>2330</locationY>
+        <defaultConnector>
+            <targetReference>File_put_away_message</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Starts_with_D3</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>caseType</leftValueReference>
+                <operator>StartsWith</operator>
+                <rightValue>
+                    <stringValue>D3</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Net_value_of_the_estate_under_800</targetReference>
+            </connector>
+            <label>Starts with D3</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Ledger_balance_decision</name>
+        <label>Ledger balance decision</label>
+        <locationX>754</locationX>
+        <locationY>242</locationY>
+        <defaultConnector>
+            <targetReference>Get_BV_Case</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Ledger_balance_is_0</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Check_ledger_balance</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_BV_Case</targetReference>
+            </connector>
+            <label>Ledger balance is 0</label>
+        </rules>
+        <rules>
+            <name>Ledger_balance_is_not_0</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Check_ledger_balance</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Balance_Information</targetReference>
+            </connector>
+            <label>Ledger balance is not 0</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Net_value_of_the_estate_under_800_decision</name>
+        <label>Net value of the estate under £800</label>
+        <locationX>292</locationX>
+        <locationY>2546</locationY>
+        <defaultConnector>
+            <targetReference>File_put_away_message</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>It_is_under_800</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Is_the_net_value_of_the_estate_under_800</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Yes_net_value_under</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Set_Insolvent_to_yes</targetReference>
+            </connector>
+            <label>It is under £800</label>
+        </rules>
+    </decisions>
     <environments>Default</environments>
+    <formulas>
+        <name>destructionDateFormula</name>
+        <dataType>Date</dataType>
+        <expression>DATE(
+  YEAR(TODAY()) + VALUE({!Please_record_years_to_be_retained_select}),
+  MONTH(TODAY()),
+  DAY(TODAY())
+)</expression>
+    </formulas>
+    <formulas>
+        <name>LimitationDateFormula</name>
+        <dataType>Date</dataType>
+        <expression>ADDMONTHS({!Enter_the_last_transaction_date}, 12 * 12) - 1</expression>
+    </formulas>
     <interviewLabel>Put Away a Case {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Put Away a Case</label>
     <processMetadataValues>
@@ -295,11 +665,543 @@
         </value>
     </processMetadataValues>
     <processType>Flow</processType>
+    <recordCreates>
+        <name>Copy_1_of_Create_a_history_record</name>
+        <label>Copy 1 of Create a history record</label>
+        <locationX>1018</locationX>
+        <locationY>2330</locationY>
+        <connector>
+            <targetReference>Copy_1_of_Update_Case_Detail</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>Action__c</field>
+            <value>
+                <stringValue>Case Put Away</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Case_Officer__c</field>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Date_Inserted_Time__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Last_updated__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Case_History__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordCreates>
+        <name>Create_a_history_record</name>
+        <label>Create a history record</label>
+        <locationX>402</locationX>
+        <locationY>3254</locationY>
+        <connector>
+            <targetReference>Update_Case_Detail</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>Action__c</field>
+            <value>
+                <stringValue>Case Put Away</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>BV_Case__c</field>
+            <value>
+                <elementReference>caseId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Case_Officer__c</field>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Date_Inserted_Time__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Last_updated__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Case_History__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordLookups>
+        <name>Copy_1_of_Get_Case_Detail</name>
+        <label>Copy 1 of Get Case Detail</label>
+        <locationX>1062</locationX>
+        <locationY>2114</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Copy_1_of_Check_HID04_Open_Closed</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>BV_Case__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>caseId</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Record_Type_Dev_Name__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Officer_History</stringValue>
+            </value>
+        </filters>
+        <object>Case_Detail__c</object>
+        <outputAssignments>
+            <assignToReference>hiddenScreenOpenClosedStatus</assignToReference>
+            <field>Open_Closed__c</field>
+        </outputAssignments>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_BV_Case</name>
+        <label>Get BV Case</label>
+        <locationX>754</locationX>
+        <locationY>650</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Question</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>caseId</elementReference>
+            </value>
+        </filters>
+        <object>BV_Case__c</object>
+        <outputAssignments>
+            <assignToReference>caseType</assignToReference>
+            <field>Case_Type__c</field>
+        </outputAssignments>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Case_Detail</name>
+        <label>Get Case Detail</label>
+        <locationX>446</locationX>
+        <locationY>3038</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_HID04_Open_Closed</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>BV_Case__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>caseId</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Record_Type_Dev_Name__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Officer_History</stringValue>
+            </value>
+        </filters>
+        <object>Case_Detail__c</object>
+        <outputAssignments>
+            <assignToReference>hiddenScreenOpenClosedStatus</assignToReference>
+            <field>Open_Closed__c</field>
+        </outputAssignments>
+    </recordLookups>
+    <recordUpdates>
+        <name>Copy_1_of_Update_BV_Case</name>
+        <label>Update BV Case</label>
+        <locationX>842</locationX>
+        <locationY>1622</locationY>
+        <connector>
+            <targetReference>Check_if_years_to_be_retained_is_30</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>caseId</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Record_Type_Dev_Name__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Estates_Intestate_details</stringValue>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Insolvent__c</field>
+            <value>
+                <stringValue>Yes</stringValue>
+            </value>
+        </inputAssignments>
+        <object>BV_Case__c</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Copy_1_of_Update_Case_Detail</name>
+        <label>Copy 1 of Update Case Detail</label>
+        <locationX>1018</locationX>
+        <locationY>2438</locationY>
+        <connector>
+            <targetReference>Copy_4_of_Update_BV_Case</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>BV_Case__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>caseId</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Record_Type_Dev_Name__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Officer_History</stringValue>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Open_Closed__c</field>
+            <value>
+                <stringValue>Closed</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Put_Away__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Reopened__c</field>
+        </inputAssignments>
+        <object>Case_Detail__c</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Copy_2_of_Update_BV_Case</name>
+        <label>Update BV Case</label>
+        <locationX>314</locationX>
+        <locationY>1406</locationY>
+        <connector>
+            <targetReference>Check_if_years_to_be_retained_is_30</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>caseId</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Record_Type_Dev_Name__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Estates_Intestate_details</stringValue>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Will_Located__c</field>
+            <value>
+                <stringValue>Yes</stringValue>
+            </value>
+        </inputAssignments>
+        <object>BV_Case__c</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Copy_3_of_Update_BV_Case</name>
+        <label>Update BV Case</label>
+        <locationX>578</locationX>
+        <locationY>1406</locationY>
+        <connector>
+            <targetReference>Check_if_years_to_be_retained_is_30</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>caseId</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Record_Type_Dev_Name__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Estates_Intestate_details</stringValue>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Insolvent__c</field>
+            <value>
+                <stringValue>Yes</stringValue>
+            </value>
+        </inputAssignments>
+        <object>BV_Case__c</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Copy_4_of_Update_BV_Case</name>
+        <label>Copy 4 of Update BV Case</label>
+        <locationX>1062</locationX>
+        <locationY>2630</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>caseId</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Record_Type_Dev_Name__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Estates_Estates_Events</stringValue>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Date_Closed__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Destruction_Date__c</field>
+            <value>
+                <elementReference>destructionDateFormula</elementReference>
+            </value>
+        </inputAssignments>
+        <object>BV_Case__c</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Set_Insolvent_to_yes</name>
+        <label>Set Insolvent to yes</label>
+        <locationX>160</locationX>
+        <locationY>2654</locationY>
+        <connector>
+            <targetReference>File_put_away_message</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>caseId</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Record_Type_Dev_Name__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Estates_Intestate_details</stringValue>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Insolvent__c</field>
+            <value>
+                <stringValue>Yes</stringValue>
+            </value>
+        </inputAssignments>
+        <object>BV_Case__c</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Update_BV_Case</name>
+        <label>Update BV Case</label>
+        <locationX>50</locationX>
+        <locationY>1406</locationY>
+        <connector>
+            <targetReference>Check_if_years_to_be_retained_is_30</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>caseId</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Record_Type_Dev_Name__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Estates_Intestate_details</stringValue>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Kin_Located__c</field>
+            <value>
+                <stringValue>Yes</stringValue>
+            </value>
+        </inputAssignments>
+        <object>BV_Case__c</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Update_BV_Case_2</name>
+        <label>Update BV Case</label>
+        <locationX>446</locationX>
+        <locationY>3554</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>caseId</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Record_Type_Dev_Name__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Estates_Estates_Events</stringValue>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Date_Closed__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Destruction_Date__c</field>
+            <value>
+                <elementReference>destructionDateFormula</elementReference>
+            </value>
+        </inputAssignments>
+        <object>BV_Case__c</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Update_BV_Case_eev20</name>
+        <label>Update BV Case</label>
+        <locationX>446</locationX>
+        <locationY>2222</locationY>
+        <connector>
+            <targetReference>If_Case_type_starts_with_D3</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>caseId</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Record_Type_Dev_Name__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Estates_Estates_Events</stringValue>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Limitation_Date__c</field>
+            <value>
+                <elementReference>LimitationDateFormula</elementReference>
+            </value>
+        </inputAssignments>
+        <object>BV_Case__c</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Update_Case_Detail</name>
+        <label>Update Case Detail</label>
+        <locationX>402</locationX>
+        <locationY>3362</locationY>
+        <connector>
+            <targetReference>Update_BV_Case_2</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>BV_Case__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>caseId</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Record_Type_Dev_Name__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Officer_History</stringValue>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Open_Closed__c</field>
+            <value>
+                <stringValue>Closed</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Put_Away__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Reopened__c</field>
+        </inputAssignments>
+        <object>Case_Detail__c</object>
+    </recordUpdates>
+    <screens>
+        <name>Balance_Information</name>
+        <label>Balance Information</label>
+        <locationX>710</locationX>
+        <locationY>350</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>ledgerdisplay</name>
+            <fieldText>&lt;p&gt;SOS Ledger balance is not 0, cannot put away the case.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Balance_remains</name>
+        <label>Balance remains</label>
+        <locationX>1062</locationX>
+        <locationY>1406</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Balance_remains_include_in_the_unclaimed_list</targetReference>
+        </connector>
+        <fields>
+            <name>Balance_remains_include_in_the_unclaimed_list_input</name>
+            <choiceReferences>Yes_balance_remains</choiceReferences>
+            <choiceReferences>No_balance_remains</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Balance remains: include in the unclaimed list?</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
     <screens>
         <name>Case_Summary</name>
         <label>Case Summary</label>
-        <locationX>176</locationX>
-        <locationY>458</locationY>
+        <locationX>754</locationX>
+        <locationY>1082</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -331,6 +1233,9 @@
             <choiceReferences>C2_Net_Estate_over_15_000_n</choiceReferences>
             <choiceReferences>C4_Net_Estate_over_15_000_collection</choiceReferences>
             <dataType>String</dataType>
+            <defaultValue>
+                <elementReference>Case_Type</elementReference>
+            </defaultValue>
             <fieldText>Case Type</fieldText>
             <fieldType>DropdownBox</fieldType>
             <isRequired>false</isRequired>
@@ -339,10 +1244,54 @@
         <showHeader>true</showHeader>
     </screens>
     <screens>
+        <name>Check_the_ledger_confirmation</name>
+        <label>Check the ledger confirmation</label>
+        <locationX>446</locationX>
+        <locationY>2006</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Transaction_date_input</targetReference>
+        </connector>
+        <fields>
+            <name>Check_the_ledger_for_the_date_of_the_last_transaction</name>
+            <choiceReferences>Ok</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Check the ledger for the date of the last transaction</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Copy_2_of_File_put_away_message</name>
+        <label>Copy 2 of File put away message</label>
+        <locationX>1062</locationX>
+        <locationY>2006</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Copy_1_of_Get_Case_Detail</targetReference>
+        </connector>
+        <fields>
+            <name>Copy_2_of_File_has_now_been_Put_Away</name>
+            <choiceReferences>Ok</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>File has now been Put Away</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
         <name>Document_Production_Message</name>
         <label>Document Production Message</label>
-        <locationX>176</locationX>
-        <locationY>350</locationY>
+        <locationX>754</locationX>
+        <locationY>974</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -361,13 +1310,61 @@
         <showHeader>true</showHeader>
     </screens>
     <screens>
-        <name>Please_confirm_one_of_the_following</name>
-        <label>Please confirm one of the following:</label>
-        <locationX>176</locationX>
-        <locationY>566</locationY>
+        <name>File_put_away_message</name>
+        <label>File put away message</label>
+        <locationX>446</locationX>
+        <locationY>2930</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Get_Case_Detail</targetReference>
+        </connector>
+        <fields>
+            <name>File_has_now_been_Put_Away</name>
+            <choiceReferences>Ok</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>File has now been Put Away</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Net_value_of_the_estate_under_800</name>
+        <label>Net value of the estate under £800?</label>
+        <locationX>292</locationX>
+        <locationY>2438</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Net_value_of_the_estate_under_800_decision</targetReference>
+        </connector>
+        <fields>
+            <name>Is_the_net_value_of_the_estate_under_800</name>
+            <choiceReferences>Yes_net_value_under</choiceReferences>
+            <choiceReferences>No_net_value_under</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Is the net value of the estate under £800?</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Please_confirm_one_of_the_following</name>
+        <label>Please confirm one of the following:</label>
+        <locationX>754</locationX>
+        <locationY>1190</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Decide_which_field_to_update_based_on_type</targetReference>
+        </connector>
         <fields>
             <name>Select_one_of_the_following</name>
             <choiceReferences>Kin_located</choiceReferences>
@@ -386,8 +1383,8 @@
     <screens>
         <name>Please_record_years_to_be_retained</name>
         <label>Please record years to be retained</label>
-        <locationX>176</locationX>
-        <locationY>242</locationY>
+        <locationX>754</locationX>
+        <locationY>866</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -411,8 +1408,8 @@
     <screens>
         <name>Question</name>
         <label>Question</label>
-        <locationX>176</locationX>
-        <locationY>134</locationY>
+        <locationX>754</locationX>
+        <locationY>758</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -431,12 +1428,61 @@
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
+    <screens>
+        <name>Transaction_date_input</name>
+        <label>Transaction date input</label>
+        <locationX>446</locationX>
+        <locationY>2114</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Update_BV_Case_eev20</targetReference>
+        </connector>
+        <fields>
+            <name>Enter_the_last_transaction_date</name>
+            <dataType>Date</dataType>
+            <fieldText>Enter the last transaction date</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
     <start>
-        <locationX>50</locationX>
+        <locationX>628</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Question</targetReference>
+            <targetReference>Check_ledger_balance</targetReference>
         </connector>
     </start>
     <status>Draft</status>
+    <variables>
+        <name>caseId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>caseName</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>caseType</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>hiddenScreenOpenClosedStatus</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
 </Flow>
