@@ -55,13 +55,16 @@ export default class SosCreateAccrual extends LightningElement {
     createAccrual(flowOutput) {
         // Construct the narrative (AssignmentType + AssetType + AddressType)
         let narrative = flowOutput.AssignmentType + ' ' + flowOutput.AssetType + ' ' + flowOutput.AddressType;
+
+        // If ReceiptType is "ARE2", then Type is "CR", otherwise Type is "DR"
+        let type = flowOutput.ReceiptType === 'ARE2' ? 'CR' : 'DR';
         
         createAccrual({
             MtCode: this.caseNumber,
             Net: flowOutput.AmountReceived,
             Narrative: narrative,
             Reference: 'Test reference',
-            Type: 'CR'
+            Type: type
         })
         .then(result => {
             console.log('Accrual created successfully:', result);
