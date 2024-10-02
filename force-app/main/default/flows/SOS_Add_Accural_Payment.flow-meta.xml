@@ -1,6 +1,678 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>62.0</apiVersion>
+    <assignments>
+        <name>Assign_Amount_Received</name>
+        <label>Assign Amount Received</label>
+        <locationX>446</locationX>
+        <locationY>1298</locationY>
+        <assignmentItems>
+            <assignToReference>AmountReceived</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Enter_amount_you_expect_to_pay_utility</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <assignments>
+        <name>Assign_asset</name>
+        <label>Assign asset</label>
+        <locationX>50</locationX>
+        <locationY>890</locationY>
+        <assignmentItems>
+            <assignToReference>AssetType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>{!Telephone_service_provider} account no.</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Assign_Details</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Assign_Costs</name>
+        <label>Assign Costs</label>
+        <locationX>1810</locationX>
+        <locationY>998</locationY>
+        <assignmentItems>
+            <assignToReference>CostsType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Who_are_the_admin_costs_due_to_E_g_local_authority</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Copy_1_of_Assign_asset</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Assign_Details</name>
+        <label>Assign Details</label>
+        <locationX>50</locationX>
+        <locationY>998</locationY>
+        <assignmentItems>
+            <assignToReference>DetailsType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Account_Number</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Amount_expect_to_pay_utility</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Assign_final_payment</name>
+        <label>Assign final payment</label>
+        <locationX>4186</locationX>
+        <locationY>1322</locationY>
+        <assignmentItems>
+            <assignToReference>Final_Payment</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Final_Payment_Amount_Formula</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <assignments>
+        <name>Assign_KinClaimCosts</name>
+        <label>Assign KinClaimCosts</label>
+        <locationX>4450</locationX>
+        <locationY>1322</locationY>
+        <assignmentItems>
+            <assignToReference>KinClaimCosts</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Enter_kin_claim_costs_NOT_including_VAT</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>KinClaimCosts</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Total_Kin_Claim_Costs_VAT_Formula</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Copy_2_of_Assign_final_payment</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Assign_Liability_Type</name>
+        <label>Assign Liability Type</label>
+        <locationX>2338</locationX>
+        <locationY>1106</locationY>
+        <assignmentItems>
+            <assignToReference>LiabilityType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Solicitors fees</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Copy_1_of_Assign_asset</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Assign_Net_Interest</name>
+        <label>Assign Net Interest</label>
+        <locationX>4450</locationX>
+        <locationY>890</locationY>
+        <assignmentItems>
+            <assignToReference>Net_Interest</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Net_Interest_Formula</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Kim_Claim_Deduction</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Assign_payment_type</name>
+        <label>Assign payment type</label>
+        <locationX>2976</locationX>
+        <locationY>242</locationY>
+        <assignmentItems>
+            <assignToReference>PaymentType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>APE1</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Debt_Liability_Payment_Type_Decision</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Assign_Type</name>
+        <label>Assign Type</label>
+        <locationX>446</locationX>
+        <locationY>458</locationY>
+        <assignmentItems>
+            <assignToReference>AssignmentType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>EL1</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Utility_Company_Payments</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Copy_1_of_Assign_Amount_Received</name>
+        <label>Assign Amount Received</label>
+        <locationX>2206</locationX>
+        <locationY>1514</locationY>
+        <assignmentItems>
+            <assignToReference>AmountReceived</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Enter_amount_you_expect_to_pay_admin_costs</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <assignments>
+        <name>Copy_1_of_Assign_asset</name>
+        <label>Assign asset</label>
+        <locationX>2206</locationX>
+        <locationY>1298</locationY>
+        <assignmentItems>
+            <assignToReference>AssetType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>{!LiabilityType} due to {!CostsType}</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Amount_expect_to_pay_admin_costs</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Copy_1_of_Assign_Costs</name>
+        <label>Assign Costs</label>
+        <locationX>2338</locationX>
+        <locationY>998</locationY>
+        <assignmentItems>
+            <assignToReference>CostsType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Enter_name_of_Solicitors</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Assign_Liability_Type</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Copy_1_of_Assign_Details</name>
+        <label>Assign Details</label>
+        <locationX>314</locationX>
+        <locationY>998</locationY>
+        <assignmentItems>
+            <assignToReference>DetailsType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Utility_Account_Number_water</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Amount_expect_to_pay_utility</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Copy_1_of_Assign_Liability_Type</name>
+        <label>Assign Liability Type</label>
+        <locationX>2206</locationX>
+        <locationY>674</locationY>
+        <assignmentItems>
+            <assignToReference>LiabilityType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Select_liability_type_admin_costs</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Liability_Type_Decision_admin</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Copy_1_of_Assign_Type</name>
+        <label>Assign Type</label>
+        <locationX>1282</locationX>
+        <locationY>458</locationY>
+        <assignmentItems>
+            <assignToReference>AssignmentType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>EL2</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Liability_type_funeral</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Copy_2_of_Assign_Amount_Received</name>
+        <label>Assign Amount Received</label>
+        <locationX>3042</locationX>
+        <locationY>1514</locationY>
+        <assignmentItems>
+            <assignToReference>AmountReceived</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Enter_amount_you_expect_to_pay_acc</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <assignments>
+        <name>Copy_2_of_Assign_asset</name>
+        <label>Assign asset</label>
+        <locationX>314</locationX>
+        <locationY>890</locationY>
+        <assignmentItems>
+            <assignToReference>AssetType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>{!Name_of_utility_company_water} bill</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Copy_1_of_Assign_Details</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Copy_2_of_Assign_Costs</name>
+        <label>Assign Costs</label>
+        <locationX>2074</locationX>
+        <locationY>998</locationY>
+        <assignmentItems>
+            <assignToReference>CostsType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Who_is_the_payment_due_to_admin_overpayment_tax</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Copy_1_of_Assign_asset</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Copy_2_of_Assign_final_payment</name>
+        <label>Assign final payment</label>
+        <locationX>4450</locationX>
+        <locationY>1430</locationY>
+        <assignmentItems>
+            <assignToReference>Final_Payment</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Final_Payment_Amount_Formula</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <assignments>
+        <name>Copy_2_of_Assign_KinClaimCosts</name>
+        <label>Assign KinClaimCosts</label>
+        <locationX>4186</locationX>
+        <locationY>1214</locationY>
+        <assignmentItems>
+            <assignToReference>KinClaimCosts</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <numberValue>150.0</numberValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>KinClaimCosts</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Total_Kin_Claim_Costs_VAT_Formula</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Assign_final_payment</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Copy_2_of_Assign_Liability_Type</name>
+        <label>Assign Liability Type</label>
+        <locationX>3746</locationX>
+        <locationY>674</locationY>
+        <assignmentItems>
+            <assignToReference>LiabilityType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Select_charge_type</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Charge_type_decision</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Copy_2_of_Assign_Type</name>
+        <label>Assign Type</label>
+        <locationX>3042</locationX>
+        <locationY>458</locationY>
+        <assignmentItems>
+            <assignToReference>AssignmentType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>EL3</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Liability_type_accommodation</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Copy_3_of_Assign_Amount_Received</name>
+        <label>Assign Amount Received</label>
+        <locationX>3746</locationX>
+        <locationY>1298</locationY>
+        <assignmentItems>
+            <assignToReference>AmountReceived</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Enter_amount_you_expect_to_pay_property_maintenance</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <assignments>
+        <name>Copy_3_of_Assign_asset</name>
+        <label>Assign asset</label>
+        <locationX>578</locationX>
+        <locationY>890</locationY>
+        <assignmentItems>
+            <assignToReference>AssetType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Council Tax due to {!Local_Authority}</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Amount_expect_to_pay_utility</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Copy_3_of_Assign_Costs</name>
+        <label>Assign Costs</label>
+        <locationX>2778</locationX>
+        <locationY>998</locationY>
+        <assignmentItems>
+            <assignToReference>CostsType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Enter_name_of_creditor_acc</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Copy_8_of_Assign_asset</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Copy_3_of_Assign_Details</name>
+        <label>Assign Details</label>
+        <locationX>3042</locationX>
+        <locationY>1106</locationY>
+        <assignmentItems>
+            <assignToReference>DetailsType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Reference_nursing</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Copy_8_of_Assign_asset</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Copy_3_of_Assign_Liability_Type</name>
+        <label>Assign Liability Type</label>
+        <locationX>3042</locationX>
+        <locationY>674</locationY>
+        <assignmentItems>
+            <assignToReference>LiabilityType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Select_liability_type_admin_costs</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Liability_Type_Decision</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Copy_3_of_Assign_Type</name>
+        <label>Assign Type</label>
+        <locationX>2206</locationX>
+        <locationY>458</locationY>
+        <assignmentItems>
+            <assignToReference>AssignmentType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>EL1</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Liability_type_admin_costs</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Copy_4_of_Assign_Amount_Received</name>
+        <label>Assign Amount Received</label>
+        <locationX>4978</locationX>
+        <locationY>998</locationY>
+        <assignmentItems>
+            <assignToReference>AmountReceived</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Enter_amount_you_expect_to_pay</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <assignments>
+        <name>Copy_4_of_Assign_asset</name>
+        <label>Assign asset</label>
+        <locationX>1018</locationX>
+        <locationY>890</locationY>
+        <assignmentItems>
+            <assignToReference>AssetType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Funeral Expenses due to {!Who_are_the_funeral_expenses_due_to_E_g_undertaker_local_authority_etc}</stringValue>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <assignments>
+        <name>Copy_4_of_Assign_Costs</name>
+        <label>Assign Costs</label>
+        <locationX>3042</locationX>
+        <locationY>998</locationY>
+        <assignmentItems>
+            <assignToReference>CostsType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Nursing_Home</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Copy_3_of_Assign_Details</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Copy_4_of_Assign_Type</name>
+        <label>Assign Type</label>
+        <locationX>5242</locationX>
+        <locationY>458</locationY>
+        <assignmentItems>
+            <assignToReference>AssignmentType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>EL1</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Description_of_payment</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Copy_5_of_Assign_Amount_Received</name>
+        <label>Assign Amount Received</label>
+        <locationX>5242</locationX>
+        <locationY>998</locationY>
+        <assignmentItems>
+            <assignToReference>AmountReceived</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Enter_amount_you_expect_to_pay_General</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <assignments>
+        <name>Copy_5_of_Assign_asset</name>
+        <label>Assign asset</label>
+        <locationX>1282</locationX>
+        <locationY>890</locationY>
+        <assignmentItems>
+            <assignToReference>AssetType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Memorial payment due to {!Who_is_the_memorial_payment_due_to_E_g_stonemason_care_home_etc}</stringValue>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <assignments>
+        <name>Copy_5_of_Assign_Costs</name>
+        <label>Assign Asset</label>
+        <locationX>3482</locationX>
+        <locationY>998</locationY>
+        <assignmentItems>
+            <assignToReference>AssetType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>{!LiabilityType} charges due on property at {!Address_Line_1_occupier}</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Amount_expect_to_pay_property_maintenance</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Copy_5_of_Assign_Type</name>
+        <label>Assign Type</label>
+        <locationX>3746</locationX>
+        <locationY>458</locationY>
+        <assignmentItems>
+            <assignToReference>AssignmentType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>EL3</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Charge_type</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Copy_6_of_Assign_Asset</name>
+        <label>Assign Asset</label>
+        <locationX>5242</locationX>
+        <locationY>782</locationY>
+        <assignmentItems>
+            <assignToReference>AssetType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>{!Enter_description_of_payment_e_g_out_of_pocket_expenses} due to {!Who_is_the_payment_due_to}</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Amount_expect_to_pay_general</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Copy_6_of_Assign_Costs</name>
+        <label>Assign Asset</label>
+        <locationX>3746</locationX>
+        <locationY>998</locationY>
+        <assignmentItems>
+            <assignToReference>AssetType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Landlord_Agent</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Amount_expect_to_pay_property_maintenance</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Copy_6_of_Assign_Type</name>
+        <label>Assign Type</label>
+        <locationX>4450</locationX>
+        <locationY>458</locationY>
+        <assignmentItems>
+            <assignToReference>AssignmentType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>EL4</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Estate_Account_Balance</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Copy_7_of_Assign_Asset</name>
+        <label>Assign Asset</label>
+        <locationX>4978</locationX>
+        <locationY>782</locationY>
+        <assignmentItems>
+            <assignToReference>AssetType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>{!Select_loan_type} due to {!Enter_name_of_creditor}</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Amount_expect_to_pay</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Copy_7_of_Assign_Type</name>
+        <label>Assign Type</label>
+        <locationX>4978</locationX>
+        <locationY>458</locationY>
+        <assignmentItems>
+            <assignToReference>AssignmentType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>EL5</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Loan_type</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Copy_8_of_Assign_asset</name>
+        <label>Assign asset</label>
+        <locationX>3042</locationX>
+        <locationY>1298</locationY>
+        <assignmentItems>
+            <assignToReference>AssetType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>{!LiabilityType} due to {!CostsType}</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Amount_expect_to_pay_acc</targetReference>
+        </connector>
+    </assignments>
     <choices>
         <name>Accommodation_Payments</name>
         <choiceText>Accommodation Payments</choiceText>
@@ -623,7 +1295,7 @@
         <name>Charge_type_decision</name>
         <label>Charge type decision</label>
         <locationX>3746</locationX>
-        <locationY>458</locationY>
+        <locationY>782</locationY>
         <defaultConnector>
             <targetReference>Amount_expect_to_pay_property_maintenance</targetReference>
         </defaultConnector>
@@ -670,7 +1342,7 @@
         <name>Debt_Liability_Payment_Type_Decision</name>
         <label>Debt/Liability/Payment Type Decision</label>
         <locationX>2976</locationX>
-        <locationY>242</locationY>
+        <locationY>350</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>Utility_Bill_Decision</name>
@@ -683,7 +1355,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Utility_Company_Payments</targetReference>
+                <targetReference>Assign_Type</targetReference>
             </connector>
             <label>Utility Bill</label>
         </rules>
@@ -698,7 +1370,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Liability_type_funeral</targetReference>
+                <targetReference>Copy_1_of_Assign_Type</targetReference>
             </connector>
             <label>Funeral</label>
         </rules>
@@ -713,7 +1385,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Liability_type_admin_costs</targetReference>
+                <targetReference>Copy_3_of_Assign_Type</targetReference>
             </connector>
             <label>Admin Costs/Pensions/Tax/Solicitors Fees</label>
         </rules>
@@ -728,7 +1400,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Liability_type_accommodation</targetReference>
+                <targetReference>Copy_2_of_Assign_Type</targetReference>
             </connector>
             <label>Accommodation Payments</label>
         </rules>
@@ -743,7 +1415,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Charge_type</targetReference>
+                <targetReference>Copy_5_of_Assign_Type</targetReference>
             </connector>
             <label>Property maintenance charges</label>
         </rules>
@@ -758,7 +1430,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Estate_Account_Balance</targetReference>
+                <targetReference>Copy_6_of_Assign_Type</targetReference>
             </connector>
             <label>Kin payment</label>
         </rules>
@@ -773,7 +1445,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Loan_type</targetReference>
+                <targetReference>Copy_7_of_Assign_Type</targetReference>
             </connector>
             <label>Secured loans</label>
         </rules>
@@ -788,7 +1460,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Description_of_payment</targetReference>
+                <targetReference>Copy_4_of_Assign_Type</targetReference>
             </connector>
             <label>General</label>
         </rules>
@@ -797,7 +1469,7 @@
         <name>Kim_Claim_Deduction_Decision</name>
         <label>Kim Claim Deduction Decision</label>
         <locationX>4450</locationX>
-        <locationY>782</locationY>
+        <locationY>1106</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>Yes_Deduct_Claim</name>
@@ -809,6 +1481,9 @@
                     <stringValue>Yes</stringValue>
                 </rightValue>
             </conditions>
+            <connector>
+                <targetReference>Copy_2_of_Assign_KinClaimCosts</targetReference>
+            </connector>
             <label>Yes</label>
         </rules>
         <rules>
@@ -831,9 +1506,9 @@
         <name>Liability_Type_Decision</name>
         <label>Liability Type Decision</label>
         <locationX>3042</locationX>
-        <locationY>458</locationY>
+        <locationY>782</locationY>
         <defaultConnector>
-            <targetReference>Amount_expect_to_pay_acc</targetReference>
+            <targetReference>Copy_8_of_Assign_asset</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
@@ -871,9 +1546,9 @@
         <name>Liability_Type_Decision_admin</name>
         <label>Liability Type Decision</label>
         <locationX>2206</locationX>
-        <locationY>458</locationY>
+        <locationY>782</locationY>
         <defaultConnector>
-            <targetReference>Amount_expect_to_pay_admin_costs</targetReference>
+            <targetReference>Copy_1_of_Assign_asset</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
@@ -947,7 +1622,7 @@
         <name>Liability_Type_decision_funeral</name>
         <label>Liability Type</label>
         <locationX>1282</locationX>
-        <locationY>458</locationY>
+        <locationY>674</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>Funeral_Expenses_decision</name>
@@ -984,7 +1659,7 @@
         <name>Utility_Company_Decision</name>
         <label>Utility Company Decision</label>
         <locationX>446</locationX>
-        <locationY>458</locationY>
+        <locationY>674</locationY>
         <defaultConnector>
             <targetReference>Amount_expect_to_pay_utility</targetReference>
         </defaultConnector>
@@ -1058,6 +1733,24 @@
     </decisions>
     <description>Subflow for the SOS Add Accural main flow</description>
     <environments>Default</environments>
+    <formulas>
+        <name>Final_Payment_Amount_Formula</name>
+        <dataType>Number</dataType>
+        <expression>{!Enter_balance_on_estate_account} + {!Net_Interest} - {!KinClaimCosts}</expression>
+        <scale>2</scale>
+    </formulas>
+    <formulas>
+        <name>Net_Interest_Formula</name>
+        <dataType>Number</dataType>
+        <expression>{!Enter_gross_interest} - {!Enter_tax_on_interest}</expression>
+        <scale>2</scale>
+    </formulas>
+    <formulas>
+        <name>Total_Kin_Claim_Costs_VAT_Formula</name>
+        <dataType>Number</dataType>
+        <expression>{!KinClaimCosts} / 100 * 120</expression>
+        <scale>2</scale>
+    </formulas>
     <interviewLabel>SOS Add Accural Payment {!$Flow.CurrentDateTime}</interviewLabel>
     <label>SOS Add Accural Payment</label>
     <processMetadataValues>
@@ -1083,12 +1776,12 @@
         <name>Admin_Costs_Due_To</name>
         <label>Admin Costs Due To</label>
         <locationX>1810</locationX>
-        <locationY>566</locationY>
+        <locationY>890</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Amount_expect_to_pay_admin_costs</targetReference>
+            <targetReference>Assign_Costs</targetReference>
         </connector>
         <fields>
             <name>Who_are_the_admin_costs_due_to_E_g_local_authority</name>
@@ -1104,17 +1797,19 @@
         <name>Amount_expect_to_pay</name>
         <label>Amount expect to pay</label>
         <locationX>4978</locationX>
-        <locationY>566</locationY>
+        <locationY>890</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Copy_4_of_Assign_Amount_Received</targetReference>
+        </connector>
         <fields>
             <name>Enter_amount_you_expect_to_pay</name>
-            <dataType>Number</dataType>
+            <dataType>String</dataType>
             <fieldText>Enter amount you expect to pay</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
-            <scale>2</scale>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
@@ -1123,17 +1818,19 @@
         <name>Amount_expect_to_pay_acc</name>
         <label>Amount expect to pay</label>
         <locationX>3042</locationX>
-        <locationY>758</locationY>
+        <locationY>1406</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Copy_2_of_Assign_Amount_Received</targetReference>
+        </connector>
         <fields>
             <name>Enter_amount_you_expect_to_pay_acc</name>
-            <dataType>Number</dataType>
+            <dataType>String</dataType>
             <fieldText>Enter amount you expect to pay</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
-            <scale>2</scale>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
@@ -1142,17 +1839,19 @@
         <name>Amount_expect_to_pay_admin_costs</name>
         <label>Amount expect to pay</label>
         <locationX>2206</locationX>
-        <locationY>758</locationY>
+        <locationY>1406</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Copy_1_of_Assign_Amount_Received</targetReference>
+        </connector>
         <fields>
             <name>Enter_amount_you_expect_to_pay_admin_costs</name>
-            <dataType>Number</dataType>
+            <dataType>String</dataType>
             <fieldText>Enter amount you expect to pay</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
-            <scale>2</scale>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
@@ -1161,17 +1860,19 @@
         <name>Amount_expect_to_pay_general</name>
         <label>Amount expect to pay</label>
         <locationX>5242</locationX>
-        <locationY>566</locationY>
+        <locationY>890</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Copy_5_of_Assign_Amount_Received</targetReference>
+        </connector>
         <fields>
-            <name>Copy_1_of_Enter_amount_you_expect_to_pay</name>
-            <dataType>Number</dataType>
+            <name>Enter_amount_you_expect_to_pay_General</name>
+            <dataType>String</dataType>
             <fieldText>Enter amount you expect to pay</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
-            <scale>2</scale>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
@@ -1180,17 +1881,19 @@
         <name>Amount_expect_to_pay_property_maintenance</name>
         <label>Amount expect to pay</label>
         <locationX>3746</locationX>
-        <locationY>758</locationY>
+        <locationY>1190</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Copy_3_of_Assign_Amount_Received</targetReference>
+        </connector>
         <fields>
             <name>Enter_amount_you_expect_to_pay_property_maintenance</name>
-            <dataType>Number</dataType>
+            <dataType>String</dataType>
             <fieldText>Enter amount you expect to pay</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
-            <scale>2</scale>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
@@ -1199,17 +1902,19 @@
         <name>Amount_expect_to_pay_utility</name>
         <label>Amount expect to pay</label>
         <locationX>446</locationX>
-        <locationY>758</locationY>
+        <locationY>1190</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Assign_Amount_Received</targetReference>
+        </connector>
         <fields>
             <name>Enter_amount_you_expect_to_pay_utility</name>
-            <dataType>Number</dataType>
+            <dataType>String</dataType>
             <fieldText>Enter amount you expect to pay</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
-            <scale>2</scale>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
@@ -1218,12 +1923,12 @@
         <name>Charge_type</name>
         <label>Charge type</label>
         <locationX>3746</locationX>
-        <locationY>350</locationY>
+        <locationY>566</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Charge_type_decision</targetReference>
+            <targetReference>Copy_2_of_Assign_Liability_Type</targetReference>
         </connector>
         <fields>
             <name>Select_charge_type</name>
@@ -1242,12 +1947,12 @@
         <name>Copy_1_of_Copy_1_of_Payment_due_to</name>
         <label>Payment due to</label>
         <locationX>2074</locationX>
-        <locationY>566</locationY>
+        <locationY>890</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Amount_expect_to_pay_admin_costs</targetReference>
+            <targetReference>Copy_2_of_Assign_Costs</targetReference>
         </connector>
         <fields>
             <name>Who_is_the_payment_due_to_admin_overpayment_tax</name>
@@ -1263,12 +1968,12 @@
         <name>Copy_3_of_Utility_Service</name>
         <label>Utility/Service</label>
         <locationX>314</locationX>
-        <locationY>566</locationY>
+        <locationY>782</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Amount_expect_to_pay_utility</targetReference>
+            <targetReference>Copy_2_of_Assign_asset</targetReference>
         </connector>
         <fields>
             <name>Name_of_utility_company_water</name>
@@ -1360,7 +2065,7 @@
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Debt_Liability_Payment_Type_Decision</targetReference>
+            <targetReference>Assign_payment_type</targetReference>
         </connector>
         <fields>
             <name>Select_debt_liability_payment_type</name>
@@ -1384,7 +2089,7 @@
         <name>Description_of_payment</name>
         <label>Description of payment</label>
         <locationX>5242</locationX>
-        <locationY>350</locationY>
+        <locationY>566</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1405,7 +2110,7 @@
         <name>Estate_Account_Balance</name>
         <label>Estate Account Balance</label>
         <locationX>4450</locationX>
-        <locationY>350</locationY>
+        <locationY>566</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1427,10 +2132,13 @@
         <name>Funeral_expenses_due_to</name>
         <label>Funeral expenses due to</label>
         <locationX>1018</locationX>
-        <locationY>566</locationY>
+        <locationY>782</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Copy_4_of_Assign_asset</targetReference>
+        </connector>
         <fields>
             <name>Who_are_the_funeral_expenses_due_to_E_g_undertaker_local_authority_etc</name>
             <dataType>String</dataType>
@@ -1445,7 +2153,7 @@
         <name>Gross_Interest</name>
         <label>Gross Interest</label>
         <locationX>4450</locationX>
-        <locationY>458</locationY>
+        <locationY>674</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1467,7 +2175,7 @@
         <name>Kim_Claim_Deduction</name>
         <label>Kim Claim Deduction</label>
         <locationX>4450</locationX>
-        <locationY>674</locationY>
+        <locationY>998</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1490,10 +2198,13 @@
         <name>Kin_Claim_Costs_No_VAT</name>
         <label>Kin Claim Costs (No VAT)</label>
         <locationX>4450</locationX>
-        <locationY>890</locationY>
+        <locationY>1214</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Assign_KinClaimCosts</targetReference>
+        </connector>
         <fields>
             <name>Enter_kin_claim_costs_NOT_including_VAT</name>
             <dataType>Number</dataType>
@@ -1509,12 +2220,12 @@
         <name>Lease</name>
         <label>Lease</label>
         <locationX>3746</locationX>
-        <locationY>566</locationY>
+        <locationY>890</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Amount_expect_to_pay_property_maintenance</targetReference>
+            <targetReference>Copy_6_of_Assign_Costs</targetReference>
         </connector>
         <fields>
             <name>Lease_Section1</name>
@@ -1657,12 +2368,12 @@
         <name>Liability_type_accommodation</name>
         <label>Liability type</label>
         <locationX>3042</locationX>
-        <locationY>350</locationY>
+        <locationY>566</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Liability_Type_Decision</targetReference>
+            <targetReference>Copy_3_of_Assign_Liability_Type</targetReference>
         </connector>
         <fields>
             <name>Select_liability_type_accommodation</name>
@@ -1680,12 +2391,12 @@
         <name>Liability_type_admin_costs</name>
         <label>Liability type</label>
         <locationX>2206</locationX>
-        <locationY>350</locationY>
+        <locationY>566</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Liability_Type_Decision_admin</targetReference>
+            <targetReference>Copy_1_of_Assign_Liability_Type</targetReference>
         </connector>
         <fields>
             <name>Select_liability_type_admin_costs</name>
@@ -1707,7 +2418,7 @@
         <name>Liability_type_funeral</name>
         <label>Liability type</label>
         <locationX>1282</locationX>
-        <locationY>350</locationY>
+        <locationY>566</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1730,7 +2441,7 @@
         <name>Loan_type</name>
         <label>Loan type</label>
         <locationX>4978</locationX>
-        <locationY>350</locationY>
+        <locationY>566</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1753,12 +2464,12 @@
         <name>Local_Authority_screen</name>
         <label>Local Authority</label>
         <locationX>578</locationX>
-        <locationY>566</locationY>
+        <locationY>782</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Amount_expect_to_pay_utility</targetReference>
+            <targetReference>Copy_3_of_Assign_asset</targetReference>
         </connector>
         <fields>
             <name>Local_Authority_screen_Section1</name>
@@ -1924,10 +2635,13 @@
         <name>Memorial_payment_due_to</name>
         <label>Memorial payment due to</label>
         <locationX>1282</locationX>
-        <locationY>566</locationY>
+        <locationY>782</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Copy_5_of_Assign_asset</targetReference>
+        </connector>
         <fields>
             <name>Who_is_the_memorial_payment_due_to_E_g_stonemason_care_home_etc</name>
             <dataType>String</dataType>
@@ -1942,12 +2656,12 @@
         <name>Name_of_Creditor</name>
         <label>Name of Creditor</label>
         <locationX>4978</locationX>
-        <locationY>458</locationY>
+        <locationY>674</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Amount_expect_to_pay</targetReference>
+            <targetReference>Copy_7_of_Assign_Asset</targetReference>
         </connector>
         <fields>
             <name>Enter_name_of_creditor</name>
@@ -1963,12 +2677,12 @@
         <name>Name_of_Creditor_acc</name>
         <label>Name of Creditor</label>
         <locationX>2778</locationX>
-        <locationY>566</locationY>
+        <locationY>890</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Amount_expect_to_pay_acc</targetReference>
+            <targetReference>Copy_3_of_Assign_Costs</targetReference>
         </connector>
         <fields>
             <name>Enter_name_of_creditor_acc</name>
@@ -1984,12 +2698,12 @@
         <name>Name_of_Solicitors</name>
         <label>Name of Solicitors</label>
         <locationX>2338</locationX>
-        <locationY>566</locationY>
+        <locationY>890</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Amount_expect_to_pay_admin_costs</targetReference>
+            <targetReference>Copy_1_of_Assign_Costs</targetReference>
         </connector>
         <fields>
             <name>Enter_name_of_Solicitors</name>
@@ -2005,12 +2719,12 @@
         <name>Nursing_Home_Fees</name>
         <label>Nursing Home Fees</label>
         <locationX>3042</locationX>
-        <locationY>566</locationY>
+        <locationY>890</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Amount_expect_to_pay_acc</targetReference>
+            <targetReference>Copy_4_of_Assign_Costs</targetReference>
         </connector>
         <fields>
             <name>Nursing_Home</name>
@@ -2104,12 +2818,12 @@
         <name>Occupiers_Address</name>
         <label>Occupiers Address</label>
         <locationX>3482</locationX>
-        <locationY>566</locationY>
+        <locationY>890</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Amount_expect_to_pay_property_maintenance</targetReference>
+            <targetReference>Copy_5_of_Assign_Costs</targetReference>
         </connector>
         <fields>
             <name>Address_Line_1_occupier</name>
@@ -2180,12 +2894,12 @@
         <name>Payment_due_to</name>
         <label>Payment due to</label>
         <locationX>5242</locationX>
-        <locationY>458</locationY>
+        <locationY>674</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Amount_expect_to_pay_general</targetReference>
+            <targetReference>Copy_6_of_Assign_Asset</targetReference>
         </connector>
         <fields>
             <name>Who_is_the_payment_due_to</name>
@@ -2201,12 +2915,12 @@
         <name>Tax_on_interest</name>
         <label>Tax on interest</label>
         <locationX>4450</locationX>
-        <locationY>566</locationY>
+        <locationY>782</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Kim_Claim_Deduction</targetReference>
+            <targetReference>Assign_Net_Interest</targetReference>
         </connector>
         <fields>
             <name>Enter_tax_on_interest</name>
@@ -2223,12 +2937,12 @@
         <name>Telephone_screen</name>
         <label>Telephone</label>
         <locationX>50</locationX>
-        <locationY>566</locationY>
+        <locationY>782</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Amount_expect_to_pay_utility</targetReference>
+            <targetReference>Assign_asset</targetReference>
         </connector>
         <fields>
             <name>Telephone_service_provider</name>
@@ -2322,7 +3036,7 @@
         <name>Utility_Company_Payments</name>
         <label>Utility Company Payments</label>
         <locationX>446</locationX>
-        <locationY>350</locationY>
+        <locationY>566</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -2352,12 +3066,92 @@
             <targetReference>Debt_Liability_Payment_type</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
+    <variables>
+        <name>AddressType</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>AmountReceived</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>AssetType</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>AssignmentType</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>CostsType</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>DetailsType</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>Final_Payment</name>
+        <dataType>Number</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+        <scale>2</scale>
+    </variables>
+    <variables>
+        <name>KinClaimCosts</name>
+        <dataType>Number</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+        <scale>2</scale>
+    </variables>
     <variables>
         <name>Land_type_assignment</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
         <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>LiabilityType</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>Net_Interest</name>
+        <dataType>Number</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+        <scale>2</scale>
+    </variables>
+    <variables>
+        <name>PaymentType</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
     </variables>
 </Flow>
