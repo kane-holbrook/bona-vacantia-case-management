@@ -317,6 +317,10 @@ export default class CaseOfficerButtons extends LightningElement {
                 }
             ];
             this.isPutAwayModalOpen = true;
+            // Set the appropriate flow API name based on recordTypeDeveloperName
+            this.putAwayFlowApiName = this.recordTypeDeveloperName === 'COMP' 
+                ? 'Put_Away_a_Case_Companies' 
+                : 'Put_Away_a_Case';
         }
     }
 
@@ -602,6 +606,7 @@ export default class CaseOfficerButtons extends LightningElement {
                     modalToClose = 'isFlowModalOpen';
                     break;
                 case 'Put_Away_a_Case':
+                case 'Put_Away_a_Case_Companies':
                     message = 'Case put away successfully';
                     modalToClose = 'isPutAwayModalOpen';
                     break;
