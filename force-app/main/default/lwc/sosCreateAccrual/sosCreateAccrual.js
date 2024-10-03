@@ -4,6 +4,7 @@ import createAccrual from '@salesforce/apex/SOSFinanceController.createAccrual';
 
 export default class SosCreateAccrual extends LightningElement {
     @api caseNumber;
+    @api caseId;
     isModalOpen = false;
     selectedAccrualType = '';
     accrualTypeOptions = [
@@ -12,6 +13,7 @@ export default class SosCreateAccrual extends LightningElement {
     ];
     isReceiptFlow = true;
     isFlowRendered = false;
+    flowInputs;
 
     get selectedFlow() {
         return this.selectedAccrualType === 'Receipt' ? 'SOS_Add_Accural_Receipt' : 'SOS_Add_Accural_Payment';
@@ -32,6 +34,15 @@ export default class SosCreateAccrual extends LightningElement {
     handleConfirmSelection() {
         this.isReceiptFlow = this.selectedAccrualType === 'Receipt';
         this.isFlowRendered = true;
+        
+        // Set up the flow inputs
+        this.flowInputs = [
+            {
+                name: 'caseId',
+                type: 'String',
+                value: this.caseId
+            }
+        ];
     }
 
     handleCreateAccrual() {

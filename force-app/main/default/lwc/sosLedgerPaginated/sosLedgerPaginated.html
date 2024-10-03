@@ -132,7 +132,7 @@
                         <h2 class="slds-text-heading_medium">Accrual Details</h2>
                     </header>
                     <div class="slds-modal__content slds-p-around_medium">
-                        <c-sos-create-accrual case-number={bvCaseName} onledgercreated={handleLedgerCreated}></c-sos-create-accrual>
+                        <c-sos-create-accrual case-number={bvCaseName} case-id={recordId} onledgercreated={handleLedgerCreated}></c-sos-create-accrual>
                     </div>
                 </div>
             </section>
@@ -150,7 +150,7 @@
                         <h2 class="slds-text-heading_medium">Reverse Accrual</h2>
                     </header>
                     <div class="slds-modal__content slds-p-around_medium">
-                        <c-sos-reverse-accrual case-number={bvCaseName} onselectedaccrual={handleSelectedAccrual}></c-sos-reverse-accrual>
+                        <c-sos-reverse-accrual case-number={bvCaseName} case-id={recordId} onselectedaccrual={handleSelectedAccrual}></c-sos-reverse-accrual>
                     </div>
                     <footer class="slds-modal__footer">
                         <lightning-button variant="neutral" label="Cancel" onclick={closeReverseAccrualModal}></lightning-button>
