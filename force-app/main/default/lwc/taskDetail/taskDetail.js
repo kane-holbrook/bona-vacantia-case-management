@@ -51,6 +51,7 @@ export default class TaskDetail extends LightningElement {
     @track flowInputs = [];  // Array to store input variables for the flow
     @track caseHistoryData = [];
     @track currentTemplateIds = '';  // Temporary storage for template IDs
+    @track isTaskBeingCompleted = false;
     currentSubTaskId; // Added this to track current sub-task ID
     parentTaskId;
     editTaskState; // Added this to track current task ID
@@ -96,7 +97,7 @@ export default class TaskDetail extends LightningElement {
                 this.beforeAfterValue = 'After';
                 this.dateInsertedSelected = 'Date Inserted';
             }
-        } else if (error) {
+        } else if (error && !this.isTaskBeingCompleted) {
             this.dispatchEvent(
                 new ShowToastEvent({
                     title: 'Error loading task',
@@ -166,7 +167,7 @@ export default class TaskDetail extends LightningElement {
         if (data) {
             this.currentTemplateIds = getFieldValue(data, TASK_TEMPLATES_FIELD) || '';  // Store the IDs
             this.fetchTemplates();
-        } else if (error) {
+        } else if (error && !this.isTaskBeingCompleted) {
             this.dispatchEvent(
                 new ShowToastEvent({
                     title: 'Error loading task templates',
@@ -650,11 +651,13 @@ export default class TaskDetail extends LightningElement {
 
     onCompleteTask() {
         this.completeTask = true;
+        this.isTaskBeingCompleted = true;
         this.isParentTask = true;
     }
 
     onCompleteTaskClose() {
         this.completeTask = false;
+        this.isTaskBeingCompleted = false;
         this.isParentTask = false;
     }
 
@@ -714,6 +717,7 @@ export default class TaskDetail extends LightningElement {
                     })
                 );
                 this.completeTask = false;
+                this.isTaskBeingCompleted = false;
                 
             })
             .catch(error => {
