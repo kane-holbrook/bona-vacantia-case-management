@@ -21,7 +21,7 @@
         <name>Assign_Address_Property</name>
         <label>Assign Address</label>
         <locationX>578</locationX>
-        <locationY>674</locationY>
+        <locationY>782</locationY>
         <assignmentItems>
             <assignToReference>AddressType</assignToReference>
             <operator>Assign</operator>
@@ -50,7 +50,7 @@
         <name>Assign_Asset_Type</name>
         <label>Assign Asset Type</label>
         <locationX>1018</locationX>
-        <locationY>890</locationY>
+        <locationY>998</locationY>
         <assignmentItems>
             <assignToReference>AssetType</assignToReference>
             <operator>Assign</operator>
@@ -66,7 +66,7 @@
         <name>Assign_Asset_Type_2</name>
         <label>Assign Asset Type</label>
         <locationX>1282</locationX>
-        <locationY>890</locationY>
+        <locationY>998</locationY>
         <assignmentItems>
             <assignToReference>AssetType</assignToReference>
             <operator>Assign</operator>
@@ -82,7 +82,7 @@
         <name>Assign_Asset_Type_3</name>
         <label>Assign Asset Type</label>
         <locationX>1546</locationX>
-        <locationY>890</locationY>
+        <locationY>998</locationY>
         <assignmentItems>
             <assignToReference>AssetType</assignToReference>
             <operator>Assign</operator>
@@ -98,7 +98,7 @@
         <name>Assign_Asset_Type_Vehicle</name>
         <label>Assign Asset Type</label>
         <locationX>5154</locationX>
-        <locationY>674</locationY>
+        <locationY>782</locationY>
         <assignmentItems>
             <assignToReference>AssetType</assignToReference>
             <operator>Assign</operator>
@@ -114,7 +114,7 @@
         <name>Assign_Details</name>
         <label>Assign Details</label>
         <locationX>1018</locationX>
-        <locationY>998</locationY>
+        <locationY>1106</locationY>
         <assignmentItems>
             <assignToReference>DetailsType</assignToReference>
             <operator>Assign</operator>
@@ -130,7 +130,7 @@
         <name>Assign_Property_Type</name>
         <label>Assign Property Type</label>
         <locationX>578</locationX>
-        <locationY>998</locationY>
+        <locationY>1106</locationY>
         <assignmentItems>
             <assignToReference>AssetType</assignToReference>
             <operator>Assign</operator>
@@ -210,7 +210,7 @@
         <name>Copy_10_of_Assign_Asset_Type</name>
         <label>Assign Asset Type</label>
         <locationX>4714</locationX>
-        <locationY>890</locationY>
+        <locationY>998</locationY>
         <assignmentItems>
             <assignToReference>AssetType</assignToReference>
             <operator>Assign</operator>
@@ -242,7 +242,7 @@
         <name>Copy_1_of_Assign_amount_received</name>
         <label>Assign amount received</label>
         <locationX>578</locationX>
-        <locationY>1298</locationY>
+        <locationY>1406</locationY>
         <assignmentItems>
             <assignToReference>AmountReceived</assignToReference>
             <operator>Assign</operator>
@@ -296,7 +296,7 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Property_details</targetReference>
+            <targetReference>Choose_a_property_screen</targetReference>
         </connector>
     </assignments>
     <assignments>
@@ -332,7 +332,7 @@
         <name>Copy_2_of_Assign_Details</name>
         <label>Assign Details</label>
         <locationX>1282</locationX>
-        <locationY>998</locationY>
+        <locationY>1106</locationY>
         <assignmentItems>
             <assignToReference>DetailsType</assignToReference>
             <operator>Assign</operator>
@@ -348,7 +348,7 @@
         <name>Copy_2_of_Assign_Property_Type</name>
         <label>Assign Property Type</label>
         <locationX>314</locationX>
-        <locationY>998</locationY>
+        <locationY>1106</locationY>
         <assignmentItems>
             <assignToReference>AssetType</assignToReference>
             <operator>Assign</operator>
@@ -409,7 +409,7 @@
         <name>Copy_3_of_Assign_Details</name>
         <label>Assign Details</label>
         <locationX>4714</locationX>
-        <locationY>998</locationY>
+        <locationY>1106</locationY>
         <assignmentItems>
             <assignToReference>DetailsType</assignToReference>
             <operator>Assign</operator>
@@ -425,7 +425,7 @@
         <name>Copy_4_of_Assign_amount_received</name>
         <label>Assign amount received</label>
         <locationX>4362</locationX>
-        <locationY>1490</locationY>
+        <locationY>1598</locationY>
         <assignmentItems>
             <assignToReference>AmountReceived</assignToReference>
             <operator>Assign</operator>
@@ -479,14 +479,14 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Vehicle_input</targetReference>
+            <targetReference>Choose_a_vehicle_screen</targetReference>
         </connector>
     </assignments>
     <assignments>
         <name>Copy_5_of_Assign_amount_received</name>
         <label>Assign amount received</label>
         <locationX>5154</locationX>
-        <locationY>890</locationY>
+        <locationY>998</locationY>
         <assignmentItems>
             <assignToReference>AmountReceived</assignToReference>
             <operator>Assign</operator>
@@ -499,7 +499,7 @@
         <name>Copy_5_of_Assign_Asset_Type</name>
         <label>Assign Asset Type</label>
         <locationX>4010</locationX>
-        <locationY>998</locationY>
+        <locationY>1106</locationY>
         <assignmentItems>
             <assignToReference>AssetType</assignToReference>
             <operator>Assign</operator>
@@ -515,7 +515,7 @@
         <name>Copy_5_of_Assign_Details</name>
         <label>Assign Details</label>
         <locationX>4274</locationX>
-        <locationY>1190</locationY>
+        <locationY>1298</locationY>
         <assignmentItems>
             <assignToReference>DetailsType</assignToReference>
             <operator>Assign</operator>
@@ -579,7 +579,7 @@
         <name>Copy_8_of_Assign_Asset_Type</name>
         <label>Assign Asset Type</label>
         <locationX>3746</locationX>
-        <locationY>890</locationY>
+        <locationY>998</locationY>
         <assignmentItems>
             <assignToReference>AssetType</assignToReference>
             <operator>Assign</operator>
@@ -595,7 +595,7 @@
         <name>Copy_9_of_Assign_Asset_Type</name>
         <label>Assign Asset Type</label>
         <locationX>4274</locationX>
-        <locationY>998</locationY>
+        <locationY>1106</locationY>
         <assignmentItems>
             <assignToReference>AssetType</assignToReference>
             <operator>Assign</operator>
@@ -1245,7 +1245,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Bank_Building_Society</targetReference>
+                <targetReference>Choose_a_bank_screen</targetReference>
             </connector>
             <label>Bank</label>
         </rules>
@@ -1260,7 +1260,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Cash_bank</targetReference>
+                <targetReference>Choose_cash_holder_screen</targetReference>
             </connector>
             <label>Cash</label>
         </rules>
@@ -1275,7 +1275,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Other_Pension</targetReference>
+                <targetReference>Choose_pension_screen</targetReference>
             </connector>
             <label>Pension</label>
         </rules>
@@ -1344,7 +1344,7 @@
         <name>IP_Decision</name>
         <label>IP Decision</label>
         <locationX>4274</locationX>
-        <locationY>890</locationY>
+        <locationY>998</locationY>
         <defaultConnector>
             <targetReference>Copy_5_of_Assign_Details</targetReference>
         </defaultConnector>
@@ -1384,7 +1384,7 @@
         <name>is_mobile_home</name>
         <label>is mobile home?</label>
         <locationX>578</locationX>
-        <locationY>890</locationY>
+        <locationY>998</locationY>
         <defaultConnector>
             <targetReference>Amount_to_receive_property</targetReference>
         </defaultConnector>
@@ -1684,7 +1684,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Stocks_Shares</targetReference>
+                <targetReference>Choose_company</targetReference>
             </connector>
             <label>Shares</label>
         </rules>
@@ -1706,7 +1706,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Insurance_Policy_Copy</targetReference>
+                <targetReference>Choose_insurer_Screen</targetReference>
             </connector>
             <label>Insurance Policy / Annuities</label>
         </rules>
@@ -1721,12 +1721,192 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Unit_Trusts_PEPS</targetReference>
+                <targetReference>Choose_fund_or_pep_Screen</targetReference>
             </connector>
             <label>Unit Trusts</label>
         </rules>
     </decisions>
     <description>Subflow for Receipt for SOS Add Accural Flow</description>
+    <dynamicChoiceSets>
+        <name>BankBuildingRecordChoiceSet</name>
+        <dataType>String</dataType>
+        <displayField>Bank__c</displayField>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>BV_Case__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>caseID</elementReference>
+            </value>
+        </filters>
+        <object>AssetLiability__c</object>
+        <outputAssignments>
+            <assignToReference>BankAccountNumber</assignToReference>
+            <field>Bank_Account_Number__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>BankName</assignToReference>
+            <field>Bank__c</field>
+        </outputAssignments>
+        <valueField>Id</valueField>
+    </dynamicChoiceSets>
+    <dynamicChoiceSets>
+        <name>CashRecordChoiceSet</name>
+        <dataType>String</dataType>
+        <displayField>Holder__c</displayField>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>BV_Case__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>caseID</elementReference>
+            </value>
+        </filters>
+        <object>AssetLiability__c</object>
+        <outputAssignments>
+            <assignToReference>CashHolder</assignToReference>
+            <field>Holder__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>CashRef</assignToReference>
+            <field>Reference__c</field>
+        </outputAssignments>
+        <valueField>Id</valueField>
+    </dynamicChoiceSets>
+    <dynamicChoiceSets>
+        <name>InsuranceRecordChoiceSet</name>
+        <dataType>String</dataType>
+        <displayField>Insurer__c</displayField>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>BV_Case__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>caseID</elementReference>
+            </value>
+        </filters>
+        <object>AssetLiability__c</object>
+        <outputAssignments>
+            <assignToReference>InsuranceInsurer</assignToReference>
+            <field>Insurer__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>InsurancePolicyNo</assignToReference>
+            <field>Policy_No__c</field>
+        </outputAssignments>
+        <valueField>Id</valueField>
+    </dynamicChoiceSets>
+    <dynamicChoiceSets>
+        <name>PensionRecordChoiceSet</name>
+        <dataType>String</dataType>
+        <displayField>Private_Pension__c</displayField>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>BV_Case__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>caseID</elementReference>
+            </value>
+        </filters>
+        <object>AssetLiability__c</object>
+        <outputAssignments>
+            <assignToReference>PrivatePension</assignToReference>
+            <field>Private_Pension__c</field>
+        </outputAssignments>
+        <valueField>Id</valueField>
+    </dynamicChoiceSets>
+    <dynamicChoiceSets>
+        <name>PropertyRecordChoiceSet</name>
+        <dataType>String</dataType>
+        <displayField>Prop_Details_Addr_Line_1__c</displayField>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>BV_Case__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>caseID</elementReference>
+            </value>
+        </filters>
+        <object>AssetLiability__c</object>
+        <outputAssignments>
+            <assignToReference>PropertyAddressLine1</assignToReference>
+            <field>Prop_Details_Addr_Line_1__c</field>
+        </outputAssignments>
+        <valueField>Id</valueField>
+    </dynamicChoiceSets>
+    <dynamicChoiceSets>
+        <name>StockSharesRecordChoiceSet</name>
+        <dataType>String</dataType>
+        <displayField>Company__c</displayField>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>BV_Case__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>caseID</elementReference>
+            </value>
+        </filters>
+        <object>AssetLiability__c</object>
+        <outputAssignments>
+            <assignToReference>StockCompany</assignToReference>
+            <field>Company__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>StockNoOfShares</assignToReference>
+            <field>No_Of_Shares__c</field>
+        </outputAssignments>
+        <valueField>Id</valueField>
+    </dynamicChoiceSets>
+    <dynamicChoiceSets>
+        <name>UnitRecordChoiceSet</name>
+        <dataType>String</dataType>
+        <displayField>Fund_Pep__c</displayField>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>BV_Case__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>caseID</elementReference>
+            </value>
+        </filters>
+        <object>AssetLiability__c</object>
+        <outputAssignments>
+            <assignToReference>UnitFundPEP</assignToReference>
+            <field>Fund_Pep__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>UnitNoOfUnits</assignToReference>
+            <field>No_Of_Units__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>UnitReference</assignToReference>
+            <field>Reference__c</field>
+        </outputAssignments>
+        <valueField>Id</valueField>
+    </dynamicChoiceSets>
+    <dynamicChoiceSets>
+        <name>VehicleRecordChoiceSet</name>
+        <dataType>String</dataType>
+        <displayField>Vehicle_Type__c</displayField>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>BV_Case__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>caseID</elementReference>
+            </value>
+        </filters>
+        <object>AssetLiability__c</object>
+        <outputAssignments>
+            <assignToReference>VehicleRegNo</assignToReference>
+            <field>Reg_No__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>VehicleType</assignToReference>
+            <field>Vehicle_Type__c</field>
+        </outputAssignments>
+        <valueField>Id</valueField>
+    </dynamicChoiceSets>
     <environments>Default</environments>
     <formulas>
         <name>NarrativeFormula</name>
@@ -1842,7 +2022,7 @@
         <name>Amount_to_receive_property</name>
         <label>Amount to receive</label>
         <locationX>578</locationX>
-        <locationY>1190</locationY>
+        <locationY>1298</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1863,7 +2043,7 @@
         <name>Amount_to_receive_stocks</name>
         <label>Amount to receive</label>
         <locationX>4362</locationX>
-        <locationY>1382</locationY>
+        <locationY>1490</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1884,7 +2064,7 @@
         <name>Amount_to_receive_vehicle</name>
         <label>Amount to receive</label>
         <locationX>5154</locationX>
-        <locationY>782</locationY>
+        <locationY>890</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1958,7 +2138,7 @@
         <name>Bank_Building_Society</name>
         <label>Bank/Building Society</label>
         <locationX>1018</locationX>
-        <locationY>782</locationY>
+        <locationY>890</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1974,6 +2154,9 @@
                 <fields>
                     <name>Bank</name>
                     <dataType>String</dataType>
+                    <defaultValue>
+                        <elementReference>BankName</elementReference>
+                    </defaultValue>
                     <fieldText>Bank</fieldText>
                     <fieldType>InputField</fieldType>
                     <isRequired>false</isRequired>
@@ -2055,6 +2238,9 @@
                 <fields>
                     <name>Account_Number_bank</name>
                     <dataType>String</dataType>
+                    <defaultValue>
+                        <elementReference>BankAccountNumber</elementReference>
+                    </defaultValue>
                     <fieldText>Account Number</fieldText>
                     <fieldType>InputField</fieldType>
                     <isRequired>false</isRequired>
@@ -2106,7 +2292,7 @@
         <name>Cash_bank</name>
         <label>Cash</label>
         <locationX>1282</locationX>
-        <locationY>782</locationY>
+        <locationY>890</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -2130,6 +2316,9 @@
                 <fields>
                     <name>Holder</name>
                     <dataType>String</dataType>
+                    <defaultValue>
+                        <elementReference>CashHolder</elementReference>
+                    </defaultValue>
                     <fieldText>Holder</fieldText>
                     <fieldType>InputField</fieldType>
                     <isRequired>false</isRequired>
@@ -2179,6 +2368,9 @@
                 <fields>
                     <name>Reference_cash</name>
                     <dataType>String</dataType>
+                    <defaultValue>
+                        <elementReference>CashRef</elementReference>
+                    </defaultValue>
                     <fieldText>Reference</fieldText>
                     <fieldType>InputField</fieldType>
                     <isRequired>false</isRequired>
@@ -2216,6 +2408,190 @@
         <showHeader>true</showHeader>
     </screens>
     <screens>
+        <name>Choose_a_bank_screen</name>
+        <label>Choose a bank</label>
+        <locationX>1018</locationX>
+        <locationY>782</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Bank_Building_Society</targetReference>
+        </connector>
+        <fields>
+            <name>Choose_a_bank</name>
+            <choiceReferences>BankBuildingRecordChoiceSet</choiceReferences>
+            <extensionName>flowruntime:choiceLookup</extensionName>
+            <fieldText>Choose a bank</fieldText>
+            <fieldType>ComponentChoice</fieldType>
+            <isRequired>false</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Choose_a_property_screen</name>
+        <label>Choose a property</label>
+        <locationX>578</locationX>
+        <locationY>566</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Property_details</targetReference>
+        </connector>
+        <fields>
+            <name>Choose_a_property</name>
+            <choiceReferences>PropertyRecordChoiceSet</choiceReferences>
+            <extensionName>flowruntime:choiceLookup</extensionName>
+            <fieldText>Choose a property</fieldText>
+            <fieldType>ComponentChoice</fieldType>
+            <isRequired>false</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Choose_a_vehicle_screen</name>
+        <label>Choose a vehicle</label>
+        <locationX>5154</locationX>
+        <locationY>566</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Vehicle_input</targetReference>
+        </connector>
+        <fields>
+            <name>Choose_a_vehicle</name>
+            <choiceReferences>VehicleRecordChoiceSet</choiceReferences>
+            <extensionName>flowruntime:choiceLookup</extensionName>
+            <fieldText>Choose a vehicle</fieldText>
+            <fieldType>ComponentChoice</fieldType>
+            <isRequired>false</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Choose_cash_holder_screen</name>
+        <label>Choose cash holder</label>
+        <locationX>1282</locationX>
+        <locationY>782</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Cash_bank</targetReference>
+        </connector>
+        <fields>
+            <name>Choose_cash_holder</name>
+            <choiceReferences>CashRecordChoiceSet</choiceReferences>
+            <extensionName>flowruntime:choiceLookup</extensionName>
+            <fieldText>Choose cash holder</fieldText>
+            <fieldType>ComponentChoice</fieldType>
+            <isRequired>false</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Choose_company</name>
+        <label>Choose company</label>
+        <locationX>3746</locationX>
+        <locationY>782</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Stocks_Shares</targetReference>
+        </connector>
+        <fields>
+            <name>Choose_a_company</name>
+            <choiceReferences>StockSharesRecordChoiceSet</choiceReferences>
+            <extensionName>flowruntime:choiceLookup</extensionName>
+            <fieldText>Choose a company</fieldText>
+            <fieldType>ComponentChoice</fieldType>
+            <isRequired>false</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Choose_fund_or_pep_Screen</name>
+        <label>Choose fund or pep</label>
+        <locationX>4714</locationX>
+        <locationY>782</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Unit_Trusts_PEPS</targetReference>
+        </connector>
+        <fields>
+            <name>Choose_a_Fund_PEP</name>
+            <choiceReferences>UnitRecordChoiceSet</choiceReferences>
+            <extensionName>flowruntime:choiceLookup</extensionName>
+            <fieldText>Choose a Fund / PEP</fieldText>
+            <fieldType>ComponentChoice</fieldType>
+            <isRequired>false</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Choose_insurer_Screen</name>
+        <label>Choose insurer</label>
+        <locationX>4274</locationX>
+        <locationY>782</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Insurance_Policy_Copy</targetReference>
+        </connector>
+        <fields>
+            <name>Choose_insurer</name>
+            <choiceReferences>InsuranceRecordChoiceSet</choiceReferences>
+            <extensionName>flowruntime:choiceLookup</extensionName>
+            <fieldText>Choose insurer</fieldText>
+            <fieldType>ComponentChoice</fieldType>
+            <isRequired>false</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Choose_pension_screen</name>
+        <label>Choose pension</label>
+        <locationX>1546</locationX>
+        <locationY>782</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Other_Pension</targetReference>
+        </connector>
+        <fields>
+            <name>Choose_a_pension</name>
+            <choiceReferences>PensionRecordChoiceSet</choiceReferences>
+            <extensionName>flowruntime:choiceLookup</extensionName>
+            <fieldText>Choose a pension</fieldText>
+            <fieldType>ComponentChoice</fieldType>
+            <isRequired>false</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
         <name>Courts_Funds_account_number</name>
         <label>Courts Funds account number</label>
         <locationX>3306</locationX>
@@ -2240,7 +2616,7 @@
         <name>Insurance_Policy_Copy</name>
         <label>Insurance Policy</label>
         <locationX>4274</locationX>
-        <locationY>782</locationY>
+        <locationY>890</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -2250,6 +2626,9 @@
         <fields>
             <name>Copy_1_of_Insurer</name>
             <dataType>String</dataType>
+            <defaultValue>
+                <elementReference>InsuranceInsurer</elementReference>
+            </defaultValue>
             <fieldText>Insurer</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
@@ -2306,6 +2685,9 @@
         <fields>
             <name>Copy_1_of_Policy_No</name>
             <dataType>String</dataType>
+            <defaultValue>
+                <elementReference>InsurancePolicyNo</elementReference>
+            </defaultValue>
             <fieldText>Policy No</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
@@ -2395,7 +2777,7 @@
         <name>Other_Pension</name>
         <label>Other Pension</label>
         <locationX>1546</locationX>
-        <locationY>782</locationY>
+        <locationY>890</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -2405,6 +2787,9 @@
         <fields>
             <name>Private_Pension</name>
             <dataType>String</dataType>
+            <defaultValue>
+                <elementReference>PrivatePension</elementReference>
+            </defaultValue>
             <fieldText>Private Pension</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
@@ -2513,7 +2898,7 @@
         <name>Property_details</name>
         <label>Property details</label>
         <locationX>578</locationX>
-        <locationY>566</locationY>
+        <locationY>674</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -2523,6 +2908,9 @@
         <fields>
             <name>Address_line_1</name>
             <dataType>String</dataType>
+            <defaultValue>
+                <elementReference>PropertyAddressLine1</elementReference>
+            </defaultValue>
             <fieldText>Address line 1</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
@@ -2571,7 +2959,7 @@
         <name>Property_type</name>
         <label>Property type</label>
         <locationX>578</locationX>
-        <locationY>782</locationY>
+        <locationY>890</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -2622,7 +3010,7 @@
         <name>Stocks_Shares</name>
         <label>Stocks/Shares</label>
         <locationX>3746</locationX>
-        <locationY>782</locationY>
+        <locationY>890</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -2638,6 +3026,9 @@
                 <fields>
                     <name>Company</name>
                     <dataType>String</dataType>
+                    <defaultValue>
+                        <elementReference>StockCompany</elementReference>
+                    </defaultValue>
                     <fieldText>Company</fieldText>
                     <fieldType>InputField</fieldType>
                     <isRequired>false</isRequired>
@@ -2701,6 +3092,9 @@
                 <fields>
                     <name>No_of_Shares</name>
                     <dataType>String</dataType>
+                    <defaultValue>
+                        <elementReference>StockNoOfShares</elementReference>
+                    </defaultValue>
                     <fieldText>No of Shares</fieldText>
                     <fieldType>InputField</fieldType>
                     <isRequired>false</isRequired>
@@ -2759,7 +3153,7 @@
         <name>Unit_Trusts_PEPS</name>
         <label>Unit Trusts/PEPS</label>
         <locationX>4714</locationX>
-        <locationY>782</locationY>
+        <locationY>890</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -2769,6 +3163,9 @@
         <fields>
             <name>Fund_PEP</name>
             <dataType>String</dataType>
+            <defaultValue>
+                <elementReference>UnitFundPEP</elementReference>
+            </defaultValue>
             <fieldText>Fund/PEP</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
@@ -2832,6 +3229,9 @@
         <fields>
             <name>No_of_Units</name>
             <dataType>Number</dataType>
+            <defaultValue>
+                <elementReference>UnitNoOfUnits</elementReference>
+            </defaultValue>
             <fieldText>No of Units</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
@@ -2857,6 +3257,9 @@
         <fields>
             <name>Reference_unit_trusts</name>
             <dataType>String</dataType>
+            <defaultValue>
+                <elementReference>UnitReference</elementReference>
+            </defaultValue>
             <fieldText>Reference</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
@@ -2889,7 +3292,7 @@
         <name>Vehicle_input</name>
         <label>Vehicle input</label>
         <locationX>5154</locationX>
-        <locationY>566</locationY>
+        <locationY>674</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -3066,6 +3469,41 @@
         <isOutput>true</isOutput>
     </variables>
     <variables>
+        <name>BankAccountNumber</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>BankName</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>caseID</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>CashHolder</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>CashRef</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
         <name>DetailsType</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
@@ -3073,7 +3511,35 @@
         <isOutput>true</isOutput>
     </variables>
     <variables>
+        <name>InsuranceInsurer</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>InsurancePolicyNo</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
         <name>Land_type_assignment</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>PrivatePension</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>PropertyAddressLine1</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
@@ -3085,5 +3551,55 @@
         <isCollection>false</isCollection>
         <isInput>false</isInput>
         <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>StockCompany</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>StockNoOfShares</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>UnitFundPEP</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>UnitNoOfUnits</name>
+        <dataType>Number</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <scale>0</scale>
+    </variables>
+    <variables>
+        <name>UnitReference</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>VehicleRegNo</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>VehicleType</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
     </variables>
 </Flow>

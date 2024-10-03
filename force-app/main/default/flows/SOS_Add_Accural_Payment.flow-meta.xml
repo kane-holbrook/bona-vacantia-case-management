@@ -5,7 +5,7 @@
         <name>Assign_Amount_Received</name>
         <label>Assign Amount Received</label>
         <locationX>446</locationX>
-        <locationY>1298</locationY>
+        <locationY>1406</locationY>
         <assignmentItems>
             <assignToReference>AmountReceived</assignToReference>
             <operator>Assign</operator>
@@ -18,7 +18,7 @@
         <name>Assign_asset</name>
         <label>Assign asset</label>
         <locationX>50</locationX>
-        <locationY>890</locationY>
+        <locationY>998</locationY>
         <assignmentItems>
             <assignToReference>AssetType</assignToReference>
             <operator>Assign</operator>
@@ -50,7 +50,7 @@
         <name>Assign_Details</name>
         <label>Assign Details</label>
         <locationX>50</locationX>
-        <locationY>998</locationY>
+        <locationY>1106</locationY>
         <assignmentItems>
             <assignToReference>DetailsType</assignToReference>
             <operator>Assign</operator>
@@ -211,7 +211,7 @@
         <name>Copy_1_of_Assign_Details</name>
         <label>Assign Details</label>
         <locationX>314</locationX>
-        <locationY>998</locationY>
+        <locationY>1106</locationY>
         <assignmentItems>
             <assignToReference>DetailsType</assignToReference>
             <operator>Assign</operator>
@@ -259,7 +259,7 @@
         <name>Copy_2_of_Assign_Amount_Received</name>
         <label>Assign Amount Received</label>
         <locationX>3042</locationX>
-        <locationY>1514</locationY>
+        <locationY>1622</locationY>
         <assignmentItems>
             <assignToReference>AmountReceived</assignToReference>
             <operator>Assign</operator>
@@ -272,7 +272,7 @@
         <name>Copy_2_of_Assign_asset</name>
         <label>Assign asset</label>
         <locationX>314</locationX>
-        <locationY>890</locationY>
+        <locationY>998</locationY>
         <assignmentItems>
             <assignToReference>AssetType</assignToReference>
             <operator>Assign</operator>
@@ -372,7 +372,7 @@
         <name>Copy_3_of_Assign_Amount_Received</name>
         <label>Assign Amount Received</label>
         <locationX>3746</locationX>
-        <locationY>1298</locationY>
+        <locationY>1406</locationY>
         <assignmentItems>
             <assignToReference>AmountReceived</assignToReference>
             <operator>Assign</operator>
@@ -385,7 +385,7 @@
         <name>Copy_3_of_Assign_asset</name>
         <label>Assign asset</label>
         <locationX>578</locationX>
-        <locationY>890</locationY>
+        <locationY>998</locationY>
         <assignmentItems>
             <assignToReference>AssetType</assignToReference>
             <operator>Assign</operator>
@@ -417,7 +417,7 @@
         <name>Copy_3_of_Assign_Details</name>
         <label>Assign Details</label>
         <locationX>3042</locationX>
-        <locationY>1106</locationY>
+        <locationY>1214</locationY>
         <assignmentItems>
             <assignToReference>DetailsType</assignToReference>
             <operator>Assign</operator>
@@ -491,7 +491,7 @@
         <name>Copy_4_of_Assign_Costs</name>
         <label>Assign Costs</label>
         <locationX>3042</locationX>
-        <locationY>998</locationY>
+        <locationY>1106</locationY>
         <assignmentItems>
             <assignToReference>CostsType</assignToReference>
             <operator>Assign</operator>
@@ -549,7 +549,7 @@
         <name>Copy_5_of_Assign_Costs</name>
         <label>Assign Asset</label>
         <locationX>3482</locationX>
-        <locationY>998</locationY>
+        <locationY>1106</locationY>
         <assignmentItems>
             <assignToReference>AssetType</assignToReference>
             <operator>Assign</operator>
@@ -597,7 +597,7 @@
         <name>Copy_6_of_Assign_Costs</name>
         <label>Assign Asset</label>
         <locationX>3746</locationX>
-        <locationY>998</locationY>
+        <locationY>1106</locationY>
         <assignmentItems>
             <assignToReference>AssetType</assignToReference>
             <operator>Assign</operator>
@@ -661,7 +661,7 @@
         <name>Copy_8_of_Assign_asset</name>
         <label>Assign asset</label>
         <locationX>3042</locationX>
-        <locationY>1298</locationY>
+        <locationY>1406</locationY>
         <assignmentItems>
             <assignToReference>AssetType</assignToReference>
             <operator>Assign</operator>
@@ -1311,7 +1311,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Occupiers_Address</targetReference>
+                <targetReference>Choose_Maintenace_Address</targetReference>
             </connector>
             <label>Maintenance</label>
         </rules>
@@ -1333,7 +1333,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Lease</targetReference>
+                <targetReference>Choose_landlord_agent</targetReference>
             </connector>
             <label>Ground rent / Service Charges</label>
         </rules>
@@ -1537,7 +1537,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Nursing_Home_Fees</targetReference>
+                <targetReference>Choose_nursing_home</targetReference>
             </connector>
             <label>Nursing/residential/care home fees</label>
         </rules>
@@ -1675,7 +1675,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Telephone_screen</targetReference>
+                <targetReference>Choose_a_service_provider_screen</targetReference>
             </connector>
             <label>Telephone</label>
         </rules>
@@ -1711,7 +1711,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Copy_3_of_Utility_Service</targetReference>
+                <targetReference>Choose_utility_company_Screen</targetReference>
             </connector>
             <label>Utility Service</label>
         </rules>
@@ -1726,12 +1726,142 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Local_Authority_screen</targetReference>
+                <targetReference>Choose_local_authority</targetReference>
             </connector>
             <label>Council Tax</label>
         </rules>
     </decisions>
     <description>Subflow for the SOS Add Accural main flow</description>
+    <dynamicChoiceSets>
+        <name>LocalAuthorityRecordChoiceSet</name>
+        <dataType>String</dataType>
+        <displayField>Local_Authority__c</displayField>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>BV_Case__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>caseID</elementReference>
+            </value>
+        </filters>
+        <object>AssetLiability__c</object>
+        <outputAssignments>
+            <assignToReference>LocalCouncilTax</assignToReference>
+            <field>Council_Tax__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>LocalAuthority</assignToReference>
+            <field>Local_Authority__c</field>
+        </outputAssignments>
+        <valueField>Id</valueField>
+    </dynamicChoiceSets>
+    <dynamicChoiceSets>
+        <name>MaintenanceRecordChoiceSet</name>
+        <dataType>String</dataType>
+        <displayField>Address_Line_1__c</displayField>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>BV_Case__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>caseID</elementReference>
+            </value>
+        </filters>
+        <object>AssetLiability__c</object>
+        <outputAssignments>
+            <assignToReference>MaintenanceAddressLine1</assignToReference>
+            <field>Address_Line_1__c</field>
+        </outputAssignments>
+        <valueField>Id</valueField>
+    </dynamicChoiceSets>
+    <dynamicChoiceSets>
+        <name>NursingHomeRecordChoiceSet</name>
+        <dataType>String</dataType>
+        <displayField>Nursing_Home__c</displayField>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>BV_Case__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>caseID</elementReference>
+            </value>
+        </filters>
+        <object>AssetLiability__c</object>
+        <outputAssignments>
+            <assignToReference>NursingHome</assignToReference>
+            <field>Nursing_Home__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>NursingReference</assignToReference>
+            <field>Reference__c</field>
+        </outputAssignments>
+        <valueField>Id</valueField>
+    </dynamicChoiceSets>
+    <dynamicChoiceSets>
+        <name>ServiceGroundRecordChoiceSet</name>
+        <dataType>String</dataType>
+        <displayField>Landlord_Agent__c</displayField>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>BV_Case__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>caseID</elementReference>
+            </value>
+        </filters>
+        <object>AssetLiability__c</object>
+        <outputAssignments>
+            <assignToReference>ServiceGroundLandlord</assignToReference>
+            <field>Landlord_Agent__c</field>
+        </outputAssignments>
+        <valueField>Id</valueField>
+    </dynamicChoiceSets>
+    <dynamicChoiceSets>
+        <name>TelephoneRecordChoiceSet</name>
+        <dataType>String</dataType>
+        <displayField>Telephone_Service_Provider__c</displayField>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>BV_Case__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>caseID</elementReference>
+            </value>
+        </filters>
+        <object>AssetLiability__c</object>
+        <outputAssignments>
+            <assignToReference>TelephoneAccountNumber</assignToReference>
+            <field>Telephone_Account_Number__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>TelephoneServiceProvider</assignToReference>
+            <field>Telephone_Service_Provider__c</field>
+        </outputAssignments>
+        <valueField>Id</valueField>
+    </dynamicChoiceSets>
+    <dynamicChoiceSets>
+        <name>UtilityRecordChoiceSet</name>
+        <dataType>String</dataType>
+        <displayField>Name_Of_Utility_Company__c</displayField>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>BV_Case__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>caseID</elementReference>
+            </value>
+        </filters>
+        <object>AssetLiability__c</object>
+        <outputAssignments>
+            <assignToReference>UtilityCompany</assignToReference>
+            <field>Name_Of_Utility_Company__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>UtilityAccountNumber</assignToReference>
+            <field>Utility_Account_Number__c</field>
+        </outputAssignments>
+        <valueField>Id</valueField>
+    </dynamicChoiceSets>
     <environments>Default</environments>
     <formulas>
         <name>Final_Payment_Amount_Formula</name>
@@ -1818,7 +1948,7 @@
         <name>Amount_expect_to_pay_acc</name>
         <label>Amount expect to pay</label>
         <locationX>3042</locationX>
-        <locationY>1406</locationY>
+        <locationY>1514</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1881,7 +2011,7 @@
         <name>Amount_expect_to_pay_property_maintenance</name>
         <label>Amount expect to pay</label>
         <locationX>3746</locationX>
-        <locationY>1190</locationY>
+        <locationY>1298</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1902,7 +2032,7 @@
         <name>Amount_expect_to_pay_utility</name>
         <label>Amount expect to pay</label>
         <locationX>446</locationX>
-        <locationY>1190</locationY>
+        <locationY>1298</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1944,6 +2074,144 @@
         <showHeader>true</showHeader>
     </screens>
     <screens>
+        <name>Choose_a_service_provider_screen</name>
+        <label>Choose a service provider</label>
+        <locationX>50</locationX>
+        <locationY>782</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Telephone_screen</targetReference>
+        </connector>
+        <fields>
+            <name>Choose_a_service_provider</name>
+            <choiceReferences>TelephoneRecordChoiceSet</choiceReferences>
+            <extensionName>flowruntime:choiceLookup</extensionName>
+            <fieldText>Choose a service provider</fieldText>
+            <fieldType>ComponentChoice</fieldType>
+            <isRequired>false</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Choose_landlord_agent</name>
+        <label>Choose landlord/agent</label>
+        <locationX>3746</locationX>
+        <locationY>890</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Lease</targetReference>
+        </connector>
+        <fields>
+            <name>Choose_a_landlord_or_agent</name>
+            <choiceReferences>ServiceGroundRecordChoiceSet</choiceReferences>
+            <extensionName>flowruntime:choiceLookup</extensionName>
+            <fieldText>Choose a landlord or agent</fieldText>
+            <fieldType>ComponentChoice</fieldType>
+            <isRequired>false</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Choose_local_authority</name>
+        <label>Choose local authority</label>
+        <locationX>578</locationX>
+        <locationY>782</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Local_Authority_screen</targetReference>
+        </connector>
+        <fields>
+            <name>Choose_a_Local_Authority</name>
+            <choiceReferences>LocalAuthorityRecordChoiceSet</choiceReferences>
+            <extensionName>flowruntime:choiceLookup</extensionName>
+            <fieldText>Choose a Local Authority</fieldText>
+            <fieldType>ComponentChoice</fieldType>
+            <isRequired>false</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Choose_Maintenace_Address</name>
+        <label>Choose Maintenace Address</label>
+        <locationX>3482</locationX>
+        <locationY>890</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Occupiers_Address</targetReference>
+        </connector>
+        <fields>
+            <name>Choose_a_maintenance_address</name>
+            <choiceReferences>MaintenanceRecordChoiceSet</choiceReferences>
+            <extensionName>flowruntime:choiceLookup</extensionName>
+            <fieldText>Choose a maintenance address</fieldText>
+            <fieldType>ComponentChoice</fieldType>
+            <isRequired>false</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Choose_nursing_home</name>
+        <label>Choose nursing home</label>
+        <locationX>3042</locationX>
+        <locationY>890</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Nursing_Home_Fees</targetReference>
+        </connector>
+        <fields>
+            <name>Choose_a_nursing_home</name>
+            <choiceReferences>NursingHomeRecordChoiceSet</choiceReferences>
+            <extensionName>flowruntime:choiceLookup</extensionName>
+            <fieldText>Choose a nursing home</fieldText>
+            <fieldType>ComponentChoice</fieldType>
+            <isRequired>false</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Choose_utility_company_Screen</name>
+        <label>Choose utility company</label>
+        <locationX>314</locationX>
+        <locationY>782</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Copy_3_of_Utility_Service</targetReference>
+        </connector>
+        <fields>
+            <name>Choose_a_utility_company</name>
+            <choiceReferences>UtilityRecordChoiceSet</choiceReferences>
+            <extensionName>flowruntime:choiceLookup</extensionName>
+            <fieldText>Choose a utility company</fieldText>
+            <fieldType>ComponentChoice</fieldType>
+            <isRequired>false</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
         <name>Copy_1_of_Copy_1_of_Payment_due_to</name>
         <label>Payment due to</label>
         <locationX>2074</locationX>
@@ -1968,7 +2236,7 @@
         <name>Copy_3_of_Utility_Service</name>
         <label>Utility/Service</label>
         <locationX>314</locationX>
-        <locationY>782</locationY>
+        <locationY>890</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1978,6 +2246,9 @@
         <fields>
             <name>Name_of_utility_company_water</name>
             <dataType>String</dataType>
+            <defaultValue>
+                <elementReference>UtilityCompany</elementReference>
+            </defaultValue>
             <fieldText>Name of utility company</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
@@ -2034,6 +2305,9 @@
         <fields>
             <name>Utility_Account_Number_water</name>
             <dataType>String</dataType>
+            <defaultValue>
+                <elementReference>UtilityAccountNumber</elementReference>
+            </defaultValue>
             <fieldText>Utility Account Number</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
@@ -2220,7 +2494,7 @@
         <name>Lease</name>
         <label>Lease</label>
         <locationX>3746</locationX>
-        <locationY>890</locationY>
+        <locationY>998</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -2236,6 +2510,9 @@
                 <fields>
                     <name>Landlord_Agent</name>
                     <dataType>String</dataType>
+                    <defaultValue>
+                        <elementReference>ServiceGroundLandlord</elementReference>
+                    </defaultValue>
                     <fieldText>Landlord/Agent</fieldText>
                     <fieldType>InputField</fieldType>
                     <isRequired>false</isRequired>
@@ -2464,7 +2741,7 @@
         <name>Local_Authority_screen</name>
         <label>Local Authority</label>
         <locationX>578</locationX>
-        <locationY>782</locationY>
+        <locationY>890</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -2480,6 +2757,9 @@
                 <fields>
                     <name>Local_Authority</name>
                     <dataType>String</dataType>
+                    <defaultValue>
+                        <elementReference>LocalAuthority</elementReference>
+                    </defaultValue>
                     <fieldText>Local Authority</fieldText>
                     <fieldType>InputField</fieldType>
                     <isRequired>false</isRequired>
@@ -2537,6 +2817,9 @@
                 <fields>
                     <name>Council_Tax_local</name>
                     <dataType>Number</dataType>
+                    <defaultValue>
+                        <elementReference>LocalCouncilTax</elementReference>
+                    </defaultValue>
                     <fieldText>Council Tax</fieldText>
                     <fieldType>InputField</fieldType>
                     <isRequired>false</isRequired>
@@ -2719,7 +3002,7 @@
         <name>Nursing_Home_Fees</name>
         <label>Nursing Home Fees</label>
         <locationX>3042</locationX>
-        <locationY>890</locationY>
+        <locationY>998</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -2729,6 +3012,9 @@
         <fields>
             <name>Nursing_Home</name>
             <dataType>String</dataType>
+            <defaultValue>
+                <elementReference>NursingHome</elementReference>
+            </defaultValue>
             <fieldText>Nursing Home</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
@@ -2800,6 +3086,9 @@
         <fields>
             <name>Reference_nursing</name>
             <dataType>String</dataType>
+            <defaultValue>
+                <elementReference>NursingReference</elementReference>
+            </defaultValue>
             <fieldText>Reference</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
@@ -2818,7 +3107,7 @@
         <name>Occupiers_Address</name>
         <label>Occupiers Address</label>
         <locationX>3482</locationX>
-        <locationY>890</locationY>
+        <locationY>998</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -2828,6 +3117,9 @@
         <fields>
             <name>Address_Line_1_occupier</name>
             <dataType>String</dataType>
+            <defaultValue>
+                <elementReference>MaintenanceAddressLine1</elementReference>
+            </defaultValue>
             <fieldText>Address Line 1</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
@@ -2937,7 +3229,7 @@
         <name>Telephone_screen</name>
         <label>Telephone</label>
         <locationX>50</locationX>
-        <locationY>782</locationY>
+        <locationY>890</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -2947,6 +3239,9 @@
         <fields>
             <name>Telephone_service_provider</name>
             <dataType>String</dataType>
+            <defaultValue>
+                <elementReference>TelephoneServiceProvider</elementReference>
+            </defaultValue>
             <fieldText>Telephone service provider</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
@@ -3003,6 +3298,9 @@
         <fields>
             <name>Account_Number</name>
             <dataType>String</dataType>
+            <defaultValue>
+                <elementReference>TelephoneAccountNumber</elementReference>
+            </defaultValue>
             <fieldText>Account Number</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
@@ -3096,6 +3394,13 @@
         <isOutput>true</isOutput>
     </variables>
     <variables>
+        <name>caseID</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
         <name>CostsType</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
@@ -3140,6 +3445,28 @@
         <isOutput>true</isOutput>
     </variables>
     <variables>
+        <name>LocalAuthority</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>LocalCouncilTax</name>
+        <dataType>Currency</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <scale>2</scale>
+    </variables>
+    <variables>
+        <name>MaintenanceAddressLine1</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
         <name>Net_Interest</name>
         <dataType>Number</dataType>
         <isCollection>false</isCollection>
@@ -3148,10 +3475,59 @@
         <scale>2</scale>
     </variables>
     <variables>
+        <name>NursingHome</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>NursingReference</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
         <name>PaymentType</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
         <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>ServiceGroundLandlord</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>TelephoneAccountNumber</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>TelephoneServiceProvider</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>UtilityAccountNumber</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>UtilityCompany</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
     </variables>
 </Flow>
