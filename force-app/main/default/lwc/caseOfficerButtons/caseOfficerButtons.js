@@ -66,6 +66,7 @@ export default class CaseOfficerButtons extends LightningElement {
     @track recordTypeDeveloperName; // Holds the record type developer name
     @track isEstates = false;
     @track documentType; // Holds the document type for LM case review
+    @track putAwayFlowApiName = 'Put_Away_a_Case'; // Default flow API name
 
     actions = []; // Actions array will be set based on record type
 
@@ -318,9 +319,25 @@ export default class CaseOfficerButtons extends LightningElement {
             ];
             this.isPutAwayModalOpen = true;
             // Set the appropriate flow API name based on recordTypeDeveloperName
-            this.putAwayFlowApiName = this.recordTypeDeveloperName === 'COMP' 
-                ? 'Put_Away_a_Case_Companies' 
-                : 'Put_Away_a_Case';
+            switch (this.recordTypeDeveloperName) {
+                case 'COMP':
+                    this.putAwayFlowApiName = 'Put_Away_a_Case_Companies';
+                    break;
+                case 'ESTA':
+                    this.putAwayFlowApiName = 'Put_Away_a_Case';
+                    break;
+                case 'GENE':
+                    this.putAwayFlowApiName = 'Put_Away_a_Case_General';
+                    break;
+                case 'FOIR':
+                    this.putAwayFlowApiName = 'Put_Away_a_Case_Freedom_of_Information';
+                    break;
+                case 'CONV':
+                    this.putAwayFlowApiName = 'Put_Away_a_Case_Conveyancing';
+                    break;
+                default:
+                    this.putAwayFlowApiName = 'Put_Away_a_Case';
+            }
         }
     }
 
@@ -607,6 +624,9 @@ export default class CaseOfficerButtons extends LightningElement {
                     break;
                 case 'Put_Away_a_Case':
                 case 'Put_Away_a_Case_Companies':
+                case 'Put_Away_a_Case_General':
+                case 'Put_Away_a_Case_Freedom_of_Information':
+                case 'Put_Away_a_Case_Conveyancing':
                     message = 'Case put away successfully';
                     modalToClose = 'isPutAwayModalOpen';
                     break;
