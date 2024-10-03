@@ -328,7 +328,7 @@
         <name>Balance_remains_include_in_the_unclaimed_list</name>
         <label>Balance remains include in the unclaimed list?</label>
         <locationX>1062</locationX>
-        <locationY>1514</locationY>
+        <locationY>1814</locationY>
         <defaultConnector>
             <targetReference>Check_if_years_to_be_retained_is_30</targetReference>
         </defaultConnector>
@@ -368,7 +368,7 @@
         <name>Check_HID04_Open_Closed</name>
         <label>Check HID04 (Open/Closed)</label>
         <locationX>446</locationX>
-        <locationY>3146</locationY>
+        <locationY>3446</locationY>
         <defaultConnector>
             <targetReference>Update_BV_Case_2</targetReference>
         </defaultConnector>
@@ -405,10 +405,47 @@
         </rules>
     </decisions>
     <decisions>
+        <name>Check_if_the_user_wants_to_put_the_case_away</name>
+        <label>Check if the user wants to put the case away</label>
+        <locationX>754</locationX>
+        <locationY>866</locationY>
+        <defaultConnector>
+            <targetReference>Please_record_years_to_be_retained</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Yes_put_away</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Are_you_sure_this_case_is_to_be_Put_Away</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Yes</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Please_record_years_to_be_retained</targetReference>
+            </connector>
+            <label>Yes</label>
+        </rules>
+        <rules>
+            <name>No_put_away</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Are_you_sure_this_case_is_to_be_Put_Away</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>No</elementReference>
+                </rightValue>
+            </conditions>
+            <label>No</label>
+        </rules>
+    </decisions>
+    <decisions>
         <name>Check_if_years_to_be_retained_is_30</name>
         <label>Check if years to be retained is 30</label>
         <locationX>754</locationX>
-        <locationY>1898</locationY>
+        <locationY>2198</locationY>
         <defaultConnector>
             <targetReference>Copy_2_of_File_put_away_message</targetReference>
         </defaultConnector>
@@ -433,7 +470,7 @@
         <name>Copy_1_of_Check_HID04_Open_Closed</name>
         <label>Copy 1 of Check HID04 (Open/Closed)</label>
         <locationX>1062</locationX>
-        <locationY>2222</locationY>
+        <locationY>2522</locationY>
         <defaultConnector>
             <targetReference>Copy_4_of_Update_BV_Case</targetReference>
         </defaultConnector>
@@ -458,7 +495,7 @@
             <conditionLogic>and</conditionLogic>
             <conditions>
                 <leftValueReference>hiddenScreenOpenClosedStatus</leftValueReference>
-                <operator>EqualTo</operator>
+                <operator>NotEqualTo</operator>
                 <rightValue>
                     <stringValue>Open</stringValue>
                 </rightValue>
@@ -473,7 +510,7 @@
         <name>Decide_which_field_to_update_based_on_type</name>
         <label>Decide which field to update based on type</label>
         <locationX>754</locationX>
-        <locationY>1298</locationY>
+        <locationY>1598</locationY>
         <defaultConnector>
             <targetReference>Check_if_years_to_be_retained_is_30</targetReference>
         </defaultConnector>
@@ -543,7 +580,7 @@
         <name>If_Case_type_starts_with_D3</name>
         <label>If Case type starts with D3</label>
         <locationX>446</locationX>
-        <locationY>2330</locationY>
+        <locationY>2630</locationY>
         <defaultConnector>
             <targetReference>File_put_away_message</targetReference>
         </defaultConnector>
@@ -608,7 +645,7 @@
         <name>Net_value_of_the_estate_under_800_decision</name>
         <label>Net value of the estate under £800</label>
         <locationX>292</locationX>
-        <locationY>2546</locationY>
+        <locationY>2846</locationY>
         <defaultConnector>
             <targetReference>File_put_away_message</targetReference>
         </defaultConnector>
@@ -645,7 +682,7 @@
         <expression>ADDMONTHS({!Enter_the_last_transaction_date}, 12 * 12) - 1</expression>
     </formulas>
     <interviewLabel>Put Away a Case {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Put Away a Case</label>
+    <label>Put Away a Case (Estates)</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -669,7 +706,7 @@
         <name>Copy_1_of_Create_a_history_record</name>
         <label>Copy 1 of Create a history record</label>
         <locationX>1018</locationX>
-        <locationY>2330</locationY>
+        <locationY>2630</locationY>
         <connector>
             <targetReference>Copy_1_of_Update_Case_Detail</targetReference>
         </connector>
@@ -677,6 +714,12 @@
             <field>Action__c</field>
             <value>
                 <stringValue>Case Put Away</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>BV_Case__c</field>
+            <value>
+                <elementReference>caseId</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -704,7 +747,7 @@
         <name>Create_a_history_record</name>
         <label>Create a history record</label>
         <locationX>402</locationX>
-        <locationY>3254</locationY>
+        <locationY>3554</locationY>
         <connector>
             <targetReference>Update_Case_Detail</targetReference>
         </connector>
@@ -745,7 +788,7 @@
         <name>Copy_1_of_Get_Case_Detail</name>
         <label>Copy 1 of Get Case Detail</label>
         <locationX>1062</locationX>
-        <locationY>2114</locationY>
+        <locationY>2414</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Copy_1_of_Check_HID04_Open_Closed</targetReference>
@@ -762,7 +805,7 @@
             <field>Record_Type_Dev_Name__c</field>
             <operator>EqualTo</operator>
             <value>
-                <stringValue>Officer_History</stringValue>
+                <stringValue>Admin_Hidden_Screen</stringValue>
             </value>
         </filters>
         <object>Case_Detail__c</object>
@@ -798,7 +841,7 @@
         <name>Get_Case_Detail</name>
         <label>Get Case Detail</label>
         <locationX>446</locationX>
-        <locationY>3038</locationY>
+        <locationY>3338</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Check_HID04_Open_Closed</targetReference>
@@ -815,7 +858,7 @@
             <field>Record_Type_Dev_Name__c</field>
             <operator>EqualTo</operator>
             <value>
-                <stringValue>Officer_History</stringValue>
+                <stringValue>Admin_Hidden_Screen</stringValue>
             </value>
         </filters>
         <object>Case_Detail__c</object>
@@ -825,10 +868,41 @@
         </outputAssignments>
     </recordLookups>
     <recordUpdates>
+        <name>Copy_1_of_Copy_1_of_Update_Case_Detail</name>
+        <label>Copy 1 of Copy 1 of Update Case Detail</label>
+        <locationX>1018</locationX>
+        <locationY>2846</locationY>
+        <connector>
+            <targetReference>Copy_4_of_Update_BV_Case</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>BV_Case__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>caseId</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Record_Type_Dev_Name__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Admin_Hidden_Screen</stringValue>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Open_Closed__c</field>
+            <value>
+                <stringValue>Closed</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Case_Detail__c</object>
+    </recordUpdates>
+    <recordUpdates>
         <name>Copy_1_of_Update_BV_Case</name>
         <label>Update BV Case</label>
         <locationX>842</locationX>
-        <locationY>1622</locationY>
+        <locationY>1922</locationY>
         <connector>
             <targetReference>Check_if_years_to_be_retained_is_30</targetReference>
         </connector>
@@ -859,9 +933,9 @@
         <name>Copy_1_of_Update_Case_Detail</name>
         <label>Copy 1 of Update Case Detail</label>
         <locationX>1018</locationX>
-        <locationY>2438</locationY>
+        <locationY>2738</locationY>
         <connector>
-            <targetReference>Copy_4_of_Update_BV_Case</targetReference>
+            <targetReference>Copy_1_of_Copy_1_of_Update_Case_Detail</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -899,7 +973,7 @@
         <name>Copy_2_of_Update_BV_Case</name>
         <label>Update BV Case</label>
         <locationX>314</locationX>
-        <locationY>1406</locationY>
+        <locationY>1706</locationY>
         <connector>
             <targetReference>Check_if_years_to_be_retained_is_30</targetReference>
         </connector>
@@ -927,10 +1001,41 @@
         <object>BV_Case__c</object>
     </recordUpdates>
     <recordUpdates>
+        <name>Copy_2_of_Update_Case_Detail</name>
+        <label>Update Case Detail</label>
+        <locationX>402</locationX>
+        <locationY>3770</locationY>
+        <connector>
+            <targetReference>Update_BV_Case_2</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>BV_Case__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>caseId</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Record_Type_Dev_Name__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Admin_Hidden_Screen</stringValue>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Open_Closed__c</field>
+            <value>
+                <stringValue>Closed</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Case_Detail__c</object>
+    </recordUpdates>
+    <recordUpdates>
         <name>Copy_3_of_Update_BV_Case</name>
         <label>Update BV Case</label>
         <locationX>578</locationX>
-        <locationY>1406</locationY>
+        <locationY>1706</locationY>
         <connector>
             <targetReference>Check_if_years_to_be_retained_is_30</targetReference>
         </connector>
@@ -961,7 +1066,7 @@
         <name>Copy_4_of_Update_BV_Case</name>
         <label>Copy 4 of Update BV Case</label>
         <locationX>1062</locationX>
-        <locationY>2630</locationY>
+        <locationY>3038</locationY>
         <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>
@@ -995,7 +1100,7 @@
         <name>Set_Insolvent_to_yes</name>
         <label>Set Insolvent to yes</label>
         <locationX>160</locationX>
-        <locationY>2654</locationY>
+        <locationY>2954</locationY>
         <connector>
             <targetReference>File_put_away_message</targetReference>
         </connector>
@@ -1026,7 +1131,7 @@
         <name>Update_BV_Case</name>
         <label>Update BV Case</label>
         <locationX>50</locationX>
-        <locationY>1406</locationY>
+        <locationY>1706</locationY>
         <connector>
             <targetReference>Check_if_years_to_be_retained_is_30</targetReference>
         </connector>
@@ -1057,7 +1162,7 @@
         <name>Update_BV_Case_2</name>
         <label>Update BV Case</label>
         <locationX>446</locationX>
-        <locationY>3554</locationY>
+        <locationY>3962</locationY>
         <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>
@@ -1091,7 +1196,7 @@
         <name>Update_BV_Case_eev20</name>
         <label>Update BV Case</label>
         <locationX>446</locationX>
-        <locationY>2222</locationY>
+        <locationY>2522</locationY>
         <connector>
             <targetReference>If_Case_type_starts_with_D3</targetReference>
         </connector>
@@ -1122,9 +1227,9 @@
         <name>Update_Case_Detail</name>
         <label>Update Case Detail</label>
         <locationX>402</locationX>
-        <locationY>3362</locationY>
+        <locationY>3662</locationY>
         <connector>
-            <targetReference>Update_BV_Case_2</targetReference>
+            <targetReference>Copy_2_of_Update_Case_Detail</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -1178,7 +1283,7 @@
         <name>Balance_remains</name>
         <label>Balance remains</label>
         <locationX>1062</locationX>
-        <locationY>1406</locationY>
+        <locationY>1706</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1201,7 +1306,7 @@
         <name>Case_Summary</name>
         <label>Case Summary</label>
         <locationX>754</locationX>
-        <locationY>1082</locationY>
+        <locationY>1382</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1247,7 +1352,7 @@
         <name>Check_the_ledger_confirmation</name>
         <label>Check the ledger confirmation</label>
         <locationX>446</locationX>
-        <locationY>2006</locationY>
+        <locationY>2306</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1269,7 +1374,7 @@
         <name>Copy_2_of_File_put_away_message</name>
         <label>Copy 2 of File put away message</label>
         <locationX>1062</locationX>
-        <locationY>2006</locationY>
+        <locationY>2306</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1291,7 +1396,7 @@
         <name>Document_Production_Message</name>
         <label>Document Production Message</label>
         <locationX>754</locationX>
-        <locationY>974</locationY>
+        <locationY>1274</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1313,7 +1418,7 @@
         <name>File_put_away_message</name>
         <label>File put away message</label>
         <locationX>446</locationX>
-        <locationY>2930</locationY>
+        <locationY>3230</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1335,7 +1440,7 @@
         <name>Net_value_of_the_estate_under_800</name>
         <label>Net value of the estate under £800?</label>
         <locationX>292</locationX>
-        <locationY>2438</locationY>
+        <locationY>2738</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1358,7 +1463,7 @@
         <name>Please_confirm_one_of_the_following</name>
         <label>Please confirm one of the following:</label>
         <locationX>754</locationX>
-        <locationY>1190</locationY>
+        <locationY>1490</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1384,7 +1489,7 @@
         <name>Please_record_years_to_be_retained</name>
         <label>Please record years to be retained</label>
         <locationX>754</locationX>
-        <locationY>866</locationY>
+        <locationY>1166</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1414,7 +1519,7 @@
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Please_record_years_to_be_retained</targetReference>
+            <targetReference>Check_if_the_user_wants_to_put_the_case_away</targetReference>
         </connector>
         <fields>
             <name>Are_you_sure_this_case_is_to_be_Put_Away</name>
@@ -1432,7 +1537,7 @@
         <name>Transaction_date_input</name>
         <label>Transaction date input</label>
         <locationX>446</locationX>
-        <locationY>2114</locationY>
+        <locationY>2414</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
