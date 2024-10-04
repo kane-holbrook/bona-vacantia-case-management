@@ -66,6 +66,14 @@
         </value>
     </choices>
     <choices>
+        <name>Company</name>
+        <choiceText>Company</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Company</stringValue>
+        </value>
+    </choices>
+    <choices>
         <name>D1_Net_Estate_under_5000</name>
         <choiceText>D1 - Net Estate under £5000</choiceText>
         <dataType>String</dataType>
@@ -106,6 +114,174 @@
         </value>
     </choices>
     <choices>
+        <name>E10_Admin_Restoration_Waivers</name>
+        <choiceText>E10 - Admin Restoration Waivers</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>E10 - Admin Restoration Waivers</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>E11_VAT_refund_of_admin_restoration_fee</name>
+        <choiceText>E11 - VAT refund of admin restoration fee</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>E11 - VAT refund of admin restoration fee</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>E1_Discretionary_Grants</name>
+        <choiceText>E1 - Discretionary Grants</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>E1 - Discretionary Grants</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>E2_Intellectual_Property</name>
+        <choiceText>E2 - Intellectual Property</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>E2 - Intellectual Property</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>E3_Land_Charges_Mortgages_Shares</name>
+        <choiceText>E3 - Land Charges / Mortgages / Shares</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>E3 - Land Charges / Mortgages / Shares</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>E3A_Mortgages_and_Charges</name>
+        <choiceText>E3A - Mortgages and Charges</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>E3A - Mortgages and Charges</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>E3B_Other_Restrictions_on_Title</name>
+        <choiceText>E3B - Other Restrictions on Title</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>E3B - Other Restrictions on Title</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>E3D_Quoted_Shares</name>
+        <choiceText>E3D - Quoted Shares</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>E3D - Quoted Shares</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>E3E_Unquoted_Shares</name>
+        <choiceText>E3E - Unquoted Shares</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>E3E - Unquoted Shares</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>E4_Freehold_Reversions</name>
+        <choiceText>E4 - Freehold Reversions</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>E4 - Freehold Reversions</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>E4A_Simple_Freehold_Reversion</name>
+        <choiceText>E4A - Simple Freehold Reversion</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>E4A - Simple Freehold Reversion</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>E4B_Complex_Freehold_Reversion</name>
+        <choiceText>E4B - Complex Freehold Reversion</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>E4B - Complex Freehold Reversion</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>E5_Other_Land</name>
+        <choiceText>E5 - Other Land</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>E5 - Other Land</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>E5A_Simple_land</name>
+        <choiceText>E5A - Simple land</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>E5A - Simple land</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>E5B_Complex_Land</name>
+        <choiceText>E5B - Complex Land</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>E5B - Complex Land</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>E5C_Sale_by_Mortgagee_in_Possession</name>
+        <choiceText>E5C - Sale by Mortgagee in Possession</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>E5C - Sale by Mortgagee in Possession</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>E6_Pension_Schemes</name>
+        <choiceText>E6 - Pension Schemes</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>E6 - Pension Schemes</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>E7_Miscellaneous</name>
+        <choiceText>E7 - Miscellaneous</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>E7 - Miscellaneous</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>E8_Domain_Name</name>
+        <choiceText>E8 - Domain Name</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>E8 - Domain Name</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>E9_Disclaimer</name>
+        <choiceText>E9 - Disclaimer</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>E9 - Disclaimer</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Estate</name>
+        <choiceText>Estate</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Estate</stringValue>
+        </value>
+    </choices>
+    <choices>
         <name>F_Collect</name>
         <choiceText>F - Collect</choiceText>
         <dataType>String</dataType>
@@ -119,6 +295,38 @@
         <dataType>String</dataType>
         <value>
             <stringValue>G - General</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>H1_Restoration</name>
+        <choiceText>H1 - Restoration</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>H1 - Restoration</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>H2_Complex_Claims</name>
+        <choiceText>H2 - Complex Claims</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>H2 - Complex Claims</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>H3_Electronic_Bulk_Referral</name>
+        <choiceText>H3 - Electronic Bulk Referral</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>H3 - Electronic Bulk Referral</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>H_Bank_and_Other_Cash_Balances</name>
+        <choiceText>H - Bank and Other Cash Balances</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>H - Bank and Other Cash Balances</stringValue>
         </value>
     </choices>
     <choices>
@@ -143,6 +351,14 @@
         <dataType>String</dataType>
         <value>
             <stringValue>M - Costs Case</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>NC_Northern_Ireland</name>
+        <choiceText>NC - Northern Ireland</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>NC - Northern Ireland</stringValue>
         </value>
     </choices>
     <choices>
@@ -218,6 +434,14 @@
         </value>
     </choices>
     <choices>
+        <name>V_BV_Registry_Queries</name>
+        <choiceText>V - BV Registry Queries</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>V - BV Registry Queries</stringValue>
+        </value>
+    </choices>
+    <choices>
         <name>Y_Kin_Claims</name>
         <choiceText>Y - Kin Claims</choiceText>
         <dataType>String</dataType>
@@ -242,9 +466,64 @@
         </value>
     </choices>
     <decisions>
+        <name>Case_Category_selection_based_on_case_type</name>
+        <label>Case Category selection based on case type</label>
+        <locationX>446</locationX>
+        <locationY>350</locationY>
+        <defaultConnector>
+            <targetReference>Get_BV_Case_Category</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>ESTA</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>recordType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>ESTA</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Select_a_new_case_type</targetReference>
+            </connector>
+            <label>ESTA</label>
+        </rules>
+        <rules>
+            <name>COMP</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>recordType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>COMP</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Copy_1_of_Select_a_new_case_type</targetReference>
+            </connector>
+            <label>COMP</label>
+        </rules>
+        <rules>
+            <name>CONV</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>recordType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>CONV</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Copy_3_of_Select_a_new_case_type</targetReference>
+            </connector>
+            <label>CONV</label>
+        </rules>
+    </decisions>
+    <decisions>
         <name>Change_case_category_confirmation</name>
         <label>Change case category confirmation</label>
-        <locationX>314</locationX>
+        <locationX>864</locationX>
         <locationY>242</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
@@ -258,7 +537,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Select_a_new_case_type</targetReference>
+                <targetReference>Case_Category_selection_based_on_case_type</targetReference>
             </connector>
             <label>Yes</label>
         </rules>
@@ -276,6 +555,23 @@
         </rules>
     </decisions>
     <environments>Default</environments>
+    <formulas>
+        <name>caseTypeFormula</name>
+        <dataType>String</dataType>
+        <expression>IF(
+    NOT(ISBLANK({!Select_a_case_type})),
+    {!Select_a_case_type},
+    IF(
+        NOT(ISBLANK({!Select_a_case_type_comp})),
+        {!Select_a_case_type_comp},
+        IF(
+            NOT(ISBLANK({!Select_a_case_type_conv})),
+            {!Select_a_case_type_conv},
+            &quot;&quot;
+        )
+    )
+)</expression>
+    </formulas>
     <interviewLabel>Change case category flow {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Change case category flow</label>
     <processMetadataValues>
@@ -300,8 +596,8 @@
     <recordCreates>
         <name>Create_a_history_record_for_case_category_changed</name>
         <label>Create a history record</label>
-        <locationX>50</locationX>
-        <locationY>566</locationY>
+        <locationX>446</locationX>
+        <locationY>758</locationY>
         <connector>
             <targetReference>Update_BV_Case_Category</targetReference>
         </connector>
@@ -341,8 +637,8 @@
     <recordLookups>
         <name>Get_BV_Case_Category</name>
         <label>Get BV Case Category</label>
-        <locationX>50</locationX>
-        <locationY>458</locationY>
+        <locationX>446</locationX>
+        <locationY>650</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Create_a_history_record_for_case_category_changed</targetReference>
@@ -364,8 +660,8 @@
     <recordUpdates>
         <name>Update_BV_Case_Category</name>
         <label>Update BV Case Category</label>
-        <locationX>50</locationX>
-        <locationY>674</locationY>
+        <locationX>446</locationX>
+        <locationY>866</locationY>
         <connector>
             <targetReference>Case_Category_Changed_To</targetReference>
         </connector>
@@ -380,7 +676,7 @@
         <inputAssignments>
             <field>Case_Type__c</field>
             <value>
-                <elementReference>Select_a_case_type</elementReference>
+                <elementReference>caseTypeFormula</elementReference>
             </value>
         </inputAssignments>
         <object>BV_Case__c</object>
@@ -388,8 +684,8 @@
     <screens>
         <name>Case_Category_Changed_To</name>
         <label>Case Category Changed To</label>
-        <locationX>50</locationX>
-        <locationY>782</locationY>
+        <locationX>446</locationX>
+        <locationY>974</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -402,9 +698,80 @@
         <showHeader>true</showHeader>
     </screens>
     <screens>
+        <name>Copy_1_of_Select_a_new_case_type</name>
+        <label>Select a new case type</label>
+        <locationX>314</locationX>
+        <locationY>458</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Get_BV_Case_Category</targetReference>
+        </connector>
+        <fields>
+            <name>Select_a_case_type_comp</name>
+            <choiceReferences>E1_Discretionary_Grants</choiceReferences>
+            <choiceReferences>E2_Intellectual_Property</choiceReferences>
+            <choiceReferences>E3_Land_Charges_Mortgages_Shares</choiceReferences>
+            <choiceReferences>E3A_Mortgages_and_Charges</choiceReferences>
+            <choiceReferences>E3B_Other_Restrictions_on_Title</choiceReferences>
+            <choiceReferences>E3D_Quoted_Shares</choiceReferences>
+            <choiceReferences>E3E_Unquoted_Shares</choiceReferences>
+            <choiceReferences>E4_Freehold_Reversions</choiceReferences>
+            <choiceReferences>E4A_Simple_Freehold_Reversion</choiceReferences>
+            <choiceReferences>E4B_Complex_Freehold_Reversion</choiceReferences>
+            <choiceReferences>E5_Other_Land</choiceReferences>
+            <choiceReferences>E5A_Simple_land</choiceReferences>
+            <choiceReferences>E5B_Complex_Land</choiceReferences>
+            <choiceReferences>E5C_Sale_by_Mortgagee_in_Possession</choiceReferences>
+            <choiceReferences>E6_Pension_Schemes</choiceReferences>
+            <choiceReferences>E7_Miscellaneous</choiceReferences>
+            <choiceReferences>E8_Domain_Name</choiceReferences>
+            <choiceReferences>E9_Disclaimer</choiceReferences>
+            <choiceReferences>E10_Admin_Restoration_Waivers</choiceReferences>
+            <choiceReferences>E11_VAT_refund_of_admin_restoration_fee</choiceReferences>
+            <choiceReferences>G_General</choiceReferences>
+            <choiceReferences>H_Bank_and_Other_Cash_Balances</choiceReferences>
+            <choiceReferences>H1_Restoration</choiceReferences>
+            <choiceReferences>H2_Complex_Claims</choiceReferences>
+            <choiceReferences>H3_Electronic_Bulk_Referral</choiceReferences>
+            <choiceReferences>NC_Northern_Ireland</choiceReferences>
+            <choiceReferences>V_BV_Registry_Queries</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Select a case type</fieldText>
+            <fieldType>DropdownBox</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Copy_3_of_Select_a_new_case_type</name>
+        <label>Select a new case type</label>
+        <locationX>578</locationX>
+        <locationY>458</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Get_BV_Case_Category</targetReference>
+        </connector>
+        <fields>
+            <name>Select_a_case_type_conv</name>
+            <choiceReferences>Estate</choiceReferences>
+            <choiceReferences>Company</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Select a case type</fieldText>
+            <fieldType>DropdownBox</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
         <name>Question</name>
         <label>Question</label>
-        <locationX>314</locationX>
+        <locationX>864</locationX>
         <locationY>134</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -428,7 +795,7 @@
         <name>Select_a_new_case_type</name>
         <label>Select a new case type</label>
         <locationX>50</locationX>
-        <locationY>350</locationY>
+        <locationY>458</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -472,7 +839,7 @@
         <showHeader>true</showHeader>
     </screens>
     <start>
-        <locationX>188</locationX>
+        <locationX>738</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Question</targetReference>
@@ -488,6 +855,13 @@
     </variables>
     <variables>
         <name>recordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>recordType</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>true</isInput>
