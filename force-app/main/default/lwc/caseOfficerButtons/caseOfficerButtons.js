@@ -208,6 +208,11 @@ export default class CaseOfficerButtons extends LightningElement {
                     name: 'recordId', 
                     type: 'String', 
                     value: this.recordId
+                },
+                {
+                    name: 'recordType',
+                    type: 'String',
+                    value: this.recordTypeDeveloperName
                 }
             ];
             this.isChangeCaseCategoryModalOpen = true;
