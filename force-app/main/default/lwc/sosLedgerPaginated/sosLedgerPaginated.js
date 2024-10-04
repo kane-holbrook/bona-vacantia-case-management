@@ -21,7 +21,7 @@ export default class SosLedger extends LightningElement {
     @track totalRecords = 0;
     @track rangeStart = 0;
     @track rangeEnd = 0;
-    isLoading = false;
+    isLoading = true;
     isModalOpen = false;
     isReverseAccrualModalOpen = false;
 
@@ -39,10 +39,35 @@ export default class SosLedger extends LightningElement {
         { label: 'Description', fieldName: 'description', type: 'text', sortable: true, wrapText: true},
     ];
 
+    @wire(getRecord, { recordId: '$recordId', fields: FIELDS })
+    record;
+
+    @wire(getSOSData, { mtcode: '$bvCaseName' })
+    wiredSOSData({ error, data }) {
+        if (data) {
+            console.log('Result:', data);
+            this.data = this.transformData(data);
+            this.filteredData = [...this.data];
+            this.isLoading = false;
+            this.sortDirection = 'asc';
+            this.sortedBy = 'datePosted';
+
+            this.statusOptions = [...new Set(this.data.map(entry => entry.status))].map(status => ({
+                label: status,
+                value: status
+            }));
+
+            this.updatePageData();
+        } else if (error) {
+            console.error('Error fetching SOS data:', error);
+            this.isLoading = false;
+        }
+    }
+
     get bvCaseName() {
         let caseName = getFieldValue(this.record.data, 'BV_Case__c.Name');
         // Replace all occurrences of '/' with '_'
-        return caseName.replace(/\//g, '_');
+        return caseName ? caseName.replace(/\//g, '_') : '';
     }
 
     transformData(data) {
@@ -111,39 +136,6 @@ export default class SosLedger extends LightningElement {
         });
     
         return transformedData;
-    }
-
-    @wire(getRecord, { recordId: '$recordId', fields: FIELDS })
-    record;
-
-    connectedCallback() {
-        setTimeout(() => {
-            this.fetchSOSData();
-        }, 0);
-    }
-
-    fetchSOSData() {
-        this.isLoading = true;
-        getSOSData({ mtcode: this.bvCaseName })
-            .then(result => {
-                console.log('Result:', result);
-                this.data = this.transformData(result);
-                this.filteredData = [...this.data];
-                this.isLoading = false;
-                this.sortDirection = 'asc';
-                this.sortedBy = 'datePosted';
-
-                this.statusOptions = [...new Set(this.data.map(entry => entry.status))].map(status => ({
-                    label: status,
-                    value: status
-                }));
-
-                this.updatePageData();
-            })
-            .catch(error => {
-                console.error(error);
-                this.isLoading = false;
-            });
     }
 
     filterData() {
