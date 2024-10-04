@@ -38,7 +38,7 @@ export default class SosCreateAccrual extends LightningElement {
         // Set up the flow inputs
         this.flowInputs = [
             {
-                name: 'caseId',
+                name: 'caseID',
                 type: 'String',
                 value: this.caseId
             }
@@ -79,7 +79,13 @@ export default class SosCreateAccrual extends LightningElement {
         })
         .then(result => {
             console.log('Accrual created successfully:', result);
-            window.location.reload();
+            // Dispatch a custom event to notify the parent component
+            this.dispatchEvent(new CustomEvent('accrualcreated', {
+                detail: { recordId: this.caseId },
+                bubbles: true,
+                composed: true
+            }));
+            this.closeModal();
         })
         .catch(error => {
             console.error('Error creating accrual:', error);

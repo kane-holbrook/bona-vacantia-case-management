@@ -132,7 +132,11 @@
                         <h2 class="slds-text-heading_medium">Accrual Details</h2>
                     </header>
                     <div class="slds-modal__content slds-p-around_medium">
-                        <c-sos-create-accrual case-number={bvCaseName} case-id={recordId} onledgercreated={handleLedgerCreated}></c-sos-create-accrual>
+                        <c-sos-create-accrual
+                            case-number={bvCaseName}
+                            case-id={recordId}
+                            onaccrualcreated={handleAccrualCreated}
+                        ></c-sos-create-accrual>
                     </div>
                 </div>
             </section>

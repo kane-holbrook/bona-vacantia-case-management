@@ -1,7 +1,9 @@
 import { LightningElement, track, wire, api } from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
+import { refreshApex } from '@salesforce/apex';
 import getSOSData from '@salesforce/apex/SOSFinanceController.getSOSData';
 import reverseAccrual from '@salesforce/apex/SOSFinanceController.reverseAccrual';
+import { getRecordId } from 'c/sharedService';
 
 const FIELDS = ['BV_Case__c.Name'];
 const PAGE_SIZE = 20; // Number of records per page
@@ -42,8 +44,16 @@ export default class SosLedger extends LightningElement {
     @wire(getRecord, { recordId: '$recordId', fields: FIELDS })
     record;
 
+    wiredSOSDataResult;
+
+    connectedCallback() {
+        this.recordId = getRecordId(this.record);
+    }
+
     @wire(getSOSData, { mtcode: '$bvCaseName' })
-    wiredSOSData({ error, data }) {
+    wiredSOSData(result) {
+        this.wiredSOSDataResult = result;
+        const { error, data } = result;
         if (data) {
             console.log('Result:', data);
             this.data = this.transformData(data);
@@ -308,6 +318,8 @@ export default class SosLedger extends LightningElement {
         })
         .then(result => {
             console.log('Reversal Success:', result);
+            this.refreshSosData();
+            this.closeReverseAccrualModal();
         })
         .catch(error => {
             console.error('Reversal Error:', error);
@@ -404,5 +416,14 @@ export default class SosLedger extends LightningElement {
             number: i + 1,
             class: `slds-button ${this.currentPage === i + 1 ? 'slds-button_brand' : 'slds-button_neutral'}`
         }));
+    }
+
+    refreshSosData() {
+        return refreshApex(this.wiredSOSDataResult);
+    }
+
+    handleAccrualCreated() {
+        this.refreshSosData();
+        this.closeModal();
     }
 }
