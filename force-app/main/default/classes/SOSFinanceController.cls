@@ -278,7 +278,7 @@ public class SOSFinanceController
         r.mtcode = mtcode;
         
         // Hardcode all other values
-        r.mattertype = '606';
+        r.mattertype = 'ESTA';
         r.ref = 'REF12345';
         r.description = 'This is a test description for the matter';
         r.address_1 = 'address 1';
