@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>61.0</apiVersion>
+    <assignments>
+        <name>Assign_confirmAction</name>
+        <label>Assign confirmAction</label>
+        <locationX>864</locationX>
+        <locationY>242</locationY>
+        <assignmentItems>
+            <assignToReference>confirmAction</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Are_you_sure_you_want_to_change_the_case_category</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Change_case_category_confirmation</targetReference>
+        </connector>
+    </assignments>
     <choices>
         <name>A_SRA_Intestate</name>
         <choiceText>A - SRA Intestate</choiceText>
@@ -469,7 +485,7 @@
         <name>Case_Category_selection_based_on_case_type</name>
         <label>Case Category selection based on case type</label>
         <locationX>446</locationX>
-        <locationY>350</locationY>
+        <locationY>458</locationY>
         <defaultConnector>
             <targetReference>Get_BV_Case_Category</targetReference>
         </defaultConnector>
@@ -524,13 +540,13 @@
         <name>Change_case_category_confirmation</name>
         <label>Change case category confirmation</label>
         <locationX>864</locationX>
-        <locationY>242</locationY>
+        <locationY>350</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>Yes_Changed</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>Are_you_sure_you_want_to_change_the_case_category</leftValueReference>
+                <leftValueReference>confirmAction</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <elementReference>Yes</elementReference>
@@ -545,7 +561,7 @@
             <name>No_Changed</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>Are_you_sure_you_want_to_change_the_case_category</leftValueReference>
+                <leftValueReference>confirmAction</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <elementReference>No</elementReference>
@@ -597,7 +613,7 @@
         <name>Create_a_history_record_for_case_category_changed</name>
         <label>Create a history record</label>
         <locationX>446</locationX>
-        <locationY>758</locationY>
+        <locationY>866</locationY>
         <connector>
             <targetReference>Update_BV_Case_Category</targetReference>
         </connector>
@@ -638,7 +654,7 @@
         <name>Get_BV_Case_Category</name>
         <label>Get BV Case Category</label>
         <locationX>446</locationX>
-        <locationY>650</locationY>
+        <locationY>758</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Create_a_history_record_for_case_category_changed</targetReference>
@@ -661,7 +677,7 @@
         <name>Update_BV_Case_Category</name>
         <label>Update BV Case Category</label>
         <locationX>446</locationX>
-        <locationY>866</locationY>
+        <locationY>974</locationY>
         <connector>
             <targetReference>Case_Category_Changed_To</targetReference>
         </connector>
@@ -685,7 +701,7 @@
         <name>Case_Category_Changed_To</name>
         <label>Case Category Changed To</label>
         <locationX>446</locationX>
-        <locationY>974</locationY>
+        <locationY>1082</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -701,7 +717,7 @@
         <name>Copy_1_of_Select_a_new_case_type</name>
         <label>Select a new case type</label>
         <locationX>314</locationX>
-        <locationY>458</locationY>
+        <locationY>566</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -749,7 +765,7 @@
         <name>Copy_3_of_Select_a_new_case_type</name>
         <label>Select a new case type</label>
         <locationX>578</locationX>
-        <locationY>458</locationY>
+        <locationY>566</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -777,7 +793,7 @@
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Change_case_category_confirmation</targetReference>
+            <targetReference>Assign_confirmAction</targetReference>
         </connector>
         <fields>
             <name>Are_you_sure_you_want_to_change_the_case_category</name>
@@ -795,7 +811,7 @@
         <name>Select_a_new_case_type</name>
         <label>Select a new case type</label>
         <locationX>50</locationX>
-        <locationY>458</locationY>
+        <locationY>566</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -846,6 +862,13 @@
         </connector>
     </start>
     <status>Active</status>
+    <variables>
+        <name>confirmAction</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
     <variables>
         <name>originalCaseCategory</name>
         <dataType>String</dataType>

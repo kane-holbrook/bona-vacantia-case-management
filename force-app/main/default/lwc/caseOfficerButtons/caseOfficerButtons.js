@@ -606,13 +606,29 @@ export default class CaseOfficerButtons extends LightningElement {
             let message = '';
             let modalToClose = '';
 
+            // Check for the output variable related to confirmation
+            const outputVariables = event.detail.outputVariables;
+            let flowOutput = {};  // Initialize a place to store flow outputs
+
+            // Loop through outputVariables and assign key-value pairs to flowOutput
+            outputVariables.forEach(variable => {
+                flowOutput[variable.name] = variable.value;
+            });
+
+            // Check if the confirmAction (or similar variable) is 'Yes'
+            const isConfirmed = flowOutput['confirmAction'] === 'Yes';
+            
             switch (event.target.flowApiName) {
                 case 'Change_case_category_flow':
-                    message = 'Case category changed successfully';
+                    if (isConfirmed) {
+                        message = 'Case category changed successfully'; 
+                    }
                     modalToClose = 'isChangeCaseCategoryModalOpen';
                     break;
                 case 'Re_open_a_case':
-                    message = 'Case reopened successfully';
+                    if (isConfirmed) {
+                        message = 'Case reopened successfully';
+                    }
                     modalToClose = 'isReopenCaseModalOpen';
                     break;
                 case 'Change_disclaimer_date':
@@ -639,18 +655,6 @@ export default class CaseOfficerButtons extends LightningElement {
                 message = 'ILO approval process completed successfully';
                 modalToClose = 'isILOApproveModalOpen';
 
-                // Read the flow output variables
-                const outputVariables = event.detail.outputVariables;
-
-                console.log('event detail', event.detail);
-                console.log('Flow output variables:', outputVariables);
-                let flowOutput = {};  // Initialize a place to store flow outputs
-
-                // Loop through outputVariables and assign key-value pairs to flowOutput
-                outputVariables.forEach(variable => {
-                    flowOutput[variable.name] = variable.value;
-                });
-
                 // Pass the captured flow output to the method that generates and sends the email
                 this.sendILOApproveEmail(flowOutput);
                 break;
@@ -663,13 +667,15 @@ export default class CaseOfficerButtons extends LightningElement {
                     message = 'Operation completed successfully';
             }
 
-            this.dispatchEvent(
-                new ShowToastEvent({
-                    title: title,
-                    message: message,
-                    variant: 'success'
-                })
-            );
+            if (message != ''){
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: title,
+                        message: message,
+                        variant: 'success'
+                    })
+                );
+            }
 
             if (modalToClose) {
                 this[modalToClose] = false;
