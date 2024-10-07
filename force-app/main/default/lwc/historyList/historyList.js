@@ -713,7 +713,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
         this.filteredHistoryItems = this.historyItems.flatMap(item => {
             item.isExpanded = this.expandedItems.has(item.Id);
             item.iconName = this.getIconName(item.isExpanded);
-
+    
             const searchKeyLower = this.searchKey?.toLowerCase() ?? '';
             const searchMatch = this.searchKey ? (
                 (item.Action__c?.toLowerCase() ?? '').includes(searchKeyLower) ||
@@ -730,44 +730,73 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
             const historyTypeMatch = this.selectedHistoryType === 'allHistory' ||
                 (this.selectedHistoryType === 'myHistory' && item.Case_Officer__c === this.currentUserId);
     
-            const isMatch = searchMatch && dateMatch && historyTypeMatch;
+            // Independent search filtering for each record
+            const isParentMatch = searchMatch && dateMatch && historyTypeMatch;
     
-            if (isMatch) {
-                const result = [item];
-                if (this.showRelatedItems && item.isExpanded && item.children && item.children.length > 0) {
-                    const childRecords = item.children.flatMap(child => {
-                        const childSearchMatch = this.searchKey ? (
-                            (child.Action__c?.toLowerCase() ?? '').includes(searchKeyLower) ||
-                            (child.notes?.toLowerCase() ?? '').includes(searchKeyLower) ||
-                            (child.documentType?.toLowerCase() ?? '').includes(searchKeyLower) ||
-                            (child.Case_Officer_Name?.toLowerCase() ?? '').includes(searchKeyLower)
-                        ) : true;
+            const parentResult = isParentMatch ? [{ ...item, isChild: false }] : [];
     
-                        const childDateMatch = (
-                            (!this.dateFrom || new Date(child.Date_Inserted_Time__c ?? 0) >= this.dateFrom) &&
-                            (!this.dateTo || new Date(child.Date_Inserted_Time__c ?? 0) <= this.dateTo)
-                        );
+            // If grouping is off, handle children independently
+            if (!this.showRelatedItems) {
+                const childResults = item.children.flatMap(child => {
+                    const childSearchMatch = this.searchKey ? (
+                        (child.Action__c?.toLowerCase() ?? '').includes(searchKeyLower) ||
+                        (child.notes?.toLowerCase() ?? '').includes(searchKeyLower) ||
+                        (child.documentType?.toLowerCase() ?? '').includes(searchKeyLower) ||
+                        (child.Case_Officer_Name?.toLowerCase() ?? '').includes(searchKeyLower)
+                    ) : true;
     
-                        const childHistoryTypeMatch = this.selectedHistoryType === 'allHistory' ||
-                            (this.selectedHistoryType === 'myHistory' && child.Case_Officer__c === this.currentUserId);
+                    const childDateMatch = (
+                        (!this.dateFrom || new Date(child.Date_Inserted_Time__c ?? 0) >= this.dateFrom) &&
+                        (!this.dateTo || new Date(child.Date_Inserted_Time__c ?? 0) <= this.dateTo)
+                    );
     
-                        if (childSearchMatch && childDateMatch && childHistoryTypeMatch) {
-                            return [{ ...child, isChild: true }];
-                        }
-                        return [];
-                    });
-                    result.push(...childRecords);
-                } else if (!this.showRelatedItems && item.children && item.children.length > 0) {
-                    result.push(...item.children.map(child => ({ ...child, isChild: true })));
-                }
-                return result;
+                    const childHistoryTypeMatch = this.selectedHistoryType === 'allHistory' ||
+                        (this.selectedHistoryType === 'myHistory' && child.Case_Officer__c === this.currentUserId);
+    
+                    if (childSearchMatch && childDateMatch && childHistoryTypeMatch) {
+                        return [{ ...child, isChild: true }];
+                    }
+    
+                    return [];
+                });
+    
+                return parentResult.concat(childResults);
             }
     
-            return [];
+            // If grouping is on, return parent and any expanded child records that match the filters
+            if (isParentMatch && this.showRelatedItems && item.isExpanded && item.children.length > 0) {
+                const childResults = item.children.flatMap(child => {
+                    const childSearchMatch = this.searchKey ? (
+                        (child.Action__c?.toLowerCase() ?? '').includes(searchKeyLower) ||
+                        (child.notes?.toLowerCase() ?? '').includes(searchKeyLower) ||
+                        (child.documentType?.toLowerCase() ?? '').includes(searchKeyLower) ||
+                        (child.Case_Officer_Name?.toLowerCase() ?? '').includes(searchKeyLower)
+                    ) : true;
+    
+                    const childDateMatch = (
+                        (!this.dateFrom || new Date(child.Date_Inserted_Time__c ?? 0) >= this.dateFrom) &&
+                        (!this.dateTo || new Date(child.Date_Inserted_Time__c ?? 0) <= this.dateTo)
+                    );
+    
+                    const childHistoryTypeMatch = this.selectedHistoryType === 'allHistory' ||
+                        (this.selectedHistoryType === 'myHistory' && child.Case_Officer__c === this.currentUserId);
+    
+                    if (childSearchMatch && childDateMatch && childHistoryTypeMatch) {
+                        return [{ ...child, isChild: true }];
+                    }
+    
+                    return [];
+                });
+    
+                return parentResult.concat(childResults);
+            }
+    
+            return parentResult;
         });
     
-        this.updateGroupButtonState();
+        this.updateGroupButtonState(); // Ensure group/ungroup buttons are updated
     }
+    
 
     handleHistoryTypeChange(event) {
         this.selectedHistoryType = event.detail.value;
