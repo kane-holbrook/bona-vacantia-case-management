@@ -35,44 +35,70 @@ export default class SosReverseAccrual extends LightningElement {
     }
 
     transformData(data) {
-        if (!data || !data.dsaccledger) {
+        if (!data) {
             return [];
         }
-        return data.dsaccledger
-            .filter(item => item && item['NARRATIVE'] && !item['NARRATIVE'].trim().includes('Reversal of'))
-            .map(item => {
-                const narrative = item['NARRATIVE'] ? item['NARRATIVE'].trim() : '';
-                let transactionCode = '';
-                let sosCode = '';
-    
-                if (narrative.startsWith('EA')) {
-                    transactionCode = 'ARE2';
-                    sosCode = narrative.slice(0, 3);
-                } else if (narrative.startsWith('EL')) {
-                    transactionCode = 'APE1';
-                    sosCode = narrative.slice(0, 3);
-                }
 
-                let amount = 0;
-                if (item['OFFICE-DEBIT'] !== undefined && item['OFFICE-DEBIT'] !== 0) {
-                    amount = item['OFFICE-DEBIT'];
-                } else if (item['OFFICE-CREDIT'] !== undefined && item['OFFICE-CREDIT'] !== 0) {
-                    amount = item['OFFICE-CREDIT'];
-                }
-    
-                return {
+        let transformedData = [];
+
+        // Process dsaccledger data
+        if (data.dsaccledger) {
+            transformedData = data.dsaccledger
+                .filter(item => 
+                    item && 
+                    ((item['CLIENT-DEBIT'] !== undefined && item['CLIENT-DEBIT'] !== 0) || 
+                     (item['CLIENT-CREDIT'] !== undefined && item['CLIENT-CREDIT'] !== 0))
+                )
+                .map(item => ({
                     datePosted: item['POST-DATE'] ? new Date(item['POST-DATE']).toLocaleDateString('en-GB', {
                         year: 'numeric',
                         month: '2-digit',
                         day: '2-digit'
                     }) : '',
-                    transactionCode,
-                    amount: amount,
+                    transactionCode: '',
+                    amount: item['CLIENT-DEBIT'] || item['CLIENT-CREDIT'] || 0,
                     reference: item['REFERENCE'] || '',
-                    narrative,
-                    sosCode
-                };
-            });
+                    narrative: item['NARRATIVE'] ? item['NARRATIVE'].trim() : '',
+                    sosCode: ''
+                }));
+        }
+
+        // Process dsPostSlipCreate data
+        if (data.dsPostSlipCreate) {
+            const postSlipData = data.dsPostSlipCreate
+                .filter(item => 
+                    item && 
+                    item['NET'] !== undefined && item['NET'] !== 0
+                )
+                .map(item => ({
+                    datePosted: item['DATE-CREATED'] ? new Date(item['DATE-CREATED']).toLocaleDateString('en-GB', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit'
+                    }) : '',
+                    transactionCode: '',
+                    amount: item['NET'] || 0,
+                    reference: item['REFERENCE'] || '',
+                    narrative: item['NARRATIVE'] ? item['NARRATIVE'].trim() : '',
+                    sosCode: ''
+                }));
+
+            transformedData = [...transformedData, ...postSlipData];
+        }
+
+        // Sort the combined data by date
+        return transformedData.sort((a, b) => new Date(b.datePosted) - new Date(a.datePosted));
+    }
+
+    extractSosCode(narrative) {
+        if (narrative) {
+            if (narrative.startsWith('EA')) {
+                return narrative.slice(0, 3);
+            } else if (narrative.startsWith('EL')) {
+                return narrative.slice(0, 3);
+            }
+        }
+        return '';
     }
 
     sortBy(field, reverse, primer) {
