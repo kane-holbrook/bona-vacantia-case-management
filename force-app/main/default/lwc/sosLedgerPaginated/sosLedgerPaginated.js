@@ -113,21 +113,26 @@ export default class SosLedger extends LightningElement {
             const postSlipData = data.dsPostSlipCreate
                 .filter(item => !item['UNDONE'])
                 .map(item => {
-                    let accrualsDebit = item['DRCR'] === 'DR' ? item['NET'] : 0;
-                    let accrualsCredit = item['DRCR'] === 'CR' ? item['NET'] : 0;
+                    let accrualsDebit = 0;
+                    let accrualsCredit = 0;
                     const narrative = item['NARRATIVE']?.trim();
-        
-                    // Apply the necessary adjustments to the accrualsDebit and accrualsCredit values
-                    if (narrative.startsWith('EA2') || narrative.startsWith('EA3') || narrative.startsWith('EA4') || narrative.startsWith('EA5')) {
-                        accrualsCredit = item['NET'];
-                        accrualsDebit = 0;
-                    } else if (narrative.startsWith('EL1') || narrative.startsWith('EL2') || narrative.startsWith('EL3') || narrative.startsWith('EL4') || narrative.startsWith('EL5')) {
-                        accrualsDebit = item['NET'];
-                        accrualsCredit = 0;
-                    } else if (narrative.startsWith('Reversal EA') || narrative.startsWith('Reversal EL')) {
-                        [accrualsDebit, accrualsCredit] = [accrualsCredit, accrualsDebit];
+                    const net = parseFloat(item['NET']) || 0;
+
+                    if (item['DRCR'] === 'DR') {
+                        accrualsDebit = net;
+                        console.log('accrualsDebit:', accrualsDebit);
+                    } else if (item['DRCR'] === 'CR') {
+                        accrualsCredit = net;
+                        console.log('accrualsCredit:', accrualsCredit);
+                    } else {
+                        // Fallback to narrative-based logic when DRCR is empty
+                        if (narrative.startsWith('EA')) {
+                            accrualsCredit = net;
+                        } else if (narrative.startsWith('EL')) {
+                            accrualsDebit = net;
+                        }
                     }
-        
+
                     return {
                         datePosted: new Date(item['DATE-CREATED']).toLocaleDateString('en-GB', {
                             year: 'numeric',
@@ -142,11 +147,13 @@ export default class SosLedger extends LightningElement {
                         description: narrative,
                     };
                 });
-    
+
             // Merge the two datasets
             transformedData = [...transformedData, ...postSlipData];
+
+            console.log('transformedData:', transformedData);
         }
-    
+
         // Sort the combined data by date
         transformedData.sort((a, b) => {
             const dateA = this.parseUKDate(a.datePosted);
@@ -324,13 +331,16 @@ export default class SosLedger extends LightningElement {
             console.error('No accrual selected');
             return;
         }
-    
+
+        // Determine the reversal type based on the selected accrual's transaction code
+        const reversalType = this.selectedAccrual.transactionCode === 'DR' ? 'CR' : 'DR';
+
         reverseAccrual({
             MtCode: this.bvCaseName,
             Net: this.selectedAccrual.amount,
             Narrative: this.selectedAccrual.narrative,
             Reference: this.selectedAccrual.reference,
-            Type: 'DR'
+            Type: reversalType
         })
         .then(result => {
             console.log('Reversal Success:', result);

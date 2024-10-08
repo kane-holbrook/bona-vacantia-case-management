@@ -55,11 +55,11 @@ export default class SosReverseAccrual extends LightningElement {
                         month: '2-digit',
                         day: '2-digit'
                     }) : '',
-                    transactionCode: '',
+                    transactionCode: item['CLIENT-CREDIT'] !== undefined && item['CLIENT-CREDIT'] !== 0 ? 'DR' : 'CR',
                     amount: item['CLIENT-DEBIT'] || item['CLIENT-CREDIT'] || 0,
                     reference: item['REFERENCE'] || '',
                     narrative: item['NARRATIVE'] ? item['NARRATIVE'].trim() : '',
-                    sosCode: ''
+                    sosCode: this.extractSosCode(item['NARRATIVE'])
                 }));
         }
 
@@ -76,11 +76,11 @@ export default class SosReverseAccrual extends LightningElement {
                         month: '2-digit',
                         day: '2-digit'
                     }) : '',
-                    transactionCode: '',
+                    transactionCode: item['DRCR'],
                     amount: item['NET'] || 0,
                     reference: item['REFERENCE'] || '',
                     narrative: item['NARRATIVE'] ? item['NARRATIVE'].trim() : '',
-                    sosCode: ''
+                    sosCode: this.extractSosCode(item['NARRATIVE'])
                 }));
 
             transformedData = [...transformedData, ...postSlipData];
