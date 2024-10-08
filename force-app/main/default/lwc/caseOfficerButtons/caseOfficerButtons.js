@@ -648,7 +648,9 @@ export default class CaseOfficerButtons extends LightningElement {
                 case 'Put_Away_a_Case_General':
                 case 'Put_Away_a_Case_Freedom_of_Information':
                 case 'Put_Away_a_Case_Conveyancing':
-                    message = 'Case put away successfully';
+                    if (isConfirmed){
+                        message = 'Case put away successfully';
+                    }
                     modalToClose = 'isPutAwayModalOpen';
                     break;
                 case 'ILO_Approve':
