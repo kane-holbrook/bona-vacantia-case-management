@@ -1,10 +1,13 @@
-import { LightningElement, api, track } from 'lwc';
+import { LightningElement, api, wire, track } from 'lwc';
+import { refreshApex } from '@salesforce/apex';
 import getSOSData from '@salesforce/apex/SOSFinanceController.getSOSData';
 
 export default class SosReverseAccrual extends LightningElement {
     @api caseNumber;
     @track data = [];
     @track filteredData = [];
+    @track error;
+    wiredSOSData;
     defaultSortDirection = 'asc';
     sortDirection = 'asc';
     sortedBy;
@@ -12,24 +15,33 @@ export default class SosReverseAccrual extends LightningElement {
     columns = [
         { label: 'Date Posted', fieldName: 'datePosted', type: 'text', sortable: true },
         { label: 'Transaction Code', fieldName: 'transactionCode', type: 'text', sortable: true },
-        //{ label: 'Type', fieldName: 'type', type: 'text', sortable: true, cellAttributes: { class: 'slds-hide'} },
         { label: 'Amount', fieldName: 'amount', type: 'currency', sortable: true },
-        //{ label: 'Reference', fieldName: 'reference', type: 'text', sortable: true, cellAttributes: { class: 'slds-hide'} },
         { label: 'Narrative', fieldName: 'narrative', type: 'text', sortable: true, wrapText: true },
         { label: 'SOS Code', fieldName: 'sosCode', type: 'text', sortable: true },
     ];
 
-    connectedCallback() {
-        setTimeout(() => {
-            this.fetchSOSData();
-        }, 0);
+    @wire(getSOSData, { mtcode: '$caseNumber' })
+    wiredGetSOSData(result) {
+        this.wiredSOSData = result;
+        if (result.data) {
+            this.error = undefined;
+            this.data = this.transformData(result.data);
+            this.filteredData = [...this.data];
+        } else if (result.error) {
+            this.error = result.error;
+            this.data = [];
+            this.filteredData = [];
+        }
     }
 
     transformData(data) {
+        if (!data || !data.dsaccledger) {
+            return [];
+        }
         return data.dsaccledger
-            .filter(item => !item['NARRATIVE']?.trim().includes('Reversal of')) // Check if "Reversal of" is anywhere in the narrative
+            .filter(item => item && item['NARRATIVE'] && !item['NARRATIVE'].trim().includes('Reversal of'))
             .map(item => {
-                const narrative = item['NARRATIVE']?.trim();
+                const narrative = item['NARRATIVE'] ? item['NARRATIVE'].trim() : '';
                 let transactionCode = '';
                 let sosCode = '';
     
@@ -41,38 +53,25 @@ export default class SosReverseAccrual extends LightningElement {
                     sosCode = narrative.slice(0, 3);
                 }
 
-                // Determine the non-zero amount
                 let amount = 0;
-                if (item['OFFICE-DEBIT'] !== 0) {
+                if (item['OFFICE-DEBIT'] !== undefined && item['OFFICE-DEBIT'] !== 0) {
                     amount = item['OFFICE-DEBIT'];
-                } else if (item['OFFICE-CREDIT'] !== 0) {
+                } else if (item['OFFICE-CREDIT'] !== undefined && item['OFFICE-CREDIT'] !== 0) {
                     amount = item['OFFICE-CREDIT'];
                 }
     
                 return {
-                    datePosted: new Date(item['POST-DATE']).toLocaleDateString('en-GB', {
+                    datePosted: item['POST-DATE'] ? new Date(item['POST-DATE']).toLocaleDateString('en-GB', {
                         year: 'numeric',
                         month: '2-digit',
                         day: '2-digit'
-                    }),
+                    }) : '',
                     transactionCode,
                     amount: amount,
-                    reference: item['REFERENCE'],
+                    reference: item['REFERENCE'] || '',
                     narrative,
                     sosCode
                 };
-            });
-    }
-
-    fetchSOSData() {
-        this.isLoading = true;
-        getSOSData({ mtcode: this.caseNumber })
-            .then(result => {
-                this.data = this.transformData(result);
-                this.filteredData = [...this.data];
-            })
-            .catch(error => {
-                console.error(error);
             });
     }
 
@@ -103,13 +102,17 @@ export default class SosReverseAccrual extends LightningElement {
 
     handleRowSelection(event) {
         const selectedRows = event.detail.selectedRows;
-        // Dispatch an event with the selected accrual
-        if (selectedRows.length > 0) {
+        if (selectedRows && selectedRows.length > 0) {
             const selectedAccrualEvent = new CustomEvent('selectedaccrual', {
                 detail: { selectedAccrual: selectedRows[0] },
-                bubbles: true, // To let the event bubble up through the DOM
+                bubbles: true,
             });
             this.dispatchEvent(selectedAccrualEvent);
         }
+    }
+
+    @api
+    refreshData() {
+        return refreshApex(this.wiredSOSData);
     }
 }
