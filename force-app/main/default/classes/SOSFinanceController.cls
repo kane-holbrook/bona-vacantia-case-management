@@ -321,6 +321,43 @@ public class SOSFinanceController
         }
     }
 
+    @AuraEnabled(cacheable=false)
+    public static String updateSOSCase(String mtcode, String refer, String description, Boolean archived) {
+        // Create a new object for the API call
+        Map<String, Object> updateData = new Map<String, Object>();
+        
+        // Set the parameters
+        updateData.put('mtcode', mtcode);
+        updateData.put('ref', refer);
+        updateData.put('description', description);
+        updateData.put('archived', archived);
+
+        // Prepare the HTTP request
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint(sosEndpoint); // Assuming the endpoint includes the mtcode
+        req.setMethod('PATCH');
+        req.setHeader('Content-Type', 'application/json');
+        
+        // Serialize the update data to JSON
+        String jsonBody = JSON.serialize(updateData);
+        req.setBody(jsonBody);
+
+        System.debug(LoggingLevel.ERROR, 'UPDATE REQUEST JSON: ' + jsonBody);
+        
+        // Send the HTTP request
+        Http http = new Http();
+        HttpResponse res = http.send(req);
+        
+        // Process the response
+        if (res.getStatusCode() == 200) {
+            System.debug('SOS case updated successfully');
+            return res.getBody();
+        } else {
+            System.debug('HTTP Request failed with status code: ' + res.getStatusCode() + ' ' + res.getBody());
+            return 'Error: ' + res.getStatusCode() + ' ' + res.getBody();
+        }
+    }
+
     @InvocableMethod(label='Check Ledger Balance' description='Checks if officeDebit and accrualsDebit total to 0')
     public static List<Boolean> checkTotalsZero(List<String> mtcodes) {
         List<Boolean> results = new List<Boolean>();
