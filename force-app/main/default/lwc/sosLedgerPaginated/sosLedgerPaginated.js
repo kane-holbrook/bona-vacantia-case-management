@@ -71,6 +71,9 @@ export default class SosLedger extends LightningElement {
         } else if (error) {
             console.error('Error fetching SOS data:', error);
             this.isLoading = false;
+            this.data = [];
+            this.filteredData = [];
+            this.updatePageData();
         }
     }
 
@@ -81,27 +84,34 @@ export default class SosLedger extends LightningElement {
     }
 
     transformData(data) {
-        // First, transform the dsaccledger data
+        if (!data || (!data.dsaccledger && !data.dsPostSlipCreate)) {
+            console.warn('No data available to transform');
+            return [];
+        }
+
+        // Transform dsaccledger data
         let transformedData = data.dsaccledger
-            .filter(item => !item['UNDONE']) // Filter out items where UNDONE is true
-            .map(item => ({
-                datePosted: new Date(item['POST-DATE']).toLocaleDateString('en-GB', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit'
-                }),
-                status: (item['POST-TYPE'] === 'DR' || item['POST-TYPE'] === 'CR') ? 'Actioned' : 'Posted',
-                officeDebit: item['OFFICE-DEBIT'],
-                officeCredit: item['OFFICE-CREDIT'],
-                accrualsDebit: item['CLIENT-DEBIT'],
-                accrualsCredit: item['CLIENT-CREDIT'],
-                description: item['NARRATIVE']?.trim(),
-            }));
-    
-        // Then, transform and merge the dsPostSlipCreate data
+            ? data.dsaccledger
+                .filter(item => !item['UNDONE'])
+                .map(item => ({
+                    datePosted: new Date(item['POST-DATE']).toLocaleDateString('en-GB', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit'
+                    }),
+                    status: (item['POST-TYPE'] === 'DR' || item['POST-TYPE'] === 'CR') ? 'Actioned' : 'Posted',
+                    officeDebit: item['OFFICE-DEBIT'],
+                    officeCredit: item['OFFICE-CREDIT'],
+                    accrualsDebit: item['CLIENT-DEBIT'],
+                    accrualsCredit: item['CLIENT-CREDIT'],
+                    description: item['NARRATIVE']?.trim(),
+                }))
+            : [];
+
+        // Transform and merge dsPostSlipCreate data
         if (data.dsPostSlipCreate) {
             const postSlipData = data.dsPostSlipCreate
-                .filter(item => !item['UNDONE']) // Filter out items where UNDONE is true
+                .filter(item => !item['UNDONE'])
                 .map(item => {
                     let accrualsDebit = item['DRCR'] === 'DR' ? item['NET'] : 0;
                     let accrualsCredit = item['DRCR'] === 'CR' ? item['NET'] : 0;
@@ -149,6 +159,12 @@ export default class SosLedger extends LightningElement {
     }
 
     filterData() {
+        if (!this.data || this.data.length === 0) {
+            this.filteredData = [];
+            this.updatePageData();
+            return;
+        }
+
         this.filteredData = this.data.filter(entry => {
             // Convert the entry's datePosted to a Date object
             const entryDateParts = entry.datePosted.split('/');
