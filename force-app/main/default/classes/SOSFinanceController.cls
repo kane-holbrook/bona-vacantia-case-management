@@ -77,6 +77,15 @@ public class SOSFinanceController
         public string cltype { get; set; }
         public string testmtcode { get; set; }
     }
+
+    public class updateSOSCase
+    {
+        public string mtcode { get; set; }
+        public string refer { get; set; }
+        public string description { get; set; }
+        public boolean archived { get; set; }
+    }
+    
     
     public Response PostSlipResponse { get; set; }
     
@@ -323,8 +332,8 @@ public class SOSFinanceController
 
     @AuraEnabled(cacheable=false)
     public static String updateSOSCase(String mtcode, String refer, String description, Boolean archived) {
-        // Create a new object for the API call
-        Map<String, Object> updateData = new Map<String, Object>();
+        
+        updateSOSCase updateData = new updateSOSCase();
         
         // Set the parameters
         updateData.put('mtcode', mtcode);
