@@ -5,6 +5,7 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { getRecord } from 'lightning/uiRecordApi';
 import { getRecordId } from 'c/sharedService';
 import { subscribe, unsubscribe, onError, setDebugFlag, isEmpEnabled } from 'lightning/empApi';
+import CASE_NAME_FIELD from '@salesforce/schema/BV_Case__c.Name';
 
 export default class DatabaseScreenStandardLayout extends LightningElement {
     _objectApiName;
@@ -48,6 +49,19 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
 
     // To store wired result for refresh
     wiredLayoutResult;
+
+    @api recordId;
+    @track caseName;
+
+    @wire(getRecord, { recordId: '$recordId', fields: [CASE_NAME_FIELD] })
+    wiredRecord({ error, data }) {
+        if (data) {
+            this.caseName = data.fields.Name.value;
+            this.processExpandedData();
+        } else if (error) {
+            console.error('Error loading BV Case:', error);
+        }
+    }
 
     @api
     get objectApiName() {
@@ -106,8 +120,6 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
     set parentGreatGrandchildLabel(value) {
         this._parentGreatGrandchildLabel = value;
     }
-
-    @api recordId;
 
     disconnectedCallback(){
         this.handleUnsubscribe();
@@ -1049,43 +1061,38 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
             value: '',
             labelKey: 'empty-label',
             valueKey: 'empty-value',
-            style: 'min-height: 20px;' // Adjust this value to match the height of one line of text
+            style: 'min-height: 20px;', // Adjust this value to match the height of one line of text
+            showField: false
         };
     
         this.tableDataObj.forEach(row => {
             const rowData = this.recordData.find(record => record.Id === row.Id);
+            const isValidCaseName = this.isCaseNameValid(rowData.Name); // Assuming the case name is stored in the 'Name' field
     
-            const leftFields = this.leftColumnFields.map(field => {
+            const processField = (field) => {
                 if (field.componentType === 'EmptySpace') {
                     return { ...blankField };
                 }
                 const fieldValue = (rowData && rowData[field.apiName]) || '—';
                 const formattedValue = this.formatFieldValue(fieldValue, field.type);
-                const decodedLabel = this.decodeHtmlEntities(field.label); // Decode HTML entities in the label
-                return {
-                    ...field,
-                    label: decodedLabel,
-                    value: formattedValue,
-                    labelKey: `${field.apiName}-label`,
-                    valueKey: `${field.apiName}-value`
-                };
-            });
+                const decodedLabel = this.decodeHtmlEntities(field.label);
+                const isLookupField = field.apiName.endsWith('_Lookup__c');
+                const isCorrespondingTextField = !isLookupField && this.columns.some(c => c.fieldName === `${field.apiName.replace('__c', '')}_Lookup__c`);
     
-            const rightFields = this.rightColumnFields.map(field => {
-                if (field.componentType === 'EmptySpace') {
-                    return { ...blankField };
-                }
-                const fieldValue = (rowData && rowData[field.apiName]) || '—';
-                const formattedValue = this.formatFieldValue(fieldValue, field.type);
-                const decodedLabel = this.decodeHtmlEntities(field.label); // Decode HTML entities in the label
                 return {
                     ...field,
                     label: decodedLabel,
                     value: formattedValue,
                     labelKey: `${field.apiName}-label`,
-                    valueKey: `${field.apiName}-value`
+                    valueKey: `${field.apiName}-value`,
+                    showField: isValidCaseName ? 
+                        (isLookupField || (!isLookupField && !isCorrespondingTextField)) : 
+                        (!isLookupField)
                 };
-            });
+            };
+    
+            const leftFields = this.leftColumnFields.map(processField);
+            const rightFields = this.rightColumnFields.map(processField);
     
             row.fullData = {
                 fields: [...leftFields, ...rightFields],
@@ -1178,5 +1185,61 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
         const textArea = document.createElement('textarea');
         textArea.innerHTML = text;
         return textArea.value;
+    }
+
+    isCaseNameValid(caseName) {
+        if (!caseName) return false;
+        const validPrefixes = ['COMP', 'ESTA', 'FOIR', 'CONV', 'GENE'];
+        const regex = new RegExp(`^(${validPrefixes.join('|')})\\d{2}#\\d+$`);
+        return regex.test(caseName);
+    }
+
+    get modalContent() {
+        return {
+            recordId: this.recordId,
+            objectApiName: this.objectApiName,
+            recordTypeId: this.recordTypeId,
+            recordData: this.recordData,
+            subRecordId: this.subRecordId,
+            columnLayoutStyle: this.columnLayoutStyle,
+            columns: this.columns,
+            emptySpaceIndices: this.emptySpaceIndices,
+            leftColumnFields: this.leftColumnFields,
+            rightColumnFields: this.rightColumnFields,
+            heading: this.databaseScreenHeading,
+            caseName: this.caseName
+        };
+    }
+
+    processExpandedData() {
+        const isValidCaseName = this.isCaseNameValid(this.caseName);
+        console.log('Case Name:', this.caseName);
+        console.log('Is Valid Case Name:', isValidCaseName);
+
+        this.tableDataObj = this.tableDataObj.map(row => {
+            const processFields = (fields) => {
+                return fields.map(field => {
+                    const isLookupField = field.fieldName.endsWith('_Lookup__c');
+                    const isCorrespondingTextField = !isLookupField && this.columns.some(c => c.fieldName === `${field.fieldName.replace('__c', '')}_Lookup__c`);
+                    const showField = isValidCaseName ? 
+                        (isLookupField || (!isLookupField && !isCorrespondingTextField)) : 
+                        (!isLookupField);
+
+                    return {
+                        ...field,
+                        showField
+                    };
+                });
+            };
+
+            return {
+                ...row,
+                fullData: {
+                    ...row.fullData,
+                    leftFields: processFields(row.fullData.leftFields),
+                    rightFields: processFields(row.fullData.rightFields)
+                }
+            };
+        });
     }
 }
