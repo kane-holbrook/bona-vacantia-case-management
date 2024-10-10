@@ -315,13 +315,15 @@ export default class CaseOfficerButtons extends LightningElement {
                     name: 'caseId',
                     type: 'String',
                     value: this.recordId
-                },
-                {
+                }
+            ];
+            if (this.recordTypeDeveloperName !== 'FOIR' && this.recordTypeDeveloperName !== 'GENE') {
+                this.flowInputs.push({
                     name: 'caseName',
                     type: 'String',
                     value: this.bvCaseName
-                }
-            ];
+                });
+            }
             this.isPutAwayModalOpen = true;
             // Set the appropriate flow API name based on recordTypeDeveloperName
             switch (this.recordTypeDeveloperName) {
