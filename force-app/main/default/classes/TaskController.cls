@@ -94,4 +94,59 @@ public with sharing class TaskController {
             LIMIT 1
         ];
     }
+
+    @InvocableMethod(label='Calculate Date')
+    public static List<Date> calculateDate(List<String> inputs) {
+        List<Date> resultDates = new List<Date>();
+
+        for (String input : inputs) {
+            // Get the current date
+            Date currentDate = Date.today();
+            Date resultDate = currentDate;
+
+            // Parse the input string
+            Pattern pattern = Pattern.compile('(After|Before) (\\d+) (Working Days|Days|Weeks|Months|Years)');
+            Matcher matcher = pattern.matcher(input);
+
+            if (matcher.matches()) {
+                String direction = matcher.group(1);
+                Integer amount = Integer.valueOf(matcher.group(2));
+                String unit = matcher.group(3);
+
+                // Determine the sign based on direction
+                Integer sign = direction == 'After' ? 1 : -1;
+
+                // Calculate the result date based on the unit
+                if (unit == 'Working Days') {
+                    resultDate = addWorkingDays(currentDate, sign * amount);
+                } else if (unit == 'Days') {
+                    resultDate = currentDate.addDays(sign * amount);
+                } else if (unit == 'Weeks') {
+                    resultDate = currentDate.addDays(sign * amount * 7);
+                } else if (unit == 'Months') {
+                    resultDate = currentDate.addMonths(sign * amount);
+                } else if (unit == 'Years') {
+                    resultDate = currentDate.addYears(sign * amount);
+                }
+            }
+
+            resultDates.add(resultDate);
+        }
+
+        return resultDates;
+    }
+
+    private static Date addWorkingDays(Date startDate, Integer workingDays) {
+        Integer addedDays = 0;
+        Date resultDate = startDate;
+
+        while (addedDays < Math.abs(workingDays)) {
+            resultDate = workingDays > 0 ? resultDate.addDays(1) : resultDate.addDays(-1);
+            if (resultDate.toStartOfWeek() != resultDate && resultDate.toStartOfWeek().addDays(6) != resultDate) { // Skip weekends
+                addedDays++;
+            }
+        }
+
+        return resultDate;
+    }
 }

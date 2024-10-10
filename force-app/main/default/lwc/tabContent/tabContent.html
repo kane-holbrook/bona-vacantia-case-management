@@ -1,8 +1,8 @@
 <template>
     <article class="slds-card card-background">
-        <c-two-column-layout oncaseofficersaved={handleCaseOfficerSaved}>
+        <c-two-column-layout>
             <c-case-officer-history slot="column-left" ref="caseOfficerHistory"></c-case-officer-history>
-            <c-case-officer-buttons slot="column-right"></c-case-officer-buttons>
+            <c-case-officer-buttons slot="column-right" onflowfinished={handleFlowFinished}></c-case-officer-buttons>
         </c-two-column-layout>
     </article>
 </template>

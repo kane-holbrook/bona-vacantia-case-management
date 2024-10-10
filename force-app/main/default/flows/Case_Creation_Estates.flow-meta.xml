@@ -2343,18 +2343,6 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             </value>
         </inputAssignments>
         <inputAssignments>
-            <field>Name</field>
-            <value>
-                <elementReference>NextCaseNumber</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Name__c</field>
-            <value>
-                <elementReference>NextCaseNumber</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
             <field>OwnerId</field>
             <value>
                 <elementReference>case_officer_select_estates.selectedCaseOfficer</elementReference>

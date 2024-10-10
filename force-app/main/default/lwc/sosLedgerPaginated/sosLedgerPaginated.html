@@ -132,7 +132,11 @@
                         <h2 class="slds-text-heading_medium">Accrual Details</h2>
                     </header>
                     <div class="slds-modal__content slds-p-around_medium">
-                        <c-sos-create-accrual case-number={bvCaseName} onledgercreated={handleLedgerCreated}></c-sos-create-accrual>
+                        <c-sos-create-accrual
+                            case-number={bvCaseName}
+                            case-id={recordId}
+                            onaccrualcreated={handleAccrualCreated}
+                        ></c-sos-create-accrual>
                     </div>
                 </div>
             </section>
@@ -140,8 +144,8 @@
         </template>
 
         <template if:true={isReverseAccrualModalOpen}>
-            <section role="dialog" tabindex="-1" aria-modal="true" class="slds-modal slds-fade-in-open">
-                <div class="slds-modal__container">
+            <section role="dialog" tabindex="-1" aria-modal="true" class="slds-modal slds-fade-in-open slds-modal_large">
+                <div class="slds-modal__container" style="width: 90%; max-width: 70rem;">
                     <header class="slds-modal__header">
                         <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeReverseAccrualModal}>
                             <lightning-icon icon-name="utility:close" alternative-text="close" size="small"></lightning-icon>
@@ -150,7 +154,7 @@
                         <h2 class="slds-text-heading_medium">Reverse Accrual</h2>
                     </header>
                     <div class="slds-modal__content slds-p-around_medium">
-                        <c-sos-reverse-accrual case-number={bvCaseName} onselectedaccrual={handleSelectedAccrual}></c-sos-reverse-accrual>
+                        <c-sos-reverse-accrual case-number={bvCaseName} case-id={recordId} onselectedaccrual={handleSelectedAccrual}></c-sos-reverse-accrual>
                     </div>
                     <footer class="slds-modal__footer">
                         <lightning-button variant="neutral" label="Cancel" onclick={closeReverseAccrualModal}></lightning-button>

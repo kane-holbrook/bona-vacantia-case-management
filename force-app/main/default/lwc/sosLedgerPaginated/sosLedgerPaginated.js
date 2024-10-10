@@ -1,7 +1,9 @@
 import { LightningElement, track, wire, api } from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
+import { refreshApex } from '@salesforce/apex';
 import getSOSData from '@salesforce/apex/SOSFinanceController.getSOSData';
 import reverseAccrual from '@salesforce/apex/SOSFinanceController.reverseAccrual';
+import { getRecordId } from 'c/sharedService';
 
 const FIELDS = ['BV_Case__c.Name'];
 const PAGE_SIZE = 20; // Number of records per page
@@ -21,7 +23,7 @@ export default class SosLedger extends LightningElement {
     @track totalRecords = 0;
     @track rangeStart = 0;
     @track rangeEnd = 0;
-    isLoading = false;
+    isLoading = true;
     isModalOpen = false;
     isReverseAccrualModalOpen = false;
 
@@ -39,65 +41,119 @@ export default class SosLedger extends LightningElement {
         { label: 'Description', fieldName: 'description', type: 'text', sortable: true, wrapText: true},
     ];
 
+    @wire(getRecord, { recordId: '$recordId', fields: FIELDS })
+    record;
+
+    wiredSOSDataResult;
+
+    connectedCallback() {
+        this.recordId = getRecordId(this.record);
+    }
+
+    @wire(getSOSData, { mtcode: '$bvCaseName' })
+    wiredSOSData(result) {
+        this.wiredSOSDataResult = result;
+        const { error, data } = result;
+        if (data) {
+            console.log('Result:', data);
+            this.data = this.transformData(data);
+            this.filteredData = [...this.data];
+            this.isLoading = false;
+            this.sortDirection = 'asc';
+            this.sortedBy = 'datePosted';
+
+            this.statusOptions = [...new Set(this.data.map(entry => entry.status))].map(status => ({
+                label: status,
+                value: status
+            }));
+
+            this.updatePageData();
+        } else if (error) {
+            console.error('Error fetching SOS data:', error);
+            this.isLoading = false;
+            this.data = [];
+            this.filteredData = [];
+            this.updatePageData();
+        }
+    }
+
     get bvCaseName() {
         let caseName = getFieldValue(this.record.data, 'BV_Case__c.Name');
         // Replace all occurrences of '/' with '_'
-        return caseName.replace(/\//g, '_');
+        return caseName ? caseName.replace(/\//g, '_') : '';
     }
 
     transformData(data) {
-        // First, transform the dsaccledger data
-        let transformedData = data.dsaccledger.map(item => ({
-            datePosted: new Date(item['POST-DATE']).toLocaleDateString('en-GB', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit'
-            }),
-            status: (item['POST-TYPE'] === 'DR' || item['POST-TYPE'] === 'CR') ? 'Actioned' : 'Posted',
-            officeDebit: item['OFFICE-DEBIT'],
-            officeCredit: item['OFFICE-CREDIT'],
-            accrualsDebit: item['CLIENT-DEBIT'],
-            accrualsCredit: item['CLIENT-CREDIT'],
-            description: item['NARRATIVE']?.trim(),
-        }));
-    
-        // Then, transform and merge the dsPostSlipCreate data
-        if (data.dsPostSlipCreate) {
-            const postSlipData = data.dsPostSlipCreate.map(item => {
-                let accrualsDebit = item['DRCR'] === 'DR' ? item['NET'] : 0;
-                let accrualsCredit = item['DRCR'] === 'CR' ? item['NET'] : 0;
-                const narrative = item['NARRATIVE']?.trim();
-    
-                // Apply the necessary adjustments to the accrualsDebit and accrualsCredit values
-                if (narrative.startsWith('EA2') || narrative.startsWith('EA3') || narrative.startsWith('EA4') || narrative.startsWith('EA5')) {
-                    accrualsCredit = item['NET'];
-                    accrualsDebit = 0;
-                } else if (narrative.startsWith('EL1') || narrative.startsWith('EL2') || narrative.startsWith('EL3') || narrative.startsWith('EL4') || narrative.startsWith('EL5')) {
-                    accrualsDebit = item['NET'];
-                    accrualsCredit = 0;
-                } else if (narrative.startsWith('Reversal EA') || narrative.startsWith('Reversal EL')) {
-                    [accrualsDebit, accrualsCredit] = [accrualsCredit, accrualsDebit];
-                }
-    
-                return {
-                    datePosted: new Date(item['DATE-CREATED']).toLocaleDateString('en-GB', {
+        if (!data || (!data.dsaccledger && !data.dsPostSlipCreate)) {
+            console.warn('No data available to transform');
+            return [];
+        }
+
+        // Transform dsaccledger data
+        let transformedData = data.dsaccledger
+            ? data.dsaccledger
+                .filter(item => !item['UNDONE'])
+                .map(item => ({
+                    datePosted: new Date(item['POST-DATE']).toLocaleDateString('en-GB', {
                         year: 'numeric',
                         month: '2-digit',
                         day: '2-digit'
                     }),
-                    status: item['DRCR'] === 'DR' || item['DRCR'] === 'CR' ? 'Actioned' : 'Posted',
-                    officeDebit: 0,
-                    officeCredit: 0,
-                    accrualsDebit,
-                    accrualsCredit,
-                    description: narrative,
-                };
-            });
-    
+                    status: (item['POST-TYPE'] === 'DR' || item['POST-TYPE'] === 'CR') ? 'Actioned' : 'Posted',
+                    officeDebit: item['OFFICE-DEBIT'],
+                    officeCredit: item['OFFICE-CREDIT'],
+                    accrualsDebit: item['CLIENT-DEBIT'],
+                    accrualsCredit: item['CLIENT-CREDIT'],
+                    description: item['NARRATIVE']?.trim(),
+                }))
+            : [];
+
+        // Transform and merge dsPostSlipCreate data
+        if (data.dsPostSlipCreate) {
+            const postSlipData = data.dsPostSlipCreate
+                .filter(item => !item['UNDONE'])
+                .map(item => {
+                    let accrualsDebit = 0;
+                    let accrualsCredit = 0;
+                    const narrative = item['NARRATIVE']?.trim();
+                    const net = parseFloat(item['NET']) || 0;
+
+                    if (item['DRCR'] === 'DR') {
+                        accrualsDebit = net;
+                        console.log('accrualsDebit:', accrualsDebit);
+                    } else if (item['DRCR'] === 'CR') {
+                        accrualsCredit = net;
+                        console.log('accrualsCredit:', accrualsCredit);
+                    } else {
+                        // Fallback to narrative-based logic when DRCR is empty
+                        if (narrative.startsWith('EA')) {
+                            accrualsCredit = net;
+                        } else if (narrative.startsWith('EL')) {
+                            accrualsDebit = net;
+                        }
+                    }
+
+                    return {
+                        datePosted: new Date(item['DATE-CREATED']).toLocaleDateString('en-GB', {
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit'
+                        }),
+                        status: item['DRCR'] === 'DR' || item['DRCR'] === 'CR' ? 'Actioned' : 'Posted',
+                        officeDebit: 0,
+                        officeCredit: 0,
+                        accrualsDebit,
+                        accrualsCredit,
+                        description: narrative,
+                    };
+                });
+
             // Merge the two datasets
             transformedData = [...transformedData, ...postSlipData];
+
+            console.log('transformedData:', transformedData);
         }
-    
+
         // Sort the combined data by date
         transformedData.sort((a, b) => {
             const dateA = this.parseUKDate(a.datePosted);
@@ -109,39 +165,13 @@ export default class SosLedger extends LightningElement {
         return transformedData;
     }
 
-    @wire(getRecord, { recordId: '$recordId', fields: FIELDS })
-    record;
-
-    connectedCallback() {
-        setTimeout(() => {
-            this.fetchSOSData();
-        }, 0);
-    }
-
-    fetchSOSData() {
-        this.isLoading = true;
-        getSOSData({ mtcode: this.bvCaseName })
-            .then(result => {
-                this.data = this.transformData(result);
-                this.filteredData = [...this.data];
-                this.isLoading = false;
-                this.sortDirection = 'asc';
-                this.sortedBy = 'datePosted';
-
-                this.statusOptions = [...new Set(this.data.map(entry => entry.status))].map(status => ({
-                    label: status,
-                    value: status
-                }));
-
-                this.updatePageData();
-            })
-            .catch(error => {
-                console.error(error);
-                this.isLoading = false;
-            });
-    }
-
     filterData() {
+        if (!this.data || this.data.length === 0) {
+            this.filteredData = [];
+            this.updatePageData();
+            return;
+        }
+
         this.filteredData = this.data.filter(entry => {
             // Convert the entry's datePosted to a Date object
             const entryDateParts = entry.datePosted.split('/');
@@ -301,17 +331,21 @@ export default class SosLedger extends LightningElement {
             console.error('No accrual selected');
             return;
         }
-    
+
+        // Determine the reversal type based on the selected accrual's transaction code
+        const reversalType = this.selectedAccrual.transactionCode === 'DR' ? 'CR' : 'DR';
+
         reverseAccrual({
             MtCode: this.bvCaseName,
             Net: this.selectedAccrual.amount,
             Narrative: this.selectedAccrual.narrative,
             Reference: this.selectedAccrual.reference,
-            Type: 'DR'
+            Type: reversalType
         })
         .then(result => {
             console.log('Reversal Success:', result);
-            window.location.reload();
+            this.refreshSosData();
+            this.closeReverseAccrualModal();
         })
         .catch(error => {
             console.error('Reversal Error:', error);
@@ -408,5 +442,14 @@ export default class SosLedger extends LightningElement {
             number: i + 1,
             class: `slds-button ${this.currentPage === i + 1 ? 'slds-button_brand' : 'slds-button_neutral'}`
         }));
+    }
+
+    refreshSosData() {
+        return refreshApex(this.wiredSOSDataResult);
+    }
+
+    handleAccrualCreated() {
+        this.refreshSosData();
+        this.closeModal();
     }
 }

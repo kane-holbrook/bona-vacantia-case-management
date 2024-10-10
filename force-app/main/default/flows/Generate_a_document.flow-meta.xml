@@ -4,7 +4,7 @@
     <assignments>
         <name>setValuesForDocGen</name>
         <label>Set valuesForDocGen</label>
-        <locationX>3174</locationX>
+        <locationX>4758</locationX>
         <locationY>650</locationY>
         <assignmentItems>
             <assignToReference>valuesForDocGen</assignToReference>
@@ -20,7 +20,7 @@
     <decisions>
         <name>Document_Type_to_Generate</name>
         <label>Document Type to Generate</label>
-        <locationX>3086</locationX>
+        <locationX>4670</locationX>
         <locationY>242</locationY>
         <defaultConnector>
             <targetReference>Loop_subflow_values</targetReference>
@@ -312,36 +312,6 @@
             <label>FIN02</label>
         </rules>
         <rules>
-            <name>PPORT</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Generate_a_document_flow_LWC.selectedDocumentType</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <stringValue>PPORT</stringValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Letter_to_passport_office_returning_passports_PPORT</targetReference>
-            </connector>
-            <label>PPORT</label>
-        </rules>
-        <rules>
-            <name>ACCEA</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Generate_a_document_flow_LWC.selectedDocumentType</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <stringValue>ACCEA</stringValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Accruals_Estates_Acct_Interest_Calc_ACCEA</targetReference>
-            </connector>
-            <label>ACCEA</label>
-        </rules>
-        <rules>
             <name>REV1</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
@@ -371,6 +341,216 @@
             </connector>
             <label>BV5A</label>
         </rules>
+        <rules>
+            <name>ACCEA_new</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Generate_a_document_flow_LWC.selectedDocumentType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>ACCEA-new</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Accruals_Estates_Acct_Interest_Calc_ACCEA</targetReference>
+            </connector>
+            <label>ACCEA-new</label>
+        </rules>
+        <rules>
+            <name>LMCOMP</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Generate_a_document_flow_LWC.selectedDocumentType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>LMCOMP</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>LM_Review_Companies_Flow_LMCOMP</targetReference>
+            </connector>
+            <label>LMCOMP</label>
+        </rules>
+        <rules>
+            <name>LMCONV</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Generate_a_document_flow_LWC.selectedDocumentType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>LMCONV</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>LM_Review_Conveyancing_Flow_LMCONV</targetReference>
+            </connector>
+            <label>LMCONV</label>
+        </rules>
+        <rules>
+            <name>PPORT</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Generate_a_document_flow_LWC.selectedDocumentType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>PPORT</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Letter_to_passport_office_returning_passports_PPORT</targetReference>
+            </connector>
+            <label>PPORT</label>
+        </rules>
+        <rules>
+            <name>VIDEO11</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Generate_a_document_flow_LWC.selectedDocumentType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>VIDEO1</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Video1Flow</targetReference>
+            </connector>
+            <label>VIDEO1</label>
+        </rules>
+        <rules>
+            <name>VIDEO2</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Generate_a_document_flow_LWC.selectedDocumentType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>VIDEO2</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Video2Flow</targetReference>
+            </connector>
+            <label>VIDEO2</label>
+        </rules>
+        <rules>
+            <name>VIDEO3A</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Generate_a_document_flow_LWC.selectedDocumentType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>VIDEO3A</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Video3aFlow</targetReference>
+            </connector>
+            <label>VIDEO3A</label>
+        </rules>
+        <rules>
+            <name>Video3b</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Generate_a_document_flow_LWC.selectedDocumentType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>VIDEO3B</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Video3bFlow</targetReference>
+            </connector>
+            <label>VIDEO3B</label>
+        </rules>
+        <rules>
+            <name>VIDEO4</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Generate_a_document_flow_LWC.selectedDocumentType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>VIDEO4</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Video4Flow</targetReference>
+            </connector>
+            <label>VIDEO4</label>
+        </rules>
+        <rules>
+            <name>VIDEO5A</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Generate_a_document_flow_LWC.selectedDocumentType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>VIDEO5A</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Video5aFlow</targetReference>
+            </connector>
+            <label>VIDEO5A</label>
+        </rules>
+        <rules>
+            <name>VIDEO5B</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Generate_a_document_flow_LWC.selectedDocumentType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>VIDEO5B</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Video5bFlow</targetReference>
+            </connector>
+            <label>VIDEO5B</label>
+        </rules>
+        <rules>
+            <name>Video5c</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Generate_a_document_flow_LWC.selectedDocumentType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>VIDEO5C</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Video5cFlow</targetReference>
+            </connector>
+            <label>VIDEO5C</label>
+        </rules>
+        <rules>
+            <name>VIDEO6</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Generate_a_document_flow_LWC.selectedDocumentType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>VIDEO6</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Video6Flow</targetReference>
+            </connector>
+            <label>VIDEO6</label>
+        </rules>
+        <rules>
+            <name>VIDEO7</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Generate_a_document_flow_LWC.selectedDocumentType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>VIDEO7</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Video7Flow</targetReference>
+            </connector>
+            <label>VIDEO7</label>
+        </rules>
     </decisions>
     <environments>Default</environments>
     <interviewLabel>Generate a document {!$Flow.CurrentDateTime}</interviewLabel>
@@ -378,7 +558,7 @@
     <loops>
         <name>Loop_subflow_values</name>
         <label>Loop subflow values</label>
-        <locationX>3086</locationX>
+        <locationX>4670</locationX>
         <locationY>542</locationY>
         <collectionReference>subflowValues</collectionReference>
         <iterationOrder>Asc</iterationOrder>
@@ -411,7 +591,7 @@
     <screens>
         <name>Generate_a_document</name>
         <label>Select a document to generate</label>
-        <locationX>3086</locationX>
+        <locationX>4670</locationX>
         <locationY>134</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -445,7 +625,7 @@
     <screens>
         <name>Generated_document</name>
         <label>Generated document</label>
-        <locationX>3086</locationX>
+        <locationX>4670</locationX>
         <locationY>842</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
@@ -491,7 +671,7 @@
     <screens>
         <name>Open_generated_document</name>
         <label>Open generated document</label>
-        <locationX>3086</locationX>
+        <locationX>4670</locationX>
         <locationY>950</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
@@ -514,7 +694,7 @@
         <showHeader>true</showHeader>
     </screens>
     <start>
-        <locationX>2960</locationX>
+        <locationX>4544</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Generate_a_document</targetReference>
@@ -524,7 +704,7 @@
     <subflows>
         <name>Accruals_Estates_Acct_Interest_Calc_ACCEA</name>
         <label>Accruals - Estates Acct &amp; Interest Calc (ACCEA)</label>
-        <locationX>5330</locationX>
+        <locationX>5594</locationX>
         <locationY>350</locationY>
         <connector>
             <targetReference>Loop_subflow_values</targetReference>
@@ -640,7 +820,7 @@
     <subflows>
         <name>Case_review_record_sheet_REV1</name>
         <label>Case review record sheet (REV1)</label>
-        <locationX>5594</locationX>
+        <locationX>5066</locationX>
         <locationY>350</locationY>
         <connector>
             <targetReference>Loop_subflow_values</targetReference>
@@ -808,7 +988,7 @@
     <subflows>
         <name>Letter_to_passport_office_returning_passports_PPORT</name>
         <label>Letter to passport office returning passports (PPORT)</label>
-        <locationX>5066</locationX>
+        <locationX>6386</locationX>
         <locationY>350</locationY>
         <connector>
             <targetReference>Loop_subflow_values</targetReference>
@@ -886,6 +1066,54 @@
             <targetReference>Loop_subflow_values</targetReference>
         </connector>
         <flowName>Letter_to_probate_registry_withdrawing_grant_application_WITHDRAW</flowName>
+        <inputAssignments>
+            <name>recordId</name>
+            <value>
+                <elementReference>Generate_a_document_flow_LWC.caseId</elementReference>
+            </value>
+        </inputAssignments>
+        <outputAssignments>
+            <assignToReference>historyRecordId</assignToReference>
+            <name>historyRecordId</name>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>subflowValues</assignToReference>
+            <name>subflowValues</name>
+        </outputAssignments>
+    </subflows>
+    <subflows>
+        <name>LM_Review_Companies_Flow_LMCOMP</name>
+        <label>LM Review Companies Flow (LMCOMP)</label>
+        <locationX>5858</locationX>
+        <locationY>350</locationY>
+        <connector>
+            <targetReference>Loop_subflow_values</targetReference>
+        </connector>
+        <flowName>LM_Review_Companies_Flow</flowName>
+        <inputAssignments>
+            <name>recordId</name>
+            <value>
+                <elementReference>Generate_a_document_flow_LWC.caseId</elementReference>
+            </value>
+        </inputAssignments>
+        <outputAssignments>
+            <assignToReference>historyRecordId</assignToReference>
+            <name>historyRecordId</name>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>subflowValues</assignToReference>
+            <name>subflowValues</name>
+        </outputAssignments>
+    </subflows>
+    <subflows>
+        <name>LM_Review_Conveyancing_Flow_LMCONV</name>
+        <label>LM Review Conveyancing Flow (LMCONV)</label>
+        <locationX>6122</locationX>
+        <locationY>350</locationY>
+        <connector>
+            <targetReference>Loop_subflow_values</targetReference>
+        </connector>
+        <flowName>LM_Review_Conveyancing_Flow</flowName>
         <inputAssignments>
             <name>recordId</name>
             <value>
@@ -1048,7 +1276,7 @@
     <subflows>
         <name>To_Hospital_Hospice_re_kin_will_etc_BV5A</name>
         <label>To Hospital/Hospice re kin, will etc. (BV5A)</label>
-        <locationX>5858</locationX>
+        <locationX>5330</locationX>
         <locationY>350</locationY>
         <connector>
             <targetReference>Loop_subflow_values</targetReference>
@@ -1064,6 +1292,210 @@
             <assignToReference>historyRecordId</assignToReference>
             <name>historyRecordId</name>
         </outputAssignments>
+        <outputAssignments>
+            <assignToReference>subflowValues</assignToReference>
+            <name>subflowValues</name>
+        </outputAssignments>
+    </subflows>
+    <subflows>
+        <name>Video1Flow</name>
+        <label>Video1Flow</label>
+        <locationX>6650</locationX>
+        <locationY>350</locationY>
+        <connector>
+            <targetReference>Loop_subflow_values</targetReference>
+        </connector>
+        <flowName>video1Flow</flowName>
+        <inputAssignments>
+            <name>recordId</name>
+            <value>
+                <elementReference>Generate_a_document_flow_LWC.caseId</elementReference>
+            </value>
+        </inputAssignments>
+        <outputAssignments>
+            <assignToReference>subflowValues</assignToReference>
+            <name>subflowValues</name>
+        </outputAssignments>
+    </subflows>
+    <subflows>
+        <name>Video2Flow</name>
+        <label>Video2Flow</label>
+        <locationX>6914</locationX>
+        <locationY>350</locationY>
+        <connector>
+            <targetReference>Loop_subflow_values</targetReference>
+        </connector>
+        <flowName>video2Flow</flowName>
+        <inputAssignments>
+            <name>recordId</name>
+            <value>
+                <elementReference>Generate_a_document_flow_LWC.caseId</elementReference>
+            </value>
+        </inputAssignments>
+        <outputAssignments>
+            <assignToReference>subflowValues</assignToReference>
+            <name>subflowValues</name>
+        </outputAssignments>
+    </subflows>
+    <subflows>
+        <name>Video3aFlow</name>
+        <label>Video3aFlow</label>
+        <locationX>7178</locationX>
+        <locationY>350</locationY>
+        <connector>
+            <targetReference>Loop_subflow_values</targetReference>
+        </connector>
+        <flowName>video3aFlow</flowName>
+        <inputAssignments>
+            <name>recordId</name>
+            <value>
+                <elementReference>Generate_a_document_flow_LWC.caseId</elementReference>
+            </value>
+        </inputAssignments>
+        <outputAssignments>
+            <assignToReference>subflowValues</assignToReference>
+            <name>subflowValues</name>
+        </outputAssignments>
+    </subflows>
+    <subflows>
+        <name>Video3bFlow</name>
+        <label>Video3bFlow</label>
+        <locationX>7442</locationX>
+        <locationY>350</locationY>
+        <connector>
+            <targetReference>Loop_subflow_values</targetReference>
+        </connector>
+        <flowName>video3b</flowName>
+        <inputAssignments>
+            <name>recordId</name>
+            <value>
+                <elementReference>Generate_a_document_flow_LWC.caseId</elementReference>
+            </value>
+        </inputAssignments>
+        <outputAssignments>
+            <assignToReference>subflowValues</assignToReference>
+            <name>subflowValues</name>
+        </outputAssignments>
+    </subflows>
+    <subflows>
+        <name>Video4Flow</name>
+        <label>Video4Flow</label>
+        <locationX>7706</locationX>
+        <locationY>350</locationY>
+        <connector>
+            <targetReference>Loop_subflow_values</targetReference>
+        </connector>
+        <flowName>Video4Flow</flowName>
+        <inputAssignments>
+            <name>recordId</name>
+            <value>
+                <elementReference>Generate_a_document_flow_LWC.caseId</elementReference>
+            </value>
+        </inputAssignments>
+        <outputAssignments>
+            <assignToReference>subflowValues</assignToReference>
+            <name>subflowValues</name>
+        </outputAssignments>
+    </subflows>
+    <subflows>
+        <name>Video5aFlow</name>
+        <label>Video5aFlow</label>
+        <locationX>7970</locationX>
+        <locationY>350</locationY>
+        <connector>
+            <targetReference>Loop_subflow_values</targetReference>
+        </connector>
+        <flowName>Video5aFlow</flowName>
+        <inputAssignments>
+            <name>recordId</name>
+            <value>
+                <elementReference>Generate_a_document_flow_LWC.caseId</elementReference>
+            </value>
+        </inputAssignments>
+        <outputAssignments>
+            <assignToReference>subflowValues</assignToReference>
+            <name>subflowValues</name>
+        </outputAssignments>
+    </subflows>
+    <subflows>
+        <name>Video5bFlow</name>
+        <label>Video5bFlow</label>
+        <locationX>8234</locationX>
+        <locationY>350</locationY>
+        <connector>
+            <targetReference>Loop_subflow_values</targetReference>
+        </connector>
+        <flowName>Video5bFlow</flowName>
+        <inputAssignments>
+            <name>recordId</name>
+            <value>
+                <elementReference>Generate_a_document_flow_LWC.caseId</elementReference>
+            </value>
+        </inputAssignments>
+        <outputAssignments>
+            <assignToReference>subflowValues</assignToReference>
+            <name>subflowValues</name>
+        </outputAssignments>
+    </subflows>
+    <subflows>
+        <name>Video5cFlow</name>
+        <label>Video5cFlow</label>
+        <locationX>8498</locationX>
+        <locationY>350</locationY>
+        <connector>
+            <targetReference>Loop_subflow_values</targetReference>
+        </connector>
+        <flowName>Video5cFlow</flowName>
+        <inputAssignments>
+            <name>recordId</name>
+            <value>
+                <elementReference>Generate_a_document_flow_LWC.caseId</elementReference>
+            </value>
+        </inputAssignments>
+        <outputAssignments>
+            <assignToReference>subflowValues</assignToReference>
+            <name>subflowValues</name>
+        </outputAssignments>
+    </subflows>
+    <subflows>
+        <name>Video6Flow</name>
+        <label>Video6Flow</label>
+        <locationX>8762</locationX>
+        <locationY>350</locationY>
+        <connector>
+            <targetReference>Loop_subflow_values</targetReference>
+        </connector>
+        <flowName>Video6Flow</flowName>
+        <inputAssignments>
+            <name>recordId</name>
+            <value>
+                <elementReference>Generate_a_document_flow_LWC.caseId</elementReference>
+            </value>
+        </inputAssignments>
+        <outputAssignments>
+            <assignToReference>historyRecordId</assignToReference>
+            <name>historyRecordId</name>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>subflowValues</assignToReference>
+            <name>subflowValues</name>
+        </outputAssignments>
+    </subflows>
+    <subflows>
+        <name>Video7Flow</name>
+        <label>Video7Flow</label>
+        <locationX>9026</locationX>
+        <locationY>350</locationY>
+        <connector>
+            <targetReference>Loop_subflow_values</targetReference>
+        </connector>
+        <flowName>Video7Flow</flowName>
+        <inputAssignments>
+            <name>recordId</name>
+            <value>
+                <elementReference>Generate_a_document_flow_LWC.caseId</elementReference>
+            </value>
+        </inputAssignments>
         <outputAssignments>
             <assignToReference>subflowValues</assignToReference>
             <name>subflowValues</name>

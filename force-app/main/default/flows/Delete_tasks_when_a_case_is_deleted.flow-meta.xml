@@ -14,15 +14,12 @@
         <nextValueConnector>
             <targetReference>Fetch_sub_tasks_if_any</targetReference>
         </nextValueConnector>
-        <noMoreValuesConnector>
-            <targetReference>Delete_related_main_task_records</targetReference>
-        </noMoreValuesConnector>
     </loops>
     <loops>
         <name>Loop_subtasks</name>
         <label>Loop subtasks</label>
         <locationX>352</locationX>
-        <locationY>611</locationY>
+        <locationY>719</locationY>
         <collectionReference>Fetch_sub_tasks_if_any</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector>
@@ -54,15 +51,18 @@
     <recordDeletes>
         <name>Delete_related_main_task_records</name>
         <label>Delete related main task records</label>
-        <locationX>176</locationX>
-        <locationY>995</locationY>
-        <inputReference>Get_main_tasks</inputReference>
+        <locationX>352</locationX>
+        <locationY>611</locationY>
+        <connector>
+            <targetReference>Loop_subtasks</targetReference>
+        </connector>
+        <inputReference>Loop_main_tasks</inputReference>
     </recordDeletes>
     <recordDeletes>
         <name>Delete_sub_tasks</name>
         <label>Delete sub tasks</label>
         <locationX>440</locationX>
-        <locationY>719</locationY>
+        <locationY>827</locationY>
         <connector>
             <targetReference>Loop_subtasks</targetReference>
         </connector>
@@ -75,7 +75,7 @@
         <locationY>503</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Loop_subtasks</targetReference>
+            <targetReference>Delete_related_main_task_records</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>

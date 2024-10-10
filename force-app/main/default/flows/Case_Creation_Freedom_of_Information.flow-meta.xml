@@ -1,155 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Copy_1_of_Get_Next_FOIR_Number</name>
+        <label>Get Next FOIR Number</label>
+        <locationX>314</locationX>
+        <locationY>1406</locationY>
+        <actionName>BVCaseNumberHelper</actionName>
+        <actionType>apex</actionType>
+        <connector>
+            <targetReference>Front_Cover_Follow_Up</targetReference>
+        </connector>
+        <flowTransactionModel>Automatic</flowTransactionModel>
+        <inputParameters>
+            <name>RecordCaseType</name>
+            <value>
+                <stringValue>FOIR</stringValue>
+            </value>
+        </inputParameters>
+        <outputParameters>
+            <assignToReference>FOINumber</assignToReference>
+            <name>output</name>
+        </outputParameters>
+    </actionCalls>
+    <actionCalls>
+        <name>Copy_2_of_Get_Next_FOIR_Number</name>
+        <label>Get Next FOIR Number</label>
+        <locationX>578</locationX>
+        <locationY>1514</locationY>
+        <actionName>BVCaseNumberHelper</actionName>
+        <actionType>apex</actionType>
+        <connector>
+            <targetReference>Int_Front_Cover</targetReference>
+        </connector>
+        <flowTransactionModel>Automatic</flowTransactionModel>
+        <inputParameters>
+            <name>RecordCaseType</name>
+            <value>
+                <stringValue>FOIR</stringValue>
+            </value>
+        </inputParameters>
+        <outputParameters>
+            <assignToReference>FOINumber</assignToReference>
+            <name>output</name>
+        </outputParameters>
+    </actionCalls>
+    <actionCalls>
+        <name>Get_Next_FOIR_Number</name>
+        <label>Get Next FOIR Number</label>
+        <locationX>50</locationX>
+        <locationY>1298</locationY>
+        <actionName>BVCaseNumberHelper</actionName>
+        <actionType>apex</actionType>
+        <connector>
+            <targetReference>Front_Cover</targetReference>
+        </connector>
+        <flowTransactionModel>Automatic</flowTransactionModel>
+        <inputParameters>
+            <name>RecordCaseType</name>
+            <value>
+                <stringValue>FOIR</stringValue>
+            </value>
+        </inputParameters>
+        <outputParameters>
+            <assignToReference>FOINumber</assignToReference>
+            <name>output</name>
+        </outputParameters>
+    </actionCalls>
     <apiVersion>61.0</apiVersion>
     <assignments>
-        <name>Assign_existing_FOI_Number_Follow_Up</name>
-        <label>Assign existing FOI Number (Follow Up)</label>
-        <locationX>182</locationX>
-        <locationY>974</locationY>
-        <assignmentItems>
-            <assignToReference>existingFOINumber</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>FOI_Number_Follow_Up</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Get_Record_from_FOI_Number</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>Assign_FOI_Number</name>
-        <label>Assign FOI Number</label>
-        <locationX>578</locationX>
-        <locationY>866</locationY>
-        <assignmentItems>
-            <assignToReference>existingFOINumber</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <booleanValue>false</booleanValue>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Enter_Date_Recieved</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>Assign_FOI_Number_IR</name>
-        <label>Assign FOI Number IR</label>
-        <locationX>974</locationX>
-        <locationY>974</locationY>
-        <assignmentItems>
-            <assignToReference>existingFOINumber</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>FOI_No_Internal_Review</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Internal_Get_Record_from_FOI_Number</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>Assign_Internal_Officer_Name</name>
-        <label>Assign Internal Officer Name</label>
-        <locationX>842</locationX>
-        <locationY>1946</locationY>
-        <assignmentItems>
-            <assignToReference>Internal_Get_Record_from_FOI_Number.Int_Review_Officer__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Internal_Officer_Name</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Create_Internal_Review_Record</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>Assign_Internal_Review</name>
-        <label>Assign Internal Review</label>
-        <locationX>974</locationX>
-        <locationY>758</locationY>
-        <assignmentItems>
-            <assignToReference>requestType</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Internal_Review_Decision</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Internal_Review_Num</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>Assign_New_Request</name>
-        <label>Assign New Request</label>
-        <locationX>578</locationX>
-        <locationY>758</locationY>
-        <assignmentItems>
-            <assignToReference>requestType</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>New_Request_Decision</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Assign_FOI_Number</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>Assign_North_Ireland</name>
-        <label>Assign Northern Ireland</label>
-        <locationX>644</locationX>
-        <locationY>458</locationY>
-        <assignmentItems>
-            <assignToReference>New_FOI_Record.Northern_Ireland__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <booleanValue>true</booleanValue>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>FOI_Request_Type_Decision</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>Assign_Northern_Ireland_No</name>
-        <label>Assign Northern Ireland to false</label>
-        <locationX>908</locationX>
-        <locationY>458</locationY>
-        <assignmentItems>
-            <assignToReference>New_FOI_Record.Northern_Ireland__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <booleanValue>false</booleanValue>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>FOI_Request_Type_Decision</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>Assign_request_to_Follow_Up</name>
-        <label>Assign request to Follow Up</label>
-        <locationX>182</locationX>
-        <locationY>758</locationY>
-        <assignmentItems>
-            <assignToReference>requestType</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Follow_Up_decision</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Follow_Up_Num_Screen</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>Date_Formula</name>
-        <label>Date Assignment</label>
-        <locationX>776</locationX>
-        <locationY>2546</locationY>
+        <name>Assign_Date</name>
+        <label>Assign Date</label>
+        <locationX>50</locationX>
+        <locationY>1082</locationY>
         <assignmentItems>
             <assignToReference>InputDate</assignToReference>
             <operator>Assign</operator>
@@ -164,15 +86,22 @@
                 <elementReference>WorkingDays</elementReference>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Recieved_Date</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Date_Recieved</elementReference>
+            </value>
+        </assignmentItems>
         <connector>
-            <targetReference>Front_Cover</targetReference>
+            <targetReference>Review_Dates</targetReference>
         </connector>
     </assignments>
     <assignments>
-        <name>FOI_Date_Assignment</name>
-        <label>Date Assignment</label>
-        <locationX>50</locationX>
-        <locationY>1514</locationY>
+        <name>Assign_Date_Follow_Up</name>
+        <label>Assign Date (Follow Up)</label>
+        <locationX>314</locationX>
+        <locationY>1190</locationY>
         <assignmentItems>
             <assignToReference>InputDate</assignToReference>
             <operator>Assign</operator>
@@ -187,15 +116,22 @@
                 <elementReference>WorkingDays</elementReference>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Recieved_Date</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>FOI_Date_Recieved</elementReference>
+            </value>
+        </assignmentItems>
         <connector>
-            <targetReference>Front_Cover_Follow_Up</targetReference>
+            <targetReference>Review_Dates_Follow_Up</targetReference>
         </connector>
     </assignments>
     <assignments>
-        <name>Int_Date_Assignment</name>
-        <label>Date Assignment</label>
-        <locationX>842</locationX>
-        <locationY>1514</locationY>
+        <name>Assign_Date_IR</name>
+        <label>Assign Date (Internal Review)</label>
+        <locationX>578</locationX>
+        <locationY>1190</locationY>
         <assignmentItems>
             <assignToReference>InputDate</assignToReference>
             <operator>Assign</operator>
@@ -210,82 +146,95 @@
                 <elementReference>WorkingDays</elementReference>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Recieved_Date</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Int_Date_Recieved</elementReference>
+            </value>
+        </assignmentItems>
         <connector>
-            <targetReference>Int_Front_Cover</targetReference>
+            <targetReference>Review_Dates_Internal_Review</targetReference>
         </connector>
     </assignments>
     <assignments>
-        <name>Prep_Duplicate_Record</name>
-        <label>Prep Duplicate Record</label>
+        <name>Assign_Internal_Review</name>
+        <label>Assign Internal Review</label>
+        <locationX>578</locationX>
+        <locationY>866</locationY>
+        <assignmentItems>
+            <assignToReference>requestType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Internal_Review_Decision</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Internal_Review_Num</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Assign_New_Request</name>
+        <label>Assign New Request</label>
         <locationX>50</locationX>
-        <locationY>1298</locationY>
+        <locationY>866</locationY>
         <assignmentItems>
-            <assignToReference>New_FOI_Record.Foi_No__c</assignToReference>
+            <assignToReference>requestType</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>Get_Record_from_FOI_Number.Foi_No__c</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>New_FOI_Record.Name</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Follow_Up_Name</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>New_FOI_Record.Case_Name__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>FollowUp</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>New_FOI_Record.Follow_Up__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <booleanValue>true</booleanValue>
+                <elementReference>New_Request_Decision</elementReference>
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Enter_Date_Recieved_Follow_Up</targetReference>
+            <targetReference>Enter_Date_Recieved</targetReference>
         </connector>
     </assignments>
     <assignments>
-        <name>Prep_Duplicate_Record_internal</name>
-        <label>Prep Duplicate Record</label>
-        <locationX>842</locationX>
-        <locationY>1298</locationY>
+        <name>Assign_North_Ireland</name>
+        <label>Assign Northern Ireland</label>
+        <locationX>314</locationX>
+        <locationY>566</locationY>
         <assignmentItems>
-            <assignToReference>New_FOI_Record.Foi_No__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Internal_Get_Record_from_FOI_Number.Foi_No__c</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>New_FOI_Record.Name</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Internal_Review_Name</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>New_FOI_Record.Case_Name__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>InternalReview</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>New_FOI_Record.Follow_Up__c</assignToReference>
+            <assignToReference>NorthernIrelandTicked</assignToReference>
             <operator>Assign</operator>
             <value>
                 <booleanValue>true</booleanValue>
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Int_Enter_Date_Recieved</targetReference>
+            <targetReference>FOI_Request_Type_Decision</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Assign_Northern_Ireland_No</name>
+        <label>Assign Northern Ireland to false</label>
+        <locationX>578</locationX>
+        <locationY>566</locationY>
+        <assignmentItems>
+            <assignToReference>NorthernIrelandTicked</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>FOI_Request_Type_Decision</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Assign_request_to_Follow_Up</name>
+        <label>Assign request to Follow Up</label>
+        <locationX>314</locationX>
+        <locationY>866</locationY>
+        <assignmentItems>
+            <assignToReference>requestType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Follow_Up_decision</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>FOI_Follow_Up_Screen</targetReference>
         </connector>
     </assignments>
     <choices>
@@ -849,6 +798,14 @@
         </value>
     </choices>
     <choices>
+        <name>Individual</name>
+        <choiceText>Individual</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Individual</stringValue>
+        </value>
+    </choices>
+    <choices>
         <name>Internal_Review</name>
         <choiceText>Internal Review</choiceText>
         <dataType>String</dataType>
@@ -1083,6 +1040,14 @@
         <dataType>String</dataType>
         <value>
             <stringValue>Online Form</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Organisation</name>
+        <choiceText>Organisation</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Organisation</stringValue>
         </value>
     </choices>
     <choices>
@@ -1510,52 +1475,11 @@
         </value>
     </choices>
     <decisions>
-        <description>Has Get Records found the FOI Record?</description>
-        <name>FOI_Record_Found</name>
-        <label>FOI Record Found?</label>
-        <locationX>182</locationX>
-        <locationY>1190</locationY>
-        <defaultConnectorLabel>No Record Found</defaultConnectorLabel>
-        <rules>
-            <name>Found_Record</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Get_Record_from_FOI_Number</leftValueReference>
-                <operator>IsNull</operator>
-                <rightValue>
-                    <booleanValue>false</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Prep_Duplicate_Record</targetReference>
-            </connector>
-            <label>Found Record</label>
-        </rules>
-    </decisions>
-    <decisions>
         <name>FOI_Request_Type_Decision</name>
         <label>FOI Request Type Decision</label>
-        <locationX>776</locationX>
-        <locationY>650</locationY>
-        <defaultConnector>
-            <targetReference>Enter_Date_Recieved</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
-        <rules>
-            <name>Follow_Up_decision</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>FOI_Request_Type</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <elementReference>Follow_Up</elementReference>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Assign_request_to_Follow_Up</targetReference>
-            </connector>
-            <label>Follow Up</label>
-        </rules>
+        <locationX>446</locationX>
+        <locationY>758</locationY>
+        <defaultConnectorLabel>Default</defaultConnectorLabel>
         <rules>
             <name>New_Request_Decision</name>
             <conditionLogic>and</conditionLogic>
@@ -1570,6 +1494,21 @@
                 <targetReference>Assign_New_Request</targetReference>
             </connector>
             <label>New Request</label>
+        </rules>
+        <rules>
+            <name>Follow_Up_decision</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>FOI_Request_Type</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Follow_Up</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Assign_request_to_Follow_Up</targetReference>
+            </connector>
+            <label>Follow Up</label>
         </rules>
         <rules>
             <name>Internal_Review_Decision</name>
@@ -1590,8 +1529,8 @@
     <decisions>
         <name>FOI_Solicitor_Question</name>
         <label>FOI Solicitor Question</label>
-        <locationX>776</locationX>
-        <locationY>350</locationY>
+        <locationX>446</locationX>
+        <locationY>458</locationY>
         <defaultConnector>
             <targetReference>Assign_Northern_Ireland_No</targetReference>
         </defaultConnector>
@@ -1612,28 +1551,127 @@
             <label>Yes</label>
         </rules>
     </decisions>
-    <decisions>
-        <name>Int_FOI_Record_Found</name>
-        <label>Int FOI Record Found?</label>
-        <locationX>974</locationX>
-        <locationY>1190</locationY>
-        <defaultConnectorLabel>No Record Found</defaultConnectorLabel>
-        <rules>
-            <name>Found_Record_Internal</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Internal_Get_Record_from_FOI_Number.Foi_No__c</leftValueReference>
-                <operator>IsNull</operator>
-                <rightValue>
-                    <booleanValue>false</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Prep_Duplicate_Record_internal</targetReference>
-            </connector>
-            <label>Found Record</label>
-        </rules>
-    </decisions>
+    <dynamicChoiceSets>
+        <name>BVCaseRecordChoiceSet</name>
+        <dataType>String</dataType>
+        <displayField>Name</displayField>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Record_Type_Dev_Name__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>FOIR</stringValue>
+            </value>
+        </filters>
+        <object>BV_Case__c</object>
+        <outputAssignments>
+            <assignToReference>FrontCoverAcknowledgedDate</assignToReference>
+            <field>Acknowledged__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>ApplicantAddressLine1</assignToReference>
+            <field>Applicant_Address_Line_1__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>ApplicantAddressLine2</assignToReference>
+            <field>Applicant_Address_Line_2__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>ApplicantAddressLine3</assignToReference>
+            <field>Applicant_Address_Line_3__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>ApplicantAddressLine4</assignToReference>
+            <field>Applicant_Address_Line_4__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>ApplicantFax</assignToReference>
+            <field>Applicant_Fax__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>ApplicantPostcode</assignToReference>
+            <field>Applicant_PC__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>ApplicantTelephone</assignToReference>
+            <field>Applicant_Telephone__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>ApplicantType</assignToReference>
+            <field>Applicant_Type__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>FrontCoverApplicant</assignToReference>
+            <field>Applicant__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>FrontCoverCaseName</assignToReference>
+            <field>Case_Name__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>FrontCoverCaseNumber</assignToReference>
+            <field>Case_Number__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>FrontCoverDateReplySent</assignToReference>
+            <field>Date_Reply_Sent__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>FrontCoverWithdrawnDate</assignToReference>
+            <field>Date_Withdrawn__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>FrontCoverDestructionDate</assignToReference>
+            <field>Destruction_Date__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>FrontCoverFOINumber</assignToReference>
+            <field>Foi_No__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>FrontCoverFollowUp</assignToReference>
+            <field>Follow_Up__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>FrontCoverILO</assignToReference>
+            <field>Ilo__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>FrontCoverIntReviewOfficer</assignToReference>
+            <field>Int_Review_Officer__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>ApplicantName</assignToReference>
+            <field>Name__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>FrontCoverNorthernIreland</assignToReference>
+            <field>Northern_Ireland__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>FrontCoverNumberofRequests</assignToReference>
+            <field>Number_Of_Requests__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>FrontCoverDateReceived</assignToReference>
+            <field>Received__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>FrontCoverReplyDue</assignToReference>
+            <field>Reply_Due__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>FrontCoverRequestType</assignToReference>
+            <field>Request_Type__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>FrontCoverWithdrawn</assignToReference>
+            <field>Withdrawn__c</field>
+        </outputAssignments>
+        <sortField>Name</sortField>
+        <sortOrder>Desc</sortOrder>
+        <valueField>Id</valueField>
+    </dynamicChoiceSets>
     <environments>Default</environments>
     <formulas>
         <name>Clear_left_brackets_for_aliases</name>
@@ -1763,11 +1801,91 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
     </processMetadataValues>
     <processType>Flow</processType>
     <recordCreates>
-        <description>Create an case for FOI</description>
-        <name>Create_FOI_Case</name>
-        <label>Create FOI Case</label>
-        <locationX>776</locationX>
-        <locationY>2870</locationY>
+        <name>Create_Case_Officer_Record</name>
+        <label>Create Case Officer Record</label>
+        <locationX>50</locationX>
+        <locationY>1946</locationY>
+        <inputAssignments>
+            <field>BV_Case__c</field>
+            <value>
+                <elementReference>Create_FOI_Record</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Current_Officer__c</field>
+            <value>
+                <elementReference>selectcaseofficernormal.newCaseOfficer</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>RecordTypeId</field>
+            <value>
+                <elementReference>CaseDetailCaseOfficerRecordTypeId</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Case_Detail__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordCreates>
+        <name>Create_Case_Officer_Record_Follow_Up</name>
+        <label>Create Case Officer Record (Follow Up)</label>
+        <locationX>314</locationX>
+        <locationY>2054</locationY>
+        <inputAssignments>
+            <field>BV_Case__c</field>
+            <value>
+                <elementReference>create_foi_record_follow_up</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Current_Officer__c</field>
+            <value>
+                <elementReference>selectcaseofficerfollowup.newCaseOfficer</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>RecordTypeId</field>
+            <value>
+                <elementReference>CaseDetailCaseOfficerRecordTypeId</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Case_Detail__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordCreates>
+        <name>Create_Case_Officer_Record_Internal_Review</name>
+        <label>Create Case Officer Record (Internal Review)</label>
+        <locationX>578</locationX>
+        <locationY>2162</locationY>
+        <inputAssignments>
+            <field>BV_Case__c</field>
+            <value>
+                <elementReference>Create_FOI_Record_Internal_Review</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Current_Officer__c</field>
+            <value>
+                <elementReference>selectcaseofficerinternalreview.newCaseOfficer</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>RecordTypeId</field>
+            <value>
+                <elementReference>CaseDetailCaseOfficerRecordTypeId</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Case_Detail__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordCreates>
+        <name>Create_FOI_Record</name>
+        <label>Create FOI Record</label>
+        <locationX>50</locationX>
+        <locationY>1838</locationY>
+        <connector>
+            <targetReference>Create_Case_Officer_Record</targetReference>
+        </connector>
         <inputAssignments>
             <field>Acknowledged__c</field>
             <value>
@@ -1811,12 +1929,6 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             </value>
         </inputAssignments>
         <inputAssignments>
-            <field>Applicant_Telephone__c</field>
-            <value>
-                <elementReference>FOI_AD_Phone</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
             <field>Applicant_Type__c</field>
             <value>
                 <elementReference>FOI_AD_Type</elementReference>
@@ -1841,6 +1953,12 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             </value>
         </inputAssignments>
         <inputAssignments>
+            <field>Case_Officer__c</field>
+            <value>
+                <elementReference>selectcaseofficernormal.newCaseOfficer</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
             <field>Date_Reply_Sent__c</field>
             <value>
                 <elementReference>FOI_FC_Date_Reply_Sent</elementReference>
@@ -1861,7 +1979,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <inputAssignments>
             <field>Foi_No__c</field>
             <value>
-                <elementReference>FOI_FC_Number</elementReference>
+                <elementReference>FOINumber</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -1883,12 +2001,6 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             </value>
         </inputAssignments>
         <inputAssignments>
-            <field>Name</field>
-            <value>
-                <elementReference>FOI_FC_Number</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
             <field>Name__c</field>
             <value>
                 <elementReference>FOI_AD_Name</elementReference>
@@ -1904,6 +2016,12 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             <field>Number_Of_Requests__c</field>
             <value>
                 <elementReference>FOI_FC_Number_of_Requests</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value>
+                <elementReference>selectcaseofficernormal.selectedCaseOfficer</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -1931,12 +2049,6 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             </value>
         </inputAssignments>
         <inputAssignments>
-            <field>Stage__c</field>
-            <value>
-                <stringValue>Advertising</stringValue>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
             <field>Withdrawn__c</field>
             <value>
                 <elementReference>FOI_FC_Withdrawn</elementReference>
@@ -1946,11 +2058,13 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordCreates>
     <recordCreates>
-        <description>Creates the duplicate follow up record</description>
-        <name>Create_Follow_Up_Record</name>
-        <label>Create Follow Up Record</label>
-        <locationX>50</locationX>
-        <locationY>1838</locationY>
+        <name>create_foi_record_follow_up</name>
+        <label>Create FOI Record (Follow Up)</label>
+        <locationX>314</locationX>
+        <locationY>1946</locationY>
+        <connector>
+            <targetReference>Create_Case_Officer_Record_Follow_Up</targetReference>
+        </connector>
         <inputAssignments>
             <field>Acknowledged__c</field>
             <value>
@@ -1994,12 +2108,6 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             </value>
         </inputAssignments>
         <inputAssignments>
-            <field>Applicant_Telephone__c</field>
-            <value>
-                <elementReference>Follow_Up_Phone</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
             <field>Applicant_Type__c</field>
             <value>
                 <elementReference>Follow_Up_Type</elementReference>
@@ -2014,7 +2122,19 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <inputAssignments>
             <field>Case_Name__c</field>
             <value>
-                <elementReference>New_FOI_Record.Case_Name__c</elementReference>
+                <elementReference>Follow_Up_Case_Name</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Case_Number__c</field>
+            <value>
+                <elementReference>FOINumber</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Case_Officer__c</field>
+            <value>
+                <elementReference>selectcaseofficerfollowup.newCaseOfficer</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -2038,7 +2158,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <inputAssignments>
             <field>Foi_No__c</field>
             <value>
-                <elementReference>New_FOI_Record.Foi_No__c</elementReference>
+                <elementReference>Follow_Up_FOI_Number</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -2060,15 +2180,9 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             </value>
         </inputAssignments>
         <inputAssignments>
-            <field>Name</field>
-            <value>
-                <elementReference>New_FOI_Record.Name</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
             <field>Name__c</field>
             <value>
-                <elementReference>Follow_Up_Name</elementReference>
+                <elementReference>Follow_Up_AD_Name</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -2084,6 +2198,12 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             </value>
         </inputAssignments>
         <inputAssignments>
+            <field>OwnerId</field>
+            <value>
+                <elementReference>selectcaseofficerfollowup.selectedCaseOfficer</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
             <field>Received__c</field>
             <value>
                 <elementReference>Follow_Up_Date_Recieved</elementReference>
@@ -2092,7 +2212,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <inputAssignments>
             <field>RecordTypeId</field>
             <value>
-                <elementReference>Get_Record_from_FOI_Number.RecordTypeId</elementReference>
+                <elementReference>BVCaseRecordTypeId</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -2108,12 +2228,6 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             </value>
         </inputAssignments>
         <inputAssignments>
-            <field>Stage__c</field>
-            <value>
-                <stringValue>Advertising</stringValue>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
             <field>Withdrawn__c</field>
             <value>
                 <elementReference>Follow_Up_Withdrawn</elementReference>
@@ -2123,11 +2237,13 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordCreates>
     <recordCreates>
-        <description>Create the Internal Review Record</description>
-        <name>Create_Internal_Review_Record</name>
-        <label>Create Internal Review Record</label>
-        <locationX>842</locationX>
+        <name>Create_FOI_Record_Internal_Review</name>
+        <label>Create FOI Record (Internal Review)</label>
+        <locationX>578</locationX>
         <locationY>2054</locationY>
+        <connector>
+            <targetReference>Create_Case_Officer_Record_Internal_Review</targetReference>
+        </connector>
         <inputAssignments>
             <field>Acknowledged__c</field>
             <value>
@@ -2171,12 +2287,6 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             </value>
         </inputAssignments>
         <inputAssignments>
-            <field>Applicant_Telephone__c</field>
-            <value>
-                <elementReference>Int_Phone</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
             <field>Applicant_Type__c</field>
             <value>
                 <elementReference>Int_Type</elementReference>
@@ -2191,7 +2301,19 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <inputAssignments>
             <field>Case_Name__c</field>
             <value>
-                <elementReference>New_FOI_Record.Case_Name__c</elementReference>
+                <elementReference>Int_Case_Name</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Case_Number__c</field>
+            <value>
+                <elementReference>FOINumber</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Case_Officer__c</field>
+            <value>
+                <elementReference>selectcaseofficerinternalreview.newCaseOfficer</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -2215,7 +2337,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <inputAssignments>
             <field>Foi_No__c</field>
             <value>
-                <elementReference>New_FOI_Record.Foi_No__c</elementReference>
+                <elementReference>FrontCoverFOINumber</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -2233,13 +2355,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <inputAssignments>
             <field>Int_Review_Officer__c</field>
             <value>
-                <elementReference>Internal_Get_Record_from_FOI_Number.Int_Review_Officer__c</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Name</field>
-            <value>
-                <elementReference>New_FOI_Record.Name</elementReference>
+                <elementReference>What_is_name_of_the_officer_handling_the_internal_review</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -2261,6 +2377,12 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             </value>
         </inputAssignments>
         <inputAssignments>
+            <field>OwnerId</field>
+            <value>
+                <elementReference>selectcaseofficerinternalreview.selectedCaseOfficer</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
             <field>Received__c</field>
             <value>
                 <elementReference>Int_Date_Recieved</elementReference>
@@ -2269,7 +2391,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <inputAssignments>
             <field>RecordTypeId</field>
             <value>
-                <elementReference>Internal_Get_Record_from_FOI_Number.RecordTypeId</elementReference>
+                <elementReference>BVCaseRecordTypeId</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -2281,13 +2403,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <inputAssignments>
             <field>Request_Type__c</field>
             <value>
-                <elementReference>Int_Request_Type</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Stage__c</field>
-            <value>
-                <stringValue>Advertising</stringValue>
+                <elementReference>Int_Type</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -2300,14 +2416,37 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordCreates>
     <recordLookups>
-        <description>Same as Get BV Case RecordTypeId</description>
-        <name>Get_FOI_RecordTypeId</name>
-        <label>Get FOI RecordTypeId</label>
-        <locationX>776</locationX>
-        <locationY>134</locationY>
+        <name>Get_Case_Officer_RecordTypeId</name>
+        <label>Get Case Officer RecordTypeId</label>
+        <locationX>446</locationX>
+        <locationY>242</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>FOI_Request_Type_Screen</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Record_Type_Dev_Name__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Officer_History</stringValue>
+            </value>
+        </filters>
+        <object>Case_Detail__c</object>
+        <outputAssignments>
+            <assignToReference>CaseDetailCaseOfficerRecordTypeId</assignToReference>
+            <field>RecordTypeId</field>
+        </outputAssignments>
+    </recordLookups>
+    <recordLookups>
+        <description>Same as Get BV Case RecordTypeId</description>
+        <name>Get_FOI_RecordTypeId</name>
+        <label>Get FOI RecordTypeId</label>
+        <locationX>446</locationX>
+        <locationY>134</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_Case_Officer_RecordTypeId</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -2323,60 +2462,17 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             <field>RecordTypeId</field>
         </outputAssignments>
     </recordLookups>
-    <recordLookups>
-        <description>Gets the record from the FOI Number</description>
-        <name>Get_Record_from_FOI_Number</name>
-        <label>Get Record from FOI Number</label>
-        <locationX>182</locationX>
-        <locationY>1082</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>FOI_Record_Found</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Foi_No__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>FOI_Number_Follow_Up</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>BV_Case__c</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
-        <name>Internal_Get_Record_from_FOI_Number</name>
-        <label>Internal Get Record from FOI Number</label>
-        <locationX>974</locationX>
-        <locationY>1082</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Int_FOI_Record_Found</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Foi_No__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>FOI_No_Internal_Review</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>BV_Case__c</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
     <screens>
         <description>Shows the applicant&apos;s details screen to be completed</description>
         <name>Applicant_Details</name>
         <label>Applicant Details</label>
-        <locationX>776</locationX>
-        <locationY>2762</locationY>
+        <locationX>50</locationX>
+        <locationY>1514</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Create_FOI_Case</targetReference>
+            <targetReference>Review_Details</targetReference>
         </connector>
         <fields>
             <name>FOI_AD_Name</name>
@@ -2443,34 +2539,26 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             <fieldType>DropdownBox</fieldType>
             <isRequired>false</isRequired>
         </fields>
-        <fields>
-            <name>flow_navigation_component_applicant_details</name>
-            <extensionName>c:flowNavigationComponent</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-        </fields>
-        <showFooter>false</showFooter>
+        <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
     <screens>
         <description>Shows the applicant&apos;s details screen to be completed</description>
         <name>Applicant_Details_Follow_Up</name>
         <label>Applicant Details</label>
-        <locationX>50</locationX>
-        <locationY>1730</locationY>
+        <locationX>314</locationX>
+        <locationY>1622</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Create_Follow_Up_Record</targetReference>
+            <targetReference>Review_Details_Follow_Up</targetReference>
         </connector>
         <fields>
             <name>Follow_Up_AD_Name</name>
             <dataType>String</dataType>
             <defaultValue>
-                <elementReference>Get_Record_from_FOI_Number.Name__c</elementReference>
+                <elementReference>ApplicantName</elementReference>
             </defaultValue>
             <fieldText>Name</fieldText>
             <fieldType>InputField</fieldType>
@@ -2480,7 +2568,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             <name>Follow_Up_Address</name>
             <dataType>String</dataType>
             <defaultValue>
-                <elementReference>Get_Record_from_FOI_Number.Applicant_Address_Line_1__c</elementReference>
+                <elementReference>ApplicantAddressLine1</elementReference>
             </defaultValue>
             <fieldText>Address</fieldText>
             <fieldType>InputField</fieldType>
@@ -2490,7 +2578,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             <name>Follow_Up_Address_Line_2</name>
             <dataType>String</dataType>
             <defaultValue>
-                <elementReference>Get_Record_from_FOI_Number.Applicant_Address_Line_2__c</elementReference>
+                <elementReference>ApplicantAddressLine2</elementReference>
             </defaultValue>
             <fieldText>Address Line 2</fieldText>
             <fieldType>InputField</fieldType>
@@ -2500,7 +2588,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             <name>Follow_Up_Address_Line_3</name>
             <dataType>String</dataType>
             <defaultValue>
-                <elementReference>Get_Record_from_FOI_Number.Applicant_Address_Line_3__c</elementReference>
+                <elementReference>ApplicantAddressLine3</elementReference>
             </defaultValue>
             <fieldText>Address Line 3</fieldText>
             <fieldType>InputField</fieldType>
@@ -2510,7 +2598,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             <name>Follow_Up_Address_Line_4</name>
             <dataType>String</dataType>
             <defaultValue>
-                <elementReference>Get_Record_from_FOI_Number.Applicant_Address_Line_4__c</elementReference>
+                <elementReference>ApplicantAddressLine4</elementReference>
             </defaultValue>
             <fieldText>Address Line 4</fieldText>
             <fieldType>InputField</fieldType>
@@ -2520,7 +2608,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             <name>Follow_Up_Postcode</name>
             <dataType>String</dataType>
             <defaultValue>
-                <elementReference>Get_Record_from_FOI_Number.Applicant_PC__c</elementReference>
+                <elementReference>ApplicantPostcode</elementReference>
             </defaultValue>
             <fieldText>Postcode</fieldText>
             <fieldType>InputField</fieldType>
@@ -2530,7 +2618,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             <name>Follow_Up_Phone</name>
             <dataType>String</dataType>
             <defaultValue>
-                <elementReference>Get_Record_from_FOI_Number.Applicant_Telephone__c</elementReference>
+                <elementReference>ApplicantTelephone</elementReference>
             </defaultValue>
             <fieldText>Phone</fieldText>
             <fieldType>InputField</fieldType>
@@ -2540,7 +2628,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             <name>Follow_Up_Fax_Number</name>
             <dataType>String</dataType>
             <defaultValue>
-                <elementReference>Get_Record_from_FOI_Number.Applicant_Fax__c</elementReference>
+                <elementReference>ApplicantFax</elementReference>
             </defaultValue>
             <fieldText>Fax Number</fieldText>
             <fieldType>InputField</fieldType>
@@ -2548,37 +2636,29 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         </fields>
         <fields>
             <name>Follow_Up_Type</name>
-            <choiceReferences>FOI_FC_Individual</choiceReferences>
-            <choiceReferences>FOI_FC_Organisation</choiceReferences>
+            <choiceReferences>Individual</choiceReferences>
+            <choiceReferences>Organisation</choiceReferences>
             <dataType>String</dataType>
             <defaultValue>
-                <elementReference>Get_Record_from_FOI_Number.Applicant_Type__c</elementReference>
+                <elementReference>ApplicantType</elementReference>
             </defaultValue>
             <fieldText>Type</fieldText>
             <fieldType>DropdownBox</fieldType>
             <isRequired>false</isRequired>
         </fields>
-        <fields>
-            <name>Copy_1_of_flow_navigation_component_applicant_details</name>
-            <extensionName>c:flowNavigationComponent</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-        </fields>
-        <showFooter>false</showFooter>
+        <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
     <screens>
         <name>Enter_Date_Recieved</name>
         <label>Enter Date Recieved</label>
-        <locationX>776</locationX>
-        <locationY>2438</locationY>
+        <locationX>50</locationX>
+        <locationY>974</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Date_Formula</targetReference>
+            <targetReference>Assign_Date</targetReference>
         </connector>
         <fields>
             <name>Date_Recieved</name>
@@ -2587,51 +2667,58 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             <fieldType>InputField</fieldType>
             <isRequired>true</isRequired>
         </fields>
-        <fields>
-            <name>flow_navigation_component_date_received</name>
-            <extensionName>c:flowNavigationComponent</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-        </fields>
-        <showFooter>false</showFooter>
+        <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
     <screens>
         <name>Enter_Date_Recieved_Follow_Up</name>
         <label>Enter Date Recieved</label>
-        <locationX>50</locationX>
-        <locationY>1406</locationY>
+        <locationX>314</locationX>
+        <locationY>1082</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>FOI_Date_Assignment</targetReference>
+            <targetReference>Assign_Date_Follow_Up</targetReference>
         </connector>
         <fields>
             <name>FOI_Date_Recieved</name>
             <dataType>Date</dataType>
-            <fieldText>Date Recieved</fieldText>
+            <fieldText>Enter Date Recieved</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>true</isRequired>
         </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>FOI_Follow_Up_Screen</name>
+        <label>FOI Follow Up Screen</label>
+        <locationX>314</locationX>
+        <locationY>974</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Enter_Date_Recieved_Follow_Up</targetReference>
+        </connector>
         <fields>
-            <name>Copy_1_of_flow_navigation_component_date_received</name>
-            <extensionName>c:flowNavigationComponent</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <name>Select_a_FOI_Number_to_Follow_Up</name>
+            <choiceReferences>BVCaseRecordChoiceSet</choiceReferences>
+            <extensionName>flowruntime:choiceLookup</extensionName>
+            <fieldText>Select a FOI Number to Follow Up</fieldText>
+            <fieldType>ComponentChoice</fieldType>
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
         </fields>
-        <showFooter>false</showFooter>
+        <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
     <screens>
         <name>FOI_Request_Type_Screen</name>
         <label>FOI Request Type Screen</label>
-        <locationX>776</locationX>
-        <locationY>242</locationY>
+        <locationX>446</locationX>
+        <locationY>350</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -2657,52 +2744,15 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             <fieldType>DropdownBox</fieldType>
             <isRequired>true</isRequired>
         </fields>
-        <fields>
-            <name>flow_navigation_component_foi_request_type</name>
-            <extensionName>c:flowNavigationComponent</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-        </fields>
-        <showFooter>false</showFooter>
-        <showHeader>true</showHeader>
-    </screens>
-    <screens>
-        <name>Follow_Up_Num_Screen</name>
-        <label>Enter FOI Number</label>
-        <locationX>182</locationX>
-        <locationY>866</locationY>
-        <allowBack>true</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
-        <connector>
-            <targetReference>Assign_existing_FOI_Number_Follow_Up</targetReference>
-        </connector>
-        <fields>
-            <name>FOI_Number_Follow_Up</name>
-            <dataType>String</dataType>
-            <fieldText>Enter FOI no. to which this follow-up relates</fieldText>
-            <fieldType>InputField</fieldType>
-            <isRequired>true</isRequired>
-        </fields>
-        <fields>
-            <name>flow_navigation_component_enter_foi_follow_up</name>
-            <extensionName>c:flowNavigationComponent</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-        </fields>
-        <showFooter>false</showFooter>
+        <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
     <screens>
         <description>Shows the Front Cover screen for details to be entered</description>
         <name>Front_Cover</name>
         <label>Front Cover</label>
-        <locationX>776</locationX>
-        <locationY>2654</locationY>
+        <locationX>50</locationX>
+        <locationY>1406</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -2718,8 +2768,14 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                 <fields>
                     <name>FOI_FC_Number</name>
                     <dataType>String</dataType>
+                    <defaultValue>
+                        <elementReference>FOINumber</elementReference>
+                    </defaultValue>
                     <fieldText>FOI No.</fieldText>
                     <fieldType>InputField</fieldType>
+                    <isDisabled>
+                        <booleanValue>true</booleanValue>
+                    </isDisabled>
                     <isRequired>false</isRequired>
                 </fields>
                 <fields>
@@ -2767,18 +2823,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                 <inputParameters>
                     <name>width</name>
                     <value>
-                        <stringValue>6</stringValue>
-                    </value>
-                </inputParameters>
-                <isRequired>false</isRequired>
-            </fields>
-            <fields>
-                <name>Front_Cover_Section1_Column2</name>
-                <fieldType>Region</fieldType>
-                <inputParameters>
-                    <name>width</name>
-                    <value>
-                        <stringValue>6</stringValue>
+                        <stringValue>12</stringValue>
                     </value>
                 </inputParameters>
                 <isRequired>false</isRequired>
@@ -2853,7 +2898,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                 <inputParameters>
                     <name>width</name>
                     <value>
-                        <stringValue>4</stringValue>
+                        <stringValue>6</stringValue>
                     </value>
                 </inputParameters>
                 <isRequired>false</isRequired>
@@ -2863,10 +2908,9 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                 <fieldType>Region</fieldType>
                 <fields>
                     <name>FOI_FC_ILO</name>
-                    <choiceReferences>No</choiceReferences>
                     <dataType>String</dataType>
                     <fieldText>ILO</fieldText>
-                    <fieldType>DropdownBox</fieldType>
+                    <fieldType>InputField</fieldType>
                     <isRequired>false</isRequired>
                 </fields>
                 <fields>
@@ -2901,7 +2945,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                     <name>FOI_FC_Northern_Ireland</name>
                     <dataType>Boolean</dataType>
                     <defaultValue>
-                        <elementReference>New_FOI_Record.Northern_Ireland__c</elementReference>
+                        <elementReference>NorthernIrelandTicked</elementReference>
                     </defaultValue>
                     <fieldText>Northern Ireland?</fieldText>
                     <fieldType>InputField</fieldType>
@@ -2910,18 +2954,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                 <inputParameters>
                     <name>width</name>
                     <value>
-                        <stringValue>4</stringValue>
-                    </value>
-                </inputParameters>
-                <isRequired>false</isRequired>
-            </fields>
-            <fields>
-                <name>Front_Cover_Section2_Column3</name>
-                <fieldType>Region</fieldType>
-                <inputParameters>
-                    <name>width</name>
-                    <value>
-                        <stringValue>4</stringValue>
+                        <stringValue>6</stringValue>
                     </value>
                 </inputParameters>
                 <isRequired>false</isRequired>
@@ -2929,23 +2962,15 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
         </fields>
-        <fields>
-            <name>flow_navigation_component_front_cover</name>
-            <extensionName>c:flowNavigationComponent</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-        </fields>
-        <showFooter>false</showFooter>
+        <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
     <screens>
         <description>Shows the Front Cover screen for details to be entered</description>
         <name>Front_Cover_Follow_Up</name>
         <label>Front Cover</label>
-        <locationX>50</locationX>
-        <locationY>1622</locationY>
+        <locationX>314</locationX>
+        <locationY>1514</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -2962,17 +2987,20 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                     <name>Follow_Up_FOI_Number</name>
                     <dataType>String</dataType>
                     <defaultValue>
-                        <elementReference>Get_Record_from_FOI_Number.Foi_No__c</elementReference>
+                        <elementReference>FrontCoverFOINumber</elementReference>
                     </defaultValue>
                     <fieldText>FOI No.</fieldText>
                     <fieldType>InputField</fieldType>
+                    <isDisabled>
+                        <booleanValue>true</booleanValue>
+                    </isDisabled>
                     <isRequired>false</isRequired>
                 </fields>
                 <fields>
                     <name>Follow_Up_Applicant</name>
                     <dataType>String</dataType>
                     <defaultValue>
-                        <elementReference>Get_Record_from_FOI_Number.Applicant__c</elementReference>
+                        <elementReference>FrontCoverApplicant</elementReference>
                     </defaultValue>
                     <fieldText>Applicant</fieldText>
                     <fieldType>InputField</fieldType>
@@ -2982,7 +3010,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                     <name>Follow_Up_Case_Name</name>
                     <dataType>String</dataType>
                     <defaultValue>
-                        <elementReference>New_FOI_Record.Case_Name__c</elementReference>
+                        <elementReference>FrontCoverCaseName</elementReference>
                     </defaultValue>
                     <fieldText>Case Name</fieldText>
                     <fieldType>InputField</fieldType>
@@ -2992,10 +3020,13 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                     <name>Follow_Up_Case_Number</name>
                     <dataType>String</dataType>
                     <defaultValue>
-                        <elementReference>Get_Record_from_FOI_Number.Case_Number__c</elementReference>
+                        <elementReference>FOINumber</elementReference>
                     </defaultValue>
                     <fieldText>Case Number</fieldText>
                     <fieldType>InputField</fieldType>
+                    <isDisabled>
+                        <booleanValue>true</booleanValue>
+                    </isDisabled>
                     <isRequired>false</isRequired>
                 </fields>
                 <fields>
@@ -3009,7 +3040,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                     <choiceReferences>Kin_claim_only</choiceReferences>
                     <dataType>String</dataType>
                     <defaultValue>
-                        <elementReference>Get_Record_from_FOI_Number.Request_Type__c</elementReference>
+                        <elementReference>FrontCoverRequestType</elementReference>
                     </defaultValue>
                     <fieldText>Request Type</fieldText>
                     <fieldType>DropdownBox</fieldType>
@@ -3019,7 +3050,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                     <name>Follow_Up_IR_Officer</name>
                     <dataType>String</dataType>
                     <defaultValue>
-                        <elementReference>Get_Record_from_FOI_Number.Int_Review_Officer__c</elementReference>
+                        <elementReference>FrontCoverIntReviewOfficer</elementReference>
                     </defaultValue>
                     <fieldText>Internal Review Officer</fieldText>
                     <fieldType>InputField</fieldType>
@@ -3028,18 +3059,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                 <inputParameters>
                     <name>width</name>
                     <value>
-                        <stringValue>6</stringValue>
-                    </value>
-                </inputParameters>
-                <isRequired>false</isRequired>
-            </fields>
-            <fields>
-                <name>Front_Cover_Follow_Up_Section1_Column2</name>
-                <fieldType>Region</fieldType>
-                <inputParameters>
-                    <name>width</name>
-                    <value>
-                        <stringValue>6</stringValue>
+                        <stringValue>12</stringValue>
                     </value>
                 </inputParameters>
                 <isRequired>false</isRequired>
@@ -3057,7 +3077,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                     <name>Follow_Up_Number_of_Requests</name>
                     <dataType>Number</dataType>
                     <defaultValue>
-                        <elementReference>Get_Record_from_FOI_Number.Number_Of_Requests__c</elementReference>
+                        <elementReference>FrontCoverNumberofRequests</elementReference>
                     </defaultValue>
                     <fieldText>Number of Requests</fieldText>
                     <fieldType>InputField</fieldType>
@@ -3094,7 +3114,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                     <name>Follow_Up_Withdrawn</name>
                     <dataType>Boolean</dataType>
                     <defaultValue>
-                        <elementReference>Get_Record_from_FOI_Number.Withdrawn__c</elementReference>
+                        <elementReference>FrontCoverWithdrawn</elementReference>
                     </defaultValue>
                     <fieldText>Withdrawn?</fieldText>
                     <fieldType>InputField</fieldType>
@@ -3104,7 +3124,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                     <name>Follow_Up_Date_Withdrawn</name>
                     <dataType>Date</dataType>
                     <defaultValue>
-                        <elementReference>Get_Record_from_FOI_Number.Date_Withdrawn__c</elementReference>
+                        <elementReference>FrontCoverWithdrawnDate</elementReference>
                     </defaultValue>
                     <fieldText>Date Withdrawn</fieldText>
                     <fieldType>InputField</fieldType>
@@ -3123,7 +3143,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                 <inputParameters>
                     <name>width</name>
                     <value>
-                        <stringValue>4</stringValue>
+                        <stringValue>6</stringValue>
                     </value>
                 </inputParameters>
                 <isRequired>false</isRequired>
@@ -3133,20 +3153,19 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                 <fieldType>Region</fieldType>
                 <fields>
                     <name>Follow_Up_ILO</name>
-                    <choiceReferences>No</choiceReferences>
                     <dataType>String</dataType>
                     <defaultValue>
-                        <elementReference>Get_Record_from_FOI_Number.Ilo__c</elementReference>
+                        <elementReference>FrontCoverILO</elementReference>
                     </defaultValue>
                     <fieldText>ILO</fieldText>
-                    <fieldType>DropdownBox</fieldType>
+                    <fieldType>InputField</fieldType>
                     <isRequired>false</isRequired>
                 </fields>
                 <fields>
                     <name>Follow_Up_Acknowledged_Date</name>
                     <dataType>Date</dataType>
                     <defaultValue>
-                        <elementReference>Get_Record_from_FOI_Number.Acknowledged__c</elementReference>
+                        <elementReference>FrontCoverAcknowledgedDate</elementReference>
                     </defaultValue>
                     <fieldText>Acknowledged Date</fieldText>
                     <fieldType>InputField</fieldType>
@@ -3156,7 +3175,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                     <name>Follow_Up_Date_Reply_Sent</name>
                     <dataType>Date</dataType>
                     <defaultValue>
-                        <elementReference>Get_Record_from_FOI_Number.Date_Reply_Sent__c</elementReference>
+                        <elementReference>FrontCoverDateReplySent</elementReference>
                     </defaultValue>
                     <fieldText>Date Reply Sent</fieldText>
                     <fieldType>InputField</fieldType>
@@ -3166,7 +3185,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                     <name>Follow_Up_Destruction_Date</name>
                     <dataType>Date</dataType>
                     <defaultValue>
-                        <elementReference>Get_Record_from_FOI_Number.Destruction_Date__c</elementReference>
+                        <elementReference>FrontCoverDestructionDate</elementReference>
                     </defaultValue>
                     <fieldText>Destruction Date</fieldText>
                     <fieldType>InputField</fieldType>
@@ -3176,17 +3195,20 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                     <name>Follow_Up_Follow_Up</name>
                     <dataType>Boolean</dataType>
                     <defaultValue>
-                        <elementReference>New_FOI_Record.Follow_Up__c</elementReference>
+                        <booleanValue>true</booleanValue>
                     </defaultValue>
                     <fieldText>Follow Up?</fieldText>
                     <fieldType>InputField</fieldType>
+                    <isDisabled>
+                        <booleanValue>true</booleanValue>
+                    </isDisabled>
                     <isRequired>true</isRequired>
                 </fields>
                 <fields>
                     <name>Follow_Up_Northern_Ireland</name>
                     <dataType>Boolean</dataType>
                     <defaultValue>
-                        <elementReference>New_FOI_Record.Northern_Ireland__c</elementReference>
+                        <elementReference>NorthernIrelandTicked</elementReference>
                     </defaultValue>
                     <fieldText>Northern Ireland?</fieldText>
                     <fieldType>InputField</fieldType>
@@ -3195,18 +3217,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                 <inputParameters>
                     <name>width</name>
                     <value>
-                        <stringValue>4</stringValue>
-                    </value>
-                </inputParameters>
-                <isRequired>false</isRequired>
-            </fields>
-            <fields>
-                <name>Front_Cover_Follow_Up_Section2_Column3</name>
-                <fieldType>Region</fieldType>
-                <inputParameters>
-                    <name>width</name>
-                    <value>
-                        <stringValue>4</stringValue>
+                        <stringValue>6</stringValue>
                     </value>
                 </inputParameters>
                 <isRequired>false</isRequired>
@@ -3214,34 +3225,26 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
         </fields>
-        <fields>
-            <name>Copy_1_of_flow_navigation_component_front_cover</name>
-            <extensionName>c:flowNavigationComponent</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-        </fields>
-        <showFooter>false</showFooter>
+        <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
     <screens>
         <description>Shows the applicant&apos;s details screen to be completed</description>
         <name>Int_Applicant_Details</name>
         <label>Applicant Details</label>
-        <locationX>842</locationX>
+        <locationX>578</locationX>
         <locationY>1730</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Internal_Officer_Screen</targetReference>
+            <targetReference>Review_Details_Internal_Review</targetReference>
         </connector>
         <fields>
             <name>Int_Name</name>
             <dataType>String</dataType>
             <defaultValue>
-                <elementReference>Internal_Get_Record_from_FOI_Number.Name__c</elementReference>
+                <elementReference>ApplicantName</elementReference>
             </defaultValue>
             <fieldText>Name</fieldText>
             <fieldType>InputField</fieldType>
@@ -3251,7 +3254,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             <name>Int_Address</name>
             <dataType>String</dataType>
             <defaultValue>
-                <elementReference>Internal_Get_Record_from_FOI_Number.Applicant_Address_Line_1__c</elementReference>
+                <elementReference>ApplicantAddressLine1</elementReference>
             </defaultValue>
             <fieldText>Address</fieldText>
             <fieldType>InputField</fieldType>
@@ -3261,7 +3264,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             <name>Int_Address_2</name>
             <dataType>String</dataType>
             <defaultValue>
-                <elementReference>Internal_Get_Record_from_FOI_Number.Applicant_Address_Line_2__c</elementReference>
+                <elementReference>ApplicantAddressLine2</elementReference>
             </defaultValue>
             <fieldText>Address Line 2</fieldText>
             <fieldType>InputField</fieldType>
@@ -3271,7 +3274,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             <name>Int_Address_3</name>
             <dataType>String</dataType>
             <defaultValue>
-                <elementReference>Internal_Get_Record_from_FOI_Number.Applicant_Address_Line_3__c</elementReference>
+                <elementReference>ApplicantAddressLine3</elementReference>
             </defaultValue>
             <fieldText>Address Line 3</fieldText>
             <fieldType>InputField</fieldType>
@@ -3281,7 +3284,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             <name>Int_Address_4</name>
             <dataType>String</dataType>
             <defaultValue>
-                <elementReference>Internal_Get_Record_from_FOI_Number.Applicant_Address_Line_4__c</elementReference>
+                <elementReference>ApplicantAddressLine4</elementReference>
             </defaultValue>
             <fieldText>Address Line 4</fieldText>
             <fieldType>InputField</fieldType>
@@ -3291,7 +3294,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             <name>Int_Postcode</name>
             <dataType>String</dataType>
             <defaultValue>
-                <elementReference>Internal_Get_Record_from_FOI_Number.Applicant_PC__c</elementReference>
+                <elementReference>ApplicantPostcode</elementReference>
             </defaultValue>
             <fieldText>Postcode</fieldText>
             <fieldType>InputField</fieldType>
@@ -3301,7 +3304,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             <name>Int_Phone</name>
             <dataType>String</dataType>
             <defaultValue>
-                <elementReference>Internal_Get_Record_from_FOI_Number.Applicant_Telephone__c</elementReference>
+                <elementReference>ApplicantTelephone</elementReference>
             </defaultValue>
             <fieldText>Phone</fieldText>
             <fieldType>InputField</fieldType>
@@ -3311,7 +3314,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             <name>Int_Fax_Number</name>
             <dataType>String</dataType>
             <defaultValue>
-                <elementReference>Internal_Get_Record_from_FOI_Number.Applicant_Fax__c</elementReference>
+                <elementReference>ApplicantFax</elementReference>
             </defaultValue>
             <fieldText>Fax Number</fieldText>
             <fieldType>InputField</fieldType>
@@ -3319,61 +3322,45 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         </fields>
         <fields>
             <name>Int_Type</name>
-            <choiceReferences>FOI_FC_Individual</choiceReferences>
-            <choiceReferences>FOI_FC_Organisation</choiceReferences>
+            <choiceReferences>Individual</choiceReferences>
+            <choiceReferences>Organisation</choiceReferences>
             <dataType>String</dataType>
             <defaultValue>
-                <elementReference>Internal_Get_Record_from_FOI_Number.Applicant_Type__c</elementReference>
+                <elementReference>ApplicantType</elementReference>
             </defaultValue>
             <fieldText>Type</fieldText>
             <fieldType>DropdownBox</fieldType>
             <isRequired>false</isRequired>
         </fields>
-        <fields>
-            <name>Copy_1_of_Copy_1_of_flow_navigation_component_applicant_details</name>
-            <extensionName>c:flowNavigationComponent</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-        </fields>
-        <showFooter>false</showFooter>
+        <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
     <screens>
         <name>Int_Enter_Date_Recieved</name>
         <label>Enter Date Recieved</label>
-        <locationX>842</locationX>
-        <locationY>1406</locationY>
+        <locationX>578</locationX>
+        <locationY>1082</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Int_Date_Assignment</targetReference>
+            <targetReference>Assign_Date_IR</targetReference>
         </connector>
         <fields>
             <name>Int_Date_Recieved</name>
             <dataType>Date</dataType>
-            <fieldText>Date Recieved</fieldText>
+            <fieldText>Enter Date Recieved</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>true</isRequired>
         </fields>
-        <fields>
-            <name>Copy_1_of_Copy_1_of_flow_navigation_component_date_received</name>
-            <extensionName>c:flowNavigationComponent</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-        </fields>
-        <showFooter>false</showFooter>
+        <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
     <screens>
         <description>Shows the Front Cover screen for details to be entered</description>
         <name>Int_Front_Cover</name>
         <label>Front Cover</label>
-        <locationX>842</locationX>
+        <locationX>578</locationX>
         <locationY>1622</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -3391,17 +3378,20 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                     <name>Int_FOI_Number</name>
                     <dataType>String</dataType>
                     <defaultValue>
-                        <elementReference>Internal_Get_Record_from_FOI_Number.Foi_No__c</elementReference>
+                        <elementReference>FrontCoverFOINumber</elementReference>
                     </defaultValue>
                     <fieldText>FOI No.</fieldText>
                     <fieldType>InputField</fieldType>
+                    <isDisabled>
+                        <booleanValue>true</booleanValue>
+                    </isDisabled>
                     <isRequired>false</isRequired>
                 </fields>
                 <fields>
                     <name>Int_Applicant</name>
                     <dataType>String</dataType>
                     <defaultValue>
-                        <elementReference>Internal_Get_Record_from_FOI_Number.Applicant__c</elementReference>
+                        <elementReference>ApplicantName</elementReference>
                     </defaultValue>
                     <fieldText>Applicant</fieldText>
                     <fieldType>InputField</fieldType>
@@ -3411,7 +3401,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                     <name>Int_Case_Name</name>
                     <dataType>String</dataType>
                     <defaultValue>
-                        <elementReference>New_FOI_Record.Case_Name__c</elementReference>
+                        <elementReference>FrontCoverCaseName</elementReference>
                     </defaultValue>
                     <fieldText>Case Name</fieldText>
                     <fieldType>InputField</fieldType>
@@ -3421,10 +3411,13 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                     <name>Int_Case_Number</name>
                     <dataType>String</dataType>
                     <defaultValue>
-                        <elementReference>Internal_Get_Record_from_FOI_Number.Case_Number__c</elementReference>
+                        <elementReference>FOINumber</elementReference>
                     </defaultValue>
                     <fieldText>Case Number</fieldText>
                     <fieldType>InputField</fieldType>
+                    <isDisabled>
+                        <booleanValue>true</booleanValue>
+                    </isDisabled>
                     <isRequired>false</isRequired>
                 </fields>
                 <fields>
@@ -3438,7 +3431,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                     <choiceReferences>Kin_claim_only</choiceReferences>
                     <dataType>String</dataType>
                     <defaultValue>
-                        <elementReference>Internal_Get_Record_from_FOI_Number.Request_Type__c</elementReference>
+                        <elementReference>FrontCoverRequestType</elementReference>
                     </defaultValue>
                     <fieldText>Request Type</fieldText>
                     <fieldType>DropdownBox</fieldType>
@@ -3448,27 +3441,19 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                     <name>Int_IR_Officer</name>
                     <dataType>String</dataType>
                     <defaultValue>
-                        <elementReference>Internal_Get_Record_from_FOI_Number.Int_Review_Officer__c</elementReference>
+                        <elementReference>What_is_name_of_the_officer_handling_the_internal_review</elementReference>
                     </defaultValue>
                     <fieldText>Internal Review Officer</fieldText>
                     <fieldType>InputField</fieldType>
+                    <isDisabled>
+                        <booleanValue>true</booleanValue>
+                    </isDisabled>
                     <isRequired>false</isRequired>
                 </fields>
                 <inputParameters>
                     <name>width</name>
                     <value>
-                        <stringValue>6</stringValue>
-                    </value>
-                </inputParameters>
-                <isRequired>false</isRequired>
-            </fields>
-            <fields>
-                <name>Int_Front_Cover_Section1_Column2</name>
-                <fieldType>Region</fieldType>
-                <inputParameters>
-                    <name>width</name>
-                    <value>
-                        <stringValue>6</stringValue>
+                        <stringValue>12</stringValue>
                     </value>
                 </inputParameters>
                 <isRequired>false</isRequired>
@@ -3486,7 +3471,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                     <name>Int_Number_of_Requests</name>
                     <dataType>Number</dataType>
                     <defaultValue>
-                        <elementReference>Internal_Get_Record_from_FOI_Number.Number_Of_Requests__c</elementReference>
+                        <elementReference>FrontCoverNumberofRequests</elementReference>
                     </defaultValue>
                     <fieldText>Number of Requests</fieldText>
                     <fieldType>InputField</fieldType>
@@ -3523,7 +3508,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                     <name>Int_Withdrawn</name>
                     <dataType>Boolean</dataType>
                     <defaultValue>
-                        <elementReference>Internal_Get_Record_from_FOI_Number.Withdrawn__c</elementReference>
+                        <elementReference>FrontCoverWithdrawn</elementReference>
                     </defaultValue>
                     <fieldText>Withdrawn?</fieldText>
                     <fieldType>InputField</fieldType>
@@ -3533,7 +3518,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                     <name>Int_Date_Withdrawn</name>
                     <dataType>Date</dataType>
                     <defaultValue>
-                        <elementReference>Internal_Get_Record_from_FOI_Number.Date_Withdrawn__c</elementReference>
+                        <elementReference>FrontCoverWithdrawnDate</elementReference>
                     </defaultValue>
                     <fieldText>Date Withdrawn</fieldText>
                     <fieldType>InputField</fieldType>
@@ -3552,7 +3537,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                 <inputParameters>
                     <name>width</name>
                     <value>
-                        <stringValue>4</stringValue>
+                        <stringValue>6</stringValue>
                     </value>
                 </inputParameters>
                 <isRequired>false</isRequired>
@@ -3562,20 +3547,19 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                 <fieldType>Region</fieldType>
                 <fields>
                     <name>Int_ILO</name>
-                    <choiceReferences>No</choiceReferences>
                     <dataType>String</dataType>
                     <defaultValue>
-                        <elementReference>Internal_Get_Record_from_FOI_Number.Ilo__c</elementReference>
+                        <elementReference>FrontCoverILO</elementReference>
                     </defaultValue>
                     <fieldText>ILO</fieldText>
-                    <fieldType>DropdownBox</fieldType>
+                    <fieldType>InputField</fieldType>
                     <isRequired>false</isRequired>
                 </fields>
                 <fields>
                     <name>Int_Acknowledged_Date</name>
                     <dataType>Date</dataType>
                     <defaultValue>
-                        <elementReference>Internal_Get_Record_from_FOI_Number.Acknowledged__c</elementReference>
+                        <elementReference>FrontCoverAcknowledgedDate</elementReference>
                     </defaultValue>
                     <fieldText>Acknowledged Date</fieldText>
                     <fieldType>InputField</fieldType>
@@ -3585,7 +3569,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                     <name>Int_Date_Reply_Sent</name>
                     <dataType>Date</dataType>
                     <defaultValue>
-                        <elementReference>Internal_Get_Record_from_FOI_Number.Date_Reply_Sent__c</elementReference>
+                        <elementReference>FrontCoverDateReplySent</elementReference>
                     </defaultValue>
                     <fieldText>Date Reply Sent</fieldText>
                     <fieldType>InputField</fieldType>
@@ -3595,7 +3579,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                     <name>Int_Destruction_date</name>
                     <dataType>Date</dataType>
                     <defaultValue>
-                        <elementReference>Internal_Get_Record_from_FOI_Number.Destruction_Date__c</elementReference>
+                        <elementReference>FrontCoverDestructionDate</elementReference>
                     </defaultValue>
                     <fieldText>Destruction Date</fieldText>
                     <fieldType>InputField</fieldType>
@@ -3604,9 +3588,6 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                 <fields>
                     <name>Int_Follow_Up</name>
                     <dataType>Boolean</dataType>
-                    <defaultValue>
-                        <elementReference>New_FOI_Record.Follow_Up__c</elementReference>
-                    </defaultValue>
                     <fieldText>Follow Up?</fieldText>
                     <fieldType>InputField</fieldType>
                     <isRequired>true</isRequired>
@@ -3615,7 +3596,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                     <name>Int_Northern_Ireland</name>
                     <dataType>Boolean</dataType>
                     <defaultValue>
-                        <elementReference>New_FOI_Record.Northern_Ireland__c</elementReference>
+                        <elementReference>NorthernIrelandTicked</elementReference>
                     </defaultValue>
                     <fieldText>Northern Ireland?</fieldText>
                     <fieldType>InputField</fieldType>
@@ -3624,18 +3605,7 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
                 <inputParameters>
                     <name>width</name>
                     <value>
-                        <stringValue>4</stringValue>
-                    </value>
-                </inputParameters>
-                <isRequired>false</isRequired>
-            </fields>
-            <fields>
-                <name>Int_Front_Cover_Section2_Column3</name>
-                <fieldType>Region</fieldType>
-                <inputParameters>
-                    <name>width</name>
-                    <value>
-                        <stringValue>4</stringValue>
+                        <stringValue>6</stringValue>
                     </value>
                 </inputParameters>
                 <isRequired>false</isRequired>
@@ -3643,83 +3613,364 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
         </fields>
-        <fields>
-            <name>Copy_1_of_Copy_1_of_flow_navigation_component_front_cover</name>
-            <extensionName>c:flowNavigationComponent</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-        </fields>
-        <showFooter>false</showFooter>
-        <showHeader>true</showHeader>
-    </screens>
-    <screens>
-        <name>Internal_Officer_Screen</name>
-        <label>Internal Officer Name</label>
-        <locationX>842</locationX>
-        <locationY>1838</locationY>
-        <allowBack>true</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
-        <connector>
-            <targetReference>Assign_Internal_Officer_Name</targetReference>
-        </connector>
-        <fields>
-            <name>Internal_Officer_Name</name>
-            <dataType>String</dataType>
-            <fieldText>Enter name of officer handling the Internal Review</fieldText>
-            <fieldType>InputField</fieldType>
-            <isRequired>true</isRequired>
-        </fields>
-        <fields>
-            <name>flow_navigation_component_enter_name_of_officer</name>
-            <extensionName>c:flowNavigationComponent</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-        </fields>
-        <showFooter>false</showFooter>
+        <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
     <screens>
         <name>Internal_Review_Num</name>
         <label>Internal Review Screen</label>
-        <locationX>974</locationX>
-        <locationY>866</locationY>
+        <locationX>578</locationX>
+        <locationY>974</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Assign_FOI_Number_IR</targetReference>
+            <targetReference>Int_Enter_Date_Recieved</targetReference>
         </connector>
         <fields>
-            <name>FOI_No_Internal_Review</name>
-            <dataType>String</dataType>
-            <fieldText>Enter FOI no. to which this internal review relates</fieldText>
-            <fieldType>InputField</fieldType>
+            <name>Select_a_FOI_Case</name>
+            <choiceReferences>BVCaseRecordChoiceSet</choiceReferences>
+            <extensionName>flowruntime:choiceLookup</extensionName>
+            <fieldText>Select a FOI Case</fieldText>
+            <fieldType>ComponentChoice</fieldType>
             <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Review_Dates</name>
+        <label>Review Dates</label>
+        <locationX>50</locationX>
+        <locationY>1190</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Get_Next_FOIR_Number</targetReference>
+        </connector>
+        <fields>
+            <name>Copy_2_of_DT_ReviewDate_Follow_Up</name>
+            <fieldText>&lt;p&gt;&lt;strong&gt;Date Recieved&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Recieved_Date}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Reply Date&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!InputDate}&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Review_Dates_Follow_Up</name>
+        <label>Review Dates (Follow Up)</label>
+        <locationX>314</locationX>
+        <locationY>1298</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Copy_1_of_Get_Next_FOIR_Number</targetReference>
+        </connector>
+        <fields>
+            <name>DT_ReviewDate_Follow_Up</name>
+            <fieldText>&lt;p&gt;&lt;strong&gt;Date Recieved&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Recieved_Date}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Reply Date&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!InputDate}&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Review_Dates_Internal_Review</name>
+        <label>Review Dates (Internal Review)</label>
+        <locationX>578</locationX>
+        <locationY>1298</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>What_is_the_name_of_the_officer_handling_the_internal_review_screen</targetReference>
+        </connector>
+        <fields>
+            <name>Copy_1_of_DT_ReviewDate_Follow_Up</name>
+            <fieldText>&lt;p&gt;&lt;strong&gt;Date Recieved&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Recieved_Date}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Reply Date&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!InputDate}&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Review_Details</name>
+        <label>Review Details</label>
+        <locationX>50</locationX>
+        <locationY>1622</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Select_a_Case_Officer</targetReference>
+        </connector>
+        <fields>
+            <name>Front_Cover_Details</name>
+            <fieldText>Front Cover Details</fieldText>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>Front_Cover_Details_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <name>DT_Review_Details_Front_Cover</name>
+                    <fieldText>&lt;p&gt;&lt;strong&gt;FOI Number&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!FOI_FC_Number}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Applicant&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!FOI_FC_Applicant}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Case Name&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!FOI_FC_Case_Name}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Case Number&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!FOI_FC_Case_Number}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Request Type&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!FOI_FC_Request_Type}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Internal Review Officer&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Number of Requests&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!FOI_FC_Number_of_Requests}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;ILO&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Date Received&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!FOI_FC_Date_Recieved}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Acknowledged Date&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!FOI_FC_Acknowledged_Date}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Reply Date&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!FOI_FC_Reply_Date}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Date Reply Sent&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!FOI_FC_Date_Reply_Sent}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Withdrawn?&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!FOI_FC_Withdrawn}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Date Withdrawn&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!FOI_FC_Date_Withdrawn}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Destruction Date&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!FOI_FC_Destruction_Date}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Follow Up?&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!FOI_FC_Follow_Up}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Northern Ireland?&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!FOI_FC_Northern_Ireland}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</fieldText>
+                    <fieldType>DisplayText</fieldType>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>12</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithHeader</regionContainerType>
         </fields>
         <fields>
-            <name>flow_navigation_component_enter_foi_no_internal</name>
-            <extensionName>c:flowNavigationComponent</extensionName>
+            <name>Applicant_Details_Review</name>
+            <fieldText>Applicant Details</fieldText>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>Applicant_Details_Review_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <name>DT_AD_Review</name>
+                    <fieldText>&lt;p&gt;&lt;strong&gt;Applicant Name&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!FOI_AD_Name}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Applicant Address&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!FOI_AD_Address}&lt;/p&gt;&lt;p&gt;{!FOI_AD_Address_Line_2}&lt;/p&gt;&lt;p&gt;{!FOI_AD_Address_Line_3}&lt;/p&gt;&lt;p&gt;{!FOI_AD_Address_Line_4}&lt;/p&gt;&lt;p&gt;{!FOI_AD_Postcode}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Applicant Phone Number&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!FOI_AD_Phone}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Applicant Fax Number&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!FOI_AD_Fax_Number}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Applicant Type&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!FOI_AD_Type}&lt;span class=&quot;ql-cursor&quot;&gt;﻿&lt;/span&gt;&lt;/p&gt;</fieldText>
+                    <fieldType>DisplayText</fieldType>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>12</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithHeader</regionContainerType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Review_Details_Follow_Up</name>
+        <label>Review Details (Follow Up)</label>
+        <locationX>314</locationX>
+        <locationY>1730</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Select_a_Case_Officer_Follow_Up</targetReference>
+        </connector>
+        <fields>
+            <name>Copy_1_of_Front_Cover_Details</name>
+            <fieldText>Front Cover Details</fieldText>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>Copy_1_of_Front_Cover_Details_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <name>Copy_1_of_DT_Review_Details_Front_Cover</name>
+                    <fieldText>&lt;p&gt;&lt;strong&gt;FOI Number&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!FrontCoverFOINumber}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Applicant&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Follow_Up_Applicant}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Case Name&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Follow_Up_Case_Name}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Case Number&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!FOINumber}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Request Type&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Follow_Up_Request_Type}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Internal Review Officer&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Follow_Up_IR_Officer}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Number of Requests&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Follow_Up_Number_of_Requests}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;ILO&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Follow_Up_ILO}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Date Received&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Follow_Up_Date_Recieved}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Acknowledged Date&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Follow_Up_Acknowledged_Date}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Reply Date&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Follow_Up_Reply_Date}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Date Reply Sent&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Follow_Up_Date_Reply_Sent}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Withdrawn?&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Follow_Up_Withdrawn}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Date Withdrawn&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Follow_Up_Date_Withdrawn}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Destruction Date&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!FOI_FC_Destruction_Date}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Follow Up?&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Follow_Up_Follow_Up}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Northern Ireland?&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Follow_Up_Northern_Ireland}&lt;/p&gt;</fieldText>
+                    <fieldType>DisplayText</fieldType>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>12</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithHeader</regionContainerType>
+        </fields>
+        <fields>
+            <name>Copy_1_of_Applicant_Details_Review</name>
+            <fieldText>Applicant Details</fieldText>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>Copy_1_of_Applicant_Details_Review_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <name>Copy_1_of_DT_AD_Review</name>
+                    <fieldText>&lt;p&gt;&lt;strong&gt;Applicant Name&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Follow_Up_AD_Name}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Applicant Address&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Follow_Up_Address}&lt;/p&gt;&lt;p&gt;{!Follow_Up_Address_Line_2}&lt;/p&gt;&lt;p&gt;{!Follow_Up_Address_Line_3}&lt;/p&gt;&lt;p&gt;{!Follow_Up_Address_Line_4}&lt;/p&gt;&lt;p&gt;{!Follow_Up_Postcode}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Applicant Phone Number&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Follow_Up_Phone}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Applicant Fax Number&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Follow_Up_Fax_Number}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Applicant Type&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Follow_Up_Type}&lt;/p&gt;</fieldText>
+                    <fieldType>DisplayText</fieldType>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>12</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithHeader</regionContainerType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Review_Details_Internal_Review</name>
+        <label>Review Details (Internal Review)</label>
+        <locationX>578</locationX>
+        <locationY>1838</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Select_a_Case_Officer_Internal_Review</targetReference>
+        </connector>
+        <fields>
+            <name>Copy_1_of_Copy_1_of_Front_Cover_Details</name>
+            <fieldText>Front Cover Details</fieldText>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>Copy_1_of_Copy_1_of_Front_Cover_Details_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <name>Copy_1_of_Copy_1_of_DT_Review_Details_Front_Cover</name>
+                    <fieldText>&lt;p&gt;&lt;strong&gt;FOI Number&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!FrontCoverFOINumber}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Applicant&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Int_Applicant}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Case Name&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Int_Case_Name}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Case Number&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!FOINumber}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Request Type&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Int_Request_Type}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Internal Review Officer&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!What_is_name_of_the_officer_handling_the_internal_review}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Number of Requests&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Int_Number_of_Requests}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;ILO&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Int_ILO}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Date Received&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Int_Date_Recieved}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Acknowledged Date&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Int_Acknowledged_Date}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Reply Date&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Int_Reply_Date}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Date Reply Sent&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Int_Date_Reply_Sent}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Withdrawn?&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Int_Withdrawn}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Date Withdrawn&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Int_Date_Withdrawn}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Destruction Date&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Int_Destruction_date}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Follow Up?&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Int_Follow_Up}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Northern Ireland?&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Int_Northern_Ireland}&lt;/p&gt;</fieldText>
+                    <fieldType>DisplayText</fieldType>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>12</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithHeader</regionContainerType>
+        </fields>
+        <fields>
+            <name>Copy_1_of_Copy_1_of_Applicant_Details_Review</name>
+            <fieldText>Applicant Details</fieldText>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>Copy_1_of_Copy_1_of_Applicant_Details_Review_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <name>Copy_1_of_Copy_1_of_DT_AD_Review</name>
+                    <fieldText>&lt;p&gt;&lt;strong&gt;Applicant Name&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Int_Name}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Applicant Address&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Int_Address}&lt;/p&gt;&lt;p&gt;{!Int_Address_2}&lt;/p&gt;&lt;p&gt;{!Int_Address_3}&lt;/p&gt;&lt;p&gt;{!Int_Address_4}&lt;/p&gt;&lt;p&gt;{!Int_Postcode}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Applicant Phone Number&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Int_Phone}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Applicant Fax Number&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Int_Fax_Number}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Applicant Type&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Int_Type}&lt;/p&gt;</fieldText>
+                    <fieldType>DisplayText</fieldType>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>12</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithHeader</regionContainerType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Select_a_Case_Officer</name>
+        <label>Select a Case Officer</label>
+        <locationX>50</locationX>
+        <locationY>1730</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Create_FOI_Record</targetReference>
+        </connector>
+        <fields>
+            <name>selectcaseofficernormal</name>
+            <extensionName>c:caseOfficerSelector</extensionName>
             <fieldType>ComponentInstance</fieldType>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
         </fields>
-        <showFooter>false</showFooter>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Select_a_Case_Officer_Follow_Up</name>
+        <label>Select a Case Officer (Follow Up)</label>
+        <locationX>314</locationX>
+        <locationY>1838</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>create_foi_record_follow_up</targetReference>
+        </connector>
+        <fields>
+            <name>selectcaseofficerfollowup</name>
+            <extensionName>c:caseOfficerSelector</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Select_a_Case_Officer_Internal_Review</name>
+        <label>Select a Case Officer (Internal Review)</label>
+        <locationX>578</locationX>
+        <locationY>1946</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Create_FOI_Record_Internal_Review</targetReference>
+        </connector>
+        <fields>
+            <name>selectcaseofficerinternalreview</name>
+            <extensionName>c:caseOfficerSelector</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>What_is_the_name_of_the_officer_handling_the_internal_review_screen</name>
+        <label>What is the name of the officer handling the internal review?</label>
+        <locationX>578</locationX>
+        <locationY>1406</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Copy_2_of_Get_Next_FOIR_Number</targetReference>
+        </connector>
+        <fields>
+            <name>What_is_name_of_the_officer_handling_the_internal_review</name>
+            <dataType>String</dataType>
+            <fieldText>What is name of the officer handling the internal review?</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>true</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
     <start>
-        <locationX>650</locationX>
+        <locationX>320</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Get_FOI_RecordTypeId</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <textTemplates>
         <name>Aliases_Template</name>
         <isViewedAsPlainText>false</isViewedAsPlainText>
@@ -3813,6 +4064,69 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <isInput>false</isInput>
         <isOutput>false</isOutput>
         <objectType>Case_Detail__c</objectType>
+    </variables>
+    <variables>
+        <name>ApplicantAddressLine1</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>ApplicantAddressLine2</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>ApplicantAddressLine3</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>ApplicantAddressLine4</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>ApplicantFax</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>ApplicantName</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>ApplicantPostcode</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>ApplicantTelephone</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>ApplicantType</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
     </variables>
     <variables>
         <name>BankChoice</name>
@@ -3920,8 +4234,135 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <isOutput>false</isOutput>
     </variables>
     <variables>
+        <name>FOINumber</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
         <name>FormattedNames</name>
         <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>FrontCoverAcknowledgedDate</name>
+        <dataType>Date</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>FrontCoverApplicant</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>FrontCoverCaseName</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>FrontCoverCaseNumber</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>FrontCoverDateReceived</name>
+        <dataType>Date</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>FrontCoverDateReplySent</name>
+        <dataType>Date</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>FrontCoverDestructionDate</name>
+        <dataType>Date</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>FrontCoverFOINumber</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>FrontCoverFollowUp</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>FrontCoverILO</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>FrontCoverIntReviewOfficer</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>FrontCoverNorthernIreland</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>FrontCoverNumberofRequests</name>
+        <dataType>Number</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <scale>0</scale>
+    </variables>
+    <variables>
+        <name>FrontCoverReplyDue</name>
+        <dataType>Date</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>FrontCoverRequestType</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>FrontCoverWithdrawn</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>FrontCoverWithdrawnDate</name>
+        <dataType>Date</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
         <isOutput>false</isOutput>
@@ -3956,6 +4397,13 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
         <isOutput>true</isOutput>
     </variables>
     <variables>
+        <name>NorthernIrelandTicked</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
         <name>Occupiers_Address_Text_Data</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
@@ -3972,6 +4420,13 @@ MID(MID({!Aliases_Template}, 2, LEN({!Aliases_Template}) - 2), FIND(&quot;,&quot
     <variables>
         <name>Other_Addresses_Text_Data</name>
         <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>Recieved_Date</name>
+        <dataType>Date</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
         <isOutput>false</isOutput>

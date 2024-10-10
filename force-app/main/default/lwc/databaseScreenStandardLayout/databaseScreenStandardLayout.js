@@ -3,6 +3,8 @@ import { refreshApex } from '@salesforce/apex';
 import getLayout from '@salesforce/apex/LayoutController.getLayout';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { getRecord } from 'lightning/uiRecordApi';
+import { getRecordId } from 'c/sharedService';
+import { subscribe, unsubscribe, onError, setDebugFlag, isEmpEnabled } from 'lightning/empApi';
 
 export default class DatabaseScreenStandardLayout extends LightningElement {
     _objectApiName;
@@ -34,6 +36,10 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
     isModalOpen = false;
     isModalOpenDelete = false;
     expandedView = true;
+
+    // Subscription
+    subscription = {};
+    channelName = '/event/CaseTypeChangeEvent__e';
 
     // Stuff for table
     defaultSortDirection = 'asc';
@@ -102,6 +108,46 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
     }
 
     @api recordId;
+
+    disconnectedCallback(){
+        this.handleUnsubscribe();
+    }
+
+    // Handles subscribe button click
+    handleSubscribe() {
+        // Callback triggered whenever a new event message is received
+        const messageCallback = (response) => {
+            console.log('New message received: ', JSON.stringify(response));
+            // Process the event message here
+            this.handleCaseTypeEvent(response.data.payload);
+        };
+
+        // Invoke subscribe method of empApi. Pass reference to messageCallback
+        subscribe(this.channelName, -1, messageCallback).then(response => {
+            // Response contains the subscription information on subscribe call
+            console.log('Subscription request sent to: ', JSON.stringify(response.channel));
+            this.subscription = response;
+
+            console.log('subscription', this.subscription);
+        });
+    }
+
+    handleUnsubscribe() {
+        unsubscribe(this.subscription, response => {
+            console.log('unsubscribe() response: ', JSON.stringify(response));
+        });
+    }
+
+    registerErrorListener() {
+        // Invoke onError empApi method
+        onError(error => {
+            console.log('Received error from server: ', JSON.stringify(error));
+        });
+    }
+
+    handleCaseTypeEvent(eventData) {
+        refreshApex(this.wiredLayoutResult);
+    }
 
     @wire(getLayout, { objectApiName: '$objectApiName', recordTypeId: '$recordTypeId', recordId: '$recordId' })
     wiredLayout(result) {
@@ -419,6 +465,9 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
 
             // Populate left and right columns for expanded view
             this.populateExpandedColumns();
+            this.registerErrorListener();
+            this.handleSubscribe();
+
         } else if (error) {
             this.dispatchEvent(
                 new ShowToastEvent({

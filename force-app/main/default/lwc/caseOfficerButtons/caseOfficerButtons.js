@@ -62,8 +62,11 @@ export default class CaseOfficerButtons extends LightningElement {
     @track isILOApproveModalOpen = false;
     @track isHODApproveModalOpen = false;
     @track isChangeDisclaimerDateOpen = false;
+    @track isPutAwayModalOpen = false;
     @track recordTypeDeveloperName; // Holds the record type developer name
     @track isEstates = false;
+    @track documentType; // Holds the document type for LM case review
+    @track putAwayFlowApiName = 'Put_Away_a_Case'; // Default flow API name
 
     actions = []; // Actions array will be set based on record type
 
@@ -114,7 +117,7 @@ export default class CaseOfficerButtons extends LightningElement {
             const recordTypeDeveloperName = await getRecordTypeDeveloperName({ recordTypeId });
             this.recordTypeDeveloperName = recordTypeDeveloperName;
     
-            // Set the actions based on record type
+            // Set the actions and document type based on record type
             if (recordTypeDeveloperName === 'ESTA') {
                 this.actions = [
                     { actionId: '1', label: 'Put away', disabled: false },
@@ -126,6 +129,7 @@ export default class CaseOfficerButtons extends LightningElement {
                     { actionId: '7', label: 'Section 27', disabled: false }
                 ];
                 this.isEstates = true;
+                this.documentType = 'LMREV';
             } else if (recordTypeDeveloperName === 'COMP') {
                 this.actions = [
                     { actionId: '1', label: 'Put away', disabled: false },
@@ -133,8 +137,10 @@ export default class CaseOfficerButtons extends LightningElement {
                     { actionId: '3', label: 'Re-allocate case', disabled: false },
                     { actionId: '4', label: 'Change case category', disabled: false },
                     { actionId: '7', label: 'Change Disclaimer', disabled: false },
-                    { actionId: '8', label: 'Archive Search', disabled: false }
+                    { actionId: '8', label: 'Archive Search', disabled: false },
+                    { actionId: '6', label: 'LM case review', disabled: false }
                 ];
+                this.documentType = 'LMCOMP';
             } else if (recordTypeDeveloperName === 'CONV') {
                 this.actions = [
                     { actionId: '1', label: 'Put away', disabled: false },
@@ -143,6 +149,7 @@ export default class CaseOfficerButtons extends LightningElement {
                     { actionId: '4', label: 'Change case category', disabled: false },
                     { actionId: '6', label: 'LM case review', disabled: false }
                 ];
+                this.documentType = 'LMCONV';
             } else if (recordTypeDeveloperName === 'GENE') {
                 this.actions = [
                     { actionId: '1', label: 'Put away', disabled: false },
@@ -201,6 +208,11 @@ export default class CaseOfficerButtons extends LightningElement {
                     name: 'recordId', 
                     type: 'String', 
                     value: this.recordId
+                },
+                {
+                    name: 'recordType',
+                    type: 'String',
+                    value: this.recordTypeDeveloperName
                 }
             ];
             this.isChangeCaseCategoryModalOpen = true;
@@ -229,16 +241,16 @@ export default class CaseOfficerButtons extends LightningElement {
             hiddenScreenControlsComponent.isEstates = this.isEstates;
             hiddenScreenControlsComponent.openModal();
         } else if (actionName === 'LM case review') {
-            // Fetch files from SharePoint for LMREV document type
+            // Fetch files from SharePoint for the appropriate document type
             const folderPath = `Templates`;
-            const documentType = 'LMREV';
-    
+            const documentType = this.documentType || 'LMREV'; // Default to LMREV if not set
+
             fetchFilesFromSharePoint({ folderPath: folderPath, documentType: documentType })
                 .then(result => {
                     console.log('Files from sharepoint:', result);
                     if (result && result.length > 0) {
                         const selectedDocument = result[0];
-    
+
                         // Populate flowInputs with selectedDocumentId and selectedDocumentType
                         this.flowInputs = [
                             {
@@ -252,11 +264,11 @@ export default class CaseOfficerButtons extends LightningElement {
                                 value: documentType
                             }
                         ];
-    
+
                         // Open the modal or flow for LM case review
                         this.isFlowModalOpen = true;
                     } else {
-                        console.warn('No files found for LMREV document type');
+                        console.warn('No files found for document type:', documentType);
                     }
                 })
                 .catch(error => {
@@ -297,6 +309,42 @@ export default class CaseOfficerButtons extends LightningElement {
                 }
             ];
             this.isHODApproveModalOpen = true;
+        } else if (actionName === 'Put away') {
+            this.flowInputs = [
+                {
+                    name: 'caseId',
+                    type: 'String',
+                    value: this.recordId
+                }
+            ];
+            if (this.recordTypeDeveloperName !== 'FOIR' && this.recordTypeDeveloperName !== 'GENE') {
+                this.flowInputs.push({
+                    name: 'caseName',
+                    type: 'String',
+                    value: this.bvCaseName
+                });
+            }
+            this.isPutAwayModalOpen = true;
+            // Set the appropriate flow API name based on recordTypeDeveloperName
+            switch (this.recordTypeDeveloperName) {
+                case 'COMP':
+                    this.putAwayFlowApiName = 'Put_Away_a_Case_Companies';
+                    break;
+                case 'ESTA':
+                    this.putAwayFlowApiName = 'Put_Away_a_Case';
+                    break;
+                case 'GENE':
+                    this.putAwayFlowApiName = 'Put_Away_a_Case_General';
+                    break;
+                case 'FOIR':
+                    this.putAwayFlowApiName = 'Put_Away_a_Case_Freedom_of_Information';
+                    break;
+                case 'CONV':
+                    this.putAwayFlowApiName = 'Put_Away_a_Case_Conveyancing';
+                    break;
+                default:
+                    this.putAwayFlowApiName = 'Put_Away_a_Case';
+            }
         }
     }
 
@@ -365,7 +413,7 @@ export default class CaseOfficerButtons extends LightningElement {
                 <p>${this.currentUserFullName || 'FOI Team'}</p>
             `,
             Subject: `New FOI Request Assigned - BVFOI/${this.foiNo} - ${this.applicant}`,
-            ToAddress: caseOfficerName, // Assuming the case officer name is their email address
+            //ToAddress: caseOfficerName, // Assuming the case officer name is their email address
             CcAddress: 'BVFOI@governmentlegal.gov.uk'
         });
     }
@@ -501,7 +549,7 @@ export default class CaseOfficerButtons extends LightningElement {
                     })
                 );
                 // Dispatch the caseofficersaved event
-                this.dispatchEvent(new CustomEvent('caseofficersaved', {
+                this.dispatchEvent(new CustomEvent('flowfinished', {
                     detail: { recordId: this.recordId },
                     bubbles: true,
                     composed: true
@@ -549,6 +597,10 @@ export default class CaseOfficerButtons extends LightningElement {
     closeHODApproveModal() {
         this.isHODApproveModalOpen = false;
     }
+
+    handlePutAwayClose() {
+        this.isPutAwayModalOpen = false;
+    }
     
     handleFlowStatusChange(event) {
         if (event.detail.status === 'FINISHED') {
@@ -556,13 +608,29 @@ export default class CaseOfficerButtons extends LightningElement {
             let message = '';
             let modalToClose = '';
 
+            // Check for the output variable related to confirmation
+            const outputVariables = event.detail.outputVariables;
+            let flowOutput = {};  // Initialize a place to store flow outputs
+
+            // Loop through outputVariables and assign key-value pairs to flowOutput
+            outputVariables.forEach(variable => {
+                flowOutput[variable.name] = variable.value;
+            });
+
+            // Check if the confirmAction (or similar variable) is 'Yes'
+            const isConfirmed = flowOutput['confirmAction'] === 'Yes';
+            
             switch (event.target.flowApiName) {
                 case 'Change_case_category_flow':
-                    message = 'Case category changed successfully';
+                    if (isConfirmed) {
+                        message = 'Case category changed successfully'; 
+                    }
                     modalToClose = 'isChangeCaseCategoryModalOpen';
                     break;
                 case 'Re_open_a_case':
-                    message = 'Case reopened successfully';
+                    if (isConfirmed) {
+                        message = 'Case reopened successfully';
+                    }
                     modalToClose = 'isReopenCaseModalOpen';
                     break;
                 case 'Change_disclaimer_date':
@@ -577,21 +645,19 @@ export default class CaseOfficerButtons extends LightningElement {
                     message = 'Document generated successfully';
                     modalToClose = 'isFlowModalOpen';
                     break;
+                case 'Put_Away_a_Case':
+                case 'Put_Away_a_Case_Companies':
+                case 'Put_Away_a_Case_General':
+                case 'Put_Away_a_Case_Freedom_of_Information':
+                case 'Put_Away_a_Case_Conveyancing':
+                    if (isConfirmed){
+                        message = 'Case put away successfully';
+                    }
+                    modalToClose = 'isPutAwayModalOpen';
+                    break;
                 case 'ILO_Approve':
                 message = 'ILO approval process completed successfully';
                 modalToClose = 'isILOApproveModalOpen';
-
-                // Read the flow output variables
-                const outputVariables = event.detail.outputVariables;
-
-                console.log('event detail', event.detail);
-                console.log('Flow output variables:', outputVariables);
-                let flowOutput = {};  // Initialize a place to store flow outputs
-
-                // Loop through outputVariables and assign key-value pairs to flowOutput
-                outputVariables.forEach(variable => {
-                    flowOutput[variable.name] = variable.value;
-                });
 
                 // Pass the captured flow output to the method that generates and sends the email
                 this.sendILOApproveEmail(flowOutput);
@@ -605,17 +671,25 @@ export default class CaseOfficerButtons extends LightningElement {
                     message = 'Operation completed successfully';
             }
 
-            this.dispatchEvent(
-                new ShowToastEvent({
-                    title: title,
-                    message: message,
-                    variant: 'success'
-                })
-            );
+            if (message != ''){
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: title,
+                        message: message,
+                        variant: 'success'
+                    })
+                );
+            }
 
             if (modalToClose) {
                 this[modalToClose] = false;
             }
+
+            // Dispatch a custom event to refresh the Case Officer History
+            this.dispatchEvent(new CustomEvent('flowfinished', {
+                bubbles: true,
+                composed: true
+            }));
         }
     }
 
@@ -630,7 +704,7 @@ export default class CaseOfficerButtons extends LightningElement {
         }
     
         let emailBody = '';
-
+    
         let replyDue = new Date(this.replyDue).toLocaleDateString('en-GB');
     
         if (flowOutput['requireCaroline'] === 'No') {

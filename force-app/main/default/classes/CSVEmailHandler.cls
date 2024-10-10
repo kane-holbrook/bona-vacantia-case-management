@@ -1,6 +1,20 @@
 global class CSVEmailHandler implements Messaging.InboundEmailHandler {
+    String bankName = '';
+    Integer spreadsheetNumber = 0;
+    Decimal cashBalance = 0;
+
     global Messaging.InboundEmailResult handleInboundEmail(Messaging.InboundEmail email, Messaging.InboundEnvelope envelope) {
         Messaging.InboundEmailResult result = new Messaging.InboundEmailResult();
+
+        String allowedDomain = 'governmentlegal.gov.uk';
+        String senderDomain = email.fromAddress.substring(email.fromAddress.indexOf('@') + 1);
+        
+
+        if (senderDomain != allowedDomain) {
+            System.debug('Email from unauthorized domain: ' + senderDomain);
+            result.success = false;
+            return result;
+        }
 
         if (email == null) {
             System.debug('Inbound email is null');
@@ -26,7 +40,7 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
         if (csvAttachment != null) {
             // Convert the CSV file content to a string
             String csvContent = csvAttachment.body.toString();
-            
+
             // Parse the CSV and create cases
             List<String> errorMessages = new List<String>();
             List<String> duplicateInCSV = new List<String>();  // Declare duplicateInCSV here
@@ -112,7 +126,7 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
                     // After insertion, create Case_History__c records for each case
                     for (BV_Case__c insertedCase : casesToInsert) {
                         createCaseHistoryForCase(insertedCase); // Create a Case History record for each case
-                        createBankBuildingSociety(insertedCase);
+                        createBankBuildingSociety(insertedCase, bankName, spreadsheetNumber);
                     }
                 }
 
@@ -136,6 +150,27 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
     private List<Map<String, Object>> parseCSV(String csvContent, List<String> errorMessages) {
         List<Map<String, Object>> cases = new List<Map<String, Object>>();
         List<String> csvLines = csvContent.split('\n');
+
+        String bankAndSpreadsheetLine = csvLines[0];
+        List<String> bankAndSpreadsheetColumns = parseCSVLine(bankAndSpreadsheetLine);
+
+        if (bankAndSpreadsheetColumns.size() != 2) {
+            errorMessages.add('First line of the CSV must contain exactly two values: Bank Name and Spreadsheet Number.');
+            return cases;
+        }
+
+        bankName = bankAndSpreadsheetColumns[0];
+        String spreadsheetNumberStr = bankAndSpreadsheetColumns[1].trim();
+
+        try {
+            spreadsheetNumber = Integer.valueOf(spreadsheetNumberStr);
+        } catch (Exception e) {
+            errorMessages.add('Spreadsheet number is not a valid integer: ' + spreadsheetNumberStr);
+            return cases;
+        }
+
+        // Remove the first two values (Bank Name/Spreadsheet Number line)
+        csvLines.remove(0); 
         
         if (csvLines.size() <= 1) {
             errorMessages.add('CSV does not contain any data rows after the header.');
@@ -171,6 +206,7 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
                 }
 
                 caseRecord.RecordTypeId = compRecordType.Id;
+                caseRecord.Case_Type__c = 'H3 - Electronic Bulk Referral';
     
                 caseRecord.Company_No__c = padCompanyNumber(columns[0]);
                 caseRecord.Name = columns[3].toUpperCase(); 
@@ -208,7 +244,7 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
     
                 try {
                     String amountCollected = columns[5].trim().replace(',', '');
-                    caseRecord.Amount_Collected__c = Decimal.valueOf(amountCollected);
+                    cashBalance = Decimal.valueOf(amountCollected);
                 } catch (Exception e) {
                     errorMessages.add('Row ' + i + ': Error converting Amount_Collected__c to Decimal: ' + columns[5]);
                     isValid = false;
@@ -353,7 +389,6 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
         }
     }
     
-
     // Fetch the company name
     private String fetchCompanyName(String companyNumber) {
         String companyName = '';
@@ -445,7 +480,7 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
     // Send a jurisdiction email
     private void sendJurisdictionEmail(String toAddress, List<String> notInJurisdiction, List<String> consultFCo, List<String> acceptedCompanies, List<String> existingCasesList, List<String> duplicateInCSV, Boolean casesInserted) {
         String subject = 'CSV Jurisdiction Results';
-        String body = '<p>The CSV file has been processed. Please see the results below:</p>';
+        String body = '<p>The CSV file has been processed from the bank of ' + bankName + ' with spreadsheet number of ' + spreadsheetNumber + ' - Please see the results below:</p>';
     
         if (!acceptedCompanies.isEmpty()) {
             body += '<p><em>The following companies have been accepted and processed into cases:</em><br>' + formatLinesForEmail(acceptedCompanies) + '</p>';
@@ -548,21 +583,24 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
 
     private void createCaseHistoryForCase(BV_Case__c caseRecord) {
         Case_History__c caseHistory = new Case_History__c();
-        caseHistory.Action__c = caseRecord.Name; // Set Action to the Company Name
+        caseHistory.Action__c = bankName + ' - ' + spreadsheetNumber; // Set Action to bank-name and spreadsheet number
         caseHistory.BV_Case__c = caseRecord.Id; // Lookup to the BV Case
         caseHistory.Date_Inserted_Time__c = DateTime.now(); // Set current date for Date Inserted
         caseHistory.Last_updated__c = DateTime.now(); // Set current date for Last Updated
-        caseHistory.Details__c = caseRecord.Company_No__c; // Set Details to the Company Number (Optional)
+        caseHistory.Details__c = caseRecord.Name + ' - ' + caseRecord.Company_No__c; // Set Details to the Company Name + Company Number
 
         System.debug('ID - ' + caseHistory.BV_Case__c);
         
         insert caseHistory; // Insert the Case History record
     }
 
-    private void createBankBuildingSociety(BV_Case__c caseRecord) {
+    private void createBankBuildingSociety(BV_Case__c caseRecord, String bankName, Integer spreadsheetNumber) {
         AssetLiability__c assetLiability = new AssetLiability__c();
         assetLiability.BV_Case__c = caseRecord.Id;
-        assetLiability.Balance__c = caseRecord.Amount_Collected__c;
+        assetLiability.Balance__c = cashBalance;
+        assetLiability.Bank__c = bankName;
+        assetLiability.Spreadsheet_Number__c = spreadsheetNumber;
+        assetLiability.Electronic_Referral__c = true;
 
         RecordType assetRecordType = [
         SELECT Id 

@@ -31,6 +31,7 @@ import DOCUMENT_FILE_SIZE_FIELD from '@salesforce/schema/SHDocument__c.FileSize_
 import DIRECT_URL_FIELD from '@salesforce/schema/SHDocument__c.DirectURL__c';
 import CASE_HISTORY_FIELD from '@salesforce/schema/SHDocument__c.Case_History__c';
 import CREATED_TIME_FIELD from '@salesforce/schema/SHDocument__c.Created_Time__c';
+import downloadFileFromSharePoint from '@salesforce/apex/FileControllerGraph.downloadFileFromSharePoint';
 
 export default class HistoryEditModal extends NavigationMixin(LightningElement) {
     @api record;
@@ -83,7 +84,8 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
             typeAttributes: {
                 rowActions: [
                     { label: 'View/Edit', name: 'viewEdit' },
-                    { label: 'Delete', name: 'delete' }
+                    { label: 'Delete', name: 'delete' },
+                    { label: 'Download', name: 'download' }
                 ]
             }
         }
@@ -471,6 +473,8 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
             this.handleConvertToPDF(relatedItemId);
         } else if (actionName === 'delete') {
             this.handleDeleteRelatedItem(relatedItemId);
+        } else if (actionName === 'download') {
+            this.handleDownloadFile(relatedItemId);
         }
     }
     
@@ -704,5 +708,35 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
         this.draft = null;
         this.serverRelativeURL = null;
         this.originalDocumentId = null;
+    }
+
+    handleDownloadFile(relatedItemId) {
+        const selectedItem = this.relatedItems.find(item => item.Id === relatedItemId);
+        if (selectedItem && selectedItem.DirectURL__c) {
+            let serverRelativeURL = selectedItem.DirectURL__c;
+            let fileName = selectedItem.Name;
+
+            // Strip away the unnecessary parts of the URL
+            const urlParts = serverRelativeURL.split('/Shared%20Documents/');
+            if (urlParts.length > 1) {
+                serverRelativeURL = urlParts[1];
+            }
+
+            downloadFileFromSharePoint({ filePath: serverRelativeURL })
+                .then(result => {
+                    const element = document.createElement('a');
+                    element.href = 'data:application/octet-stream;base64,' + result.fileContent;
+                    element.download = result.fileName;
+                    document.body.appendChild(element);
+                    element.click();
+                    document.body.removeChild(element);
+                })
+                .catch(error => {
+                    console.error('Error downloading file:', error);
+                    this.showToast('Error', 'Error downloading file', 'error');
+                });
+        } else {
+            this.showToast('Error', 'File URL not found.', 'error');
+        }
     }
 }

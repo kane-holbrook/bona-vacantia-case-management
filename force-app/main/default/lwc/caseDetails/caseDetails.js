@@ -1,9 +1,12 @@
 import { LightningElement, api, track, wire } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
+import { refreshApex } from '@salesforce/apex';
 import { getRecord } from 'lightning/uiRecordApi';
 import { setRecordId } from 'c/sharedService';
 import getRecordTypeIdForRecord from '@salesforce/apex/LayoutController.getRecordTypeIdForRecord';
 import getRecordTypeDeveloperName from '@salesforce/apex/LayoutController.getRecordTypeDeveloperName';
+import getCaseDetailForBVCase from '@salesforce/apex/CaseDetailController.getCaseDetailForBVCase';
+import { subscribe, unsubscribe, onError } from 'lightning/empApi';
 
 const FIELDS = [
     'BV_Case__c.Name',
@@ -21,13 +24,59 @@ export default class CaseDetails extends NavigationMixin(LightningElement) {
     @track recordTypeDeveloperName;
     @track caseTypeName;
     @track caseData = {};
+    @track caseDetailData = {};
+    @track caseStatus = 'No status available';
+    @track error;
+
+    recordTypeId;
+
+    subscription = {};
+    channelName = '/event/CaseStatusChange__e';
 
     @wire(getRecord, { recordId: '$recordId', fields: FIELDS })
-    wiredCase({ error, data }) {
+    wiredCase(result) {
+        this.wiredCaseResult = result;
+        const { error, data } = result;
         if (data) {
             this.caseData = data.fields;
         } else if (error) {
             console.error('Error retrieving record', error);
+        }
+    }
+
+    @wire(getCaseDetailForBVCase, { bvCaseId: '$recordId' })
+    wiredCaseDetail(result) {
+        this.wiredCaseDetailResult = result;
+        const { error, data } = result;
+        if (data) {
+            this.caseDetailData = data;
+            this.caseStatus = data.Open_Closed__c ? data.Open_Closed__c : 'No status available';
+        } else if (error) {
+            console.error('Error retrieving Case_Detail__c', error);
+            this.caseStatus = 'Error retrieving case status';
+        }
+    }
+
+    @wire(getRecordTypeIdForRecord, { recordId: '$recordId' })
+    wiredRecordTypeId({ error, data }) {
+        if (data) {
+            this.recordTypeId = data;
+            this.error = undefined;
+        } else if (error) {
+            this.error = error;
+            this.recordTypeId = undefined;
+        }
+    }
+
+    @wire(getRecordTypeDeveloperName, { recordTypeId: '$recordTypeId' })
+    wiredRecordTypeDeveloperName({ error, data }) {
+        if (data) {
+            this.recordTypeDeveloperName = data;
+            this.setCaseTypeName(data);
+            this.error = undefined;
+        } else if (error) {
+            this.error = error;
+            this.recordTypeDeveloperName = undefined;
         }
     }
 
@@ -112,20 +161,44 @@ export default class CaseDetails extends NavigationMixin(LightningElement) {
     }
 
     connectedCallback() {
-        this.retrieveRecordTypeDeveloperName();
         setRecordId(this.recordId);
+        this.registerErrorListener();
+        this.handleSubscribe();
     }
 
-    async retrieveRecordTypeDeveloperName() {
-        try {
-            const recordTypeId = await getRecordTypeIdForRecord({ recordId: this.recordId });
-            const recordTypeDeveloperName = await getRecordTypeDeveloperName({ recordTypeId: recordTypeId });
-            this.recordTypeDeveloperName = recordTypeDeveloperName;
-            this.setCaseTypeName(recordTypeDeveloperName);
-        } catch (error) {
-            this.error = error;
-            this.treeData = undefined;
-        }
+    disconnectedCallback() {
+        this.handleUnsubscribe();
+    }
+
+    handleSubscribe() {
+        const messageCallback = (response) => {
+            console.log('New message received: ', JSON.stringify(response));
+            this.handleCaseStatusEvent(response.data.payload);
+        };
+
+        subscribe(this.channelName, -1, messageCallback).then(response => {
+            console.log('Subscription request sent to: ', JSON.stringify(response.channel));
+            this.subscription = response;
+        });
+    }
+
+    handleUnsubscribe() {
+        unsubscribe(this.subscription, response => {
+            console.log('unsubscribe() response: ', JSON.stringify(response));
+        });
+    }
+
+    registerErrorListener() {
+        onError(error => {
+            console.log('Received error from server: ', JSON.stringify(error));
+        });
+    }
+
+    handleCaseStatusEvent(eventData) {
+        console.log('Refreshing apex case details');
+        refreshApex(this.wiredCaseResult);
+        refreshApex(this.wiredCaseDetailResult);
+        refreshApex(this.wiredRecordTypeIdResult);
     }
 
     handleEdit() {

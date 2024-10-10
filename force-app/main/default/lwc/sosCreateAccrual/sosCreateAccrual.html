@@ -1,118 +1,20 @@
 <template>
-    <!-- Accrual Type Selection -->
-    <template if:true={isAccrualTypeSelection}>
-        <div class="slds-m-bottom_medium">
-            <lightning-radio-group name="accrualType"
-                                label="Select accrual type"
-                                options={accrualTypeOptions}
-                                value={accrualType}
-                                onchange={handleAccrualTypeChange}>
-            </lightning-radio-group>
-        </div>
-        <lightning-button label="Next"
-                          onclick={handleAccrualTypeNext}
-                          disabled={disableAccrualTypeNext}>
-        </lightning-button>
+    <template if:false={isFlowRendered}>
+        <lightning-radio-group
+            label="Select Accrual Type"
+            options={accrualTypeOptions}
+            value={selectedAccrualType}
+            onchange={handleAccrualTypeChange}
+        ></lightning-radio-group>
+
+        <lightning-button label="Confirm Selection" onclick={handleConfirmSelection}></lightning-button>
     </template>
 
-    <!-- Receipt/Asset Type Selection -->
-    <template if:true={isAssetTypeSelection}>
-        <div class="slds-m-bottom_medium">
-            <lightning-radio-group name="assetType"
-                                label="Select receipt/asset type"
-                                options={assetTypeOptions}
-                                value={assetType}
-                                onchange={handleAssetTypeChange}>
-            </lightning-radio-group>
-        </div>
-        <lightning-button label="Next"
-                          onclick={handleAssetTypeNext}
-                          disabled={disableAssetTypeNext}>
-        </lightning-button>
-    </template>
-
-    <!-- Asset Type Selection -->
-    <template if:true={isSelectAssetTypeSelection}>
-        <div class="slds-m-bottom_medium">
-            <lightning-radio-group name="selectAssetType"
-                                label="Select asset type"
-                                options={selectAssetTypeOptions}
-                                value={selectAssetType}
-                                onchange={handleSelectAssetTypeChange}>
-            </lightning-radio-group>
-        </div>
-        <lightning-button label="Next"
-                          onclick={handleSelectAssetTypeNext}
-                          disabled={disableSelectAssetTypeNext}>
-        </lightning-button>
-    </template>
-
-    <!-- Land Type Selection -->
-    <template if:true={isLandTypeSelection}>
-        <div class="slds-m-bottom_medium">
-            <lightning-radio-group name="landType"
-                                label="Select land type"
-                                options={landTypeOptions}
-                                value={landType}
-                                onchange={handleLandTypeChange}>
-            </lightning-radio-group>
-        </div>
-        <lightning-button label="Next"
-                          onclick={handleLandTypeNext}
-                          disabled={disableLandTypeNext}>
-        </lightning-button>
-    </template>
-
-    <!-- Address Input -->
-    <template if:true={isAddressInput}>
-        <div class="slds-m-bottom_medium">
-            <lightning-input name="address"
-                            label="Enter address of land"
-                            value={address}
-                            onchange={handleAddressChange}>
-            </lightning-input>
-        </div>
-        <lightning-button label="Next"
-                          onclick={handleAddressNext}>
-        </lightning-button>
-    </template>
-
-    <!-- Amount Input -->
-    <template if:true={isAmountInput}>
-        <div class="slds-m-bottom_medium">
-            <lightning-input type="number"
-                            name="amount"
-                            label="Enter amount you expect to receive"
-                            value={amount}
-                            onchange={handleAmountChange}>
-            </lightning-input>
-        </div>
-        <lightning-button label="Submit"
-                          onclick={handleAmountSubmit}>
-        </lightning-button>
-    </template>
-
-    <!-- Property Details Input -->
-    <template if:true={isPropertyDetailsInput}>
-        <lightning-input name="addressLine1" label="Address Line 1" value={propertyDetails.addressLine1} onchange={handleAddressLine1Change}></lightning-input>
-        <lightning-input name="addressLine2" label="Address Line 2" value={propertyDetails.addressLine2} onchange={handleAddressLine2Change}></lightning-input>
-        <lightning-input name="addressLine3" label="Address Line 3" value={propertyDetails.addressLine3} onchange={handleAddressLine3Change}></lightning-input>
-        <lightning-input name="postcode" label="Postcode" value={propertyDetails.postcode} onchange={handlePostcodeChange}></lightning-input>
-        <lightning-combobox name="owned" label="Owned" options={ownershipOptions} value={propertyDetails.owned} onchange={handleOwnedChange}></lightning-combobox>
-        <lightning-input name="titleNumber" label="Title Number" value={propertyDetails.titleNumber} onchange={handleTitleNumberChange}></lightning-input>
-        <div class="slds-m-bottom_medium"></div>
-        <lightning-button label="Next" onclick={handlePropertyDetailsNext}></lightning-button>
-    </template>
-
-    <!-- Property Type Selection -->
-    <template if:true={isPropertyTypeSelection}>
-        <lightning-radio-group name="propertyType" label="Property Type" options={propertyTypeOptions} value={propertyType} onchange={handlePropertyTypeChange}></lightning-radio-group>
-        <div class="slds-m-bottom_medium"></div>
-        <lightning-button label="Next" onclick={handlePropertyTypeNext}></lightning-button>
-    </template>
-
-    <!-- Bank Details Input -->
-    <template if:true={isBankDetailsInput}>
-        
+    <template if:true={isFlowRendered}>
+        <lightning-flow 
+            flow-api-name={selectedFlow}
+            onstatuschange={handleFlowStatusChange} 
+            flow-input-variables={flowInputs}>
+        </lightning-flow>
     </template>
 </template>
