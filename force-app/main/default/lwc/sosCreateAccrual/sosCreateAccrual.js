@@ -91,8 +91,8 @@ export default class SosCreateAccrual extends LightningElement {
         // Construct the narrative (AssignmentType + AssetType + AddressType)
         let narrative = flowOutput.AssignmentType + ' ' + flowOutput.AssetType + ' ' + flowOutput.AddressType;
 
-        // If ReceiptType is "ARE2", then Type is "CR", otherwise Type is "DR"
-        let type = flowOutput.ReceiptType === 'ARE2' ? 'CR' : 'DR';
+        // If ReceiptType is "ARE2" or "ARC2", then Type is "CR", otherwise Type is "DR"
+        let type = flowOutput.ReceiptType === 'ARE2' || flowOutput.ReceiptType === 'ARC2' ? 'CR' : 'DR';
         
         createAccrual({
             MtCode: this.caseNumber,

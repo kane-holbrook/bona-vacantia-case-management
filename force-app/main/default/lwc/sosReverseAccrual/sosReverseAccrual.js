@@ -92,9 +92,9 @@ export default class SosReverseAccrual extends LightningElement {
 
     extractSosCode(narrative) {
         if (narrative) {
-            if (narrative.startsWith('EA')) {
+            if (narrative.startsWith('EA') || narrative.startsWith('CA')) {
                 return narrative.slice(0, 3);
-            } else if (narrative.startsWith('EL')) {
+            } else if (narrative.startsWith('EL') || narrative.startsWith('CL')) {
                 return narrative.slice(0, 3);
             }
         }
