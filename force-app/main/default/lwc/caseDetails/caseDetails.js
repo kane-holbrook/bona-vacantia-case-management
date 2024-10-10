@@ -25,7 +25,7 @@ export default class CaseDetails extends NavigationMixin(LightningElement) {
     @track caseTypeName;
     @track caseData = {};
     @track caseDetailData = {};
-    @track caseStatus = 'Loading...';
+    @track caseStatus = 'No status available';
     @track error;
 
     recordTypeId;
