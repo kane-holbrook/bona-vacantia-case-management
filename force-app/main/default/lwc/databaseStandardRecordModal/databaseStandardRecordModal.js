@@ -1,10 +1,11 @@
 import { LightningElement, api, track, wire } from 'lwc';
-import { getRecord, createRecord, updateRecord } from 'lightning/uiRecordApi';
+import { getRecord, createRecord, updateRecord, getFieldValue } from 'lightning/uiRecordApi';
 import getPicklistValues from '@salesforce/apex/LayoutController.getPicklistValues';
 import getAccountSearchResults from '@salesforce/apex/LayoutController.getAccountSearchResults';
 import getAccountById from '@salesforce/apex/LayoutController.getAccountById';
+import CASE_NAME_FIELD from '@salesforce/schema/BV_Case__c.Name';
 
-const FIELDS = ['BV_Case__c.RecordTypeId']; // Adjust this to your object and field
+const FIELDS = ['BV_Case__c.RecordTypeId', 'BV_Case__c.Name']; // Add Name field here
 const ACCOUNT_FIELDS = [
     'Account.Id',
     'Account.Name',
@@ -48,7 +49,15 @@ export default class DatabaseStandardRecordModal extends LightningElement {
     @track currentFieldName = ''; // Add this line to track the current field name
 
     @wire(getRecord, { recordId: '$recordId', fields: FIELDS })
-    record;
+    wiredRecord({ error, data }) {
+        if (data) {
+            this.record = data;
+            this.caseName = getFieldValue(data, CASE_NAME_FIELD);
+            this.processRecordData();
+        } else if (error) {
+            console.error('Error loading record', error);
+        }
+    }
 
     @wire(getRecord, { recordId: '$accountId', fields: ACCOUNT_FIELDS })
     wiredAccount({ error, data }) {
@@ -104,6 +113,10 @@ export default class DatabaseStandardRecordModal extends LightningElement {
                 filteredData = [{ Id: 'new', ...this.getEmptyRecordFields() }];
             }
 
+            const isValidCaseName = this.isCaseNameValid(this.caseName);
+            console.log('Case Name:', this.caseName);
+            console.log('Is Valid Case Name:', isValidCaseName);
+
             this.combinedData = filteredData.map(record => ({
                 id: record.Id === 'new' ? 'new' : (this.objectApiName === 'BV_Case__c' ? this.recordId : record.Id),
                 fields: this.columns
@@ -132,6 +145,17 @@ export default class DatabaseStandardRecordModal extends LightningElement {
                         if (this.isSalesforceId(fieldValue)) {
                             this.updateAccountDisplay(fieldValue);
                         }
+                        // Add these properties to the field object
+                        const isLookupField = column.fieldName.endsWith('_Lookup__c');
+                        const correspondingTextField = isLookupField ? column.fieldName.replace('_Lookup__c', '__c') : null;
+                        const isCorrespondingTextField = !isLookupField && this.columns.some(c => c.fieldName === `${column.fieldName.replace('__c', '')}_Lookup__c`);
+
+                        const showField = isValidCaseName ? 
+                            (isLookupField || (!isLookupField && !isCorrespondingTextField)) : 
+                            (!isLookupField);
+
+                        console.log(`Field: ${column.fieldName}, isLookup: ${isLookupField}, showField: ${showField}`);
+
                         return {
                             label: decodedLabel,
                             fieldName: column.fieldName,
@@ -149,7 +173,11 @@ export default class DatabaseStandardRecordModal extends LightningElement {
                             isDefault: column.type !== 'picklist' && column.type !== 'checkbox' && column.type !== 'long-text' && column.type !== 'date' && column.type !== 'lookup',
                             checked: column.type === 'checkbox' ? !!fieldValue : false,
                             options: column.type === 'picklist' ? [] : [],
-                            listboxId: `listbox-${column.fieldName}`
+                            listboxId: `listbox-${column.fieldName}`,
+                            isLookupField,
+                            correspondingTextField,
+                            isCorrespondingTextField,
+                            showField
                         };
                     })
             }));
@@ -517,13 +545,17 @@ export default class DatabaseStandardRecordModal extends LightningElement {
         this.combinedData.forEach(record => {
             const fields = {};
             record.fields.forEach(item => {
-                if (item.isLookup) {
-                    // For lookup fields, save the ID instead of the label
+                if (item.isLookupField && item.showField) {
+                    // For visible lookup fields, save both the lookup and the corresponding text field
                     fields[item.fieldName] = item.accountId || null;
-                } else if (item.isCheckbox) {
-                    fields[item.fieldName] = !!item.checked;
-                } else {
-                    fields[item.fieldName] = item.value;
+                    fields[item.correspondingTextField] = item.value || '';
+                } else if (!item.isLookupField && item.showField) {
+                    // For visible non-lookup fields, save as usual
+                    if (item.isCheckbox) {
+                        fields[item.fieldName] = !!item.checked;
+                    } else {
+                        fields[item.fieldName] = item.value;
+                    }
                 }
             });
 
@@ -657,5 +689,12 @@ export default class DatabaseStandardRecordModal extends LightningElement {
         const textArea = document.createElement('textarea');
         textArea.innerHTML = text;
         return textArea.value;
+    }
+
+    isCaseNameValid(caseName) {
+        if (!caseName) return false;
+        const validPrefixes = ['COMP', 'ESTA', 'FOIR', 'CONV', 'GENE'];
+        const regex = new RegExp(`^(${validPrefixes.join('|')})\\d{2}#\\d+$`);
+        return regex.test(caseName);
     }
 }

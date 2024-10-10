@@ -16,132 +16,134 @@
                         </div>
                     </template>
                     <template if:false={item.isDivider}>
-                        <div key={item.key} class="slds-form-element slds-m-around_medium">
-                            <div class="slds-form-element__control">
-                                <template if:true={item.isPicklist}>
-                                    <lightning-combobox
-                                        data-record-id={item.recordId}
-                                        name={item.fieldName}
-                                        label={item.label}
-                                        value={item.value}
-                                        options={item.options}
-                                        onchange={handleInputChange}>
-                                    </lightning-combobox>
-                                </template>
-                                <template if:true={item.isCheckbox}>
-                                    <lightning-input 
-                                        type="checkbox" 
-                                        data-record-id={item.recordId} 
-                                        name={item.fieldName} 
-                                        label={item.label} 
-                                        checked={item.checked} 
-                                        onchange={handleInputChange}>
-                                    </lightning-input>
-                                </template>
-                                <template if:true={item.isDate}>
-                                    <lightning-input 
-                                        type="date" 
-                                        data-record-id={item.recordId} 
-                                        name={item.fieldName} 
-                                        label={item.label} 
-                                        value={item.value}
-                                        onchange={handleInputChange}>
-                                    </lightning-input>
-                                </template>
-                                <template if:true={item.isLongText}>
-                                    <lightning-textarea 
-                                        data-record-id={item.recordId}
-                                        name={item.fieldName}
-                                        label={item.label}
-                                        value={item.value}
-                                        onchange={handleInputChange}
-                                        rows="4"
-                                        max-length={item.length}
-                                        message-when-too-long="Too many characters"
-                                        class="wide-textarea">
-                                    </lightning-textarea>
-                                </template>
-                                <template if:true={item.isLookup}>
-                                    <div class="slds-form-element">
-                                        <label class="slds-form-element__label" for={item.fieldName}>{item.label}</label>
-                                        <div class="slds-form-element__control">
-                                            <div class="slds-combobox_container">
-                                                <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open">
-                                                    <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
-                                                        <input
-                                                            type="text"
-                                                            class="slds-input slds-combobox__input"
-                                                            id={item.fieldName}
-                                                            aria-autocomplete="list"
-                                                            aria-controls={item.listboxId}
-                                                            autocomplete="off"
-                                                            role="combobox"
-                                                            placeholder="Search for an account"
-                                                            value={searchTerm}
-                                                            oninput={handleSearchInput}
-                                                            data-field-name={item.fieldName}
-                                                        />
-                                                        <template if:true={item.value}>
-                                                            <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" title="Clear Selection" onclick={handleClearAccount} data-field-name={item.fieldName}>
-                                                                <lightning-icon icon-name="utility:close" size="xx-small" alternative-text="Clear Selection" class="slds-icon slds-icon_x-small"></lightning-icon>
-                                                            </button>
-                                                        </template>
-                                                    </div>
-                                                    <template if:true={searchResults.length}>
-                                                        <div id={item.listboxId} class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox">
-                                                            <ul class="slds-listbox slds-listbox_vertical" role="presentation">
-                                                                <template for:each={searchResults} for:item="result">
-                                                                    <li key={result.Id} role="presentation" class="slds-listbox__item">
-                                                                        <div class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta"
-                                                                             role="option"
-                                                                             data-id={result.Id}
-                                                                             data-name={result.Name}
-                                                                             data-field-name={item.fieldName}
-                                                                             onclick={handleAccountSelect}>
-                                                                            <span class="slds-media__body">
-                                                                                <span class="slds-listbox__option-text slds-listbox__option-text_entity">{result.Name}</span>
-                                                                            </span>
-                                                                        </div>
-                                                                    </li>
-                                                                </template>
-                                                            </ul>
-                                                        </div>
-                                                    </template>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </template>
-                                <template if:true={item.isDefault}>
-                                    <template if:true={item.isNumber}>
+                        <template if:true={item.showField}>
+                            <div key={item.fieldName} class="slds-form-element slds-m-around_medium">
+                                <div class="slds-form-element__control">
+                                    <template if:true={item.isPicklist}>
+                                        <lightning-combobox
+                                            data-record-id={item.recordId}
+                                            name={item.fieldName}
+                                            label={item.label}
+                                            value={item.value}
+                                            options={item.options}
+                                            onchange={handleInputChange}>
+                                        </lightning-combobox>
+                                    </template>
+                                    <template if:true={item.isCheckbox}>
                                         <lightning-input 
-                                            type={item.type} 
+                                            type="checkbox" 
+                                            data-record-id={item.recordId} 
+                                            name={item.fieldName} 
+                                            label={item.label} 
+                                            checked={item.checked} 
+                                            onchange={handleInputChange}>
+                                        </lightning-input>
+                                    </template>
+                                    <template if:true={item.isDate}>
+                                        <lightning-input 
+                                            type="date" 
                                             data-record-id={item.recordId} 
                                             name={item.fieldName} 
                                             label={item.label} 
                                             value={item.value}
-                                            formatter={item.formatter}
-                                            step={item.step}
-                                            max={item.max}
-                                            placeholder="Enter an amount"
                                             onchange={handleInputChange}>
                                         </lightning-input>
                                     </template>
-                                    <template if:false={item.isNumber}>
-                                        <lightning-input 
-                                            type={item.type} 
-                                            data-record-id={item.recordId} 
-                                            name={item.fieldName} 
-                                            label={item.label} 
-                                            value={item.value} 
-                                            maxlength={item.length}
+                                    <template if:true={item.isLongText}>
+                                        <lightning-textarea 
+                                            data-record-id={item.recordId}
+                                            name={item.fieldName}
+                                            label={item.label}
+                                            value={item.value}
+                                            onchange={handleInputChange}
+                                            rows="4"
+                                            max-length={item.length}
                                             message-when-too-long="Too many characters"
-                                            onchange={handleInputChange}>
-                                        </lightning-input>
+                                            class="wide-textarea">
+                                        </lightning-textarea>
                                     </template>
-                                </template>
+                                    <template if:true={item.isLookup}>
+                                        <div class="slds-form-element">
+                                            <label class="slds-form-element__label" for={item.fieldName}>{item.label}</label>
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-combobox_container">
+                                                    <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open">
+                                                        <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
+                                                            <input
+                                                                type="text"
+                                                                class="slds-input slds-combobox__input"
+                                                                id={item.fieldName}
+                                                                aria-autocomplete="list"
+                                                                aria-controls={item.listboxId}
+                                                                autocomplete="off"
+                                                                role="combobox"
+                                                                placeholder="Search for an account"
+                                                                value={searchTerm}
+                                                                oninput={handleSearchInput}
+                                                                data-field-name={item.fieldName}
+                                                            />
+                                                            <template if:true={item.value}>
+                                                                <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" title="Clear Selection" onclick={handleClearAccount} data-field-name={item.fieldName}>
+                                                                    <lightning-icon icon-name="utility:close" size="xx-small" alternative-text="Clear Selection" class="slds-icon slds-icon_x-small"></lightning-icon>
+                                                                </button>
+                                                            </template>
+                                                        </div>
+                                                        <template if:true={searchResults.length}>
+                                                            <div id={item.listboxId} class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox">
+                                                                <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                                                                    <template for:each={searchResults} for:item="result">
+                                                                        <li key={result.Id} role="presentation" class="slds-listbox__item">
+                                                                            <div class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta"
+                                                                                 role="option"
+                                                                                 data-id={result.Id}
+                                                                                 data-name={result.Name}
+                                                                                 data-field-name={item.fieldName}
+                                                                                 onclick={handleAccountSelect}>
+                                                                                <span class="slds-media__body">
+                                                                                    <span class="slds-listbox__option-text slds-listbox__option-text_entity">{result.Name}</span>
+                                                                                </span>
+                                                                            </div>
+                                                                        </li>
+                                                                    </template>
+                                                                </ul>
+                                                            </div>
+                                                        </template>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template if:true={item.isDefault}>
+                                        <template if:true={item.isNumber}>
+                                            <lightning-input 
+                                                type={item.type} 
+                                                data-record-id={item.recordId} 
+                                                name={item.fieldName} 
+                                                label={item.label} 
+                                                value={item.value}
+                                                formatter={item.formatter}
+                                                step={item.step}
+                                                max={item.max}
+                                                placeholder="Enter an amount"
+                                                onchange={handleInputChange}>
+                                            </lightning-input>
+                                        </template>
+                                        <template if:false={item.isNumber}>
+                                            <lightning-input 
+                                                type={item.type} 
+                                                data-record-id={item.recordId} 
+                                                name={item.fieldName} 
+                                                label={item.label} 
+                                                value={item.value} 
+                                                maxlength={item.length}
+                                                message-when-too-long="Too many characters"
+                                                onchange={handleInputChange}>
+                                            </lightning-input>
+                                        </template>
+                                    </template>
+                                </div>
                             </div>
-                        </div>
+                        </template>
                     </template>
                 </template>
             </div>
@@ -160,11 +162,149 @@
                         </div>
                     </template>
                     <template if:false={item.isDivider}>
-                        <div key={item.key} class="slds-form-element slds-m-around_medium">
+                        <template if:true={item.showField}>
+                            <div key={item.fieldName} class="slds-form-element slds-m-around_medium">
+                                <div class="slds-form-element__control">
+                                    <template if:true={item.isPicklist}>
+                                        <lightning-combobox
+                                            data-record-id={item.recordId}
+                                            name={item.fieldName}
+                                            label={item.label}
+                                            value={item.value}
+                                            options={item.options}
+                                            onchange={handleInputChange}>
+                                        </lightning-combobox>
+                                    </template>
+                                    <template if:true={item.isCheckbox}>
+                                        <lightning-input 
+                                            type="checkbox" 
+                                            data-record-id={item.recordId} 
+                                            name={item.fieldName} 
+                                            label={item.label} 
+                                            checked={item.checked} 
+                                            onchange={handleInputChange}>
+                                        </lightning-input>
+                                    </template>
+                                    <template if:true={item.isDate}>
+                                        <lightning-input 
+                                            type="date" 
+                                            data-record-id={item.recordId} 
+                                            name={item.fieldName} 
+                                            label={item.label} 
+                                            value={item.value}
+                                            onchange={handleInputChange}>
+                                        </lightning-input>
+                                    </template>
+                                    <template if:true={item.isLongText}>
+                                        <lightning-textarea 
+                                            data-record-id={item.recordId}
+                                            name={item.fieldName}
+                                            label={item.label}
+                                            value={item.value}
+                                            onchange={handleInputChange}
+                                            rows="4"
+                                            max-length={item.length}
+                                            message-when-too-long="Too many characters"
+                                            class="wide-textarea">
+                                        </lightning-textarea>
+                                    </template>
+                                    <template if:true={item.isLookup}>
+                                        <div class="slds-form-element">
+                                            <label class="slds-form-element__label" for={item.fieldName}>{item.label}</label>
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-combobox_container">
+                                                    <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open">
+                                                        <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
+                                                            <input
+                                                                type="text"
+                                                                class="slds-input slds-combobox__input"
+                                                                id={item.fieldName}
+                                                                aria-autocomplete="list"
+                                                                aria-controls={item.listboxId}
+                                                                autocomplete="off"
+                                                                role="combobox"
+                                                                placeholder="Search for an account"
+                                                                value={searchTerm}
+                                                                oninput={handleSearchInput}
+                                                                data-field-name={item.fieldName}
+                                                            />
+                                                            <template if:true={item.value}>
+                                                                <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" title="Clear Selection" onclick={handleClearAccount} data-field-name={item.fieldName}>
+                                                                    <lightning-icon icon-name="utility:close" size="xx-small" alternative-text="Clear Selection" class="slds-icon slds-icon_x-small"></lightning-icon>
+                                                                </button>
+                                                            </template>
+                                                        </div>
+                                                        <template if:true={searchResults.length}>
+                                                            <div id={item.listboxId} class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox">
+                                                                <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                                                                    <template for:each={searchResults} for:item="result">
+                                                                        <li key={result.Id} role="presentation" class="slds-listbox__item">
+                                                                            <div class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta"
+                                                                                 role="option"
+                                                                                 data-id={result.Id}
+                                                                                 data-name={result.Name}
+                                                                                 data-field-name={item.fieldName}
+                                                                                 onclick={handleAccountSelect}>
+                                                                                <span class="slds-media__body">
+                                                                                    <span class="slds-listbox__option-text slds-listbox__option-text_entity">{result.Name}</span>
+                                                                                </span>
+                                                                            </div>
+                                                                        </li>
+                                                                    </template>
+                                                                </ul>
+                                                            </div>
+                                                        </template>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template if:true={item.isDefault}>
+                                        <template if:true={item.isNumber}>
+                                            <lightning-input 
+                                                type={item.type} 
+                                                data-record-id={item.recordId} 
+                                                name={item.fieldName} 
+                                                label={item.label} 
+                                                value={item.value}
+                                                formatter={item.formatter}
+                                                step={item.step}
+                                                max={item.max}
+                                                placeholder="Enter an amount"
+                                                onchange={handleInputChange}>
+                                            </lightning-input>
+                                        </template>
+                                        <template if:false={item.isNumber}>
+                                            <lightning-input 
+                                                type={item.type} 
+                                                data-record-id={item.recordId} 
+                                                name={item.fieldName} 
+                                                label={item.label} 
+                                                value={item.value} 
+                                                maxlength={item.length}
+                                                message-when-too-long="Too many characters"
+                                                onchange={handleInputChange}>
+                                            </lightning-input>
+                                        </template>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                    </template>
+                </template>
+            </div>
+        </div>
+    </template>
+    <template if:false={isTwoColumnLayout}>
+        <template for:each={combinedData} for:item="record">
+            <div key={record.id}>
+                <template for:each={record.fields} for:item="item">
+                    <template if:true={item.showField}>
+                        <div key={item.fieldName} class="slds-form-element slds-m-around_medium">
                             <div class="slds-form-element__control">
                                 <template if:true={item.isPicklist}>
                                     <lightning-combobox
-                                        data-record-id={item.recordId}
+                                        data-record-id={record.id}
                                         name={item.fieldName}
                                         label={item.label}
                                         value={item.value}
@@ -175,7 +315,7 @@
                                 <template if:true={item.isCheckbox}>
                                     <lightning-input 
                                         type="checkbox" 
-                                        data-record-id={item.recordId} 
+                                        data-record-id={record.id} 
                                         name={item.fieldName} 
                                         label={item.label} 
                                         checked={item.checked} 
@@ -260,7 +400,7 @@
                                     <template if:true={item.isNumber}>
                                         <lightning-input 
                                             type={item.type} 
-                                            data-record-id={item.recordId} 
+                                            data-record-id={record.id} 
                                             name={item.fieldName} 
                                             label={item.label} 
                                             value={item.value}
@@ -274,7 +414,7 @@
                                     <template if:false={item.isNumber}>
                                         <lightning-input 
                                             type={item.type} 
-                                            data-record-id={item.recordId} 
+                                            data-record-id={record.id} 
                                             name={item.fieldName} 
                                             label={item.label} 
                                             value={item.value} 
@@ -287,140 +427,6 @@
                             </div>
                         </div>
                     </template>
-                </template>
-            </div>
-        </div>
-    </template>
-    <template if:false={isTwoColumnLayout}>
-        <template for:each={combinedData} for:item="record">
-            <div key={record.id}>
-                <template for:each={record.fields} for:item="item">
-                    <div key={item.fieldName} class="slds-form-element slds-m-around_medium">
-                        <div class="slds-form-element__control">
-                            <template if:true={item.isPicklist}>
-                                <lightning-combobox
-                                    data-record-id={record.id}
-                                    name={item.fieldName}
-                                    label={item.label}
-                                    value={item.value}
-                                    options={item.options}
-                                    onchange={handleInputChange}>
-                                </lightning-combobox>
-                            </template>
-                            <template if:true={item.isCheckbox}>
-                                <lightning-input 
-                                    type="checkbox" 
-                                    data-record-id={record.id} 
-                                    name={item.fieldName} 
-                                    label={item.label} 
-                                    checked={item.checked} 
-                                    onchange={handleInputChange}>
-                                </lightning-input>
-                            </template>
-                            <template if:true={item.isDate}>
-                                <lightning-input 
-                                    type="date" 
-                                    data-record-id={item.recordId} 
-                                    name={item.fieldName} 
-                                    label={item.label} 
-                                    value={item.value}
-                                    onchange={handleInputChange}>
-                                </lightning-input>
-                            </template>
-                            <template if:true={item.isLongText}>
-                                <lightning-textarea 
-                                    data-record-id={item.recordId}
-                                    name={item.fieldName}
-                                    label={item.label}
-                                    value={item.value}
-                                    onchange={handleInputChange}
-                                    rows="4"
-                                    max-length={item.length}
-                                    message-when-too-long="Too many characters"
-                                    class="wide-textarea">
-                                </lightning-textarea>
-                            </template>
-                            <template if:true={item.isLookup}>
-                                <div class="slds-form-element">
-                                    <label class="slds-form-element__label" for={item.fieldName}>{item.label}</label>
-                                    <div class="slds-form-element__control">
-                                        <div class="slds-combobox_container">
-                                            <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open">
-                                                <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
-                                                    <input
-                                                        type="text"
-                                                        class="slds-input slds-combobox__input"
-                                                        id={item.fieldName}
-                                                        aria-autocomplete="list"
-                                                        aria-controls={item.listboxId}
-                                                        autocomplete="off"
-                                                        role="combobox"
-                                                        placeholder="Search for an account"
-                                                        value={searchTerm}
-                                                        oninput={handleSearchInput}
-                                                        data-field-name={item.fieldName}
-                                                    />
-                                                    <template if:true={item.value}>
-                                                        <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" title="Clear Selection" onclick={handleClearAccount} data-field-name={item.fieldName}>
-                                                            <lightning-icon icon-name="utility:close" size="xx-small" alternative-text="Clear Selection" class="slds-icon slds-icon_x-small"></lightning-icon>
-                                                        </button>
-                                                    </template>
-                                                </div>
-                                                <template if:true={searchResults.length}>
-                                                    <div id={item.listboxId} class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox">
-                                                        <ul class="slds-listbox slds-listbox_vertical" role="presentation">
-                                                            <template for:each={searchResults} for:item="result">
-                                                                <li key={result.Id} role="presentation" class="slds-listbox__item">
-                                                                    <div class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta"
-                                                                         role="option"
-                                                                         data-id={result.Id}
-                                                                         data-name={result.Name}
-                                                                         data-field-name={item.fieldName}
-                                                                         onclick={handleAccountSelect}>
-                                                                        <span class="slds-media__body">
-                                                                            <span class="slds-listbox__option-text slds-listbox__option-text_entity">{result.Name}</span>
-                                                                        </span>
-                                                                    </div>
-                                                                </li>
-                                                            </template>
-                                                        </ul>
-                                                    </div>
-                                                </template>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </template>
-                            <template if:true={item.isDefault}>
-                                <template if:true={item.isNumber}>
-                                    <lightning-input 
-                                        type={item.type} 
-                                        data-record-id={record.id} 
-                                        name={item.fieldName} 
-                                        label={item.label} 
-                                        value={item.value}
-                                        formatter={item.formatter}
-                                        step={item.step}
-                                        max={item.max}
-                                        placeholder="Enter an amount"
-                                        onchange={handleInputChange}>
-                                    </lightning-input>
-                                </template>
-                                <template if:false={item.isNumber}>
-                                    <lightning-input 
-                                        type={item.type} 
-                                        data-record-id={record.id} 
-                                        name={item.fieldName} 
-                                        label={item.label} 
-                                        value={item.value} 
-                                        maxlength={item.length}
-                                        message-when-too-long="Too many characters"
-                                        onchange={handleInputChange}>
-                                    </lightning-input>
-                                </template>
-                            </template>
-                        </div>
-                    </div>
                 </template>
             </div>
         </template>
