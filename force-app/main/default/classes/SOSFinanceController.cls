@@ -333,13 +333,13 @@ public class SOSFinanceController
     @AuraEnabled(cacheable=false)
     public static String updateSOSCase(String mtcode, String refer, String description, Boolean archived) {
         
-        updateSOSCase updateData = new updateSOSCase();
+        Map<String, Object> updateData = new Map<String, Object>();
         
         // Set the parameters
-        updateData.mtcode = mtcode;
-        updateData.refer = refer;
-        updateData.description = description;
-        updateData.archived = archived;
+        updateData.put('mtcode', mtcode);
+        updateData.put('ref', refer);
+        updateData.put('description', description);
+        updateData.put('archived', archived);
 
         // Prepare the HTTP request
         HttpRequest req = new HttpRequest();

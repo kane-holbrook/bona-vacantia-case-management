@@ -1,9 +1,11 @@
 import { LightningElement, api, track, wire } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
+import { refreshApex } from '@salesforce/apex';
 import { getRecord } from 'lightning/uiRecordApi';
 import { setRecordId } from 'c/sharedService';
 import getRecordTypeIdForRecord from '@salesforce/apex/LayoutController.getRecordTypeIdForRecord';
 import getRecordTypeDeveloperName from '@salesforce/apex/LayoutController.getRecordTypeDeveloperName';
+import getCaseDetailForBVCase from '@salesforce/apex/CaseDetailController.getCaseDetailForBVCase';
 
 const FIELDS = [
     'BV_Case__c.Name',
@@ -21,13 +23,46 @@ export default class CaseDetails extends NavigationMixin(LightningElement) {
     @track recordTypeDeveloperName;
     @track caseTypeName;
     @track caseData = {};
+    @track caseDetailData = {};
 
+    wiredCaseResult;
+    
+    connectedCallback() {
+        this.retrieveRecordTypeDeveloperName();
+        setRecordId(this.recordId);
+    
+        // Listen for the 'flowfinished' event
+        this.template.addEventListener('flowfinished', this.handleFlowFinished.bind(this));
+    }
+    
+    handleFlowFinished() {
+        // Refresh the Apex data using the stored wired result
+        refreshApex(this.wiredCaseResult);
+    }
+    
     @wire(getRecord, { recordId: '$recordId', fields: FIELDS })
-    wiredCase({ error, data }) {
+    wiredCase(result) {
+        this.wiredCaseResult = result; // Store the result for refreshApex
+        const { error, data } = result;
         if (data) {
             this.caseData = data.fields;
+            this.retrieveCaseDetail();
         } else if (error) {
             console.error('Error retrieving record', error);
+        }
+    }
+    async retrieveCaseDetail() {
+        try {
+            const result = await getCaseDetailForBVCase({ bvCaseId: this.recordId });
+            if (result) {
+                this.caseDetailData = result;
+                this.caseStatus = result.Open_Closed__c ? result.Open_Closed__c : 'No status available';
+            } else {
+                this.caseStatus = 'No case detail available';
+            }
+        } catch (error) {
+            console.error('Error retrieving Case_Detail__c', error);
+            this.caseStatus = 'Error retrieving case status';
         }
     }
 
@@ -109,11 +144,6 @@ export default class CaseDetails extends NavigationMixin(LightningElement) {
                     field1: this.caseNumber
                 };
         }
-    }
-
-    connectedCallback() {
-        this.retrieveRecordTypeDeveloperName();
-        setRecordId(this.recordId);
     }
 
     async retrieveRecordTypeDeveloperName() {

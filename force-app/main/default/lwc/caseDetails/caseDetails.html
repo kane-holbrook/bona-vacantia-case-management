@@ -20,6 +20,9 @@
                     </h2>
                 </div>
                 <div class="slds-no-flex slds-grid slds-col_bump-left">
+                    <div class="slds-m-right_small">
+                        <b>Status: </b><span style="font-weight: normal;">{caseStatus}</span>
+                    </div>
                     <lightning-button-group>
                         <lightning-button label="Send an Email" variant="neutral" onclick={handleSendAnEmail} title="Send an Email"></lightning-button>
                         <lightning-button-menu icon-name="utility:down" alternative-text="Show More" variant="border-filled" menu-alignment="right">
