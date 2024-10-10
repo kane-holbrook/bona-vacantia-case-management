@@ -5,7 +5,7 @@
         <name>Assign_Amount_Received</name>
         <label>Assign Amount Received</label>
         <locationX>50</locationX>
-        <locationY>674</locationY>
+        <locationY>782</locationY>
         <assignmentItems>
             <assignToReference>AmountReceived</assignToReference>
             <operator>Assign</operator>
@@ -13,6 +13,22 @@
                 <elementReference>Enter_amount_you_expect_to_pay_utility</elementReference>
             </value>
         </assignmentItems>
+    </assignments>
+    <assignments>
+        <name>Assign_Asset_Type</name>
+        <label>Assign Asset Type</label>
+        <locationX>50</locationX>
+        <locationY>566</locationY>
+        <assignmentItems>
+            <assignToReference>AssetType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>H1 Restoration payment</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Amount_expect_to_pay_utility</targetReference>
+        </connector>
     </assignments>
     <assignments>
         <name>Assign_payment_type</name>
@@ -23,7 +39,7 @@
             <assignToReference>PaymentType</assignToReference>
             <operator>Assign</operator>
             <value>
-                <stringValue>APE1</stringValue>
+                <stringValue>APC1</stringValue>
             </value>
         </assignmentItems>
         <connector>
@@ -39,18 +55,18 @@
             <assignToReference>AssignmentType</assignToReference>
             <operator>Assign</operator>
             <value>
-                <stringValue>EL1</stringValue>
+                <stringValue>CL3</stringValue>
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Amount_expect_to_pay_utility</targetReference>
+            <targetReference>Assign_Asset_Type</targetReference>
         </connector>
     </assignments>
     <assignments>
         <name>Copy_1_of_Assign_Amount_Received</name>
-        <label>Copy 1 of Assign Amount Received</label>
+        <label>Assign Amount Received</label>
         <locationX>314</locationX>
-        <locationY>782</locationY>
+        <locationY>890</locationY>
         <assignmentItems>
             <assignToReference>AmountReceived</assignToReference>
             <operator>Assign</operator>
@@ -73,6 +89,22 @@
         </assignmentItems>
         <connector>
             <targetReference>Liability_type_funeral</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Copy_2_of_Assign_Asset_Type</name>
+        <label>Assign Asset Type</label>
+        <locationX>314</locationX>
+        <locationY>674</locationY>
+        <assignmentItems>
+            <assignToReference>AssetType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>CL6 {!Enter_description_of_liability}</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Copy_1_of_Amount_expect_to_pay</targetReference>
         </connector>
     </assignments>
     <choices>
@@ -902,7 +934,7 @@
         <name>Amount_expect_to_pay_utility</name>
         <label>Amount expect to pay</label>
         <locationX>50</locationX>
-        <locationY>566</locationY>
+        <locationY>674</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -921,9 +953,9 @@
     </screens>
     <screens>
         <name>Copy_1_of_Amount_expect_to_pay</name>
-        <label>Copy 1 of Amount expect to pay</label>
+        <label>Amount expect to pay</label>
         <locationX>314</locationX>
-        <locationY>674</locationY>
+        <locationY>782</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -972,7 +1004,7 @@
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Copy_1_of_Amount_expect_to_pay</targetReference>
+            <targetReference>Copy_2_of_Assign_Asset_Type</targetReference>
         </connector>
         <fields>
             <name>Enter_description_of_liability</name>
@@ -991,7 +1023,7 @@
             <targetReference>Debt_Liability_Payment_type</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <variables>
         <name>AddressType</name>
         <dataType>String</dataType>

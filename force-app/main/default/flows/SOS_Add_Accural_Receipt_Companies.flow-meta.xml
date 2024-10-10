@@ -2,31 +2,15 @@
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>61.0</apiVersion>
     <assignments>
-        <name>Assign_Address</name>
-        <label>Assign Address</label>
-        <locationX>50</locationX>
-        <locationY>890</locationY>
-        <assignmentItems>
-            <assignToReference>AddressType</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Enter_name_of_asset_holder</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Amount_to_receive_land</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
         <name>Assign_Address_Property</name>
-        <label>Assign Address</label>
-        <locationX>314</locationX>
+        <label>Assign Details</label>
+        <locationX>754</locationX>
         <locationY>782</locationY>
         <assignmentItems>
             <assignToReference>AddressType</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>Address_line_1</elementReference>
+                <stringValue>E3 {!ChargeCase} over {!Address_line_1}</stringValue>
             </value>
         </assignmentItems>
         <connector>
@@ -36,8 +20,8 @@
     <assignments>
         <name>Assign_amount_received</name>
         <label>Assign amount received</label>
-        <locationX>50</locationX>
-        <locationY>1106</locationY>
+        <locationX>314</locationX>
+        <locationY>1298</locationY>
         <assignmentItems>
             <assignToReference>AmountReceived</assignToReference>
             <operator>Assign</operator>
@@ -47,15 +31,31 @@
         </assignmentItems>
     </assignments>
     <assignments>
+        <name>Assign_Asset_Holder</name>
+        <label>Assign Asset Holder</label>
+        <locationX>50</locationX>
+        <locationY>998</locationY>
+        <assignmentItems>
+            <assignToReference>AddressType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>H {!Enter_name_of_asset_holder}</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Amount_to_receive_land</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
         <name>Assign_Receipt</name>
         <label>Assign Receipt</label>
-        <locationX>1590</locationX>
+        <locationX>2074</locationX>
         <locationY>242</locationY>
         <assignmentItems>
             <assignToReference>ReceiptType</assignToReference>
             <operator>Assign</operator>
             <value>
-                <stringValue>ARE2</stringValue>
+                <stringValue>ARC2</stringValue>
             </value>
         </assignmentItems>
         <connector>
@@ -65,13 +65,13 @@
     <assignments>
         <name>Assign_Type</name>
         <label>Assign Type</label>
-        <locationX>50</locationX>
+        <locationX>314</locationX>
         <locationY>458</locationY>
         <assignmentItems>
             <assignToReference>AssignmentType</assignToReference>
             <operator>Assign</operator>
             <value>
-                <stringValue>EA2</stringValue>
+                <stringValue>CA1</stringValue>
             </value>
         </assignmentItems>
         <connector>
@@ -81,13 +81,13 @@
     <assignments>
         <name>Assign_Type_Stocks</name>
         <label>Assign Type</label>
-        <locationX>1106</locationX>
+        <locationX>1678</locationX>
         <locationY>458</locationY>
         <assignmentItems>
             <assignToReference>AssignmentType</assignToReference>
             <operator>Assign</operator>
             <value>
-                <stringValue>EA4</stringValue>
+                <stringValue>CA4</stringValue>
             </value>
         </assignmentItems>
         <connector>
@@ -97,13 +97,13 @@
     <assignments>
         <name>Assignment_10</name>
         <label>Assign Land Type</label>
-        <locationX>50</locationX>
+        <locationX>314</locationX>
         <locationY>674</locationY>
         <assignmentItems>
             <assignToReference>AssetType</assignToReference>
             <operator>Assign</operator>
             <value>
-                <stringValue>{!Select_type} land</stringValue>
+                <elementReference>Select_type</elementReference>
             </value>
         </assignmentItems>
         <connector>
@@ -111,25 +111,9 @@
         </connector>
     </assignments>
     <assignments>
-        <name>Copy_1_of_Assign_Address</name>
-        <label>Copy 1 of Assign Address</label>
-        <locationX>2074</locationX>
-        <locationY>674</locationY>
-        <assignmentItems>
-            <assignToReference>AddressType</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Enter_name_of_asset_holder</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Copy_1_of_Amount_to_receive</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
         <name>Copy_1_of_Assign_amount_received</name>
         <label>Assign amount received</label>
-        <locationX>314</locationX>
+        <locationX>754</locationX>
         <locationY>998</locationY>
         <assignmentItems>
             <assignToReference>AmountReceived</assignToReference>
@@ -140,15 +124,31 @@
         </assignmentItems>
     </assignments>
     <assignments>
+        <name>Copy_1_of_Assign_Asset_Holder</name>
+        <label>Assign Asset Holder</label>
+        <locationX>314</locationX>
+        <locationY>998</locationY>
+        <assignmentItems>
+            <assignToReference>AddressType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>H2 {!Enter_name_of_asset_holder}</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Amount_to_receive_land</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
         <name>Copy_1_of_Assign_Asset_Type</name>
-        <label>Copy 1 of Assign Asset Type</label>
-        <locationX>1546</locationX>
-        <locationY>674</locationY>
+        <label>Assign Asset Type</label>
+        <locationX>2250</locationX>
+        <locationY>782</locationY>
         <assignmentItems>
             <assignToReference>AssetType</assignToReference>
             <operator>Assign</operator>
             <value>
-                <stringValue>{!No_of_Shares} Shares in {!Company}</stringValue>
+                <stringValue>E5 {!Address_Desc}</stringValue>
             </value>
         </assignmentItems>
         <connector>
@@ -158,13 +158,13 @@
     <assignments>
         <name>Copy_1_of_Assign_Type</name>
         <label>Assign Type</label>
-        <locationX>314</locationX>
+        <locationX>754</locationX>
         <locationY>458</locationY>
         <assignmentItems>
             <assignToReference>AssignmentType</assignToReference>
             <operator>Assign</operator>
             <value>
-                <stringValue>EA2</stringValue>
+                <stringValue>CA4</stringValue>
             </value>
         </assignmentItems>
         <connector>
@@ -174,8 +174,8 @@
     <assignments>
         <name>Copy_2_of_Assign_amount_received</name>
         <label>Assign amount received</label>
-        <locationX>578</locationX>
-        <locationY>890</locationY>
+        <locationX>1018</locationX>
+        <locationY>998</locationY>
         <assignmentItems>
             <assignToReference>AmountReceived</assignToReference>
             <operator>Assign</operator>
@@ -185,26 +185,58 @@
         </assignmentItems>
     </assignments>
     <assignments>
+        <name>Copy_2_of_Assign_Asset_Type</name>
+        <label>Assign Asset Type</label>
+        <locationX>1810</locationX>
+        <locationY>998</locationY>
+        <assignmentItems>
+            <assignToReference>AssetType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>E3 Cash entitlement from buy out</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Amount_to_receive_stocks</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Copy_2_of_Assign_Details</name>
+        <label>Assign Details</label>
+        <locationX>1018</locationX>
+        <locationY>782</locationY>
+        <assignmentItems>
+            <assignToReference>AddressType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>E3 Surplus for {!ChargeCase}</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Amount_to_receive_cash</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
         <name>Copy_2_of_Assign_Type</name>
         <label>Assign Type</label>
-        <locationX>578</locationX>
+        <locationX>1018</locationX>
         <locationY>458</locationY>
         <assignmentItems>
             <assignToReference>AssignmentType</assignToReference>
             <operator>Assign</operator>
             <value>
-                <stringValue>EA3</stringValue>
+                <stringValue>CA4</stringValue>
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Copy_2_of_Choose_a_charge</targetReference>
+            <targetReference>Copy_6_of_Choose_a_charge</targetReference>
         </connector>
     </assignments>
     <assignments>
         <name>Copy_3_of_Assign_amount_received</name>
         <label>Assign amount received</label>
-        <locationX>1810</locationX>
-        <locationY>674</locationY>
+        <locationX>2514</locationX>
+        <locationY>782</locationY>
         <assignmentItems>
             <assignToReference>AmountReceived</assignToReference>
             <operator>Assign</operator>
@@ -214,15 +246,31 @@
         </assignmentItems>
     </assignments>
     <assignments>
+        <name>Copy_3_of_Assign_Asset_Type</name>
+        <label>Assign Asset Type</label>
+        <locationX>1546</locationX>
+        <locationY>998</locationY>
+        <assignmentItems>
+            <assignToReference>AssetType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>E3 Divdend from {!Registar} shares</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Amount_to_receive_stocks</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
         <name>Copy_3_of_Assign_Type</name>
-        <label>Copy 3 of Assign Type</label>
-        <locationX>2074</locationX>
+        <label>Assign Type</label>
+        <locationX>2778</locationX>
         <locationY>458</locationY>
         <assignmentItems>
             <assignToReference>AssignmentType</assignToReference>
             <operator>Assign</operator>
             <value>
-                <stringValue>EA5</stringValue>
+                <stringValue>CA8</stringValue>
             </value>
         </assignmentItems>
         <connector>
@@ -232,7 +280,7 @@
     <assignments>
         <name>Copy_4_of_Assign_amount_received</name>
         <label>Assign amount received</label>
-        <locationX>1106</locationX>
+        <locationX>1678</locationX>
         <locationY>1298</locationY>
         <assignmentItems>
             <assignToReference>AmountReceived</assignToReference>
@@ -243,26 +291,42 @@
         </assignmentItems>
     </assignments>
     <assignments>
+        <name>Copy_4_of_Assign_Asset_Type</name>
+        <label>Assign Asset Type</label>
+        <locationX>2778</locationX>
+        <locationY>674</locationY>
+        <assignmentItems>
+            <assignToReference>AssetType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>E7 {!Enter_brief_description_of_asset}</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Copy_1_of_Amount_to_receive</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
         <name>Copy_4_of_Assign_Type</name>
         <label>Assign Type</label>
-        <locationX>1546</locationX>
+        <locationX>2250</locationX>
         <locationY>458</locationY>
         <assignmentItems>
             <assignToReference>AssignmentType</assignToReference>
             <operator>Assign</operator>
             <value>
-                <stringValue>EA5</stringValue>
+                <stringValue>CA6</stringValue>
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Property_Land</targetReference>
+            <targetReference>Choose_Property_Screen</targetReference>
         </connector>
     </assignments>
     <assignments>
         <name>Copy_5_of_Assign_amount_received</name>
         <label>Assign amount received</label>
-        <locationX>1546</locationX>
-        <locationY>890</locationY>
+        <locationX>2250</locationX>
+        <locationY>998</locationY>
         <assignmentItems>
             <assignToReference>AmountReceived</assignToReference>
             <operator>Assign</operator>
@@ -272,15 +336,15 @@
         </assignmentItems>
     </assignments>
     <assignments>
-        <name>Copy_5_of_Assign_Type</name>
-        <label>Assign Type</label>
-        <locationX>1810</locationX>
-        <locationY>458</locationY>
+        <name>Copy_5_of_Assign_Asset_Type</name>
+        <label>Assign Asset Type</label>
+        <locationX>2514</locationX>
+        <locationY>566</locationY>
         <assignmentItems>
-            <assignToReference>AssignmentType</assignToReference>
+            <assignToReference>AssetType</assignToReference>
             <operator>Assign</operator>
             <value>
-                <stringValue>EA5</stringValue>
+                <stringValue>E6 Pension Scheme</stringValue>
             </value>
         </assignmentItems>
         <connector>
@@ -288,9 +352,25 @@
         </connector>
     </assignments>
     <assignments>
+        <name>Copy_5_of_Assign_Type</name>
+        <label>Assign Type</label>
+        <locationX>2514</locationX>
+        <locationY>458</locationY>
+        <assignmentItems>
+            <assignToReference>AssignmentType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>CA7</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Copy_5_of_Assign_Asset_Type</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
         <name>Copy_6_of_Assign_amount_received</name>
-        <label>Copy 6 of Assign amount received</label>
-        <locationX>2074</locationX>
+        <label>Assign amount received</label>
+        <locationX>2778</locationX>
         <locationY>890</locationY>
         <assignmentItems>
             <assignToReference>AmountReceived</assignToReference>
@@ -301,15 +381,22 @@
         </assignmentItems>
     </assignments>
     <assignments>
-        <name>Copy_6_of_Assign_Type</name>
-        <label>Copy 6 of Assign Type</label>
-        <locationX>2338</locationX>
-        <locationY>458</locationY>
+        <name>Copy_6_of_Assign_Asset_Type</name>
+        <label>Assign Asset Type</label>
+        <locationX>3042</locationX>
+        <locationY>674</locationY>
         <assignmentItems>
-            <assignToReference>AssignmentType</assignToReference>
+            <assignToReference>CaseType</assignToReference>
             <operator>Assign</operator>
             <value>
-                <stringValue>EA5</stringValue>
+                <elementReference>CaseTypeFormula</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>AssetType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>{!CaseType} Costs</stringValue>
             </value>
         </assignmentItems>
         <connector>
@@ -317,10 +404,26 @@
         </connector>
     </assignments>
     <assignments>
+        <name>Copy_6_of_Assign_Type</name>
+        <label>Assign Type</label>
+        <locationX>3042</locationX>
+        <locationY>458</locationY>
+        <assignmentItems>
+            <assignToReference>AssignmentType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>CA9</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Get_BV_Case</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
         <name>Copy_7_of_Assign_amount_received</name>
-        <label>Copy 7 of Assign amount received</label>
-        <locationX>2338</locationX>
-        <locationY>674</locationY>
+        <label>Assign amount received</label>
+        <locationX>3042</locationX>
+        <locationY>890</locationY>
         <assignmentItems>
             <assignToReference>AmountReceived</assignToReference>
             <operator>Assign</operator>
@@ -330,15 +433,22 @@
         </assignmentItems>
     </assignments>
     <assignments>
-        <name>Copy_7_of_Assign_Type</name>
-        <label>Copy 7 of Assign Type</label>
-        <locationX>2602</locationX>
-        <locationY>458</locationY>
+        <name>Copy_7_of_Assign_Asset_Type</name>
+        <label>Assign Asset Type</label>
+        <locationX>3306</locationX>
+        <locationY>674</locationY>
         <assignmentItems>
-            <assignToReference>AssignmentType</assignToReference>
+            <assignToReference>CaseType</assignToReference>
             <operator>Assign</operator>
             <value>
-                <stringValue>EA5</stringValue>
+                <elementReference>CaseTypeFormula</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>AssetType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>{!CaseType} VAT</stringValue>
             </value>
         </assignmentItems>
         <connector>
@@ -346,10 +456,26 @@
         </connector>
     </assignments>
     <assignments>
+        <name>Copy_7_of_Assign_Type</name>
+        <label>Assign Type</label>
+        <locationX>3306</locationX>
+        <locationY>458</locationY>
+        <assignmentItems>
+            <assignToReference>AssignmentType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>CA10</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Copy_1_of_Get_BV_Case</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
         <name>Copy_8_of_Assign_amount_received</name>
-        <label>Copy 8 of Assign amount received</label>
-        <locationX>2602</locationX>
-        <locationY>674</locationY>
+        <label>Assign amount received</label>
+        <locationX>3306</locationX>
+        <locationY>890</locationY>
         <assignmentItems>
             <assignToReference>AmountReceived</assignToReference>
             <operator>Assign</operator>
@@ -361,13 +487,13 @@
     <assignments>
         <name>Copy_8_of_Assign_Asset_Type</name>
         <label>Assign Asset Type</label>
-        <locationX>1106</locationX>
-        <locationY>1082</locationY>
+        <locationX>1282</locationX>
+        <locationY>998</locationY>
         <assignmentItems>
             <assignToReference>AssetType</assignToReference>
             <operator>Assign</operator>
             <value>
-                <stringValue>{!No_of_Shares} Shares in {!Company}</stringValue>
+                <stringValue>E3 {!No_of_Shares} {!Registar}</stringValue>
             </value>
         </assignmentItems>
         <connector>
@@ -376,25 +502,25 @@
     </assignments>
     <assignments>
         <name>Copy_8_of_Assign_Type</name>
-        <label>Copy 8 of Assign Type</label>
-        <locationX>2866</locationX>
+        <label>Assign Type</label>
+        <locationX>3570</locationX>
         <locationY>458</locationY>
         <assignmentItems>
             <assignToReference>AssignmentType</assignToReference>
             <operator>Assign</operator>
             <value>
-                <stringValue>EA5</stringValue>
+                <stringValue>CA9</stringValue>
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Copy_4_of_Amount_to_receive</targetReference>
+            <targetReference>Copy_2_of_Get_BV_Case</targetReference>
         </connector>
     </assignments>
     <assignments>
         <name>Copy_9_of_Assign_amount_received</name>
-        <label>Copy 9 of Assign amount received</label>
-        <locationX>2866</locationX>
-        <locationY>674</locationY>
+        <label>Assign amount received</label>
+        <locationX>3570</locationX>
+        <locationY>890</locationY>
         <assignmentItems>
             <assignToReference>AmountReceived</assignToReference>
             <operator>Assign</operator>
@@ -402,6 +528,29 @@
                 <elementReference>Enter_amount_you_expect_to_receive_personal_effects</elementReference>
             </value>
         </assignmentItems>
+    </assignments>
+    <assignments>
+        <name>Copy_9_of_Assign_Asset_Type</name>
+        <label>Assign Asset Type</label>
+        <locationX>3570</locationX>
+        <locationY>674</locationY>
+        <assignmentItems>
+            <assignToReference>CaseType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>CaseTypeFormula</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>AssetType</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>{!CaseType} Disbursements</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Copy_4_of_Amount_to_receive</targetReference>
+        </connector>
     </assignments>
     <choices>
         <name>Accommodation_Payments</name>
@@ -1254,9 +1403,49 @@
         </value>
     </choices>
     <decisions>
+        <name>If_normal_or_complex</name>
+        <label>If normal or complex</label>
+        <locationX>314</locationX>
+        <locationY>890</locationY>
+        <defaultConnector>
+            <targetReference>Amount_to_receive_land</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Is_Normal</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Select_type</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Normal_Cash_Balance</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Assign_Asset_Holder</targetReference>
+            </connector>
+            <label>Is Normal</label>
+        </rules>
+        <rules>
+            <name>Is_Complex</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Select_type</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Complex_Cash_Balance</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Copy_1_of_Assign_Asset_Holder</targetReference>
+            </connector>
+            <label>Is Complex</label>
+        </rules>
+    </decisions>
+    <decisions>
         <name>Receipt_asset_type_Decision</name>
         <label>Receipt/asset type Decision</label>
-        <locationX>1590</locationX>
+        <locationX>2074</locationX>
         <locationY>350</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
@@ -1413,10 +1602,10 @@
     <decisions>
         <name>Stocks_asset_type_decision</name>
         <label>Stocks asset type decision</label>
-        <locationX>1106</locationX>
-        <locationY>674</locationY>
+        <locationX>1678</locationX>
+        <locationY>890</locationY>
         <defaultConnector>
-            <targetReference>Choose_company</targetReference>
+            <targetReference>Amount_to_receive_stocks</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
@@ -1430,7 +1619,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Choose_company</targetReference>
+                <targetReference>Copy_8_of_Assign_Asset_Type</targetReference>
             </connector>
             <label>Shares</label>
         </rules>
@@ -1445,7 +1634,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Choose_company</targetReference>
+                <targetReference>Copy_3_of_Assign_Asset_Type</targetReference>
             </connector>
             <label>Dividend</label>
         </rules>
@@ -1460,7 +1649,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Choose_company</targetReference>
+                <targetReference>Copy_2_of_Assign_Asset_Type</targetReference>
             </connector>
             <label>Cash Entitlement</label>
         </rules>
@@ -1489,6 +1678,25 @@
         <valueField>Id</valueField>
     </dynamicChoiceSets>
     <dynamicChoiceSets>
+        <name>BVCaseRecordChoiceSet</name>
+        <dataType>String</dataType>
+        <displayField>Name</displayField>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>caseID</elementReference>
+            </value>
+        </filters>
+        <object>BV_Case__c</object>
+        <outputAssignments>
+            <assignToReference>CaseType</assignToReference>
+            <field>Case_Type__c</field>
+        </outputAssignments>
+        <valueField>Id</valueField>
+    </dynamicChoiceSets>
+    <dynamicChoiceSets>
         <name>CashRecordChoiceSet</name>
         <dataType>String</dataType>
         <displayField>Holder__c</displayField>
@@ -1508,6 +1716,29 @@
         <outputAssignments>
             <assignToReference>CashRef</assignToReference>
             <field>Reference__c</field>
+        </outputAssignments>
+        <valueField>Id</valueField>
+    </dynamicChoiceSets>
+    <dynamicChoiceSets>
+        <name>ChargeRestrictionRecordChoiceSet</name>
+        <dataType>String</dataType>
+        <displayField>Charge_Case__c</displayField>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>BV_Case__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>caseID</elementReference>
+            </value>
+        </filters>
+        <object>AssetLiability__c</object>
+        <outputAssignments>
+            <assignToReference>ChargeAddressLine1</assignToReference>
+            <field>Address_Line_1__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>ChargeCase</assignToReference>
+            <field>Charge_Case__c</field>
         </outputAssignments>
         <valueField>Id</valueField>
     </dynamicChoiceSets>
@@ -1647,6 +1878,11 @@
     </dynamicChoiceSets>
     <environments>Default</environments>
     <formulas>
+        <name>CaseTypeFormula</name>
+        <dataType>String</dataType>
+        <expression>LEFT({!CaseType}, 3)</expression>
+    </formulas>
+    <formulas>
         <name>NarrativeFormula</name>
         <dataType>String</dataType>
         <expression>{!AssignmentType} &amp; &quot; &quot; &amp; {!AssetType} &amp; &quot; &quot; &amp; {!AddressType}</expression>
@@ -1672,11 +1908,80 @@
         </value>
     </processMetadataValues>
     <processType>Flow</processType>
+    <recordLookups>
+        <name>Copy_1_of_Get_BV_Case</name>
+        <label>Get BV Case</label>
+        <locationX>3306</locationX>
+        <locationY>566</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Copy_7_of_Assign_Asset_Type</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>caseID</elementReference>
+            </value>
+        </filters>
+        <object>BV_Case__c</object>
+        <outputAssignments>
+            <assignToReference>CaseType</assignToReference>
+            <field>Case_Type__c</field>
+        </outputAssignments>
+    </recordLookups>
+    <recordLookups>
+        <name>Copy_2_of_Get_BV_Case</name>
+        <label>Get BV Case</label>
+        <locationX>3570</locationX>
+        <locationY>566</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Copy_9_of_Assign_Asset_Type</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>caseID</elementReference>
+            </value>
+        </filters>
+        <object>BV_Case__c</object>
+        <outputAssignments>
+            <assignToReference>CaseType</assignToReference>
+            <field>Case_Type__c</field>
+        </outputAssignments>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_BV_Case</name>
+        <label>Get BV Case</label>
+        <locationX>3042</locationX>
+        <locationY>566</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Copy_6_of_Assign_Asset_Type</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>caseID</elementReference>
+            </value>
+        </filters>
+        <object>BV_Case__c</object>
+        <outputAssignments>
+            <assignToReference>CaseType</assignToReference>
+            <field>Case_Type__c</field>
+        </outputAssignments>
+    </recordLookups>
     <screens>
         <name>Amount_to_receive_cash</name>
         <label>Amount to receive</label>
-        <locationX>578</locationX>
-        <locationY>782</locationY>
+        <locationX>1018</locationX>
+        <locationY>890</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1696,8 +2001,8 @@
     <screens>
         <name>Amount_to_receive_land</name>
         <label>Amount to receive</label>
-        <locationX>50</locationX>
-        <locationY>998</locationY>
+        <locationX>314</locationX>
+        <locationY>1190</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1717,8 +2022,8 @@
     <screens>
         <name>Amount_to_receive_personal_effects</name>
         <label>Amount to receive</label>
-        <locationX>1810</locationX>
-        <locationY>566</locationY>
+        <locationX>2514</locationX>
+        <locationY>674</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1738,7 +2043,7 @@
     <screens>
         <name>Amount_to_receive_property</name>
         <label>Amount to receive</label>
-        <locationX>314</locationX>
+        <locationX>754</locationX>
         <locationY>890</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -1759,7 +2064,7 @@
     <screens>
         <name>Amount_to_receive_stocks</name>
         <label>Amount to receive</label>
-        <locationX>1106</locationX>
+        <locationX>1678</locationX>
         <locationY>1190</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -1780,8 +2085,8 @@
     <screens>
         <name>Amount_to_receive_vehicle</name>
         <label>Amount to receive</label>
-        <locationX>1546</locationX>
-        <locationY>782</locationY>
+        <locationX>2250</locationX>
+        <locationY>890</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1801,13 +2106,13 @@
     <screens>
         <name>asset_type_stocks</name>
         <label>Asset type</label>
-        <locationX>1106</locationX>
+        <locationX>1678</locationX>
         <locationY>566</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Stocks_asset_type_decision</targetReference>
+            <targetReference>Choose_company</targetReference>
         </connector>
         <fields>
             <name>Select_asset_type_share</name>
@@ -1825,7 +2130,7 @@
     <screens>
         <name>Cash_balance_type</name>
         <label>Cash balance type</label>
-        <locationX>50</locationX>
+        <locationX>314</locationX>
         <locationY>566</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -1848,7 +2153,7 @@
     <screens>
         <name>Charge_details</name>
         <label>Charge details</label>
-        <locationX>314</locationX>
+        <locationX>754</locationX>
         <locationY>674</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -1860,7 +2165,7 @@
             <name>Address_line_1</name>
             <dataType>String</dataType>
             <defaultValue>
-                <elementReference>PropertyAddressLine1</elementReference>
+                <elementReference>ChargeAddressLine1</elementReference>
             </defaultValue>
             <fieldText>Address line 1</fieldText>
             <fieldType>InputField</fieldType>
@@ -1930,7 +2235,7 @@
     <screens>
         <name>Choose_a_charge_screen</name>
         <label>Choose a charge</label>
-        <locationX>314</locationX>
+        <locationX>754</locationX>
         <locationY>566</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -1940,7 +2245,7 @@
         </connector>
         <fields>
             <name>Choose_a_charge</name>
-            <choiceReferences>PropertyRecordChoiceSet</choiceReferences>
+            <choiceReferences>ChargeRestrictionRecordChoiceSet</choiceReferences>
             <extensionName>flowruntime:choiceLookup</extensionName>
             <fieldText>Choose a charge</fieldText>
             <fieldType>ComponentChoice</fieldType>
@@ -1953,8 +2258,8 @@
     <screens>
         <name>Choose_company</name>
         <label>Choose a registrar</label>
-        <locationX>1106</locationX>
-        <locationY>866</locationY>
+        <locationX>1678</locationX>
+        <locationY>674</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1974,9 +2279,32 @@
         <showHeader>true</showHeader>
     </screens>
     <screens>
+        <name>Choose_Property_Screen</name>
+        <label>Choose Property Screen</label>
+        <locationX>2250</locationX>
+        <locationY>566</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Property_Land</targetReference>
+        </connector>
+        <fields>
+            <name>Choose_Property</name>
+            <choiceReferences>PropertyRecordChoiceSet</choiceReferences>
+            <extensionName>flowruntime:choiceLookup</extensionName>
+            <fieldText>Choose a property</fieldText>
+            <fieldType>ComponentChoice</fieldType>
+            <isRequired>false</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
         <name>Copy_1_of_Amount_to_receive</name>
-        <label>Copy 1 of Amount to receive</label>
-        <locationX>2074</locationX>
+        <label>Amount to receive</label>
+        <locationX>2778</locationX>
         <locationY>782</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -1997,19 +2325,19 @@
     <screens>
         <name>Copy_1_of_Charge_details</name>
         <label>Copy 1 of Charge details</label>
-        <locationX>578</locationX>
+        <locationX>1018</locationX>
         <locationY>674</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Amount_to_receive_cash</targetReference>
+            <targetReference>Copy_2_of_Assign_Details</targetReference>
         </connector>
         <fields>
             <name>Copy_1_of_Address_line_1</name>
             <dataType>String</dataType>
             <defaultValue>
-                <elementReference>PropertyAddressLine1</elementReference>
+                <elementReference>ChargeAddressLine1</elementReference>
             </defaultValue>
             <fieldText>Address line 1</fieldText>
             <fieldType>InputField</fieldType>
@@ -2079,16 +2407,16 @@
     <screens>
         <name>Copy_1_of_Name_of_asset_holder_input</name>
         <label>Description of asset</label>
-        <locationX>2074</locationX>
+        <locationX>2778</locationX>
         <locationY>566</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Copy_1_of_Assign_Address</targetReference>
+            <targetReference>Copy_4_of_Assign_Asset_Type</targetReference>
         </connector>
         <fields>
-            <name>Copy_1_of_Enter_name_of_asset_holder</name>
+            <name>Enter_brief_description_of_asset</name>
             <dataType>String</dataType>
             <fieldText>Enter brief description of asset</fieldText>
             <fieldType>InputField</fieldType>
@@ -2099,9 +2427,9 @@
     </screens>
     <screens>
         <name>Copy_2_of_Amount_to_receive</name>
-        <label>Copy 2 of Amount to receive</label>
-        <locationX>2338</locationX>
-        <locationY>566</locationY>
+        <label>Amount to receive</label>
+        <locationX>3042</locationX>
+        <locationY>782</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -2119,33 +2447,10 @@
         <showHeader>true</showHeader>
     </screens>
     <screens>
-        <name>Copy_2_of_Choose_a_charge</name>
-        <label>Copy 2 of Choose a charge</label>
-        <locationX>578</locationX>
-        <locationY>566</locationY>
-        <allowBack>true</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
-        <connector>
-            <targetReference>Copy_1_of_Charge_details</targetReference>
-        </connector>
-        <fields>
-            <name>Copy_1_of_Choose_a_charge</name>
-            <choiceReferences>PropertyRecordChoiceSet</choiceReferences>
-            <extensionName>flowruntime:choiceLookup</extensionName>
-            <fieldText>Choose a charge</fieldText>
-            <fieldType>ComponentChoice</fieldType>
-            <isRequired>false</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-        </fields>
-        <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
-    </screens>
-    <screens>
         <name>Copy_3_of_Amount_to_receive</name>
-        <label>Copy 3 of Amount to receive</label>
-        <locationX>2602</locationX>
-        <locationY>566</locationY>
+        <label>Amount to receive</label>
+        <locationX>3306</locationX>
+        <locationY>782</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -2164,9 +2469,9 @@
     </screens>
     <screens>
         <name>Copy_4_of_Amount_to_receive</name>
-        <label>Copy 4 of Amount to receive</label>
-        <locationX>2866</locationX>
-        <locationY>566</locationY>
+        <label>Amount to receive</label>
+        <locationX>3570</locationX>
+        <locationY>782</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -2184,15 +2489,38 @@
         <showHeader>true</showHeader>
     </screens>
     <screens>
+        <name>Copy_6_of_Choose_a_charge</name>
+        <label>Choose a charge</label>
+        <locationX>1018</locationX>
+        <locationY>566</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Copy_1_of_Charge_details</targetReference>
+        </connector>
+        <fields>
+            <name>Copy_5_of_Choose_a_charge</name>
+            <choiceReferences>ChargeRestrictionRecordChoiceSet</choiceReferences>
+            <extensionName>flowruntime:choiceLookup</extensionName>
+            <fieldText>Choose a charge</fieldText>
+            <fieldType>ComponentChoice</fieldType>
+            <isRequired>false</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
         <name>Name_of_asset_holder_input</name>
         <label>Name of asset holder input</label>
-        <locationX>50</locationX>
+        <locationX>314</locationX>
         <locationY>782</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Assign_Address</targetReference>
+            <targetReference>If_normal_or_complex</targetReference>
         </connector>
         <fields>
             <name>Enter_name_of_asset_holder</name>
@@ -2207,8 +2535,8 @@
     <screens>
         <name>Property_Land</name>
         <label>Property/Land</label>
-        <locationX>1546</locationX>
-        <locationY>566</locationY>
+        <locationX>2250</locationX>
+        <locationY>674</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -2224,6 +2552,9 @@
                 <fields>
                     <name>Address_Desc</name>
                     <dataType>String</dataType>
+                    <defaultValue>
+                        <elementReference>PropertyAddressLine1</elementReference>
+                    </defaultValue>
                     <fieldText>Address/Desc</fieldText>
                     <fieldType>InputField</fieldType>
                     <isRequired>false</isRequired>
@@ -2315,7 +2646,7 @@
     <screens>
         <name>Receipt_asset_type</name>
         <label>Receipt/asset type</label>
-        <locationX>1590</locationX>
+        <locationX>2074</locationX>
         <locationY>134</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -2346,13 +2677,13 @@
     <screens>
         <name>Stocks_Shares</name>
         <label>Stocks/Shares</label>
-        <locationX>1106</locationX>
-        <locationY>974</locationY>
+        <locationX>1678</locationX>
+        <locationY>782</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Copy_8_of_Assign_Asset_Type</targetReference>
+            <targetReference>Stocks_asset_type_decision</targetReference>
         </connector>
         <fields>
             <name>Stocks_Shares_Section1</name>
@@ -2504,13 +2835,13 @@
         <showHeader>true</showHeader>
     </screens>
     <start>
-        <locationX>1464</locationX>
+        <locationX>1948</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Receipt_asset_type</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <variables>
         <name>AddressType</name>
         <dataType>String</dataType>
@@ -2561,6 +2892,13 @@
         <isOutput>false</isOutput>
     </variables>
     <variables>
+        <name>CaseType</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
         <name>CashHolder</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
@@ -2569,6 +2907,20 @@
     </variables>
     <variables>
         <name>CashRef</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>ChargeAddressLine1</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>ChargeCase</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
