@@ -1,6 +1,8 @@
 import { LightningElement, api } from 'lwc';
 import { FlowNavigationNextEvent } from 'lightning/flowSupport';
 import createAccrual from '@salesforce/apex/SOSFinanceController.createAccrual';
+import getRecordTypeIdForRecord from '@salesforce/apex/LayoutController.getRecordTypeIdForRecord';
+import getRecordTypeDeveloperName from '@salesforce/apex/LayoutController.getRecordTypeDeveloperName';
 
 export default class SosCreateAccrual extends LightningElement {
     @api caseNumber;
@@ -14,9 +16,31 @@ export default class SosCreateAccrual extends LightningElement {
     isReceiptFlow = true;
     isFlowRendered = false;
     flowInputs;
+    recordTypeDeveloperName;
+
+    connectedCallback() {
+        this.retrieveRecordTypeDeveloperName();
+    }
+
+    async retrieveRecordTypeDeveloperName() {
+        try {
+            const recordTypeId = await getRecordTypeIdForRecord({ recordId: this.caseId });
+            this.recordTypeDeveloperName = await getRecordTypeDeveloperName({ recordTypeId });
+            console.log('recordTypeDeveloperName', this.recordTypeDeveloperName);
+            console.log('this.caseId', this.caseId);
+            console.log('recordTypeId', recordTypeId);
+        } catch (error) {
+            console.error('Error retrieving record type developer name:', error);
+        }
+    }
 
     get selectedFlow() {
-        return this.selectedAccrualType === 'Receipt' ? 'SOS_Add_Accural_Receipt' : 'SOS_Add_Accural_Payment';
+        if (this.recordTypeDeveloperName === 'ESTA') {
+            return this.selectedAccrualType === 'Receipt' ? 'SOS_Add_Accural_Receipt' : 'SOS_Add_Accural_Payment';
+        } else if (this.recordTypeDeveloperName === 'COMP') {
+            return this.selectedAccrualType === 'Receipt' ? 'SOS_Add_Accural_Receipt_Companies' : 'SOS_Add_Accural_Payment_Companies';
+        }
+        return '';
     }
 
     openModal() {

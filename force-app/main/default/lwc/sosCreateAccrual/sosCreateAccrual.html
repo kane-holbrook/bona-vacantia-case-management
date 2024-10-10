@@ -11,19 +11,10 @@
     </template>
 
     <template if:true={isFlowRendered}>
-        <template if:true={isReceiptFlow}>
-            <lightning-flow 
-                flow-api-name="SOS_Add_Accural_Receipt" 
-                onstatuschange={handleFlowStatusChange} 
-                flow-input-variables={flowInputs}>
-            </lightning-flow>
-        </template>
-        <template if:false={isReceiptFlow}>
-            <lightning-flow 
-                flow-api-name="SOS_Add_Accural_Payment" 
-                onstatuschange={handleFlowStatusChange} 
-                flow-input-variables={flowInputs}>
-            </lightning-flow>
-        </template>
+        <lightning-flow 
+            flow-api-name={selectedFlow}
+            onstatuschange={handleFlowStatusChange} 
+            flow-input-variables={flowInputs}>
+        </lightning-flow>
     </template>
 </template>
