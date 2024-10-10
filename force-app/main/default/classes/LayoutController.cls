@@ -16,7 +16,7 @@ public with sharing class LayoutController {
             return null;
         }
         System.debug('Full Layout: ' + res.getBody());
-    
+        
         // Get the headers from compact layout using UI API
         String headerLayoutUrl = '/services/data/v59.0/ui-api/layout/' + objectApiName + '?recordTypeId=' + recordTypeId + '&layoutType=Compact';
         HttpRequest req2 = new HttpRequest();
@@ -34,19 +34,18 @@ public with sharing class LayoutController {
         // Parse the layout metadata
         Map<String, Object> layoutMetadata = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
         Map<String, Object> headingMetadata = (Map<String, Object>) JSON.deserializeUntyped(res2.getBody());
-    
-        //Merge heading fields with the main layout metadata
+        
+        // Merge heading fields with the main layout metadata
         List<Object> layoutSections = (List<Object>) layoutMetadata.get('sections');
         List<Object> tableHeaders = (List<Object>) headingMetadata.get('sections');
-    
-        for(Integer i = 0; i < tableHeaders.size(); i++){
-            //tableHeaders should only ever have one section
+        
+        for (Integer i = 0; i < tableHeaders.size(); i++) {
             layoutSections.add(0, tableHeaders[i]);
         }
-    
+        
         layoutMetadata.put('sections', layoutSections);
         System.debug('Combined layout: ' + JSON.serialize(layoutMetadata));
-    
+        
         // Extract apiName fields from layout metadata
         Set<String> fieldApiNames = new Set<String>();
         
@@ -91,12 +90,13 @@ public with sharing class LayoutController {
                 }
             }
         }
-
+    
         if (objectApiName == 'BV_Case__c') {
             recordTypeId = getRecordTypeIdForRecord(recordId);
         }
         
         // Perform SOQL query to fetch field values
+        List<SObject> records = new List<SObject>();
         if (!fieldApiNames.isEmpty()) {
             String soql;
             if (objectApiName == 'BV_Case__c') {
@@ -105,7 +105,7 @@ public with sharing class LayoutController {
                 soql = 'SELECT ' + String.join(new List<String>(fieldApiNames), ', ') + ' FROM ' + objectApiName + ' WHERE BV_Case__c = :recordId AND RecordTypeId = :recordTypeId ORDER BY CreatedDate ASC';
             }
             System.debug('SOQL: ' + soql);
-            List<SObject> records = Database.query(soql);
+            records = Database.query(soql);
             
             // Merge the field values with layout metadata
             layoutMetadata.put('recordData', records);
@@ -121,11 +121,31 @@ public with sharing class LayoutController {
                 fieldDataTypes.put(fieldDef.QualifiedApiName, fieldDef.DataType);
             }
         }
-    
+        
         // Add data types to layout metadata
         layoutMetadata.put('fieldDataTypes', fieldDataTypes);
         System.debug('Field Data Types: ' + fieldDataTypes);
     
+        // Extract Account IDs from Lookup fields in recordData
+        Set<Id> accountIds = new Set<Id>();
+        for (SObject record : records) {
+            for (String fieldName : fieldApiNames) {
+                if (record.get(fieldName) instanceof Id && String.valueOf(record.get(fieldName)).startsWith('001')) { // Accounts have Id prefix '001'
+                    accountIds.add((Id) record.get(fieldName));
+                }
+            }
+        }
+        
+        // Query Account names using the collected account IDs
+        Map<Id, Account> accounts = new Map<Id, Account>();
+        if (!accountIds.isEmpty()) {
+            accounts = new Map<Id, Account>([SELECT Id, Name FROM Account WHERE Id IN :accountIds]);
+        }
+        
+        // Add the fetched Account details to the layout metadata
+        layoutMetadata.put('relatedAccounts', accounts);
+        System.debug('Related Accounts: ' + accounts);
+        
         return layoutMetadata;
     }
 
@@ -423,6 +443,59 @@ public with sharing class LayoutController {
         
     //     return contactData;
     // }
+
+    @AuraEnabled(cacheable=true)
+    public static List<Account> getAccountSearchResults(String searchTerm, String heading) {
+        // Check if search term is provided
+        if (String.isBlank(searchTerm)) {
+            return new List<Account>(); // Return empty list if no search term is provided
+        }
+        
+        // Remove '[DEV]' suffix from the heading if present
+        heading = heading.replace(' [DEV]', '');
+        
+        // Query the AddressBookMapping__mdt to get the Account Type based on the heading
+        String exactHeading = String.escapeSingleQuotes(heading);
+        List<AddressBookMapping__mdt> accountTypeMappings = [
+            SELECT Type__c 
+            FROM AddressBookMapping__mdt
+            WHERE Label = :exactHeading
+            LIMIT 1
+        ];
+        
+        String accountType = accountTypeMappings.isEmpty() ? null : accountTypeMappings[0].Type__c;
+        
+        // Query the Account object for matching records
+        String likeSearchTerm = '%' + String.escapeSingleQuotes(searchTerm) + '%';
+        List<Account> accounts;
+        
+        if (accountType != null) {
+            // If there's a match with the metadata, filter by Account Name and Type
+            accounts = [
+                SELECT Id, Name, Phone, ShippingStreet, ShippingCity, ShippingPostalCode 
+                FROM Account 
+                WHERE Name LIKE :likeSearchTerm
+                AND Type = :accountType
+                LIMIT 10
+            ];
+        } else {
+            // If there's no match with the metadata, fetch all records with a similar Name, regardless of type
+            accounts = [
+                SELECT Id, Name, Phone, ShippingStreet, ShippingCity, ShippingPostalCode 
+                FROM Account 
+                WHERE Name LIKE :likeSearchTerm
+                LIMIT 10
+            ];
+        }
+        
+        return accounts;
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static Account getAccountById(Id accountId) {
+        // Perform a SOQL query to retrieve the account
+        return [SELECT Id, Name FROM Account WHERE Id = :accountId LIMIT 1];
+    }
 
     // Method to decode HTML entities
     private static String decodeHtmlEntities(String str) {
