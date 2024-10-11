@@ -60,8 +60,14 @@ export default class DatabaseStandardRecordModalDelete extends LightningElement 
             this.combinedData.forEach(record => {
                 const updatedFields = {};
                 record.fields.forEach(item => {
-                    // Set the value to null to indicate deletion
-                    updatedFields[item.fieldName] = null;
+                    console.log('item', item);
+                    if (item.type === 'checkbox') {
+                        // For checkbox fields, set to false instead of null
+                        updatedFields[item.fieldName] = false;
+                    } else {
+                        // For other fields, set to null
+                        updatedFields[item.fieldName] = null;
+                    }
                 });
 
                 console.log('Updated fields for record:', record.id, updatedFields);
