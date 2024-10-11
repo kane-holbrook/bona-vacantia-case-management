@@ -576,6 +576,14 @@ export default class DatabaseStandardRecordModal extends LightningElement {
                     // For visible lookup fields, save both the lookup and the corresponding text field
                     fields[item.fieldName] = item.accountId || null;
                     fields[item.correspondingTextField] = item.value || '';
+                    
+                    // Find and update the corresponding text field in the same record
+                    const correspondingTextField = record.fields.find(field => 
+                        field.fieldName === item.correspondingTextField && field.isCorrespondingTextField
+                    );
+                    if (correspondingTextField) {
+                        correspondingTextField.value = item.value || '';
+                    }
                 } else if (!item.isLookupField) {
                     // For all non-lookup fields, save regardless of whether a lookup field is selected
                     if (item.isCheckbox) {
