@@ -412,6 +412,12 @@ export default class DatabaseStandardRecordModal extends LightningElement {
                         value: this.selectedAccount ? this.selectedAccount.Name : '',
                         accountId: this.selectedAccount ? this.selectedAccount.Id : null
                     };
+                } else if (item.fieldName === item.correspondingTextField) {
+                    // Update the corresponding text field
+                    return {
+                        ...item,
+                        value: this.selectedAccount ? this.selectedAccount.Name : ''
+                    };
                 }
                 return item;
             })
