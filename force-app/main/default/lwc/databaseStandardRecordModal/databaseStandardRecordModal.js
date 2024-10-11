@@ -419,7 +419,8 @@ export default class DatabaseStandardRecordModal extends LightningElement {
                         value: this.selectedAccount ? this.selectedAccount.Name : ''
                     };
                 }
-                return item;
+                // Ensure other fields retain their existing values
+                return item; // Unchanged fields are returned as is
             })
         }));
         this.updateColumnFields();
@@ -515,21 +516,40 @@ export default class DatabaseStandardRecordModal extends LightningElement {
     }
 
     handleInputChange(event) {
-        const recordId = event.target.dataset.recordId;
         const fieldName = event.target.name;
         const updatedValue = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
+        
+        // Find the record in combinedData that contains this field
+        const record = this.combinedData.find(record => 
+            record.fields.some(field => field.fieldName === fieldName)
+        );
 
+        if (record) {
+            this.updateFieldValue(record.id, fieldName, updatedValue);
+        } else {
+            console.error('Record not found for field:', fieldName);
+        }
+    }
+
+    updateFieldValue(recordId, fieldName, updatedValue) {
         this.combinedData = this.combinedData.map(record => {
             if (record.id === recordId) {
                 record.fields = record.fields.map(item => {
                     if (item.fieldName === fieldName) {
-                        return { ...item, value: updatedValue, checked: event.target.type === 'checkbox' ? updatedValue : item.checked };
+                        return { 
+                            ...item, 
+                            value: updatedValue, 
+                            checked: item.isCheckbox ? updatedValue : item.checked 
+                        };
                     }
                     return item;
                 });
             }
             return record;
         });
+
+        // Update column fields
+        this.updateColumnFields();
     }
 
     handleSave() {
@@ -549,6 +569,7 @@ export default class DatabaseStandardRecordModal extends LightningElement {
         this.showErrorMessage = false;
 
         this.combinedData.forEach(record => {
+            console.log('record', record);
             const fields = {};
             record.fields.forEach(item => {
                 if (item.isLookupField && item.showField) {
