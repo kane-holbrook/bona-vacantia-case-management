@@ -1194,23 +1194,6 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
         return regex.test(caseName);
     }
 
-    get modalContent() {
-        return {
-            recordId: this.recordId,
-            objectApiName: this.objectApiName,
-            recordTypeId: this.recordTypeId,
-            recordData: this.recordData,
-            subRecordId: this.subRecordId,
-            columnLayoutStyle: this.columnLayoutStyle,
-            columns: this.columns,
-            emptySpaceIndices: this.emptySpaceIndices,
-            leftColumnFields: this.leftColumnFields,
-            rightColumnFields: this.rightColumnFields,
-            heading: this.databaseScreenHeading,
-            caseName: this.caseName
-        };
-    }
-
     processExpandedData() {
         const isValidCaseName = this.isCaseNameValid(this.caseName);
         console.log('Case Name:', this.caseName);
