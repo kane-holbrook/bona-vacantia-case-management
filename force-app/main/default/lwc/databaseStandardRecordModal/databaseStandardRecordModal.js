@@ -549,8 +549,8 @@ export default class DatabaseStandardRecordModal extends LightningElement {
                     // For visible lookup fields, save both the lookup and the corresponding text field
                     fields[item.fieldName] = item.accountId || null;
                     fields[item.correspondingTextField] = item.value || '';
-                } else if (!item.isLookupField && item.showField) {
-                    // For visible non-lookup fields, save as usual
+                } else if (!item.isLookupField) {
+                    // For all non-lookup fields, save regardless of whether a lookup field is selected
                     if (item.isCheckbox) {
                         fields[item.fieldName] = !!item.checked;
                     } else {
