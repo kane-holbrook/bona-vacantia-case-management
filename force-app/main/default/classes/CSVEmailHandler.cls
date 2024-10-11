@@ -6,15 +6,15 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
     global Messaging.InboundEmailResult handleInboundEmail(Messaging.InboundEmail email, Messaging.InboundEnvelope envelope) {
         Messaging.InboundEmailResult result = new Messaging.InboundEmailResult();
 
-        String allowedDomain = 'governmentlegal.gov.uk';
-        String senderDomain = email.fromAddress.substring(email.fromAddress.indexOf('@') + 1);
+        // String allowedDomain = 'governmentlegal.gov.uk';
+        // String senderDomain = email.fromAddress.substring(email.fromAddress.indexOf('@') + 1);
         
 
-        if (senderDomain != allowedDomain) {
-            System.debug('Email from unauthorized domain: ' + senderDomain);
-            result.success = false;
-            return result;
-        }
+        // if (senderDomain != allowedDomain) {
+        //     System.debug('Email from unauthorized domain: ' + senderDomain);
+        //     result.success = false;
+        //     return result;
+        // }
 
         if (email == null) {
             System.debug('Inbound email is null');
@@ -74,6 +74,27 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
                 Set<String> existingCompanyNumbers = getExistingCompanyNumbers(caseRecords);
                 List<BV_Case__c> casesToInsert = new List<BV_Case__c>();
 
+                // Fetch recent case names in the order of creation
+                List<BV_Case__c> CaseNameList = [SELECT Name FROM BV_Case__c 
+                                                ORDER BY CreatedDate DESC 
+                                                LIMIT 100];
+
+                // Determine the year suffix (e.g., "24" for 2024)
+                String currentYear = String.valueOf(Date.today().year()).right(2);
+
+                // Initialize the starting case ID
+                Integer nextCaseID = 1;
+
+                // If there are existing cases, get the last case ID
+                if (!CaseNameList.isEmpty() && CaseNameList[0].Name != null) {
+                    String lastCaseName = CaseNameList[0].Name;
+                    List<String> NameParts = lastCaseName.split('#');
+                    
+                    if (NameParts.size() == 2) {
+                        nextCaseID = Integer.valueOf(NameParts[1]) + 1; // Start from the next ID
+                    }
+                }
+
                 for (Map<String, Object> caseMap : casesToCreate) {
                     BV_Case__c caseRecord = (BV_Case__c) caseMap.get('case');
                     Integer lineNumber = (Integer) caseMap.get('lineNumber');
@@ -86,11 +107,11 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
                         Integer jurisdictionStatus = handleJurisdictionCheck(fetchPostCode(caseRecord.Company_No__c));
                         
                         if (jurisdictionStatus == 1) {
-                            duplicateInCSV.add('Line ' + lineNumber + ': ' + caseRecord.Company_No__c + ' - ' + caseRecord.Name + ' - ' + caseRecord.Rm_Reference__c);
+                            duplicateInCSV.add('Line ' + lineNumber + ': ' + caseRecord.Company_No__c + ' - ' + caseRecord.Reg_Name__c + ' - ' + caseRecord.Rm_Reference__c);
                         } else if(jurisdictionStatus == 2) {
-                            consultFCo.add('Line ' + lineNumber + ': ' + caseRecord.Company_No__c + ' - ' + caseRecord.Name + ' - ' + caseRecord.Rm_Reference__c);
+                            consultFCo.add('Line ' + lineNumber + ': ' + caseRecord.Company_No__c + ' - ' + caseRecord.Reg_Name__c + ' - ' + caseRecord.Rm_Reference__c);
                         } else if(jurisdictionStatus == 3) {
-                            notInJurisdiction.add('Line ' + lineNumber + ': ' + caseRecord.Company_No__c + ' - ' + caseRecord.Name + ' - ' + caseRecord.Rm_Reference__c);
+                            notInJurisdiction.add('Line ' + lineNumber + ': ' + caseRecord.Company_No__c + ' - ' + caseRecord.Reg_Name__c + ' - ' + caseRecord.Rm_Reference__c);
                         }
                         continue;
                     }
@@ -98,7 +119,7 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
                     companyNumbersInCSV.add(caseRecord.Company_No__c);
                 
                     if (existingCompanyNumbers.contains(paddedCompanyNumber)) {
-                        existingCasesList.add('Line ' + lineNumber + ': ' + caseRecord.Company_No__c + ' - ' + caseRecord.Name + ' - ' + caseRecord.Rm_Reference__c);
+                        existingCasesList.add('Line ' + lineNumber + ': ' + caseRecord.Company_No__c + ' - ' + caseRecord.Reg_Name__c + ' - ' + caseRecord.Rm_Reference__c);
                         continue;
                     }
                 
@@ -106,12 +127,17 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
                     Integer jurisdictionStatus = handleJurisdictionCheck(postalCode);
                 
                     if (jurisdictionStatus == 1) {
+                        // Generate a unique case name for each accepted case
+                        String newCaseName = 'COMP' + currentYear + '#' + nextCaseID;
+                        nextCaseID++; // Increment for the next case
+
+                        caseRecord.Name = newCaseName; // Assign the new case name
                         casesToInsert.add(caseRecord);
-                        acceptedCompanies.add('Line ' + lineNumber + ': ' + caseRecord.Company_No__c + ' - ' + caseRecord.Name + ' - ' + caseRecord.Rm_Reference__c);
+                        acceptedCompanies.add('Line ' + lineNumber + ': ' + caseRecord.Company_No__c + ' - ' + caseRecord.Reg_Name__c + ' - ' + caseRecord.Rm_Reference__c);
                     } else if (jurisdictionStatus == 2) {
-                        consultFCo.add('Line ' + lineNumber + ': ' + caseRecord.Company_No__c + ' - ' + caseRecord.Name + ' - ' + caseRecord.Rm_Reference__c);
+                        consultFCo.add('Line ' + lineNumber + ': ' + caseRecord.Company_No__c + ' - ' + caseRecord.Reg_Name__c + ' - ' + caseRecord.Rm_Reference__c);
                     } else if (jurisdictionStatus == 3) {
-                        notInJurisdiction.add('Line ' + lineNumber + ': ' + caseRecord.Company_No__c + ' - ' + caseRecord.Name + ' - ' + caseRecord.Rm_Reference__c);
+                        notInJurisdiction.add('Line ' + lineNumber + ': ' + caseRecord.Company_No__c + ' - ' + caseRecord.Reg_Name__c + ' - ' + caseRecord.Rm_Reference__c);
                     }
                 }
                 
