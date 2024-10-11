@@ -1067,7 +1067,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
     
         this.tableDataObj.forEach(row => {
             const rowData = this.recordData.find(record => record.Id === row.Id);
-            const isValidCaseName = this.isCaseNameValid(rowData.Name); // Assuming the case name is stored in the 'Name' field
+            const isValidCaseName = this.isCaseNameValid(rowData?.Name); // Use optional chaining
     
             const processField = (field) => {
                 if (field.componentType === 'EmptySpace') {
@@ -1076,15 +1076,31 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                 const fieldValue = (rowData && rowData[field.apiName]) || '—';
                 const formattedValue = this.formatFieldValue(fieldValue, field.type);
                 const decodedLabel = this.decodeHtmlEntities(field.label);
-                const isLookupField = field.apiName.endsWith('_Lookup__c');
-                const isCorrespondingTextField = !isLookupField && this.columns.some(c => c.fieldName === `${field.apiName.replace('__c', '')}_Lookup__c`);
+                
+                // Add error handling for undefined field.apiName
+                let isLookupField = false;
+                try {
+                    isLookupField = field.apiName && field.apiName.endsWith('_Lookup__c');
+                } catch (error) {
+                    console.error('Error checking if field is lookup:', error);
+                    // Handle the error as needed, e.g., set a default value or log it
+                }
+
+                const isCorrespondingTextField = !isLookupField && this.columns.some(c => {
+                    try {
+                        return c.fieldName === `${field.apiName?.replace('__c', '')}_Lookup__c`;
+                    } catch (error) {
+                        console.error('Error checking for corresponding text field:', error);
+                        return false;
+                    }
+                });
     
                 return {
                     ...field,
                     label: decodedLabel,
                     value: formattedValue,
-                    labelKey: `${field.apiName}-label`,
-                    valueKey: `${field.apiName}-value`,
+                    labelKey: `${field.apiName || 'unknown'}-label`,
+                    valueKey: `${field.apiName || 'unknown'}-value`,
                     showField: isValidCaseName ? 
                         (isLookupField || (!isLookupField && !isCorrespondingTextField)) : 
                         (!isLookupField)
@@ -1202,27 +1218,42 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
         this.tableDataObj = this.tableDataObj.map(row => {
             const processFields = (fields) => {
                 return fields.map(field => {
-                    const isLookupField = field.fieldName.endsWith('_Lookup__c');
-                    const isCorrespondingTextField = !isLookupField && this.columns.some(c => c.fieldName === `${field.fieldName.replace('__c', '')}_Lookup__c`);
-                    const showField = isValidCaseName ? 
-                        (isLookupField || (!isLookupField && !isCorrespondingTextField)) : 
-                        (!isLookupField);
+                    if (!field || typeof field.fieldName !== 'string') {
+                        console.error('Invalid field:', field);
+                        return field; // Return the original field to avoid breaking the map
+                    }
 
-                    return {
-                        ...field,
-                        showField
-                    };
+                    try {
+                        const isLookupField = field.fieldName.endsWith('_Lookup__c');
+                        const isCorrespondingTextField = !isLookupField && this.columns.some(c => c.fieldName === `${field.fieldName.replace('__c', '')}_Lookup__c`);
+                        const showField = isValidCaseName ? 
+                            (isLookupField || (!isLookupField && !isCorrespondingTextField)) : 
+                            (!isLookupField);
+
+                        return {
+                            ...field,
+                            showField
+                        };
+                    } catch (error) {
+                        console.error('Error processing field:', field, error);
+                        return field; // Return the original field in case of error
+                    }
                 });
             };
 
-            return {
-                ...row,
-                fullData: {
-                    ...row.fullData,
-                    leftFields: processFields(row.fullData.leftFields),
-                    rightFields: processFields(row.fullData.rightFields)
-                }
-            };
+            try {
+                return {
+                    ...row,
+                    fullData: {
+                        ...row.fullData,
+                        leftFields: processFields(row.fullData?.leftFields || []),
+                        rightFields: processFields(row.fullData?.rightFields || [])
+                    }
+                };
+            } catch (error) {
+                console.error('Error processing row:', row, error);
+                return row; // Return the original row in case of error
+            }
         });
     }
 }
