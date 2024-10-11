@@ -70,7 +70,7 @@ export default class DatabaseStandardRecordModal extends LightningElement {
     }
 
     get actualRecordTypeId() {
-        return this.record.data ? this.record.data.fields.RecordTypeId.value : this.recordTypeId;
+        return this.record ? this.record.fields.RecordTypeId.value : this.recordTypeId;
     }
 
     @api
