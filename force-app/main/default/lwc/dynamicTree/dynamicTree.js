@@ -52,7 +52,8 @@ export default class DynamicTree extends LightningElement {
                 let newNode = { ...node };
                 newNode.icon = 'utility:chevronright';
                 newNode.hasChildren = newNode.children && newNode.children.length > 0;
-                newNode.tabindex = level === 1 ? 0 : -1; // Only top-level nodes are tabbable initially
+                newNode.tabindex = level === 1 ? 0 : -1; // For the expand/collapse button
+                newNode.labelTabindex = newNode.hasChildren ? -1 : (level === 1 ? 0 : -1); // For the label
                 newNode.level = level;
                 if (newNode.hasChildren) {
                     newNode.children = addIconsAndTabindex(newNode.children, level + 1);
@@ -125,6 +126,7 @@ export default class DynamicTree extends LightningElement {
                         if (node.children) {
                             node.children.forEach(child => {
                                 child.tabindex = isCollapsed ? -1 : 0;
+                                child.labelTabindex = child.hasChildren ? -1 : (isCollapsed ? -1 : 0);
                                 // If collapsing, ensure all descendants are not tabbable
                                 if (isCollapsed) {
                                     this.updateDescendantTabindex(child, -1);
@@ -165,6 +167,7 @@ export default class DynamicTree extends LightningElement {
         if (node.children) {
             node.children.forEach(child => {
                 child.tabindex = tabindex;
+                child.labelTabindex = child.hasChildren ? -1 : tabindex;
                 this.updateDescendantTabindex(child, tabindex);
             });
         }

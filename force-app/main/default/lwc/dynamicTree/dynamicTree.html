@@ -18,7 +18,7 @@
                                 </button>
                             </template>
                             <span class="slds-has-flexi-truncate">
-                                <span class="slds-tree__item-label slds-truncate" title={node.label} data-label={node.label} data-object={node.object} onclick={handleNavigation} onkeydown={handleKeyDown} tabindex={node.tabindex} role="button">
+                                <span class="slds-tree__item-label slds-truncate" title={node.label} data-label={node.label} data-object={node.object} onclick={handleNavigation} onkeydown={handleKeyDown} tabindex={node.labelTabindex} role="button">
                                     {node.label}
                                 </span>
                             </span>
@@ -34,7 +34,7 @@
                                                 </button>
                                             </template>
                                             <span class="slds-has-flexi-truncate">
-                                                <span class="slds-tree__item-label slds-truncate" title={child.label} data-label={child.label} data-object={child.object} onclick={handleNavigation} onkeydown={handleKeyDown} tabindex={child.tabindex} role="button" data-parent-label={node.label}>
+                                                <span class="slds-tree__item-label slds-truncate" title={child.label} data-label={child.label} data-object={child.object} onclick={handleNavigation} onkeydown={handleKeyDown} tabindex={child.labelTabindex} role="button" data-parent-label={node.label}>
                                                     {child.label}
                                                 </span>
                                             </span>
