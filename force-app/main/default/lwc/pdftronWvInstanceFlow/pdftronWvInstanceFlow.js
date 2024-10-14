@@ -386,6 +386,7 @@ export default class PdftronWvInstanceFlow extends LightningElement {
             enableMeasurement: this.enableMeasurement,
             enableOptimizedWorkers: false,
             l: 'demo:1698667176711:7ccce815030000000032579c76ef4bf6398d5025f2b556af0efef948be',
+            accessibleMode: true,
             disabledElements: [
                 'toolbarGroup-Annotate', 
                 'toolbarGroup-Shapes', 
