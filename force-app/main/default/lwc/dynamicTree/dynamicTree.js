@@ -268,4 +268,15 @@ export default class DynamicTree extends LightningElement {
         const filteredData = filterNodes(this.treeData);
         return filteredData.sort((a, b) => a.label.localeCompare(b.label));
     }
+
+    handleKeyDown(event) {
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            if (event.currentTarget.dataset.object) {
+                this.handleNavigation(event);
+            } else {
+                this.handleToggle(event);
+            }
+        }
+    }
 }

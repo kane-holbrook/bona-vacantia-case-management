@@ -13,12 +13,12 @@
                     <li key={node.label} role="treeitem" aria-level="1">
                         <div class="slds-tree__item">
                             <template if:true={node.hasChildren}>
-                                <button class="slds-button slds-button_icon slds-m-right_x-small" aria-hidden="true" tabindex="-1" onclick={handleToggle} data-label={node.label}>
+                                <button class="slds-button slds-button_icon slds-m-right_x-small" aria-hidden="true" tabindex="0" onclick={handleToggle} onkeydown={handleKeyDown} data-label={node.label}>
                                     <lightning-icon icon-name={node.icon} alternative-text="Expand" size="x-small"></lightning-icon>
                                 </button>
                             </template>
                             <span class="slds-has-flexi-truncate">
-                                <span class="slds-tree__item-label slds-truncate" title={node.label} data-label={node.label} data-object={node.object} onclick={handleNavigation} data-parent-label={node.label}>
+                                <span class="slds-tree__item-label slds-truncate" title={node.label} data-label={node.label} data-object={node.object} onclick={handleNavigation} onkeydown={handleKeyDown} tabindex="0" role="button">
                                     {node.label}
                                 </span>
                             </span>
@@ -29,12 +29,12 @@
                                     <li key={child.label} aria-level="2">
                                         <div class="slds-tree__item">
                                             <template if:true={child.hasChildren}>
-                                                <button class="slds-button slds-button_icon slds-m-right_x-small" aria-hidden="true" tabindex="-1" onclick={handleToggle} data-label={child.label}>
+                                                <button class="slds-button slds-button_icon slds-m-right_x-small" aria-hidden="true" tabindex="0" onclick={handleToggle} onkeydown={handleKeyDown} data-label={child.label}>
                                                     <lightning-icon icon-name={child.icon} alternative-text="Expand" size="x-small"></lightning-icon>
                                                 </button>
                                             </template>
                                             <span class="slds-has-flexi-truncate">
-                                                <span class="slds-tree__item-label slds-truncate" title={child.label} data-label={child.label} data-object={child.object} onclick={handleNavigation} data-parent-label={node.label}>
+                                                <span class="slds-tree__item-label slds-truncate" title={child.label} data-label={child.label} data-object={child.object} onclick={handleNavigation} onkeydown={handleKeyDown} tabindex="0" role="button" data-parent-label={node.label}>
                                                     {child.label}
                                                 </span>
                                             </span>
@@ -45,12 +45,12 @@
                                                     <li key={grandchild.label} aria-level="3">
                                                         <div class="slds-tree__item">
                                                             <template if:true={grandchild.hasChildren}>
-                                                                <button class="slds-button slds-button_icon slds-m-right_x-small" aria-hidden="true" tabindex="-1" onclick={handleToggle} data-label={grandchild.label}>
+                                                                <button class="slds-button slds-button_icon slds-m-right_x-small" aria-hidden="true" tabindex="0" onclick={handleToggle} onkeydown={handleKeyDown} data-label={grandchild.label}>
                                                                     <lightning-icon icon-name={grandchild.icon} alternative-text="Expand" size="x-small"></lightning-icon>
                                                                 </button>
                                                             </template>
                                                             <span class="slds-has-flexi-truncate">
-                                                                <span class="slds-tree__item-label slds-truncate" title={grandchild.label} data-label={grandchild.label} data-object={grandchild.object} onclick={handleNavigation} data-parent-grandchild-label={child.label}>
+                                                                <span class="slds-tree__item-label slds-truncate" title={grandchild.label} data-label={grandchild.label} data-object={grandchild.object} onclick={handleNavigation} onkeydown={handleKeyDown} tabindex="0" role="button" data-parent-grandchild-label={child.label}>
                                                                     {grandchild.label}
                                                                 </span>
                                                             </span>
@@ -61,12 +61,12 @@
                                                                     <li key={greatgrandchild.label} aria-level="4">
                                                                         <div class="slds-tree__item">
                                                                             <template if:true={greatgrandchild.hasChildren}>
-                                                                                <button class="slds-button slds-button_icon slds-m-right_x-small" aria-hidden="true" tabindex="-1" onclick={handleToggle} data-label={greatgrandchild.label}>
+                                                                                <button class="slds-button slds-button_icon slds-m-right_x-small" aria-hidden="true" tabindex="0" onclick={handleToggle} onkeydown={handleKeyDown} data-label={greatgrandchild.label}>
                                                                                     <lightning-icon icon-name={greatgrandchild.icon} alternative-text="Expand" size="x-small"></lightning-icon>
                                                                                 </button>
                                                                             </template>
                                                                             <span class="slds-has-flexi-truncate">
-                                                                                <span class="slds-tree__item-label slds-truncate" title={greatgrandchild.label} data-label={greatgrandchild.label} data-object={greatgrandchild.object} onclick={handleNavigation} data-parent-greatgrandchild-label={grandchild.label}>
+                                                                                <span class="slds-tree__item-label slds-truncate" title={greatgrandchild.label} data-label={greatgrandchild.label} data-object={greatgrandchild.object} onclick={handleNavigation} onkeydown={handleKeyDown} tabindex="0" role="button" data-parent-greatgrandchild-label={grandchild.label}>
                                                                                     {greatgrandchild.label}
                                                                                 </span>
                                                                             </span>
