@@ -47,16 +47,17 @@ export default class DynamicTree extends LightningElement {
     }
 
     formatTreeData(data) {
-        const addIconsAndTabindex = (nodes) => {
+        const addIconsAndTabindex = (nodes, level = 1) => {
             return nodes.map(node => {
-                let newNode = { ...node }; // Clone the node to avoid mutating the original object
+                let newNode = { ...node };
                 newNode.icon = 'utility:chevronright';
                 newNode.hasChildren = newNode.children && newNode.children.length > 0;
-                newNode.tabindex = newNode.hasChildren ? -1 : 0; // Set tabindex based on children
+                newNode.tabindex = level === 1 ? 0 : -1; // Only top-level nodes are tabbable initially
+                newNode.level = level;
                 if (newNode.hasChildren) {
-                    newNode.children = addIconsAndTabindex(newNode.children);
+                    newNode.children = addIconsAndTabindex(newNode.children, level + 1);
                 }
-                newNode.expandedClass = 'slds-is-collapsed'; // Set default state to collapsed
+                newNode.expandedClass = 'slds-is-collapsed';
                 return newNode;
             });
         };
@@ -111,46 +112,61 @@ export default class DynamicTree extends LightningElement {
 
     handleToggle(event) {
         const label = event.currentTarget.dataset.label;
-        const findNode = (nodes) => {
+        const findNodeAndUpdate = (nodes, isExpanded) => {
             for (let node of nodes) {
                 if (node.label === label) {
-                    return node;
+                    const ulElement = event.currentTarget.closest('li').querySelector('ul');
+                    if (ulElement) {
+                        const isCollapsed = ulElement.classList.toggle('slds-is-collapsed');
+                        node.icon = isCollapsed ? 'utility:chevronright' : 'utility:chevrondown';
+                        node.expandedClass = isCollapsed ? 'slds-is-collapsed' : '';
+
+                        // Update tabindex for immediate children
+                        if (node.children) {
+                            node.children.forEach(child => {
+                                child.tabindex = isCollapsed ? -1 : 0;
+                                // If collapsing, ensure all descendants are not tabbable
+                                if (isCollapsed) {
+                                    this.updateDescendantTabindex(child, -1);
+                                }
+                            });
+                        }
+
+                        // Update icon
+                        const iconElement = event.currentTarget.querySelector('lightning-icon');
+                        if (iconElement) {
+                            iconElement.iconName = node.icon;
+                        }
+
+                        // Set active-label class
+                        const previouslyActive = this.template.querySelector('.active-label');
+                        if (previouslyActive) {
+                            previouslyActive.classList.remove('active-label');
+                        }
+                        const clickedLabelDiv = event.currentTarget.closest('.slds-tree__item');
+                        clickedLabelDiv.classList.add('active-label');
+                    }
+                    return true;
                 }
                 if (node.children) {
-                    const found = findNode(node.children);
-                    if (found) {
-                        return found;
+                    if (findNodeAndUpdate(node.children, node.expandedClass !== 'slds-is-collapsed')) {
+                        return true;
                     }
                 }
             }
-            return null;
+            return false;
         };
 
-        const node = findNode(this.treeData);
-        if (node) {
-            const ulElement = event.currentTarget.closest('li').querySelector('ul');
-            if (ulElement) {
-                const isCollapsed = ulElement.classList.toggle('slds-is-collapsed');
-                node.icon = isCollapsed ? 'utility:chevronright' : 'utility:chevrondown';
-                node.expandedClass = isCollapsed ? 'slds-is-collapsed' : '';
+        findNodeAndUpdate(this.treeData);
+        this.treeData = JSON.parse(JSON.stringify(this.treeData));
+    }
 
-                // Directly update the icon element
-                const iconElement = event.currentTarget.querySelector('lightning-icon');
-                if (iconElement) {
-                    iconElement.iconName = node.icon;
-                }
-
-                // Set the active-label CSS class
-                const previouslyActive = this.template.querySelector('.active-label');
-                if (previouslyActive) {
-                    previouslyActive.classList.remove('active-label');
-                }
-                const clickedLabelDiv = event.currentTarget.closest('.slds-tree__item');
-                clickedLabelDiv.classList.add('active-label');
-
-                // Re-assign the treeData to trigger reactivity
-                this.treeData = JSON.parse(JSON.stringify(this.treeData));
-            }
+    updateDescendantTabindex(node, tabindex) {
+        if (node.children) {
+            node.children.forEach(child => {
+                child.tabindex = tabindex;
+                this.updateDescendantTabindex(child, tabindex);
+            });
         }
     }
 
