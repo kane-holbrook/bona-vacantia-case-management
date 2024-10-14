@@ -30,7 +30,7 @@ public class CreateSOSCase {
     @InvocableMethod(label='Create New SOS Case' description='Creates a new SOS case.')
     public static List<SOSCaseResponse> createNewSOSCase(List<SOSCaseRequest> requests) {
         List<SOSCaseResponse> results = new List<SOSCaseResponse>();
-        Integer maxRetries = 5;
+        Integer maxRetries = 2;
         
         for (SOSCaseRequest reqData : requests) {
             // Create a new Response object for the API call
@@ -38,10 +38,9 @@ public class CreateSOSCase {
             
             // Set the mtcode from the request
             r.mtcode = '';
-            
-            // Hardcode all other values
+
             r.mattertype = reqData.mattertype;
-            if (r.mattertype == 'ESTA'){
+            if (r.mattertype == 'COMP'){
                 r.description = 'Company Name - ' + reqData.CompanyName + ', Case Officer reference (' + reqData.CaseOfficerRef + '), ' + ', Dissolution Date ' + reqData.DissolutionDate + ', Company Number (' + reqData.CompanyNumber + ')';
                 r.address_1 = reqData.AddressLine1;
                 r.address_2 = reqData.AddressLine2;
@@ -54,7 +53,7 @@ public class CreateSOSCase {
                 r.clname = reqData.CompanyName;
                 r.clbranch = '001';
                 r.cltype = 'COMP Companies';
-            } else if (r.mattertype == 'COMP'){
+            } else if (r.mattertype == 'ESTA'){
                 r.description = 'Decd Surname - ' + reqData.DecdSurname + ', Case Officer Ref (' + reqData.CaseOfficerRef + '), Date of Death ' + reqData.DateOfDeath + ', Short Place ' + reqData.ShortPlace + ', at ' + reqData.AddressLine1;
                 r.address_1 = reqData.AddressLine1;
                 r.address_2 = reqData.AddressLine2;
@@ -69,14 +68,12 @@ public class CreateSOSCase {
                 r.clbranch = '001';
                 r.cltype = 'ESTA Estates';
             }
-            r.ref = 'REF12345'; // Case ID
+            r.ref = reqData.CaseID; // Case ID
             r.clcode = ''; // Case ID
             r.testmtcode = '21609809';
 
             Integer retryCount = 0;
             Boolean success = false;
-
-            Integer retryDelay = 2000;
 
             while (retryCount < maxRetries && !success) {
                 try {
@@ -122,14 +119,6 @@ public class CreateSOSCase {
                         success = true;
                     } else if (res.getStatusCode() == 503) {
                         System.debug('Service Unavailable (503). Retrying request...');
-                        retryCount++; // Increment the retry count
-                        retryDelay *= 2;
-                        if (retryCount == maxRetries) {
-                            System.debug('Max retry attempts reached.');
-                            SOSCaseResponse errorResponse = new SOSCaseResponse();
-                            errorResponse.errorMessage = 'Error: Max retry attempts reached for 503 status';
-                            results.add(errorResponse);
-                        }
                     } else {
                         System.debug('HTTP Request failed with status code: ' + res.getStatusCode() + ' ' + res.getBody());
                         SOSCaseResponse errorResponse = new SOSCaseResponse();
@@ -211,4 +200,5 @@ public class CreateSOSCase {
         @InvocableVariable(description='Error message if any')
         public String errorMessage;
     }
+
 }
