@@ -877,33 +877,33 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
     }
 
     get cardSubtitle() {
+        console.log('Label: ', this._label);
+        console.log('Parent Label: ', this._parentLabel);
+        console.log('Parent Grandchild Label: ', this._parentGrandchildLabel);
+        console.log('Parent Great Grandchild Label: ', this._parentGreatGrandchildLabel);
+
         if (this._label) {
-            console.log('Label: ', this._label);
-            console.log('Parent Label: ', this._parentLabel);
-            console.log('Parent Grandchild Label: ', this._parentGrandchildLabel);
-            console.log('Parent Great Grandchild Label: ', this._parentGreatGrandchildLabel);
-    
             // If parentGrandchildLabel is present, construct the subtitle as "parentGrandchildLabel > label"
             if (this._parentGrandchildLabel) {
                 return `${this._parentGrandchildLabel} > ${this._label}`;
             }
 
-            // if parentGreatGrandchildLabel is present, construct the subtitle as "parentGreatGrandchildLabel > parentGrandchildLabel > label"
+            // If parentGreatGrandchildLabel is present, construct the subtitle as "parentGreatGrandchildLabel > parentGrandchildLabel > label"
             if (this._parentGreatGrandchildLabel) {
                 return `${this._parentGreatGrandchildLabel} > ${this._label}`;
             }
             
-            // If label and parentLabel are the same, return only the parentLabel
-            if (this._label === this._parentLabel) {
-                return this._parentLabel;
+            // If parentLabel is present and different from label, construct the subtitle as "parentLabel > label"
+            if (this._parentLabel && this._parentLabel !== this._label) {
+                return `${this._parentLabel} > ${this._label}`;
             }
-    
-            // If label is present and different from parentLabel, construct the subtitle as "parentLabel > label"
-            return `${this._parentLabel} > ${this._label}`;
-        } else {
-            // If no label, return only the parent label
-            return this._parentLabel;
+
+            // If only label is present, return just the label
+            return this._label;
         }
+
+        // If no label, return the parent label if it exists, otherwise return an empty string
+        return this._parentLabel || '';
     }
 
     get modalHeading() {
