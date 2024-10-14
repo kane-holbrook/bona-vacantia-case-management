@@ -18,7 +18,7 @@
                                 </button>
                             </template>
                             <span class="slds-has-flexi-truncate">
-                                <span class="slds-tree__item-label slds-truncate" title={node.label} data-label={node.label} data-object={node.object} onclick={handleNavigation} onkeydown={handleKeyDown} tabindex="0" role="button">
+                                <span class="slds-tree__item-label slds-truncate" title={node.label} data-label={node.label} data-object={node.object} onclick={handleNavigation} onkeydown={handleKeyDown} tabindex={node.tabindex} role="button">
                                     {node.label}
                                 </span>
                             </span>
@@ -34,7 +34,7 @@
                                                 </button>
                                             </template>
                                             <span class="slds-has-flexi-truncate">
-                                                <span class="slds-tree__item-label slds-truncate" title={child.label} data-label={child.label} data-object={child.object} onclick={handleNavigation} onkeydown={handleKeyDown} tabindex="0" role="button" data-parent-label={node.label}>
+                                                <span class="slds-tree__item-label slds-truncate" title={child.label} data-label={child.label} data-object={child.object} onclick={handleNavigation} onkeydown={handleKeyDown} tabindex={child.tabindex} role="button" data-parent-label={node.label}>
                                                     {child.label}
                                                 </span>
                                             </span>
@@ -50,7 +50,7 @@
                                                                 </button>
                                                             </template>
                                                             <span class="slds-has-flexi-truncate">
-                                                                <span class="slds-tree__item-label slds-truncate" title={grandchild.label} data-label={grandchild.label} data-object={grandchild.object} onclick={handleNavigation} onkeydown={handleKeyDown} tabindex="0" role="button" data-parent-grandchild-label={child.label}>
+                                                                <span class="slds-tree__item-label slds-truncate" title={grandchild.label} data-label={grandchild.label} data-object={grandchild.object} onclick={handleNavigation} onkeydown={handleKeyDown} tabindex={grandchild.tabindex} role="button" data-parent-grandchild-label={child.label}>
                                                                     {grandchild.label}
                                                                 </span>
                                                             </span>
@@ -66,7 +66,7 @@
                                                                                 </button>
                                                                             </template>
                                                                             <span class="slds-has-flexi-truncate">
-                                                                                <span class="slds-tree__item-label slds-truncate" title={greatgrandchild.label} data-label={greatgrandchild.label} data-object={greatgrandchild.object} onclick={handleNavigation} onkeydown={handleKeyDown} tabindex="0" role="button" data-parent-greatgrandchild-label={grandchild.label}>
+                                                                                <span class="slds-tree__item-label slds-truncate" title={greatgrandchild.label} data-label={greatgrandchild.label} data-object={greatgrandchild.object} onclick={handleNavigation} onkeydown={handleKeyDown} tabindex={greatgrandchild.tabindex} role="button" data-parent-greatgrandchild-label={grandchild.label}>
                                                                                     {greatgrandchild.label}
                                                                                 </span>
                                                                             </span>

@@ -47,19 +47,20 @@ export default class DynamicTree extends LightningElement {
     }
 
     formatTreeData(data) {
-        const addIcons = (nodes) => {
+        const addIconsAndTabindex = (nodes) => {
             return nodes.map(node => {
                 let newNode = { ...node }; // Clone the node to avoid mutating the original object
                 newNode.icon = 'utility:chevronright';
                 newNode.hasChildren = newNode.children && newNode.children.length > 0;
+                newNode.tabindex = newNode.hasChildren ? -1 : 0; // Set tabindex based on children
                 if (newNode.hasChildren) {
-                    newNode.children = addIcons(newNode.children);
+                    newNode.children = addIconsAndTabindex(newNode.children);
                 }
                 newNode.expandedClass = 'slds-is-collapsed'; // Set default state to collapsed
                 return newNode;
             });
         };
-        return addIcons(data);
+        return addIconsAndTabindex(data);
     }
 
     openFirstNavigableNode(nodes) {
