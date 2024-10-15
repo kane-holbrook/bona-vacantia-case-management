@@ -35,6 +35,8 @@ public class CreateSOSCase {
         for (SOSCaseRequest reqData : requests) {
             // Create a new Response object for the API call
             NewSOSCase r = new NewSOSCase();
+
+            System.debug('Request Data: ' + reqData);
             
             // Set the mtcode from the request
             r.mtcode = '';
@@ -52,7 +54,7 @@ public class CreateSOSCase {
                 r.pitype = 'OR';
                 r.clname = reqData.CompanyName;
                 r.clbranch = '001';
-                r.cltype = 'COMP Companies';
+                r.cltype = 'B';
             } else if (r.mattertype == 'ESTA'){
                 r.description = 'Decd Surname - ' + reqData.DecdSurname + ', Case Officer Ref (' + reqData.CaseOfficerRef + '), Date of Death ' + reqData.DateOfDeath + ', Short Place ' + reqData.ShortPlace + ', at ' + reqData.AddressLine1;
                 r.address_1 = reqData.AddressLine1;
@@ -66,7 +68,7 @@ public class CreateSOSCase {
                 r.pitype = 'OR';
                 r.clname = reqData.Title + ' ' + reqData.DecdForenames + ' ' + reqData.DecdSurname;
                 r.clbranch = '001';
-                r.cltype = 'ESTA Estates';
+                r.cltype = 'P';
             }
             r.ref = reqData.CaseID; // Case ID
             r.clcode = ''; // Case ID
@@ -95,8 +97,6 @@ public class CreateSOSCase {
                     
                     // Process the response
                     if (res.getStatusCode() == 200) {
-                        System.debug('New SOS case created successfully');
-
                         System.debug('RESPONSE: ' + res.getBody());
                         
                         // Remove extra double quotes surrounding the JSON string
