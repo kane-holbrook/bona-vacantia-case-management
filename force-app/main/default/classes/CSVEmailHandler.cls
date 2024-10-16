@@ -154,6 +154,7 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
                         createCaseHistoryForCase(insertedCase); // Create a Case History record for each case
                         createBankBuildingSociety(insertedCase, bankName, spreadsheetNumber);
                     }
+                    System.enqueueJob(new EmailSOSCaseQueueable(casesToInsert, 0));
                 }
 
                 sendJurisdictionEmail(email.fromAddress, notInJurisdiction, consultFCo, acceptedCompanies, existingCasesList, duplicateInCSV, !casesToInsert.isEmpty());
@@ -395,6 +396,9 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
                 }
                 if (address.containsKey('locality')) {
                     caseRecord.Reg_Office_Addr_3__c = (String) address.get('locality');
+                }
+                if (address.containsKey('region')) {
+                    caseRecord.Reg_Office_Addr_4__c = (String) address.get('region');
                 }
                 if (address.containsKey('postal_code')) {
                     caseRecord.Reg_Office_PC__c = (String) address.get('postal_code');
