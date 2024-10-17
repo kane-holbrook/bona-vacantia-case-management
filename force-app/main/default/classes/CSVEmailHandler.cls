@@ -8,15 +8,15 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
     global Messaging.InboundEmailResult handleInboundEmail(Messaging.InboundEmail email, Messaging.InboundEnvelope envelope) {
         Messaging.InboundEmailResult result = new Messaging.InboundEmailResult();
 
-        String allowedDomain = 'governmentlegal.gov.uk';
-        String senderDomain = email.fromAddress.substring(email.fromAddress.indexOf('@') + 1);
+        // String allowedDomain = 'governmentlegal.gov.uk';
+        // String senderDomain = email.fromAddress.substring(email.fromAddress.indexOf('@') + 1);
         
 
-        if (senderDomain != allowedDomain) {
-            System.debug('Email from unauthorized domain: ' + senderDomain);
-            result.success = false;
-            return result;
-        }
+        // if (senderDomain != allowedDomain) {
+        //     System.debug('Email from unauthorized domain: ' + senderDomain);
+        //     result.success = false;
+        //     return result;
+        // }
 
         if (email == null) {
             System.debug('Inbound email is null');
@@ -416,6 +416,27 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
                 } catch (Exception e) {
                     System.debug('Error converting date_of_creation: ' + e.getMessage());
                 }
+            }
+
+            if (responseMap.containsKey('company_status') && responseMap.containsKey('type')) {
+                String companyStatus = (String) responseMap.get('company_status');
+                String companyType = (String) responseMap.get('type');
+                
+                if (companyStatus.equals('dissolved') && companyType.equals('ltd')) {
+                    caseRecord.Type__c = 'Dissolved Company';
+                } else if (companyStatus.equals('dissolved') && companyType.equals('llp')) {
+                    caseRecord.Type__c = 'Dissolved LLP';
+                }else if (companyStatus.equals('active') && companyType.equals('ltd')) {
+                    caseRecord.Type__c = 'Active Company';
+                } else if (companyStatus.equals('active') && companyType.equals('llp')) {
+                    caseRecord.Type__c = 'Active LLP';
+                }else if (companyStatus.equals('dissolved') && !companyType.equals('ltd') || !companyType.equals('llp')) {
+                    caseRecord.Type__c = 'Other Corporate Body';
+                }else if (companyStatus.equals('active') && !companyType.equals('ltd') || !companyType.equals('llp')) {
+                    caseRecord.Type__c = 'Active Other Corporate Body';
+                }
+            } else {
+                caseRecord.Type__c = 'Other';
             }
         } else {
             System.debug('Failed to fetch company details. Status code: ' + res.getStatusCode());
