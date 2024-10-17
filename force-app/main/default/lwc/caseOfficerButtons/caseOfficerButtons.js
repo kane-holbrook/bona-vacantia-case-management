@@ -317,7 +317,7 @@ export default class CaseOfficerButtons extends LightningElement {
                     value: this.recordId
                 }
             ];
-            if (this.recordTypeDeveloperName !== 'FOIR' && this.recordTypeDeveloperName !== 'GENE') {
+            if (this.recordTypeDeveloperName !== 'FOIR' && this.recordTypeDeveloperName !== 'GENE' && this.recordTypeDeveloperName !== 'COMP' && this.recordTypeDeveloperName !== 'CONV') {
                 this.flowInputs.push({
                     name: 'caseName',
                     type: 'String',
@@ -671,6 +671,13 @@ export default class CaseOfficerButtons extends LightningElement {
                     message = 'Operation completed successfully';
             }
 
+            // Dispatch a custom event to refresh the Case Officer History
+            console.log('dispatching event 1');
+            this.dispatchEvent(new CustomEvent('flowfinished', {
+                bubbles: true,
+                composed: true
+            }));
+
             if (message != ''){
                 this.dispatchEvent(
                     new ShowToastEvent({
@@ -685,11 +692,6 @@ export default class CaseOfficerButtons extends LightningElement {
                 this[modalToClose] = false;
             }
 
-            // Dispatch a custom event to refresh the Case Officer History
-            this.dispatchEvent(new CustomEvent('flowfinished', {
-                bubbles: true,
-                composed: true
-            }));
         }
     }
 
