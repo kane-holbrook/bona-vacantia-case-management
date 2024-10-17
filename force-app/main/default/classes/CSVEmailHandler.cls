@@ -3,6 +3,8 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
     Integer spreadsheetNumber = 0;
     Decimal cashBalance = 0;
 
+    Pattern caseNamePattern = Pattern.compile('^(FOIR|ESTA|COMP|GENE|CONV)\\d{2}#\\d+$');
+
     global Messaging.InboundEmailResult handleInboundEmail(Messaging.InboundEmail email, Messaging.InboundEnvelope envelope) {
         Messaging.InboundEmailResult result = new Messaging.InboundEmailResult();
 
@@ -86,7 +88,7 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
                 Integer nextCaseID = 1;
 
                 // If there are existing cases, get the last case ID
-                if (!CaseNameList.isEmpty() && CaseNameList[0].Name != null) {
+                if (!CaseNameList.isEmpty() && CaseNameList[0].Name != null || caseNamePattern.matcher(CaseNameList[0].Name).matches()) {
                     String lastCaseName = CaseNameList[0].Name;
                     List<String> NameParts = lastCaseName.split('#');
                     
@@ -153,6 +155,7 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
                     for (BV_Case__c insertedCase : casesToInsert) {
                         createCaseHistoryForCase(insertedCase); // Create a Case History record for each case
                         createBankBuildingSociety(insertedCase, bankName, spreadsheetNumber);
+                        createHiddenScreenForCase(insertedCase);
                     }
                     System.enqueueJob(new EmailSOSCaseQueueable(casesToInsert, 0));
                 }
@@ -618,10 +621,26 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
         caseHistory.Date_Inserted_Time__c = DateTime.now(); // Set current date for Date Inserted
         caseHistory.Last_updated__c = DateTime.now(); // Set current date for Last Updated
         caseHistory.Details__c = caseRecord.Name + ' - ' + caseRecord.Company_No__c; // Set Details to the Company Name + Company Number
-
-        System.debug('ID - ' + caseHistory.BV_Case__c);
         
         insert caseHistory; // Insert the Case History record
+    }
+
+    private void createHiddenScreenForCase(BV_Case__c caseRecord){
+        Case_Detail__c caseDetail = new Case_Detail__c();
+        caseDetail.BV_Case__c = caseRecord.Id;
+        caseDetail.Open_Closed__c = 'Open';
+
+        RecordType caseDetailRecordType = [
+            SELECT ID
+            FROM RecordType
+            WHERE DeveloperName = 'Admin_Hidden_Screen'
+            AND SObjectType = 'Case_Detail__c'
+            LIMIT 1
+        ];
+
+        caseDetail.RecordTypeId = caseDetailRecordType.Id;
+
+        insert caseDetail;
     }
 
     private void createBankBuildingSociety(BV_Case__c caseRecord, String bankName, Integer spreadsheetNumber) {
