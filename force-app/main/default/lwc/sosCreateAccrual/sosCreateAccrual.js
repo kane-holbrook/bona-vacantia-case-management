@@ -113,7 +113,13 @@ export default class SosCreateAccrual extends LightningElement {
         })
         .catch(error => {
             console.error('Error creating accrual:', error);
-            // Handle the error
+            // We need to dispatch an event to the parent component to refresh the data still regardles of the error
+            this.dispatchEvent(new CustomEvent('accrualcreated', {
+                detail: { recordId: this.caseId },
+                bubbles: true,
+                composed: true
+            }));
+            this.closeModal();
         });
     }
 
