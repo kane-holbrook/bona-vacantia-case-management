@@ -6,15 +6,15 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
     global Messaging.InboundEmailResult handleInboundEmail(Messaging.InboundEmail email, Messaging.InboundEnvelope envelope) {
         Messaging.InboundEmailResult result = new Messaging.InboundEmailResult();
 
-        // String allowedDomain = 'governmentlegal.gov.uk';
-        // String senderDomain = email.fromAddress.substring(email.fromAddress.indexOf('@') + 1);
+        String allowedDomain = 'governmentlegal.gov.uk';
+        String senderDomain = email.fromAddress.substring(email.fromAddress.indexOf('@') + 1);
         
 
-        // if (senderDomain != allowedDomain) {
-        //     System.debug('Email from unauthorized domain: ' + senderDomain);
-        //     result.success = false;
-        //     return result;
-        // }
+        if (senderDomain != allowedDomain) {
+            System.debug('Email from unauthorized domain: ' + senderDomain);
+            result.success = false;
+            return result;
+        }
 
         if (email == null) {
             System.debug('Inbound email is null');

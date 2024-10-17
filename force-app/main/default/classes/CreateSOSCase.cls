@@ -30,7 +30,7 @@ public class CreateSOSCase {
     @InvocableMethod(label='Create New SOS Case' description='Creates a new SOS case.')
     public static List<SOSCaseResponse> createNewSOSCase(List<SOSCaseRequest> requests) {
         List<SOSCaseResponse> results = new List<SOSCaseResponse>();
-        Integer maxRetries = 2;
+        Integer maxRetries = 5;
         
         for (SOSCaseRequest reqData : requests) {
             // Create a new Response object for the API call
@@ -47,9 +47,10 @@ public class CreateSOSCase {
                 r.address_1 = reqData.AddressLine1;
                 r.address_2 = reqData.AddressLine2;
                 r.town = reqData.Town;
-                r.county = reqData.Country;
+                r.county = reqData.County;
                 r.postcode = reqData.Postcode;
                 r.name = reqData.CompanyName;
+                r.forename = '';
                 // r.feeearner = 'case officer assigned';
                 r.pitype = 'OR';
                 r.clname = reqData.CompanyName;
@@ -60,7 +61,7 @@ public class CreateSOSCase {
                 r.address_1 = reqData.AddressLine1;
                 r.address_2 = reqData.AddressLine2;
                 r.town = reqData.Town;
-                r.county = reqData.Country;
+                r.county = reqData.County;
                 r.postcode = reqData.Postcode;
                 r.forename = reqData.DecdForenames;
                 r.name = reqData.DecdSurname;
@@ -168,7 +169,7 @@ public class CreateSOSCase {
         public String Town;
 
         @InvocableVariable(required=false description='County')
-        public String Country;
+        public String County;
 
         @InvocableVariable(required=false description='Postcode')
         public String Postcode;

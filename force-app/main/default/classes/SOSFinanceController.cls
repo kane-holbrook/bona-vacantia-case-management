@@ -84,6 +84,7 @@ public class SOSFinanceController
         public string refer { get; set; }
         public string description { get; set; }
         public boolean archived { get; set; }
+        public boolean closed { get; set; }
     }
     
     
@@ -331,7 +332,7 @@ public class SOSFinanceController
     }
 
     @AuraEnabled(cacheable=false)
-    public static String updateSOSCase(String mtcode, String refer, String description, Boolean archived) {
+    public static String updateSOSCase(String mtcode, String refer, String description, Boolean closed) {
         
         Map<String, Object> updateData = new Map<String, Object>();
         
@@ -339,7 +340,8 @@ public class SOSFinanceController
         updateData.put('mtcode', mtcode);
         updateData.put('ref', refer);
         updateData.put('description', description);
-        updateData.put('archived', archived);
+        updateData.put('archived', false);
+        updateData.put('closed', closed);
 
         // Prepare the HTTP request
         HttpRequest req = new HttpRequest();

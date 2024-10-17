@@ -4,6 +4,7 @@ public class BVCaseNumberHelper {
         List<CaseResponse> responseList = new List<CaseResponse>();
         String newCaseName;
         String currentYear = String.valueOf(Date.today().year()).right(2);
+        Pattern caseNamePattern = Pattern.compile('^(FOIR|ESTA|COMP|GENE|CONV)\\d{2}#\\d+$');
 
         // Query last 100 cases for FOIR Case Name
         List<BV_Case__c> CaseNameList = [SELECT Name FROM BV_Case__c 
@@ -43,7 +44,7 @@ public class BVCaseNumberHelper {
             }
 
             // Determine Case Name
-            if (CaseNameList.isEmpty() || CaseNameList[0].Name == null) {
+            if (CaseNameList.isEmpty() || CaseNameList[0].Name == null || !caseNamePattern.matcher(CaseNameList[0].Name).matches()) {
                 newCaseName = 'FOIR' + currentYear + '#1'; // Starting case name: "TYPEYY#1"
             } else {
                 String lastCaseName = CaseNameList[0].Name;
@@ -67,7 +68,7 @@ public class BVCaseNumberHelper {
 
             return responseList;
         }else if (RecordCaseType.contains('ESTA')){
-            if (CaseNameList.isEmpty() || CaseNameList[0].Name == null) {
+            if (CaseNameList.isEmpty() || CaseNameList[0].Name == null || !caseNamePattern.matcher(CaseNameList[0].Name).matches()) {
                 newCaseName = 'ESTA' + currentYear + '#1'; // Starting case name: "TYPEYY#1"
             } else {
                 String lastCaseName = CaseNameList[0].Name;
@@ -90,7 +91,7 @@ public class BVCaseNumberHelper {
             return responseList;
 
         }else if (RecordCaseType.contains('COMP')){
-            if (CaseNameList.isEmpty() || CaseNameList[0].Name == null) {
+            if (CaseNameList.isEmpty() || CaseNameList[0].Name == null || !caseNamePattern.matcher(CaseNameList[0].Name).matches()) {
                 newCaseName = 'COMP' + currentYear + '#1'; // Starting case name: "TYPEYY#1"
             } else {
                 String lastCaseName = CaseNameList[0].Name;
@@ -113,7 +114,7 @@ public class BVCaseNumberHelper {
             return responseList;
 
         }else if (RecordCaseType.contains('GENE')){
-            if (CaseNameList.isEmpty() || CaseNameList[0].Name == null) {
+            if (CaseNameList.isEmpty() || CaseNameList[0].Name == null || !caseNamePattern.matcher(CaseNameList[0].Name).matches()) {
                 newCaseName = 'GENE' + currentYear + '#1'; // Starting case name: "TYPEYY#1"
             } else {
                 String lastCaseName = CaseNameList[0].Name;
@@ -136,7 +137,7 @@ public class BVCaseNumberHelper {
             return responseList;
 
         } else if (RecordCaseType.contains('CONV')){
-            if (CaseNameList.isEmpty() || CaseNameList[0].Name == null) {
+            if (CaseNameList.isEmpty() || CaseNameList[0].Name == null || !caseNamePattern.matcher(CaseNameList[0].Name).matches()) {
                 newCaseName = 'CONV' + currentYear + '#1'; // Starting case name: "TYPEYY#1"
             } else {
                 String lastCaseName = CaseNameList[0].Name;
