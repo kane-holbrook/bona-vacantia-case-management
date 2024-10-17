@@ -5,7 +5,7 @@ import getSOSData from '@salesforce/apex/SOSFinanceController.getSOSData';
 import reverseAccrual from '@salesforce/apex/SOSFinanceController.reverseAccrual';
 import { getRecordId } from 'c/sharedService';
 
-const FIELDS = ['BV_Case__c.Name'];
+const FIELDS = ['BV_Case__c.Name', 'BV_Case__c.mtcode__c'];
 const PAGE_SIZE = 20; // Number of records per page
 
 export default class SosLedger extends LightningElement {
@@ -79,6 +79,13 @@ export default class SosLedger extends LightningElement {
 
     get bvCaseName() {
         let caseName = getFieldValue(this.record.data, 'BV_Case__c.Name');
+        let mtCode = getFieldValue(this.record.data, 'BV_Case__c.mtcode__c');
+        
+        // Check if the caseName matches the new flexible format
+        if (/^[A-Za-z]+\d+#\d+$/.test(caseName)) {
+            return mtCode || '';
+        }
+        
         // Replace all occurrences of '/' with '_'
         return caseName ? caseName.replace(/\//g, '_') : '';
     }
