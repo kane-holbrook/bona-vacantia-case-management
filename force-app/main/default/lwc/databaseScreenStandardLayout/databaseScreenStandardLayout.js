@@ -36,6 +36,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
     isModalOpen = false;
     isModalOpenDelete = false;
     expandedView = true;
+    lastFocusedElement;
 
     // Subscription
     subscription = {};
@@ -501,21 +502,62 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
     }
 
     openModal() {
+        this.lastFocusedElement = this.template.activeElement;
         this.isModalOpen = true;
+        this.trapFocusInModal();
     }
 
     closeModal() {
         this.isModalOpen = false;
         this.subRecordId = null;
+        this.returnFocusToLastElement();
     }
 
     openModalDelete() {
+        this.lastFocusedElement = this.template.activeElement;
         this.isModalOpenDelete = true;
+        this.trapFocusInModal();
     }
 
     closeModalDelete() {
         this.isModalOpenDelete = false;
         this.subRecordId = null;
+        this.returnFocusToLastElement();
+    }
+
+    trapFocusInModal() {
+        const modal = this.template.querySelector('.slds-modal');
+        const focusableElements = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        const firstFocusableElement = focusableElements[0];
+        const lastFocusableElement = focusableElements[focusableElements.length - 1];
+
+        modal.addEventListener('keydown', (e) => {
+            const isTabPressed = e.key === 'Tab' || e.keyCode === 9;
+
+            if (!isTabPressed) {
+                return;
+            }
+
+            if (e.shiftKey) {
+                if (document.activeElement === firstFocusableElement) {
+                    lastFocusableElement.focus();
+                    e.preventDefault();
+                }
+            } else {
+                if (document.activeElement === lastFocusableElement) {
+                    firstFocusableElement.focus();
+                    e.preventDefault();
+                }
+            }
+        });
+
+        firstFocusableElement.focus();
+    }
+
+    returnFocusToLastElement() {
+        if (this.lastFocusedElement) {
+            this.lastFocusedElement.focus();
+        }
     }
 
     getRowActions(row, doneCallback) {
