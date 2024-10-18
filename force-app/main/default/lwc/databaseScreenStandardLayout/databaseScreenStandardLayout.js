@@ -49,6 +49,9 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
     // To store wired result for refresh
     wiredLayoutResult;
 
+    // Initialize expanded state for each row
+    @track expandedRows = new Set();
+
     @api
     get objectApiName() {
         return this._objectApiName;
@@ -659,21 +662,21 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
     // Handle expanded view dropdown event
     expandSection(event) {
         const targetRowId = event.currentTarget.dataset.targetrow;
-        console.log(targetRowId);
-        const queryString = `div[data-rowid="${targetRowId}"]`;
-        const rowElement = this.template.querySelector(queryString);
-        console.log(rowElement);
+        const rowElement = this.template.querySelector(`div[data-rowid="${targetRowId}"]`);
+        
         if (rowElement.style.display === 'none') {
             rowElement.style.display = 'block';
+            this.expandedRows.add(targetRowId); // Add to expanded set
         } else {
             rowElement.style.display = 'none';
+            this.expandedRows.delete(targetRowId); // Remove from expanded set
         }
+
         const icon = event.currentTarget.querySelector('lightning-icon');
-        if (icon.iconName === 'utility:chevronright') {
-            icon.iconName = 'utility:chevrondown';
-        } else {
-            icon.iconName = 'utility:chevronright';
-        }
+        icon.iconName = icon.iconName === 'utility:chevronright' ? 'utility:chevrondown' : 'utility:chevronright';
+
+        // Update aria-expanded attribute
+        event.currentTarget.setAttribute('aria-expanded', this.expandedRows.has(targetRowId));
     }
 
     // Utility method to show blank object values in console
@@ -1034,7 +1037,8 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
             return {
                 ...item,
                 rowIndex: index + 1,
-                Cells: formattedCells
+                Cells: formattedCells,
+                isExpanded: this.expandedRows.has(item.Id) // Check if the row is expanded
             };
         });
     }

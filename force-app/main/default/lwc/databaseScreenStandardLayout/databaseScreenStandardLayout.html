@@ -72,7 +72,7 @@
                                         <td class="slds-cell_action-mode" role="gridcell">
                                             <div>
                                                 <template if:true={expandedView}>
-                                                    <button class="slds-button slds-button_icon slds-m-right_x-small" aria-hidden="false" tabindex="0" data-targetrow={row.Id} onclick={expandSection}>
+                                                    <button class="slds-button slds-button_icon slds-m-right_x-small" aria-hidden="false" tabindex="0" data-targetrow={row.Id} onclick={expandSection} aria-expanded={row.isExpanded}>
                                                         <lightning-icon icon-name="utility:chevronright" alternative-text="Expand" size="x-small"></lightning-icon>
                                                     </button>
                                                 </template>
