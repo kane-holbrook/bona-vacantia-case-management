@@ -162,7 +162,7 @@
                             </thead>                    
                             <tbody>
                                 <template for:each={filteredHistoryItems} for:item="item">
-                                    <tr key={item.Id} class={item.rowClass} onclick={handleRowClick} data-id={item.Id}>
+                                    <tr key={item.Id} class={item.rowClass} onclick={handleRowClick} data-id={item.Id} tabindex="0" role="button" aria-label="View details for {item.Action__c}">
                                         <td data-label="Selected" if:true={showRelatedItems}>
                                             <lightning-input type="checkbox" checked={item.isSelected} data-id={item.Id} onchange={handleRowSelection}></lightning-input>
                                         </td>
