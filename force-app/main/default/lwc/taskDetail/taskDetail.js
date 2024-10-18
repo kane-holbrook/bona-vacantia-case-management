@@ -735,6 +735,9 @@ export default class TaskDetail extends LightningElement {
         this.currentTemplateId = event.currentTarget.dataset.id;
         this.currentTemplate = this.caseHistoryData.find(item => item.Id === this.currentTemplateId);
         this.isManageModalOpen = true;
+
+        // Set focus to the modal header when it opens
+        this.template.querySelector('.slds-modal__header').focus();
     }
 
     handleDeleteOpen(event) {
@@ -746,6 +749,12 @@ export default class TaskDetail extends LightningElement {
     closeManageModal() {
         this.isManageModalOpen = false;
         this.currentTemplateId = null;
+
+        // Return focus to the 'Manage' button that opened the modal
+        const manageButton = this.template.querySelector(`lightning-menu-item[data-id="${this.currentTemplateId}"]`);
+        if (manageButton) {
+            manageButton.focus();
+        }
     }
 
     closeDeleteModal() {
