@@ -170,7 +170,7 @@
                                         <template if:true={showRelatedItems}>
                                             <td data-label="Expand">
                                                 <template if:true={item.hasChildren}>
-                                                    <button class="slds-button slds-button_icon slds-m-right_x-small" aria-expanded={item.isExpanded} onclick={toggleRow} data-id={item.Id}>
+                                                    <button class="slds-button slds-button_icon slds-m-right_x-small" aria-expanded={item.isExpanded} aria-controls="childRows" onclick={toggleRow} data-id={item.Id}>
                                                         <lightning-icon icon-name={item.iconName} alternative-text="Expand"></lightning-icon>
                                                     </button>
                                                 </template>
@@ -221,16 +221,16 @@
     </article>
 
     <template if:true={isModalOpen}>
-        <section role="dialog" tabindex="-1" aria-modal="true" class="slds-modal slds-fade-in-open">
+        <section role="dialog" tabindex="-1" aria-modal="true" class="slds-modal slds-fade-in-open" aria-labelledby="modal-heading" aria-describedby="modal-content">
             <div class="slds-modal__container bigger-modal">
                 <header class="slds-modal__header">
                     <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
                         <lightning-icon icon-name="utility:close" alternative-text="close" size="small"></lightning-icon>
                         <span class="slds-assistive-text">Close</span>
                     </button>
-                    <h2 class="slds-text-heading_medium">History item</h2>
+                    <h2 id="modal-heading" class="slds-text-heading_medium">History item</h2>
                 </header>
-                <div class="slds-modal__content slds-p-around_medium">
+                <div id="modal-content" class="slds-modal__content slds-p-around_medium">
                     <c-history-edit-modal record={currentRecord} onclose={closeModal} onsave={handleSaveSuccess}></c-history-edit-modal>
                 </div>
                 <footer class="slds-modal__footer">

@@ -40,7 +40,6 @@ public with sharing class LayoutController {
         List<Object> tableHeaders = (List<Object>) headingMetadata.get('sections');
     
         for(Integer i = 0; i < tableHeaders.size(); i++){
-            //tableHeaders should only ever have one section
             layoutSections.add(0, tableHeaders[i]);
         }
     
