@@ -246,6 +246,9 @@ export default class TaskList extends LightningElement {
     
         // Redirect to the task detail page instead of opening the edit modal
         this.isTaskDetailVisible = true;
+
+        // Set focus to a specific element in the task detail view
+        this.template.querySelector('.task-detail-heading').focus();
     }
 
     handleDeleteOpen(event) {
@@ -435,6 +438,12 @@ export default class TaskList extends LightningElement {
         this.isTaskDetailVisible = false;
         this.clearFilters();
         this.refreshAndUpdateTaskList();
+
+        // Return focus to the task list or a specific element
+        const taskListHeading = this.template.querySelector('.task-list-heading');
+        if (taskListHeading) {
+            taskListHeading.focus();
+        }
     }
 
     refreshAndUpdateTaskList() {
