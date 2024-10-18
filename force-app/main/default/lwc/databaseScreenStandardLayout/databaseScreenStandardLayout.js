@@ -642,15 +642,15 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                 return {
                     ...column,
                     isSortedAsc: this.sortDirection === 'asc',
-                    isSortedDesc: this.sortDirection  === 'desc',
-                    ariaSort: this.sortDirection
+                    isSortedDesc: this.sortDirection === 'desc',
+                    ariaSort: this.sortDirection === 'asc' ? 'ascending' : 'descending' // Corrected values
                 };
             }
             return {
                 ...column,
                 isSortedAsc: false,
                 isSortedDesc: false,
-                ariaSort: 'none'
+                ariaSort: 'none' // Default value
             };
         });
     }
