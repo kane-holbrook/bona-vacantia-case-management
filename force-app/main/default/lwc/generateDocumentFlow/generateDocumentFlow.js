@@ -159,4 +159,26 @@ export default class GenerateDocumentFlow extends LightningElement {
     get hasFilteredDocuments() {
         return this.filteredDocuments.length > 0;
     }
+
+    getAriaLabel(doc) {
+        return 'Select ' + doc.displayName;
+    }
+
+    getAriaLabelForCategory(category) {
+        return 'Select category ' + category.name;
+    }
+
+    get documentsWithAriaLabels() {
+        return this.filteredDocuments.map(doc => ({
+            ...doc,
+            ariaLabel: 'Select ' + doc.displayName
+        }));
+    }
+
+    get categoriesWithAriaLabels() {
+        return this.documentCategories.map(category => ({
+            ...category,
+            ariaLabel: 'Select category ' + category.name
+        }));
+    }
 }

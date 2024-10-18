@@ -2,7 +2,7 @@
     <div class="slds-grid slds-wrap" style="background-color:#fafaf9; position:relative; overflow:hidden; height:100%;">
         <div class="slds-col slds-p-around_medium" style="flex-grow: 1;">
             <template if:true={isLoading}>
-                <div class="slds-align_absolute-center slds-m-around_medium">
+                <div class="slds-align_absolute-center slds-m-around_medium" role="status" aria-live="polite">
                     <lightning-spinner alternative-text="Loading"></lightning-spinner>
                 </div>
             </template>
@@ -10,7 +10,8 @@
                 <lightning-input type="search" 
                                  placeholder="Search by Document Name or Type" 
                                  onchange={handleSearchInputChange} 
-                                 class="slds-m-bottom_medium">
+                                 class="slds-m-bottom_medium"
+                                 aria-label="Search Documents">
                 </lightning-input>
 
                 <template if:true={isSearching}>
@@ -35,10 +36,10 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <template for:each={filteredDocuments} for:item="doc">
+                                        <template for:each={documentsWithAriaLabels} for:item="doc">
                                             <tr key={doc.id}>
                                                 <td>
-                                                    <lightning-input type="radio" name="documentSelection" data-id={doc.id} onchange={handleSelectionChange}></lightning-input>
+                                                    <lightning-input type="radio" name="documentSelection" data-id={doc.id} onchange={handleSelectionChange} aria-label={doc.ariaLabel}></lightning-input>
                                                 </td>
                                                 <td>{doc.displayName}</td>
                                                 <td>{doc.DocumentType}</td>
@@ -57,7 +58,7 @@
                         </div>
                     </template>
                     <template if:false={hasFilteredDocuments}>
-                        <div class="slds-text-align_center slds-m-top_medium">
+                        <div class="slds-text-align_center slds-m-top_medium" role="alert">
                             No results found
                         </div>
                     </template>
@@ -65,17 +66,17 @@
 
                 <template if:false={isSearching}>
                     <template if:false={isCategorySelected}>
-                        <ul class="slds-has-dividers_around-space">
-                            <template for:each={documentCategories} for:item="category">
-                                <li key={category.name} class="slds-item">
-                                    <a href="javascript:void(0);" data-category={category.name} onclick={handleCategorySelection}>{category.name}</a>
+                        <ul class="slds-has-dividers_around-space" role="list">
+                            <template for:each={categoriesWithAriaLabels} for:item="category">
+                                <li key={category.name} class="slds-item" role="listitem">
+                                    <a href="javascript:void(0);" data-category={category.name} onclick={handleCategorySelection} aria-label={category.ariaLabel}>{category.name}</a>
                                 </li>
                             </template>
                         </ul>
                     </template>
                     <template if:true={isCategorySelected}>
                         <div class="slds-m-bottom_medium">
-                            <lightning-button variant="neutral" label="Back to Categories" onclick={handleBackToCategories}></lightning-button>
+                            <lightning-button variant="neutral" label="Back to Categories" onclick={handleBackToCategories} aria-label="Back to Categories"></lightning-button>
                         </div>
                         <h2 class="slds-text-heading_medium slds-m-bottom_small">{selectedCategory}</h2>
                         <div class="slds-table_header-fixed_container" style="height: 500px;">
@@ -98,10 +99,10 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <template for:each={filteredDocuments} for:item="doc">
+                                        <template for:each={documentsWithAriaLabels} for:item="doc">
                                             <tr key={doc.id}>
                                                 <td>
-                                                    <lightning-input type="radio" name="documentSelection" data-id={doc.id} onchange={handleSelectionChange}></lightning-input>
+                                                    <lightning-input type="radio" name="documentSelection" data-id={doc.id} onchange={handleSelectionChange} aria-label={doc.ariaLabel}></lightning-input>
                                                 </td>
                                                 <td>{doc.displayName}</td>
                                                 <td>{doc.DocumentType}</td>
