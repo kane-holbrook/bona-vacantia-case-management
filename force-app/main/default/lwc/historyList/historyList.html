@@ -233,7 +233,12 @@
                                             </td>
                                         </template>
                                         <td class="important" data-label="Important">
-                                            <lightning-icon icon-name="utility:priority" alternative-text="Important" class={item.flagIconClass}></lightning-icon>
+                                            <lightning-icon 
+                                                icon-name="utility:priority" 
+                                                alternative-text="Important" 
+                                                class={item.flagIconClass}
+                                                aria-label="Important history item indicator">
+                                            </lightning-icon>
                                         </td>
                                         <td class="date" data-label="Date">
                                             <div class="slds-grid slds-align_absolute-center">
@@ -318,6 +323,7 @@
     </template>
     <c-email-quick-action record-id={recordId}></c-email-quick-action>
 </template>
+
 
 
 
