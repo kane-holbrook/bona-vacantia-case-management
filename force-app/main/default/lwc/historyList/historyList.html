@@ -92,7 +92,12 @@
                                         </th>
                                     </template>
                                     <th class="important" scope="col">
-                                        <button class="slds-button slds-button_reset slds-truncate slds-cell-fixed" title="Important" onclick={handleSort} data-column="Important">
+                                        <button class="slds-button slds-button_reset slds-truncate slds-cell-fixed" 
+                                                title="Important" 
+                                                onclick={handleSort} 
+                                                data-column="Important"
+                                                aria-label={ariaLabelForImportant}
+                                                aria-live="polite">
                                             Important
                                             <template if:true={isSortedByImportant}>
                                                 <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
@@ -100,7 +105,12 @@
                                         </button>
                                     </th>
                                     <th class="date" scope="col">
-                                        <button class="slds-button slds-button_reset slds-truncate slds-cell-fixed" title="Date" onclick={handleSort} data-column="Date_Inserted_Time__c">
+                                        <button class="slds-button slds-button_reset slds-truncate slds-cell-fixed" 
+                                                title="Date" 
+                                                onclick={handleSort} 
+                                                data-column="Date_Inserted_Time__c"
+                                                aria-label={ariaLabelForDate}
+                                                aria-live="polite">
                                             Date
                                             <template if:true={isSortedByDate}>
                                                 <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
@@ -108,7 +118,12 @@
                                         </button>
                                     </th>
                                     <th class="action" scope="col">
-                                        <button class="slds-button slds-button_reset slds-truncate slds-cell-fixed" title="Action" onclick={handleSort} data-column="Action__c">
+                                        <button class="slds-button slds-button_reset slds-truncate slds-cell-fixed" 
+                                                title="Action" 
+                                                onclick={handleSort} 
+                                                data-column="Action__c"
+                                                aria-label={ariaLabelForAction}
+                                                aria-live="polite">
                                             Action
                                             <template if:true={isSortedByAction}>
                                                 <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
@@ -116,7 +131,12 @@
                                         </button>
                                     </th>
                                     <th class="notes" scope="col">
-                                        <button class="slds-button slds-button_reset slds-truncate slds-cell-fixed" title="Notes" onclick={handleSort} data-column="Notes__c">
+                                        <button class="slds-button slds-button_reset slds-truncate slds-cell-fixed" 
+                                                title="Notes" 
+                                                onclick={handleSort} 
+                                                data-column="Notes__c"
+                                                aria-label={ariaLabelForNotes}
+                                                aria-live="polite">
                                             Notes
                                             <template if:true={isSortedByNotes}>
                                                 <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
@@ -124,7 +144,12 @@
                                         </button>
                                     </th>
                                     <th class="document-type" scope="col">
-                                        <button class="slds-button slds-button_reset slds-truncate slds-cell-fixed" title="Document Type" onclick={handleSort} data-column="DocumentType__c">
+                                        <button class="slds-button slds-button_reset slds-truncate slds-cell-fixed" 
+                                                title="Document Type" 
+                                                onclick={handleSort} 
+                                                data-column="DocumentType__c"
+                                                aria-label={ariaLabelForDocumentType}
+                                                aria-live="polite">
                                             Document Type
                                             <template if:true={isSortedByDocumentType}>
                                                 <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
@@ -132,7 +157,12 @@
                                         </button>
                                     </th>
                                     <th class="file-size" scope="col">
-                                        <button class="slds-button slds-button_reset slds-truncate slds-cell-fixed" title="File Size" onclick={handleSort} data-column="FileSize__c">
+                                        <button class="slds-button slds-button_reset slds-truncate slds-cell-fixed" 
+                                                title="File Size" 
+                                                onclick={handleSort} 
+                                                data-column="FileSize__c"
+                                                aria-label={ariaLabelForFileSize}
+                                                aria-live="polite">
                                             File Size
                                             <template if:true={isSortedByFileSize}>
                                                 <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
@@ -140,7 +170,12 @@
                                         </button>
                                     </th>
                                     <th class="draft" scope="col">
-                                        <button class="slds-button slds-button_reset slds-truncate slds-cell-fixed" title="Draft" onclick={handleSort} data-column="Draft__c">
+                                        <button class="slds-button slds-button_reset slds-truncate slds-cell-fixed" 
+                                                title="Draft" 
+                                                onclick={handleSort} 
+                                                data-column="Draft__c"
+                                                aria-label={ariaLabelForDraft}
+                                                aria-live="polite">
                                             Draft
                                             <template if:true={isSortedByDraft}>
                                                 <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
@@ -148,9 +183,27 @@
                                         </button>
                                     </th>
                                     <th class="case-officer" scope="col">
-                                        <button class="slds-button slds-button_reset slds-truncate slds-cell-fixed" title="Case Officer" onclick={handleSort} data-column="Case_Officer_Name">
+                                        <button class="slds-button slds-button_reset slds-truncate slds-cell-fixed" 
+                                                title="Case Officer" 
+                                                onclick={handleSort} 
+                                                data-column="Case_Officer_Name"
+                                                aria-label={ariaLabelForCaseOfficer}
+                                                aria-live="polite">
                                             Case Officer
                                             <template if:true={isSortedByCaseOfficer}>
+                                                <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
+                                            </template>
+                                        </button>
+                                    </th>
+                                    <th class="selected" scope="col">
+                                        <button class="slds-button slds-button_reset slds-truncate slds-cell-fixed" 
+                                                title="Selected" 
+                                                onclick={handleSort} 
+                                                data-column="Selected"
+                                                aria-label={ariaLabelForSelected}
+                                                aria-live="polite">
+                                            Selected
+                                            <template if:true={isSortedBySelected}>
                                                 <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
                                             </template>
                                         </button>
@@ -265,3 +318,6 @@
     </template>
     <c-email-quick-action record-id={recordId}></c-email-quick-action>
 </template>
+
+
+

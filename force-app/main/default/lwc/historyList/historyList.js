@@ -1339,4 +1339,42 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
         this.refreshHistoryItems();
         this.resetCheckboxStates();
     }
+
+    get ariaLabelForImportant() {
+        return `Sort by Important, currently sorted ${this.isSortedByImportant ? this.sortOrder : 'none'}`;
+    }
+
+    get ariaLabelForDate() {
+        return `Sort by Date, currently sorted ${this.isSortedByDate ? this.sortOrder : 'none'}`;
+    }
+
+    get ariaLabelForAction() {
+        return `Sort by Action, currently sorted ${this.isSortedByAction ? this.sortOrder : 'none'}`;
+    }
+
+    get ariaLabelForNotes() {
+        return `Sort by Notes, currently sorted ${this.isSortedByNotes ? this.sortOrder : 'none'}`;
+    }
+
+    get ariaLabelForDocumentType() {
+        return `Sort by Document Type, currently sorted ${this.isSortedByDocumentType ? this.sortOrder : 'none'}`;
+    }
+
+    get ariaLabelForFileSize() {
+        return `Sort by File Size, currently sorted ${this.isSortedByFileSize ? this.sortOrder : 'none'}`;
+    }
+
+    get ariaLabelForDraft() {
+        return `Sort by Draft, currently sorted ${this.isSortedByDraft ? this.sortOrder : 'none'}`;
+    }
+
+    get ariaLabelForCaseOfficer() {
+        return `Sort by Case Officer, currently sorted ${this.isSortedByCaseOfficer ? this.sortOrder : 'none'}`;
+    }
+
+    get ariaLabelForSelected() {
+        return `Sort by Selected, currently sorted ${this.isSortedBySelected ? this.sortOrder : 'none'}`;
+    }
+
+    // Add similar getters for other sortable columns if needed
 }
