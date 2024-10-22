@@ -1,9 +1,9 @@
 <template>
-    <article class="slds-card card-background">
+    <article class="slds-card card-background" role="region" aria-labelledby="caseOfficerHistoryTitle">
         <div class="slds-card__header slds-grid" style="padding-left: 1rem; padding-top: 1rem;">
             <header class="slds-media slds-media_center slds-has-flexi-truncate">
                 <div class="slds-media__body">
-                    <h2 class="slds-card__header-title">
+                    <h2 class="slds-card__header-title" id="caseOfficerHistoryTitle">
                         <span>Case Officer History</span>
                     </h2>
                 </div>
@@ -12,170 +12,164 @@
         <div class="slds-card__body slds-card__body_inner">
             <div class="slds-p-around_medium">
                 <!-- Current Officer Section -->
-                <div class="slds-grid slds-gutters">
-                    <div class="slds-col slds-size_4-of-6">
-                        <label class="slds-form-element__label" for="currentOfficer">Current Officer</label>
-                        <div class="slds-form-element__control">
-                            <input type="text" id="currentOfficer" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={currentOfficer} readonly />
+                <fieldset>
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col slds-size_4-of-6">
+                            <label class="slds-form-element__label" for="currentOfficer">Current Officer</label>
+                            <div class="slds-form-element__control">
+                                <input type="text" id="currentOfficer" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={currentOfficer} readonly aria-label="Current Officer Name" />
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_2-of-6">
+                            <label class="slds-form-element__label" for="currentOfficerDate">Date</label>
+                            <div class="slds-form-element__control">
+                                <input type="text" id="currentOfficerDate" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={currentOfficerDate} readonly aria-label="Current Officer Date" />
+                            </div>
                         </div>
                     </div>
-                    <div class="slds-col slds-size_2-of-6">
-                        <label class="slds-form-element__label" for="currentOfficerDate">Date</label>
-                        <div class="slds-form-element__control">
-                            <input type="text" id="currentOfficerDate" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={currentOfficerDate} readonly />
-                        </div>
-                    </div>
-                </div>
+                </fieldset>
 
                 <!-- Previous Officers Section -->
-                <div class="slds-m-top_large">
+                <fieldset class="slds-m-top_large">
                     <!-- Previous 1 -->
                     <div class="slds-grid slds-gutters">
                         <div class="slds-col slds-size_4-of-6">
                             <label class="slds-form-element__label" for="previous1">Previous 1</label>
                             <div class="slds-form-element__control">
-                                <input type="text" id="previous1" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={previous1} readonly />
+                                <input type="text" id="previous1" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={previous1} readonly aria-label="Previous Officer 1 Name" />
                             </div>
                         </div>
                         <div class="slds-col slds-size_2-of-6">
                             <label class="slds-form-element__label" for="previous1Date">Date</label>
                             <div class="slds-form-element__control">
-                                <input type="text" id="previous1Date" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={previous1Date} readonly />
+                                <input type="text" id="previous1Date" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={previous1Date} readonly aria-label="Previous Officer 1 Date" />
                             </div>
                         </div>
                     </div>
-
                     <!-- Previous 2 -->
                     <div class="slds-grid slds-gutters slds-m-top_small">
                         <div class="slds-col slds-size_4-of-6">
                             <label class="slds-form-element__label" for="previous2">Previous 2</label>
                             <div class="slds-form-element__control">
-                                <input type="text" id="previous2" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={previous2} readonly />
+                                <input type="text" id="previous2" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={previous2} readonly aria-label="Previous Officer 2 Name" />
                             </div>
                         </div>
                         <div class="slds-col slds-size_2-of-6">
                             <label class="slds-form-element__label" for="previous2Date">Date</label>
                             <div class="slds-form-element__control">
-                                <input type="text" id="previous2Date" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={previous2Date} readonly />
+                                <input type="text" id="previous2Date" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={previous2Date} readonly aria-label="Previous Officer 2 Date" />
                             </div>
                         </div>
                     </div>
-
                     <!-- Previous 3 -->
                     <div class="slds-grid slds-gutters slds-m-top_small">
                         <div class="slds-col slds-size_4-of-6">
                             <label class="slds-form-element__label" for="previous3">Previous 3</label>
                             <div class="slds-form-element__control">
-                                <input type="text" id="previous3" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={previous3} readonly />
+                                <input type="text" id="previous3" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={previous3} readonly aria-label="Previous Officer 3 Name" />
                             </div>
                         </div>
                         <div class="slds-col slds-size_2-of-6">
                             <label class="slds-form-element__label" for="previous3Date">Date</label>
                             <div class="slds-form-element__control">
-                                <input type="text" id="previous3Date" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={previous3Date} readonly />
+                                <input type="text" id="previous3Date" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={previous3Date} readonly aria-label="Previous Officer 3 Date" />
                             </div>
                         </div>
                     </div>
-
-                    <!-- Repeat for Previous 4 to Previous 9 -->
+                    <!-- Repeat similar structure for Previous 4 to Previous 9 -->
                     <div class="slds-grid slds-gutters slds-m-top_small">
                         <div class="slds-col slds-size_4-of-6">
                             <label class="slds-form-element__label" for="previous4">Previous 4</label>
                             <div class="slds-form-element__control">
-                                <input type="text" id="previous4" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={previous4} readonly />
+                                <input type="text" id="previous4" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={previous4} readonly aria-label="Previous Officer 4 Name" />
                             </div>
                         </div>
                         <div class="slds-col slds-size_2-of-6">
                             <label class="slds-form-element__label" for="previous4Date">Date</label>
                             <div class="slds-form-element__control">
-                                <input type="text" id="previous4Date" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={previous4Date} readonly />
+                                <input type="text" id="previous4Date" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={previous4Date} readonly aria-label="Previous Officer 4 Date" />
                             </div>
                         </div>
                     </div>
-
                     <div class="slds-grid slds-gutters slds-m-top_small">
                         <div class="slds-col slds-size_4-of-6">
                             <label class="slds-form-element__label" for="previous5">Previous 5</label>
                             <div class="slds-form-element__control">
-                                <input type="text" id="previous5" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={previous5} readonly />
+                                <input type="text" id="previous5" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={previous5} readonly aria-label="Previous Officer 5 Name" />
                             </div>
                         </div>
                         <div class="slds-col slds-size_2-of-6">
                             <label class="slds-form-element__label" for="previous5Date">Date</label>
                             <div class="slds-form-element__control">
-                                <input type="text" id="previous5Date" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={previous5Date} readonly />
+                                <input type="text" id="previous5Date" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={previous5Date} readonly aria-label="Previous Officer 5 Date" />
                             </div>
                         </div>
                     </div>
-
                     <div class="slds-grid slds-gutters slds-m-top_small">
                         <div class="slds-col slds-size_4-of-6">
                             <label class="slds-form-element__label" for="previous6">Previous 6</label>
                             <div class="slds-form-element__control">
-                                <input type="text" id="previous6" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={previous6} readonly />
+                                <input type="text" id="previous6" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={previous6} readonly aria-label="Previous Officer 6 Name" />
                             </div>
                         </div>
                         <div class="slds-col slds-size_2-of-6">
                             <label class="slds-form-element__label" for="previous6Date">Date</label>
                             <div class="slds-form-element__control">
-                                <input type="text" id="previous6Date" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={previous6Date} readonly />
+                                <input type="text" id="previous6Date" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={previous6Date} readonly aria-label="Previous Officer 6 Date" />
                             </div>
                         </div>
                     </div>
-
                     <div class="slds-grid slds-gutters slds-m-top_small">
                         <div class="slds-col slds-size_4-of-6">
                             <label class="slds-form-element__label" for="previous7">Previous 7</label>
                             <div class="slds-form-element__control">
-                                <input type="text" id="previous7" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={previous7} readonly />
+                                <input type="text" id="previous7" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={previous7} readonly aria-label="Previous Officer 7 Name" />
                             </div>
                         </div>
                         <div class="slds-col slds-size_2-of-6">
                             <label class="slds-form-element__label" for="previous7Date">Date</label>
                             <div class="slds-form-element__control">
-                                <input type="text" id="previous7Date" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={previous7Date} readonly />
+                                <input type="text" id="previous7Date" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={previous7Date} readonly aria-label="Previous Officer 7 Date" />
                             </div>
                         </div>
                     </div>
-
                     <div class="slds-grid slds-gutters slds-m-top_small">
                         <div class="slds-col slds-size_4-of-6">
                             <label class="slds-form-element__label" for="previous8">Previous 8</label>
                             <div class="slds-form-element__control">
-                                <input type="text" id="previous8" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={previous8} readonly />
+                                <input type="text" id="previous8" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={previous8} readonly aria-label="Previous Officer 8 Name" />
                             </div>
                         </div>
                         <div class="slds-col slds-size_2-of-6">
                             <label class="slds-form-element__label" for="previous8Date">Date</label>
                             <div class="slds-form-element__control">
-                                <input type="text" id="previous8Date" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={previous8Date} readonly />
+                                <input type="text" id="previous8Date" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={previous8Date} readonly aria-label="Previous Officer 8 Date" />
                             </div>
                         </div>
                     </div>
-
                     <div class="slds-grid slds-gutters slds-m-top_small">
                         <div class="slds-col slds-size_4-of-6">
                             <label class="slds-form-element__label" for="previous9">Previous 9</label>
                             <div class="slds-form-element__control">
-                                <input type="text" id="previous9" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={previous9} readonly />
+                                <input type="text" id="previous9" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={previous9} readonly aria-label="Previous Officer 9 Name" />
                             </div>
                         </div>
                         <div class="slds-col slds-size_2-of-6">
                             <label class="slds-form-element__label" for="previous9Date">Date</label>
                             <div class="slds-form-element__control">
-                                <input type="text" id="previous9Date" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={previous9Date} readonly />
+                                <input type="text" id="previous9Date" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={previous9Date} readonly aria-label="Previous Officer 9 Date" />
                             </div>
                         </div>
                     </div>
-                </div>
+                </fieldset>
 
                 <!-- Put Away and Reopened Sections -->
-                <div class="slds-m-top_large">
+                <fieldset class="slds-m-top_large">
                     <div class="slds-grid slds-gutters">
                         <div class="slds-col slds-size_2-of-6">
                             <label class="slds-form-element__label" for="putAway">Put Away</label>
                             <div class="slds-form-element__control">
-                                <input type="text" id="putAway" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={putAway} readonly />
+                                <input type="text" id="putAway" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={putAway} readonly aria-label="Put Away Date" />
                             </div>
                         </div>
                     </div>
@@ -183,17 +177,17 @@
                         <div class="slds-col slds-size_2-of-6">
                             <label class="slds-form-element__label" for="reopened">Reopened</label>
                             <div class="slds-form-element__control">
-                                <input type="text" id="reopened" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={reopened} readonly />
+                                <input type="text" id="reopened" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={reopened} readonly aria-label="Reopened Date" />
                             </div>
                         </div>
                         <div class="slds-col slds-size_4-of-6">
                             <label class="slds-form-element__label" for="reopenedBy">Reopened By</label>
                             <div class="slds-form-element__control">
-                                <input type="text" id="reopenedBy" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={reopenedBy} readonly />
+                                <input type="text" id="reopenedBy" class="slds-input slds-text-color_default" style="color: #0b0c0c; background-color: #f3f2f1; border: 1px solid #d8dde6;" value={reopenedBy} readonly aria-label="Reopened By" />
                             </div>
                         </div>
                     </div>
-                </div>
+                </fieldset>
             </div>
         </div>
     </article>
