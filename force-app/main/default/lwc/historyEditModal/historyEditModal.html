@@ -4,7 +4,14 @@
             Date Inserted
         </label>
         <div class="slds-form-element__control">
-            <lightning-input type="datetime" name="date-inserted" value={dateInserted} onchange={handleInputChange} required></lightning-input>
+            <lightning-input 
+                type="datetime" 
+                name="date-inserted" 
+                value={dateInserted} 
+                onchange={handleInputChange} 
+                required
+                field-level-help="Fields marked with an asterisk (*) are required.">
+            </lightning-input>
         </div>
     </div>
     <div class="slds-form-element slds-m-around_medium">
@@ -12,19 +19,36 @@
             Description
         </label>
         <div class="slds-form-element__control">
-            <lightning-input type="text" name="description" value={description} maxlength="255" onchange={handleInputChange} required></lightning-input>
+            <lightning-input 
+                type="text" 
+                name="description" 
+                value={description} 
+                maxlength="255" 
+                onchange={handleInputChange} 
+                required
+                field-level-help="Fields marked with an asterisk (*) are required.">
+            </lightning-input>
         </div>
     </div>    
     <div class="slds-form-element slds-m-around_medium">
         <label class="slds-form-element__label" for="details">Details</label>
         <div class="slds-form-element__control">
-            <lightning-textarea name="details" value={details} onchange={handleInputChange}></lightning-textarea>
+            <lightning-textarea 
+                name="details" 
+                value={details} 
+                onchange={handleInputChange}>
+            </lightning-textarea>
         </div>
     </div>
     <div class="slds-form-element slds-m-around_medium">
         <label class="slds-form-element__label" for="flag-important">Flag as important</label>
         <div class="slds-form-element__control">
-            <lightning-input type="checkbox" name="flag-important" checked={flagImportant} onchange={handleInputChange}></lightning-input>
+            <lightning-input 
+                type="checkbox" 
+                name="flag-important" 
+                checked={flagImportant} 
+                onchange={handleInputChange}>
+            </lightning-input>
         </div>
     </div>
 
