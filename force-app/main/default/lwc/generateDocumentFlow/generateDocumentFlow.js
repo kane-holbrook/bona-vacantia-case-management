@@ -171,7 +171,7 @@ export default class GenerateDocumentFlow extends LightningElement {
     get documentsWithAriaLabels() {
         return this.filteredDocuments.map(doc => ({
             ...doc,
-            ariaLabel: 'Select ' + doc.displayName
+            ariaLabel: `Select document ${doc.displayName}`
         }));
     }
 
