@@ -1,3 +1,8 @@
+.page-container {
+    background-color: #f3f3f3; /* Set the background color for the entire page */
+    padding: 1rem; /* Optional: Add some padding for better layout */
+}
+
 .custom-box {
     padding: 0.75rem;
     margin-bottom: 0.5rem;
