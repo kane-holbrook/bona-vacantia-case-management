@@ -813,4 +813,23 @@ export default class TaskDetail extends LightningElement {
             this.shouldShowDropdown = false;
         }
     }
+
+    handleKeyDown(event) {
+        const { key } = event;
+        const options = this.template.querySelectorAll('.slds-listbox__item');
+        const currentIndex = Array.from(options).findIndex(option => option.contains(document.activeElement));
+
+        if (key === 'ArrowDown') {
+            event.preventDefault();
+            const nextIndex = (currentIndex + 1) % options.length;
+            options[nextIndex].focus();
+        } else if (key === 'ArrowUp') {
+            event.preventDefault();
+            const prevIndex = (currentIndex - 1 + options.length) % options.length;
+            options[prevIndex].focus();
+        } else if (key === 'Enter') {
+            event.preventDefault();
+            options[currentIndex].click();
+        }
+    }
 }
