@@ -129,4 +129,50 @@ export default class DynamicTree extends LightningElement {
             this.treeName = '';
         }
     }
+
+    handleSearch(event) {
+        this.searchTerm = event.target.value.toLowerCase();
+        this.isSearchActive = !!this.searchTerm;
+    }
+
+    get filteredTreeData() {
+        if (!this.treeItems) {
+            return [];
+        }
+        if (this.searchTerm === '') {
+            this.isSearchActive = false;
+            return this.treeItems.map(node => ({
+                ...node,
+                icon: 'utility:chevronright', // Reset icon to default
+                expandedClass: 'slds-is-collapsed' // Ensure all nodes are collapsed by default
+            }));
+        }
+
+        const filterNodes = (nodes) => {
+            return nodes.reduce((filtered, node) => {
+                const isMatch = node.label.toLowerCase().includes(this.searchTerm);
+                if (isMatch && !node.items.length) {
+                    filtered.push({
+                        ...node,
+                        expandedClass: '', // Expanded to show the matched node
+                        icon: 'utility:chevronright' // Reset icon for matched nodes without children
+                    });
+                } else if (node.items) {
+                    const filteredChildren = filterNodes(node.items);
+                    if (filteredChildren.length) {
+                        filtered.push({
+                            ...node,
+                            items: filteredChildren,
+                            expandedClass: '',
+                            icon: 'utility:chevronright'
+                        });
+                    }
+                }
+                return filtered;
+            }, []);
+        };
+
+        const filteredData = filterNodes(this.treeItems);
+        return filteredData.sort((a, b) => a.label.localeCompare(b.label));
+    }
 }
