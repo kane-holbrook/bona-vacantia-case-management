@@ -37,6 +37,8 @@ export default class DynamicTree extends LightningElement {
             this.treeItems = this.formatTreeDataForLightningTree(data);
             this.error = undefined;
             this.setTreeName(this.recordTypeDeveloperName);
+            console.log('tree items', this.treeItems);
+            this.openFirstNavigableNode(this.treeItems); // Open the first navigable node
         } catch (error) {
             this.error = error;
             this.treeItems = [];
@@ -174,5 +176,24 @@ export default class DynamicTree extends LightningElement {
 
         const filteredData = filterNodes(this.treeItems);
         return filteredData.sort((a, b) => a.label.localeCompare(b.label));
+    }
+
+    openFirstNavigableNode(nodes) {
+        for (const node of nodes) {
+            if (node.object) {
+                // If the node has an object, it is navigable
+                node.expanded = true; // Expand the node
+                this.dispatchNavigationEvent(node); // Dispatch navigation event
+                return true; // Return true to indicate a node was expanded
+            } else if (node.items && node.items.length > 0) {
+                // Recursively check the children
+                const childExpanded = this.openFirstNavigableNode(node.items);
+                if (childExpanded) {
+                    node.expanded = true; // Ensure parent is expanded if a child is expanded
+                    return true; // Return true to indicate a node was expanded
+                }
+            }
+        }
+        return false; // Return false if no navigable node was found
     }
 }
