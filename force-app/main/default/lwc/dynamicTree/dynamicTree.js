@@ -6,7 +6,7 @@ import getRecordTypeDeveloperName from '@salesforce/apex/LayoutController.getRec
 
 export default class DynamicTree extends LightningElement {
     @api recordId;
-    @track treeData;
+    @track treeItems = [];
     @track error;
     @track searchTerm = '';
     @track isSearchActive = false;
@@ -27,52 +27,58 @@ export default class DynamicTree extends LightningElement {
             this.loadTreeData();
         } catch (error) {
             this.error = error;
-            this.treeData = undefined;
+            this.treeItems = [];
         }
     }
 
     async loadTreeData() {
         try {
             const data = await getTreeData({ recordTypeDeveloperName: this.recordTypeDeveloperName });
-            this.treeData = this.formatTreeData(data);
+            this.treeItems = this.formatTreeDataForLightningTree(data);
             this.error = undefined;
             this.setTreeName(this.recordTypeDeveloperName);
-
-            // Automatically open the first navigable node
-            this.openFirstNavigableNode(this.treeData);
         } catch (error) {
             this.error = error;
-            this.treeData = undefined;
+            this.treeItems = [];
         }
     }
 
-    formatTreeData(data) {
-        const addIcons = (nodes) => {
-            return nodes.map(node => {
-                let newNode = { ...node }; // Clone the node to avoid mutating the original object
-                newNode.icon = 'utility:chevronright';
-                newNode.hasChildren = newNode.children && newNode.children.length > 0;
-                if (newNode.hasChildren) {
-                    newNode.children = addIcons(newNode.children);
-                }
-                newNode.expandedClass = 'slds-is-collapsed'; // Set default state to collapsed
-                return newNode;
-            });
+    formatTreeDataForLightningTree(data) {
+        const formatNodes = (nodes, parentLabel = null, grandChildLabel = null, greatGrandChildLabel = null) => {
+            return nodes.map(node => ({
+                label: node.label,
+                name: node.label, // Use a unique identifier if available
+                object: node.object, // Ensure object is included
+                expanded: false,
+                parentLabel: parentLabel,
+                grandChildLabel: grandChildLabel,
+                greatGrandChildLabel: greatGrandChildLabel,
+                items: node.children ? formatNodes(node.children, node.label, parentLabel, grandChildLabel) : []
+            }));
         };
-        return addIcons(data);
+        return formatNodes(data);
     }
 
-    openFirstNavigableNode(nodes) {
-        for (const node of nodes) {
-            if (node.object) {
-                // If the node has an object, it is navigable
-                this.dispatchNavigationEvent(node);
-                return;
-            } else if (node.children && node.children.length > 0) {
-                // Recursively check the children
-                this.openFirstNavigableNode(node.children);
-                return;
+    handleTreeSelect(event) {
+        const selectedName = event.detail.name;
+        const findNode = (nodes) => {
+            for (const node of nodes) {
+                if (node.name === selectedName) {
+                    return node;
+                }
+                if (node.items) {
+                    const found = findNode(node.items);
+                    if (found) {
+                        return found;
+                    }
+                }
             }
+            return null;
+        };
+
+        const selectedNode = findNode(this.treeItems);
+        if (selectedNode && selectedNode.object) {
+            this.dispatchNavigationEvent(selectedNode);
         }
     }
 
@@ -84,9 +90,9 @@ export default class DynamicTree extends LightningElement {
                 recordTypeId, 
                 object: node.object, 
                 label: updatedLabel, 
-                parentLabel: node.label, 
-                grandChildLabel: node.label, 
-                greatGrandChildLabel: node.label 
+                parentLabel: node.parentLabel, 
+                grandChildLabel: node.grandChildLabel, 
+                greatGrandChildLabel: node.greatGrandChildLabel 
             }
         });
         this.dispatchEvent(navigationEvent);
@@ -108,110 +114,6 @@ export default class DynamicTree extends LightningElement {
         }
     }
 
-    handleToggle(event) {
-        const label = event.currentTarget.dataset.label;
-        const findNode = (nodes) => {
-            for (let node of nodes) {
-                if (node.label === label) {
-                    return node;
-                }
-                if (node.children) {
-                    const found = findNode(node.children);
-                    if (found) {
-                        return found;
-                    }
-                }
-            }
-            return null;
-        };
-
-        const node = findNode(this.treeData);
-        if (node) {
-            const ulElement = event.currentTarget.closest('li').querySelector('ul');
-            if (ulElement) {
-                const isCollapsed = ulElement.classList.toggle('slds-is-collapsed');
-                node.icon = isCollapsed ? 'utility:chevronright' : 'utility:chevrondown';
-                node.expandedClass = isCollapsed ? 'slds-is-collapsed' : '';
-
-                // Directly update the icon element
-                const iconElement = event.currentTarget.querySelector('lightning-icon');
-                if (iconElement) {
-                    iconElement.iconName = node.icon;
-                }
-
-                // Set the active-label CSS class
-                const previouslyActive = this.template.querySelector('.active-label');
-                if (previouslyActive) {
-                    previouslyActive.classList.remove('active-label');
-                }
-                const clickedLabelDiv = event.currentTarget.closest('.slds-tree__item');
-                clickedLabelDiv.classList.add('active-label');
-
-                // Re-assign the treeData to trigger reactivity
-                this.treeData = JSON.parse(JSON.stringify(this.treeData));
-            }
-        }
-    }
-
-    async handleNavigation(event) {
-        const previouslyActive = this.template.querySelector('.active-label');
-        if (previouslyActive) {
-            previouslyActive.classList.remove('active-label');
-        }
-    
-        // We apply it to the tree item instead, otherwise it won't cover the full width
-        const clickedLabelDiv = event.currentTarget.closest('.slds-tree__item');
-        // We have the label separately, so clicking it triggers the expand/collapse event
-        const clickedLabel = event.currentTarget;
-        clickedLabelDiv.classList.add('active-label');
-    
-        const label = event.currentTarget.dataset.label;
-        const object = event.currentTarget.dataset.object;
-        const parentLabel = event.currentTarget.dataset.parentLabel;
-        const grandChildLabel = event.currentTarget.dataset.parentGrandchildLabel;
-        const greatGrandChildLabel = event.currentTarget.dataset.parentGreatgrandchildLabel;
-    
-        // Toggle submenu visibility
-        const submenu = event.currentTarget.closest('li').querySelector('ul');
-        if (submenu) {
-            submenu.classList.toggle('slds-is-collapsed');
-            const icon = submenu.classList.contains('slds-is-collapsed') ? 'utility:chevronright' : 'utility:chevrondown';
-            // Update icon for the clicked label
-            const iconElement = clickedLabel.closest('.slds-tree__item').querySelector('lightning-icon');
-            if (iconElement) {
-                iconElement.iconName = icon;
-            }
-        }
-    
-        if (object) {
-            let updatedLabel = label;
-            if (this.recordTypeDeveloperName == 'ESTA') {
-                updatedLabel = 'Estates - ' + label;
-            } else if (this.recordTypeDeveloperName == 'COMP') {
-                updatedLabel = 'Companies - ' + label;
-            } else if (this.recordTypeDeveloperName == 'CONV') {
-                updatedLabel = 'Conveyancing - ' + label;
-            } else if (this.recordTypeDeveloperName == 'FOIR') {
-                updatedLabel = 'FOIR - ' + label;
-            } else if (this.recordTypeDeveloperName == 'GENE') {
-                updatedLabel = 'General - ' + label;
-            } else {
-                updatedLabel = label;
-            }
-
-            const recordTypeId = await getRecordTypeId({ objectName: object, recordTypeName: updatedLabel });
-            const navigationEvent = new CustomEvent('navigate', {
-                detail: { recordTypeId, object, label, parentLabel, grandChildLabel, greatGrandChildLabel }
-            });
-            this.dispatchEvent(navigationEvent);
-        }
-    }
-
-    handleSearch(event) {
-        this.searchTerm = event.target.value.toLowerCase();
-        this.isSearchActive = !!this.searchTerm;
-    }
-
     setTreeName(recordTypeDeveloperName) {
         if (recordTypeDeveloperName == 'ESTA') {
             this.treeName = 'Estates';
@@ -228,13 +130,18 @@ export default class DynamicTree extends LightningElement {
         }
     }
 
+    handleSearch(event) {
+        this.searchTerm = event.target.value.toLowerCase();
+        this.isSearchActive = !!this.searchTerm;
+    }
+
     get filteredTreeData() {
-        if (!this.treeData) {
+        if (!this.treeItems) {
             return [];
         }
         if (this.searchTerm === '') {
             this.isSearchActive = false;
-            return this.treeData.map(node => ({
+            return this.treeItems.map(node => ({
                 ...node,
                 icon: 'utility:chevronright', // Reset icon to default
                 expandedClass: 'slds-is-collapsed' // Ensure all nodes are collapsed by default
@@ -244,18 +151,18 @@ export default class DynamicTree extends LightningElement {
         const filterNodes = (nodes) => {
             return nodes.reduce((filtered, node) => {
                 const isMatch = node.label.toLowerCase().includes(this.searchTerm);
-                if (isMatch && !node.hasChildren) {
+                if (isMatch && !node.items.length) {
                     filtered.push({
                         ...node,
                         expandedClass: '', // Expanded to show the matched node
                         icon: 'utility:chevronright' // Reset icon for matched nodes without children
                     });
-                } else if (node.children) {
-                    const filteredChildren = filterNodes(node.children);
+                } else if (node.items) {
+                    const filteredChildren = filterNodes(node.items);
                     if (filteredChildren.length) {
                         filtered.push({
                             ...node,
-                            children: filteredChildren,
+                            items: filteredChildren,
                             expandedClass: '',
                             icon: 'utility:chevronright'
                         });
@@ -265,7 +172,7 @@ export default class DynamicTree extends LightningElement {
             }, []);
         };
 
-        const filteredData = filterNodes(this.treeData);
+        const filteredData = filterNodes(this.treeItems);
         return filteredData.sort((a, b) => a.label.localeCompare(b.label));
     }
 }

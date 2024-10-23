@@ -922,33 +922,40 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
     }
 
     get cardSubtitle() {
+        console.log('Label: ', this._label);
+        console.log('Parent Label: ', this._parentLabel);
+        console.log('Parent Grandchild Label: ', this._parentGrandchildLabel);
+        console.log('Parent Great Grandchild Label: ', this._parentGreatGrandchildLabel);
+
+        const stripPrefix = (label) => {
+            const prefixes = ['Estates - ', 'Companies - ', 'Conveyancing - ', 'FOIR - ', 'General - '];
+            for (const prefix of prefixes) {
+                if (label.startsWith(prefix)) {
+                    return label.substring(prefix.length);
+                }
+            }
+            return label;
+        };
+
         if (this._label) {
-            console.log('Label: ', this._label);
-            console.log('Parent Label: ', this._parentLabel);
-            console.log('Parent Grandchild Label: ', this._parentGrandchildLabel);
-            console.log('Parent Great Grandchild Label: ', this._parentGreatGrandchildLabel);
-    
-            // If parentGrandchildLabel is present, construct the subtitle as "parentGrandchildLabel > label"
+            const strippedLabel = stripPrefix(this._label);
+            
             if (this._parentGrandchildLabel) {
-                return `${this._parentGrandchildLabel} > ${this._label}`;
+                return `${stripPrefix(this._parentGrandchildLabel)} > ${strippedLabel}`;
             }
 
-            // if parentGreatGrandchildLabel is present, construct the subtitle as "parentGreatGrandchildLabel > parentGrandchildLabel > label"
             if (this._parentGreatGrandchildLabel) {
-                return `${this._parentGreatGrandchildLabel} > ${this._label}`;
+                return `${stripPrefix(this._parentGreatGrandchildLabel)} > ${strippedLabel}`;
             }
             
-            // If label and parentLabel are the same, return only the parentLabel
-            if (this._label === this._parentLabel) {
-                return this._parentLabel;
+            if (this._parentLabel && this._parentLabel !== this._label) {
+                return `${stripPrefix(this._parentLabel)} > ${strippedLabel}`;
             }
-    
-            // If label is present and different from parentLabel, construct the subtitle as "parentLabel > label"
-            return `${this._parentLabel} > ${this._label}`;
-        } else {
-            // If no label, return only the parent label
-            return this._parentLabel;
+
+            return strippedLabel;
         }
+
+        return this._parentLabel ? stripPrefix(this._parentLabel) : '';
     }
 
     get modalHeading() {
