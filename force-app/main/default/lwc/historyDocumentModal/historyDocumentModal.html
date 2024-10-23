@@ -3,32 +3,64 @@
         <div class="slds-form-element slds-m-around_medium">
             <label class="slds-form-element__label" for="document-upload">Add document</label>
             <div class="slds-form-element__control">
-                <lightning-input type="file" name="document-upload" label="Document" onchange={handleFileChange}></lightning-input>
+                <lightning-input 
+                    type="file" 
+                    name="document-upload" 
+                    label="Document" 
+                    onchange={handleFileChange}
+                    aria-label="Upload a document file">
+                </lightning-input>
             </div>
         </div>
     </template>
     <template if:true={fileName}>
         <div class="slds-form-element slds-m-around_medium">
             <p>Uploaded Document: {fileName}</p>
-            <button class="slds-button slds-button_neutral" onclick={handleRemoveFile}>Remove</button>
+            <button 
+                class="slds-button slds-button_neutral" 
+                onclick={handleRemoveFile}
+                aria-label="Remove the uploaded document">
+                Remove
+            </button>
         </div>
     </template>
     <div class="slds-form-element slds-m-around_medium">
         <label class="slds-form-element__label" for="document-type">Document type</label>
         <div class="slds-form-element__control">
-            <lightning-combobox name="document-type" placeholder="Select..." value={documentType} options={documentTypeOptions} onchange={handlePicklistChange}></lightning-combobox>
+            <lightning-combobox 
+                name="document-type" 
+                placeholder="Select..." 
+                value={documentType} 
+                options={documentTypeOptions} 
+                onchange={handlePicklistChange}
+                aria-label="Select the document type">
+            </lightning-combobox>
         </div>
     </div>
     <div class="slds-form-element slds-m-around_medium">
         <label class="slds-form-element__label" for="correspondence-with">Correspondence with</label>
         <div class="slds-form-element__control">
-            <lightning-combobox name="correspondence-with" placeholder="Select..." value={correspondenceWith} options={correspondenceWithOptions} onchange={handlePicklistChange}></lightning-combobox>
+            <lightning-combobox 
+                name="correspondence-with" 
+                placeholder="Select..." 
+                value={correspondenceWith} 
+                options={correspondenceWithOptions} 
+                onchange={handlePicklistChange}
+                aria-label="Select the correspondence with">
+            </lightning-combobox>
         </div>
     </div>
     <div class="slds-form-element slds-m-around_medium">
         <label class="slds-form-element__label" for="draft">Draft</label>
         <div class="slds-form-element__control">
-            <lightning-combobox name="draft" placeholder="Select..." value={draft} options={draftOptions} onchange={handlePicklistChange}></lightning-combobox>
+            <lightning-combobox 
+                name="draft" 
+                placeholder="Select..." 
+                value={draft} 
+                options={draftOptions} 
+                onchange={handlePicklistChange}
+                aria-label="Select the draft status">
+            </lightning-combobox>
         </div>
     </div>
 </template>
