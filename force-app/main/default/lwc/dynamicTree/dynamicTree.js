@@ -77,13 +77,8 @@ export default class DynamicTree extends LightningElement {
         };
 
         const selectedNode = findNode(this.treeItems);
-        if (selectedNode) {
-            // Toggle the expanded state of the selected node
-            selectedNode.expanded = !selectedNode.expanded;
-            
-            if (selectedNode.object) {
-                this.dispatchNavigationEvent(selectedNode);
-            }
+        if (selectedNode && selectedNode.object) {
+            this.dispatchNavigationEvent(selectedNode);
         }
     }
 
