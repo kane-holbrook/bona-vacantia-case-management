@@ -7,7 +7,10 @@
                 </div>
             </template>
             <template if:false={isLoading}>
+                <!-- Add a label for the search input -->
+                <label for="documentSearch" class="slds-form-element__label">Search Documents</label>
                 <lightning-input type="search" 
+                                 id="documentSearch"
                                  placeholder="Search by Document Name or Type" 
                                  onchange={handleSearchInputChange} 
                                  class="slds-m-bottom_medium"

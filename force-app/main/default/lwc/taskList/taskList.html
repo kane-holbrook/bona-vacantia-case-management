@@ -45,12 +45,44 @@
                         </template>
                     </div>
                     <div class="slds-col slds-size_1-of-2 slds-grid slds-wrap slds-grid_align-end">
-                        <lightning-input type="text" placeholder="Search tasks" variant="label-hidden" class="slds-m-bottom_small slds-col slds-size_1-of-3 slds-m-right_small" onchange={handleSearchInputChange} value={searchKey}></lightning-input>
-                        <template if:true={searchKey}>
-                            <lightning-button-icon icon-name="utility:close" alternative-text="Clear" variant="bare" class="slds-input__icon slds-input__icon_right" onclick={handleClearSearch}></lightning-button-icon>
-                        </template>
-                        <lightning-input type="date" placeholder="From" variant="label-hidden" class="slds-m-bottom_small slds-col slds-size_1-of-4 slds-m-right_small" onchange={handleDateFilterChange} data-filter="from" value={dateFilterFrom}></lightning-input>
-                        <lightning-input type="date" placeholder="To" variant="label-hidden" class="slds-m-bottom_small slds-col slds-size_1-of-4" onchange={handleDateFilterChange} data-filter="to" value={dateFilterTo}></lightning-input>
+                        <div class="slds-col slds-size_1-of-3 slds-m-right_small">
+                            <label for="searchTasks" class="slds-form-element__label">Search Tasks</label>
+                            <lightning-input 
+                                id="searchTasks"
+                                type="text" 
+                                placeholder="Search tasks" 
+                                variant="label-hidden" 
+                                class="slds-m-bottom_small" 
+                                onchange={handleSearchInputChange} 
+                                value={searchKey}>
+                            </lightning-input>
+                        </div>
+                        <div class="slds-col slds-size_1-of-4 slds-m-right_small">
+                            <label for="dateFilterFrom" class="slds-form-element__label">From Date</label>
+                            <lightning-input 
+                                id="dateFilterFrom"
+                                type="date" 
+                                placeholder="From" 
+                                variant="label-hidden" 
+                                class="slds-m-bottom_small" 
+                                onchange={handleDateFilterChange} 
+                                data-filter="from" 
+                                value={dateFilterFrom}>
+                            </lightning-input>
+                        </div>
+                        <div class="slds-col slds-size_1-of-4">
+                            <label for="dateFilterTo" class="slds-form-element__label">To Date</label>
+                            <lightning-input 
+                                id="dateFilterTo"
+                                type="date" 
+                                placeholder="To" 
+                                variant="label-hidden" 
+                                class="slds-m-bottom_small" 
+                                onchange={handleDateFilterChange} 
+                                data-filter="to" 
+                                value={dateFilterTo}>
+                            </lightning-input>
+                        </div>
                     </div>
                 </div>
                 <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_col-bordered">

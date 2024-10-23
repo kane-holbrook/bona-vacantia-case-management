@@ -53,12 +53,30 @@
 
                 <!-- Search Inputs aligned to the right -->
                 <div class="slds-grid slds-align-middle slds-grid_align-end slds-col slds-size_1-of-2">
-                    <lightning-input type="text" placeholder="Search history" variant="label-hidden" class="slds-m-bottom_small slds-m-right_small" onchange={handleSearchInputChange}></lightning-input>
+                    <lightning-input 
+                        type="text" 
+                        label="Search History" 
+                        placeholder="Search history" 
+                        class="slds-m-bottom_small slds-m-right_small" 
+                        onchange={handleSearchInputChange}>
+                    </lightning-input>
                     <div class="slds-m-right_small">
-                        <lightning-input type="date" placeholder="From" variant="label-hidden" onchange={handleDateFilterChange} data-filter="from"></lightning-input>
+                        <lightning-input 
+                            type="date" 
+                            label="From Date" 
+                            placeholder="From" 
+                            onchange={handleDateFilterChange} 
+                            data-filter="from">
+                        </lightning-input>
                     </div>
                     <div>
-                        <lightning-input type="date" placeholder="To" variant="label-hidden" onchange={handleDateFilterChange} data-filter="to"></lightning-input>
+                        <lightning-input 
+                            type="date" 
+                            label="To Date" 
+                            placeholder="To"  
+                            onchange={handleDateFilterChange} 
+                            data-filter="to">
+                        </lightning-input>
                     </div>
                 </div>
             </div>
@@ -323,6 +341,7 @@
     </template>
     <c-email-quick-action record-id={recordId}></c-email-quick-action>
 </template>
+
 
 
 
