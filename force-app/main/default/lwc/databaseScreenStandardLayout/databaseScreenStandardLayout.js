@@ -882,28 +882,35 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
         console.log('Parent Grandchild Label: ', this._parentGrandchildLabel);
         console.log('Parent Great Grandchild Label: ', this._parentGreatGrandchildLabel);
 
+        const stripPrefix = (label) => {
+            const prefixes = ['Estates - ', 'Companies - ', 'Conveyancing - ', 'FOIR - ', 'General - '];
+            for (const prefix of prefixes) {
+                if (label.startsWith(prefix)) {
+                    return label.substring(prefix.length);
+                }
+            }
+            return label;
+        };
+
         if (this._label) {
-            // If parentGrandchildLabel is present, construct the subtitle as "parentGrandchildLabel > label"
+            const strippedLabel = stripPrefix(this._label);
+            
             if (this._parentGrandchildLabel) {
-                return `${this._parentGrandchildLabel} > ${this._label}`;
+                return `${stripPrefix(this._parentGrandchildLabel)} > ${strippedLabel}`;
             }
 
-            // If parentGreatGrandchildLabel is present, construct the subtitle as "parentGreatGrandchildLabel > parentGrandchildLabel > label"
             if (this._parentGreatGrandchildLabel) {
-                return `${this._parentGreatGrandchildLabel} > ${this._label}`;
+                return `${stripPrefix(this._parentGreatGrandchildLabel)} > ${strippedLabel}`;
             }
             
-            // If parentLabel is present and different from label, construct the subtitle as "parentLabel > label"
             if (this._parentLabel && this._parentLabel !== this._label) {
-                return `${this._parentLabel} > ${this._label}`;
+                return `${stripPrefix(this._parentLabel)} > ${strippedLabel}`;
             }
 
-            // If only label is present, return just the label
-            return this._label;
+            return strippedLabel;
         }
 
-        // If no label, return the parent label if it exists, otherwise return an empty string
-        return this._parentLabel || '';
+        return this._parentLabel ? stripPrefix(this._parentLabel) : '';
     }
 
     get modalHeading() {
