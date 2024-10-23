@@ -47,7 +47,8 @@ export default class TaskDeleteModal extends LightningElement {
                             new ShowToastEvent({
                                 title: 'Error fetching case officer names',
                                 message: error.body.message,
-                                variant: 'error'
+                                variant: 'error',
+                                mode: 'sticky'
                             })
                         );
                     });
@@ -64,7 +65,8 @@ export default class TaskDeleteModal extends LightningElement {
                         new ShowToastEvent({
                             title: 'Error fetching subtasks',
                             message: error.body.message,
-                            variant: 'error'
+                            variant: 'error',
+                            mode: 'sticky'
                         })
                     );
                 });
@@ -112,7 +114,8 @@ export default class TaskDeleteModal extends LightningElement {
                     new ShowToastEvent({
                         title: 'Success',
                         message: 'Task deleted successfully',
-                        variant: 'success'
+                        variant: 'success',
+                        mode: 'sticky'
                     })
                 );
                 this.dispatchEvent(new CustomEvent('taskdeleted'));
@@ -122,7 +125,8 @@ export default class TaskDeleteModal extends LightningElement {
                     new ShowToastEvent({
                         title: 'Error deleting task',
                         message: error.body.message,
-                        variant: 'error'
+                        variant: 'error',
+                        mode: 'sticky'
                     })
                 );
             });

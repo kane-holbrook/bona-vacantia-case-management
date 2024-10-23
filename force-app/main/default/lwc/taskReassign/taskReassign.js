@@ -77,6 +77,7 @@ export default class TaskReassign extends LightningElement {
             title: title,
             message: message,
             variant: variant,
+            mode: 'sticky'
         });
         this.dispatchEvent(evt);
     }

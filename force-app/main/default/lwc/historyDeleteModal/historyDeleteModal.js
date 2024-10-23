@@ -59,6 +59,7 @@ export default class HistoryDeleteModal extends LightningElement {
             title: title,
             message: message,
             variant: variant,
+            mode: 'sticky'
         });
         this.dispatchEvent(evt);
     }

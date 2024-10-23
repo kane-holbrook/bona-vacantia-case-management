@@ -618,6 +618,7 @@ export default class HistoryEditModal extends NavigationMixin(LightningElement) 
             title: title,
             message: message,
             variant: variant,
+            mode: 'sticky'
         });
         this.dispatchEvent(evt);
     }

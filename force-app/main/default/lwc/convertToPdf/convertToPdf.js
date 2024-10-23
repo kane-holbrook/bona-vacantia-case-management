@@ -175,7 +175,7 @@ export default class pdftronWvInstanceDocxToPDF extends LightningElement {
             title: title,
             message: message,
             variant: variant,
-            mode: 'pester'
+            mode: 'sticky'
         });
         this.dispatchEvent(evt);
     }

@@ -407,6 +407,7 @@ export default class TaskManageModal extends LightningElement {
                     title: 'Error',
                     message: 'Please enter a description of the task before saving.',
                     variant: 'error',
+                    mode: 'sticky'
                 }),
             );
             return;
@@ -419,6 +420,7 @@ export default class TaskManageModal extends LightningElement {
                     title: 'Error',
                     message: 'Please enter a due date before saving.',
                     variant: 'error',
+                    mode: 'sticky'
                 }),
             );
             return;
@@ -466,6 +468,7 @@ export default class TaskManageModal extends LightningElement {
                         title: 'Success',
                         message: 'Task created successfully',
                         variant: 'success',
+                        mode: 'sticky'
                     }),
                 );
                 this.recordId = task.id;
@@ -483,6 +486,7 @@ export default class TaskManageModal extends LightningElement {
                         title: 'Error creating task',
                         message: error.body.message,
                         variant: 'error',
+                        mode: 'sticky'
                     }),
                 );
             });
@@ -507,6 +511,7 @@ export default class TaskManageModal extends LightningElement {
                         title: 'Success',
                         message: 'Task updated successfully',
                         variant: 'success',
+                        mode: 'sticky'
                     }),
                 );
                 const updatedEvent = new CustomEvent('taskupdated', {
@@ -523,6 +528,7 @@ export default class TaskManageModal extends LightningElement {
                         title: 'Error updating task',
                         message: error.body.message,
                         variant: 'error',
+                        mode: 'sticky'
                     }),
                 );
             });

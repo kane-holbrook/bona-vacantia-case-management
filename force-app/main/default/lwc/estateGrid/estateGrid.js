@@ -244,7 +244,8 @@ export default class EstateGrid extends LightningElement {
             new ShowToastEvent({
                 title: title,
                 message: message,
-                variant: variant
+                variant: variant,
+                mode: 'sticky'
             })
         );
     }

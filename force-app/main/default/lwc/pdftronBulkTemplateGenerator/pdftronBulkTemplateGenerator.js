@@ -298,6 +298,7 @@ export default class PdftronBulkTemplateGenerator extends LightningElement {
             title: title,
             message: message,
             variant: variant,
+            mode: 'sticky'
         });
         this.dispatchEvent(evt);
     }

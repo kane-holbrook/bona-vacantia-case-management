@@ -333,7 +333,7 @@ export default class PdftronWvInstanceFlow extends LightningElement {
             title: title,
             message: message,
             variant: variant,
-            mode: 'pester'
+            mode: 'sticky'
         });
         this.dispatchEvent(evt);
     }

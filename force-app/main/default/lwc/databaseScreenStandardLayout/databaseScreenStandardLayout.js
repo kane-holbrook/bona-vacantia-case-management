@@ -478,6 +478,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                     title: 'Error loading layout',
                     message: error.body.message,
                     variant: 'error',
+                    mode: 'sticky'
                 }),
             );
         }
@@ -601,6 +602,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                 title: 'Success',
                 message: 'Your changes have been saved.',
                 variant: 'success',
+                mode: 'sticky'
             }),
         );
     
@@ -618,6 +620,7 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                 title: 'Success',
                 message: 'The record has been deleted.',
                 variant: 'success',
+                mode: 'sticky'
             }),
         );
     

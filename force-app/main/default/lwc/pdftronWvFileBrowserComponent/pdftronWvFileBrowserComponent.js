@@ -220,6 +220,7 @@ export default class PdftronWvFileBrowserComponent extends NavigationMixin(Light
       title: title,
       message: message,
       variant: variant,
+      mode: 'sticky'
     });
     this.dispatchEvent(evt);
   }

@@ -545,7 +545,8 @@ export default class CaseOfficerButtons extends LightningElement {
                     new ShowToastEvent({
                         title: 'Success',
                         message: 'Case Officer and Owner updated successfully',
-                        variant: 'success'
+                        variant: 'success',
+                        mode: 'sticky'
                     })
                 );
                 // Dispatch the caseofficersaved event
@@ -683,7 +684,8 @@ export default class CaseOfficerButtons extends LightningElement {
                     new ShowToastEvent({
                         title: title,
                         message: message,
-                        variant: 'success'
+                        variant: 'success',
+                        mode: 'sticky'
                     })
                 );
             }
@@ -759,7 +761,8 @@ export default class CaseOfficerButtons extends LightningElement {
             new ShowToastEvent({
                 title: 'Success',
                 message: 'Hidden Screen Controls saved successfully',
-                variant: 'success'
+                variant: 'success',
+                mode: 'sticky'
             })
         );
     }

@@ -31,7 +31,8 @@ export default class TaskMarkAsCompleteModal extends LightningElement {
                     new ShowToastEvent({
                         title: 'Success',
                         message: 'Task marked as complete',
-                        variant: 'success'
+                        variant: 'success',
+                        mode: 'sticky'
                     })
                 );
                 this.deleteTask();
@@ -41,7 +42,8 @@ export default class TaskMarkAsCompleteModal extends LightningElement {
                     new ShowToastEvent({
                         title: 'Error marking task complete',
                         message: error.body.message,
-                        variant: 'error'
+                        variant: 'error',
+                        mode: 'sticky'
                     })
                 );
             });
@@ -54,7 +56,8 @@ export default class TaskMarkAsCompleteModal extends LightningElement {
                     new ShowToastEvent({
                         title: 'Success',
                         message: 'Task deleted successfully',
-                        variant: 'success'
+                        variant: 'success',
+                        mode: 'sticky'
                     })
                 );
                 this.dispatchEvent(new CustomEvent('taskdeletecomplete'));
@@ -64,7 +67,8 @@ export default class TaskMarkAsCompleteModal extends LightningElement {
                     new ShowToastEvent({
                         title: 'Error deleting task',
                         message: error.body.message,
-                        variant: 'error'
+                        variant: 'error',
+                        mode: 'sticky'
                     })
                 );
             });

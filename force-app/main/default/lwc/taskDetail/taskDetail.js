@@ -102,7 +102,8 @@ export default class TaskDetail extends LightningElement {
                 new ShowToastEvent({
                     title: 'Error loading task',
                     message: error.body.message,
-                    variant: 'error'
+                    variant: 'error',
+                    mode: 'sticky'
                 })
             );
         }
@@ -155,7 +156,8 @@ export default class TaskDetail extends LightningElement {
                 new ShowToastEvent({
                     title: 'Error loading subtasks',
                     message: error.body.message,
-                    variant: 'error'
+                    variant: 'error',
+                    mode: 'sticky'
                 })
             );
         }
@@ -172,7 +174,8 @@ export default class TaskDetail extends LightningElement {
                 new ShowToastEvent({
                     title: 'Error loading task templates',
                     message: error.body.message,
-                    variant: 'error'
+                    variant: 'error',
+                    mode: 'sticky'
                 })
             );
         }
@@ -197,7 +200,8 @@ export default class TaskDetail extends LightningElement {
                 new ShowToastEvent({
                     title: 'Error loading case history',
                     message: error.body.message,
-                    variant: 'error'
+                    variant: 'error',
+                    mode: 'sticky'
                 })
             );
         }
@@ -220,7 +224,8 @@ export default class TaskDetail extends LightningElement {
                     new ShowToastEvent({
                         title: 'Error fetching user names',
                         message: error.body.message,
-                        variant: 'error'
+                        variant: 'error',
+                        mode: 'sticky'
                     })
                 );
             });
@@ -251,6 +256,7 @@ export default class TaskDetail extends LightningElement {
                         title: 'Error fetching templates',
                         message: error.body.message,
                         variant: 'error',
+                        mode: 'sticky'
                     })
                 );
             });
@@ -294,7 +300,8 @@ export default class TaskDetail extends LightningElement {
                     new ShowToastEvent({
                         title: 'Error fetching sub-task user names',
                         message: error.body.message,
-                        variant: 'error'
+                        variant: 'error',
+                        mode: 'sticky'
                     })
                 );
             });
@@ -313,7 +320,8 @@ export default class TaskDetail extends LightningElement {
                     new ShowToastEvent({
                         title: 'Error fetching user names',
                         message: error.body.message,
-                        variant: 'error'
+                        variant: 'error',
+                        mode: 'sticky'
                     })
                 );
             });
@@ -470,7 +478,8 @@ export default class TaskDetail extends LightningElement {
                     new ShowToastEvent({
                         title: 'Success',
                         message: message,
-                        variant: 'success'
+                        variant: 'success',
+                        mode: 'sticky'
                     })
                 );
                 // Refresh the task data to reflect the updated templates
@@ -481,7 +490,8 @@ export default class TaskDetail extends LightningElement {
                     new ShowToastEvent({
                         title: 'Error updating templates',
                         message: error.body.message,
-                        variant: 'error'
+                        variant: 'error',
+                        mode: 'sticky'
                     })
                 );
             });
@@ -515,7 +525,8 @@ export default class TaskDetail extends LightningElement {
                 new ShowToastEvent({
                     title: 'Error',
                     message: 'Unable to remove the template. Please try again.',
-                    variant: 'error'
+                    variant: 'error',
+                    mode: 'sticky'
                 })
             );
         }
@@ -713,7 +724,8 @@ export default class TaskDetail extends LightningElement {
                     new ShowToastEvent({
                         title: 'Success',
                         message: 'Task marked as complete',
-                        variant: 'success'
+                        variant: 'success',
+                        mode: 'sticky'
                     })
                 );
                 this.completeTask = false;
@@ -725,7 +737,8 @@ export default class TaskDetail extends LightningElement {
                     new ShowToastEvent({
                         title: 'Error',
                         message: error.body.message,
-                        variant: 'error'
+                        variant: 'error',
+                        mode: 'sticky'
                     })
                 );
             });

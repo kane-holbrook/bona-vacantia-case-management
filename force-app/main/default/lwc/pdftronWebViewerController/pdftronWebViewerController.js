@@ -79,6 +79,7 @@ export default class PdftronContentReplacer extends NavigationMixin (LightningEl
             title: title,
             message: message,
             variant: variant,
+            mode: 'sticky'
         });
         this.dispatchEvent(evt);
     }
