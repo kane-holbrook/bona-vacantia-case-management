@@ -543,4 +543,31 @@ export default class TaskList extends LightningElement {
         }
         return 'slds-hint-parent normal-priority';
     }
+
+    handleMenuOpen(event) {
+        // Focus the first menu item when the menu is opened
+        const menuItems = event.target.querySelectorAll('lightning-menu-item');
+        if (menuItems.length > 0) {
+            menuItems[0].focus();
+        }
+    }
+
+    handleMenuKeydown(event) {
+        if (event.key === 'Tab') {
+            event.preventDefault(); // Prevent default tab behavior
+            const menuItems = Array.from(event.target.querySelectorAll('lightning-menu-item'));
+            const currentIndex = menuItems.indexOf(document.activeElement);
+            let nextIndex;
+
+            if (event.shiftKey) {
+                // Shift + Tab: Move focus to the previous item
+                nextIndex = currentIndex === 0 ? menuItems.length - 1 : currentIndex - 1;
+            } else {
+                // Tab: Move focus to the next item
+                nextIndex = currentIndex === menuItems.length - 1 ? 0 : currentIndex + 1;
+            }
+
+            menuItems[nextIndex].focus();
+        }
+    }
 }
