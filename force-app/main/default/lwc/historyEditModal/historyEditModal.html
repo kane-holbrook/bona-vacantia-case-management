@@ -10,7 +10,8 @@
                 value={dateInserted} 
                 onchange={handleInputChange} 
                 required
-                field-level-help="Fields marked with an asterisk (*) are required.">
+                field-level-help="Fields marked with an asterisk (*) are required."
+                aria-label="The date the history record was created">
             </lightning-input>
         </div>
     </div>
@@ -26,7 +27,8 @@
                 maxlength="255" 
                 onchange={handleInputChange} 
                 required
-                field-level-help="Fields marked with an asterisk (*) are required.">
+                field-level-help="Fields marked with an asterisk (*) are required."
+                aria-label="Description of the history record">
             </lightning-input>
         </div>
     </div>    
@@ -36,7 +38,8 @@
             <lightning-textarea 
                 name="details" 
                 value={details} 
-                onchange={handleInputChange}>
+                onchange={handleInputChange}
+                aria-label="History record name">
             </lightning-textarea>
         </div>
     </div>
@@ -47,7 +50,8 @@
                 type="checkbox" 
                 name="flag-important" 
                 checked={flagImportant} 
-                onchange={handleInputChange}>
+                onchange={handleInputChange}
+                aria-label="Flag the history record as important">
             </lightning-input>
         </div>
     </div>
