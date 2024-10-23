@@ -222,7 +222,7 @@ export default class FileUpload extends NavigationMixin(LightningElement) {
         const fields = {
             BV_Case__c: this.recordId,
             Action__c: 'Case Creation Document',
-            Date_Inserted_Time__c: DateTime.now(),
+            Date_Inserted_Time__c: new Date(),
             Last_updated__c: new Date()
         };
     
