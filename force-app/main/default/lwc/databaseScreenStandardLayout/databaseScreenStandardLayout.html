@@ -72,7 +72,7 @@
                                         <td class="slds-cell_action-mode" role="gridcell">
                                             <div>
                                                 <template if:true={expandedView}>
-                                                    <button class="slds-button slds-button_icon slds-m-right_x-small" aria-hidden="false" tabindex="0" data-targetrow={row.Id} onclick={expandSection} aria-expanded={row.isExpanded}>
+                                                    <button class="slds-button slds-button_icon slds-m-right_x-small" aria-hidden="false" tabindex="0" data-targetrow={row.Id} onclick={expandSection} aria-expanded={row.isExpanded} aria-label={row.expandAriaLabel}>
                                                         <lightning-icon icon-name="utility:chevronright" alternative-text="Expand" size="x-small"></lightning-icon>
                                                     </button>
                                                 </template>
@@ -91,7 +91,7 @@
                                         </template>
                                         <td class="slds-cell_action-mode" role="gridcell">
                                             <div class="lgc-bg">
-                                                <lightning-button-menu icon-size="small" menu-alignment="right" alternative-text="Show menu" data-row={row.Id} onselect={handleRowAction}>
+                                                <lightning-button-menu icon-size="small" menu-alignment="right" alternative-text="Show menu" data-row={row.Id} onselect={handleRowAction} aria-label={row.optionsAriaLabel}>
                                                     <lightning-menu-item value="edit" label="Edit"></lightning-menu-item>
                                                     <lightning-menu-item value="delete" label="Delete"></lightning-menu-item>
                                                 </lightning-button-menu>
@@ -251,3 +251,4 @@
         <div class="slds-backdrop slds-backdrop_open"></div>
     </template>
 </template>
+

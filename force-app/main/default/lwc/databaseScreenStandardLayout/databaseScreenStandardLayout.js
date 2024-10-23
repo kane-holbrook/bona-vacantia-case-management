@@ -1090,7 +1090,9 @@ export default class DatabaseScreenStandardLayout extends LightningElement {
                 ...item,
                 rowIndex: index + 1,
                 Cells: formattedCells,
-                isExpanded: this.expandedRows.has(item.Id) // Check if the row is expanded
+                isExpanded: this.expandedRows.has(item.Id), // Check if the row is expanded
+                expandAriaLabel: `Expand details for row ${index + 1}`, // Precompute aria-label for expand button
+                optionsAriaLabel: `Options for row ${index + 1}` // Precompute aria-label for options button
             };
         });
     }
