@@ -11,7 +11,7 @@
                     value={nameValue} 
                     onchange={handleInputChange} 
                     data-field="Name"
-                    required="true"
+                    required
                     placeholder="Give a brief description of the task"
                     field-level-help="Fields marked with an asterisk (*) are required.">
                 </lightning-input>
@@ -83,7 +83,7 @@
         <div class="slds-grid slds-wrap">
             <div class="slds-col slds-size_2-of-12">
                 <div class="slds-text-align_left slds-m-around_x-small">
-                    <label class="hidden-label slds-form-element__label slds-align-middle slds-m-right_x-small">H Label</label>
+                    <label for="waiting-period-input" class="slds-form-element__label">Days</label>
                     <lightning-input 
                         variant="label-hidden"
                         type="number" 
@@ -97,7 +97,7 @@
             </div>
             <div class="slds-col slds-size_3-of-12">
                 <div class="slds-text-align_left slds-m-around_x-small">
-                    <label class="hidden-label slds-form-element__label slds-align-middle slds-m-right_x-small">H Label</label>
+                    <label for="waiting-period-time" class="slds-form-element__label">Months</label>
                     <lightning-combobox 
                         variant="label-hidden"
                         data-id="waiting-period-time"
@@ -110,7 +110,7 @@
             </div>
             <div class="slds-col slds-size_3-of-12">
                 <div class="slds-text-align_left slds-m-around_x-small">
-                    <label class="hidden-label slds-form-element__label slds-align-middle slds-m-right_x-small">H Label</label>
+                    <label for="before-after" class="slds-form-element__label">Before/After</label>
                     <lightning-combobox 
                         variant="label-hidden" 
                         data-id="before-after" 
@@ -146,7 +146,8 @@
                         onchange={handleInputChange} 
                         data-field="Due_Date__c" 
                         placeholder="DD/MM/YYYY"
-                        required>
+                        required
+                        field-level-help="Fields marked with an asterisk (*) are required.">
                     </lightning-input>
                 </div>
             </div>
