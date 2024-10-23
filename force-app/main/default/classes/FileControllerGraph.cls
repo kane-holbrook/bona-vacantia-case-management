@@ -6,6 +6,8 @@ public class FileControllerGraph {
         String siteUrl = settings.get('SharePoint_Site_URL');
         String directoryPath = settings.get('SharePoint_Directory_Path');
         String siteId = getSiteId(siteUrl, directoryPath);
+
+        filePath = filePath.replace('#', '_');
         
         // Check if file already exists and generate a unique name
         String uniqueFileName = getUniqueFileName(siteId, filePath, fileName);
@@ -185,6 +187,8 @@ public class FileControllerGraph {
     @AuraEnabled(cacheable=false)
     // Method to delete a file from SharePoint
     public static void deleteFileFromSharePoint(String filePath, String fileName) {
+        filePath = filePath.replace('#', '_');
+
         // Fetch the site ID within this method
         Map<String, String> settings = getSharePointSettings();
         String siteUrl = settings.get('SharePoint_Site_URL');
@@ -252,6 +256,7 @@ public class FileControllerGraph {
     
     private static void fetchFilesRecursively(String folderPath, List<Map<String, Object>> allItems, String siteUrl, String siteId) {
         // Construct the folder URL (siteUrl and siteId are now passed in as parameters)
+        folderPath = folderPath.replace('#', '_');
         String folderUrl = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/drive/root:/' + folderPath + ':/children?$expand=listItem($expand=fields)';
         
         // HTTP request to fetch files and folders
@@ -640,12 +645,15 @@ public class FileControllerGraph {
         String siteUrl = settings.get('SharePoint_Site_URL');
         String directoryPath = settings.get('SharePoint_Directory_Path');
         String siteId = getSiteId(siteUrl, directoryPath);
+
+        filePath = filePath.replace('#', '_');
         
         // Check if file already exists and generate a unique name
         String uniqueFileName = getUniqueFileName(siteId, filePath, fileName);
         String encodedFileName = encodeFileName(uniqueFileName);
         
         String uploadUrl = 'callout:BV_Sharepoint_Named_Azure/v1.0/sites/' + siteId + '/drive/root:/' + filePath + '/' + encodedFileName + ':/content';
+
         
         HttpRequest req = new HttpRequest();
         req.setEndpoint(uploadUrl);
@@ -758,6 +766,7 @@ public class FileControllerGraph {
 
     @AuraEnabled(cacheable=false)
     public static Map<String, String> downloadFileFromSharePoint(String filePath) {
+        filePath = filePath.replace('#', '_');
         Map<String, String> settings = getSharePointSettings();
         String siteUrl = settings.get('SharePoint_Site_URL');
         String directoryPath = settings.get('SharePoint_Directory_Path');

@@ -98,6 +98,7 @@ public with sharing class PDFTron_ContentVersionController {
     @AuraEnabled
     public static Map<String, String> saveDocumentToSharePointViaFlow(String jsonpayload, String folderName, String historyRecordId) {
         try {
+            folderName = folderName.replace('#', '_');
             PDFTron_ContentVersionPayload pl = new PDFTron_ContentVersionPayload(jsonpayload);
             // Decode the base64 string to get the binary content of the file
             Blob fileContent = EncodingUtil.base64Decode(pl.base64Data);
