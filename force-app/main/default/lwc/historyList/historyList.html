@@ -241,7 +241,11 @@
                                         <template if:true={showRelatedItems}>
                                             <td data-label="Expand">
                                                 <template if:true={item.hasChildren}>
-                                                    <button class="slds-button slds-button_icon slds-m-right_x-small" aria-expanded={item.isExpanded} aria-controls="childRows" onclick={toggleRow} data-id={item.Id}>
+                                                    <button class="slds-button slds-button_icon slds-m-right_x-small" 
+                                                            aria-expanded={item.isExpanded} 
+                                                            aria-controls="childRows-{item.Id}" 
+                                                            onclick={toggleRow} 
+                                                            data-id={item.Id}>
                                                         <lightning-icon icon-name={item.iconName} alternative-text="Expand"></lightning-icon>
                                                     </button>
                                                 </template>
@@ -341,6 +345,7 @@
     </template>
     <c-email-quick-action record-id={recordId}></c-email-quick-action>
 </template>
+
 
 
 
