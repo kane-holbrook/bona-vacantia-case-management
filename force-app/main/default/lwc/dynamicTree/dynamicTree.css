@@ -1,12 +1,1 @@
-.active-label {
-    background-color: #e3f2fd;
-    font-weight: bold;
-    white-space: normal; /* Allow text to wrap */
-    overflow: visible; /* Ensure text is not clipped */
-}
-
-.slds-tree__item-label {
-    white-space: normal; /* Allow text to wrap */
-    overflow: visible; /* Ensure text is not clipped */
-    display: inline-block; /* Ensure proper spacing */
-}
+{}
