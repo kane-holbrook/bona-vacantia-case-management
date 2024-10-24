@@ -139,6 +139,7 @@ export default class PdftronWvInstanceFlow extends LightningElement {
         try {
             await this.processFile(); // Wait for file data to be processed and iframe to be ready
             await this.waitForDocumentLoaded(); // Wait for documentLoaded event before continuing
+            //await this.insertHeaderPDF(); // Insert header PDF
             await this.fireDocGenOptionsEvent(); // Wait for doc_gen_options event to be handled
             await this.generateDocumentPromise(); // Wait for document generation to complete
             console.log('Document generation sequence completed.');
@@ -381,10 +382,7 @@ export default class PdftronWvInstanceFlow extends LightningElement {
             backendType: 'ems',
             config: myfilesUrl + this.config,
             fullAPI: this.fullAPI,
-            enableFilePicker: this.enableFilePicker,
-            enableRedaction: this.enableRedaction,
-            enableMeasurement: this.enableMeasurement,
-            enableOptimizedWorkers: false,
+            enableOptimizedWorkers: true,
             l: 'demo:1698667176711:7ccce815030000000032579c76ef4bf6398d5025f2b556af0efef948be',
             accessibleMode: true,
             disabledElements: [
@@ -502,6 +500,9 @@ export default class PdftronWvInstanceFlow extends LightningElement {
                             this.documentLoadedCallback = null; // Clear the callback once resolved
                         }
                         break;
+                case 'PDF_MERGED':
+                    console.log('Header PDF has been merged successfully');
+                    break;
                 default:
                     break;
             }
@@ -620,5 +621,57 @@ export default class PdftronWvInstanceFlow extends LightningElement {
         } else {
             return '';
         }
+    }
+
+    // Add this new method after processFile()
+    async insertHeaderPDF() {
+        return new Promise((resolve, reject) => {
+            console.log('Starting header PDF insertion process');
+            
+            // Load the header PDF from static resources
+            const headerPdfUrl = '/resource/headerPDF';
+            
+            fetch(headerPdfUrl)
+                .then(response => response.blob())
+                .then(headerBlob => {
+                    console.log('Header PDF data retrieved');
+                    return headerBlob;
+                })
+                .then(headerBuffer => {
+                    console.log('Header buffer created, sending to WebViewer');
+                    this.iframeWindow.postMessage({ 
+                        type: 'MERGE_PDF', 
+                        payload: {
+                            headerPdf: headerBuffer,
+                        }
+                    }, '*');
+                    
+                    // Listen for the merge completion
+                    const mergeListener = (event) => {
+                        if (event.data && event.data.type === 'PDF_MERGED') {
+                            window.removeEventListener('message', mergeListener);
+                            if (event.data.success) {
+                                console.log('Header PDF merge completed successfully');
+                                resolve();
+                            } else {
+                                console.error('Header PDF merge failed:', event.data.error);
+                                reject(new Error(event.data.error));
+                            }
+                        }
+                    };
+                    
+                    window.addEventListener('message', mergeListener);
+                    
+                    // Add timeout to prevent hanging
+                    // setTimeout(() => {
+                    //     window.removeEventListener('message', mergeListener);
+                    //     reject(new Error('Header PDF merge timed out'));
+                    // }, 10000); // 10 second timeout
+                })
+                .catch(error => {
+                    console.error('Error in header PDF process:', error);
+                    reject(error);
+                });
+        });
     }
 }
