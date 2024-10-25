@@ -46,17 +46,20 @@ export default class DynamicTree extends LightningElement {
     }
 
     formatTreeDataForLightningTree(data) {
-        const formatNodes = (nodes, parentLabel = null, grandChildLabel = null, greatGrandChildLabel = null) => {
-            return nodes.map(node => ({
-                label: node.label,
-                name: node.label, // Use a unique identifier if available
-                object: node.object, // Ensure object is included
-                expanded: false,
-                parentLabel: parentLabel,
-                grandChildLabel: grandChildLabel,
-                greatGrandChildLabel: greatGrandChildLabel,
-                items: node.children ? formatNodes(node.children, node.label, parentLabel, grandChildLabel) : []
-            }));
+        const formatNodes = (nodes, parentLabel = null, grandChildLabel = null, greatGrandChildLabel = null, path = '') => {
+            return nodes.map((node, index) => {
+                const currentPath = `${path}/${index}`; // Create a unique path for each node
+                return {
+                    label: node.label,
+                    name: currentPath, // Use the unique path as the name
+                    object: node.object, // Ensure object is included
+                    expanded: false,
+                    parentLabel: parentLabel,
+                    grandChildLabel: grandChildLabel,
+                    greatGrandChildLabel: greatGrandChildLabel,
+                    items: node.children ? formatNodes(node.children, node.label, parentLabel, grandChildLabel, currentPath) : []
+                };
+            });
         };
         return formatNodes(data);
     }
