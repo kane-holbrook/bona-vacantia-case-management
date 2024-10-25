@@ -19,6 +19,7 @@ import updateCaseHistoryTask from '@salesforce/apex/HistoryController.updateCase
 import deleteHistoryRecord from '@salesforce/apex/HistoryController.deleteHistoryRecord';
 import getSharePointFileDataById from '@salesforce/apex/FileControllerGraph.getGraphFileDataById';
 import { getRecordId } from 'c/sharedService';
+import fetchHeaderValuesFromMetadata from '@salesforce/apex/PDFTron_ContentVersionController.fetchHeaderValuesFromMetadata';
 
 function _base64ToArrayBuffer(base64) {
     var binary_string = window.atob(base64);
@@ -141,6 +142,7 @@ export default class PdftronWvInstanceFlow extends LightningElement {
             await this.waitForDocumentLoaded(); // Wait for documentLoaded event before continuing
             //await this.insertHeaderPDF(); // Insert header PDF
             await this.fireDocGenOptionsEvent(); // Wait for doc_gen_options event to be handled
+            await this.processHeaderKeys(); // Process header keys after doc_gen_options event
             await this.generateDocumentPromise(); // Wait for document generation to complete
             console.log('Document generation sequence completed.');
         } catch (error) {
@@ -673,5 +675,66 @@ export default class PdftronWvInstanceFlow extends LightningElement {
                     reject(error);
                 });
         });
+    }
+
+    // New method to fetch header values from metadata
+    fetchHeaderValues(headerLabel, customFields) {
+        return new Promise((resolve, reject) => {
+            // Call Apex method to fetch metadata values
+            fetchHeaderValuesFromMetadata({ headerLabel, customFields })
+                .then(result => {
+                    resolve(result);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    async processHeaderKeys() {
+        const headerKeys = this.doc_keys.filter(key => key.startsWith('HEADER'));
+        const headerGroups = {};
+
+        headerKeys.forEach(key => {
+            const parts = key.split('_');
+            if (parts.length > 1) {
+                const headerLabel = parts[1];
+                const customField = parts.slice(2).join('_');
+
+                if (!headerGroups[headerLabel]) {
+                    headerGroups[headerLabel] = [];
+                }
+                headerGroups[headerLabel].push(customField);
+            }
+        });
+
+        // Create an array of promises for fetching header values
+        const fetchPromises = Object.keys(headerGroups).map(headerLabel => {
+            return this.fetchHeaderValues(headerLabel, headerGroups[headerLabel])
+                .then(values => {
+                    Object.keys(values).forEach(field => {
+                        // Remove __c from the field name if it exists
+                        const cleanField = field.replace('__c', '');
+                        const key = `HEADER_${headerLabel}_${cleanField}`;
+                        
+                        if (cleanField.toLowerCase().endsWith('logo')) {
+                            this.mapping[key] = {
+                                image_url: values[field],
+                                width: 205,
+                                height: 95
+                            };
+                        } else {
+                            this.mapping[key] = values[field];
+                        }
+                    });
+                    console.log('Mapping after processing header keys:', this.mapping);
+                })
+                .catch(error => {
+                    console.error('Error fetching header values:', error);
+                });
+        });
+
+        // Wait for all fetch operations to complete
+        await Promise.all(fetchPromises);
     }
 }

@@ -766,6 +766,33 @@ public with sharing class PDFTron_ContentVersionController {
             this.contentDocumentId = pl.contentDocumentId;
         }
     }
+    @AuraEnabled
+    public static Map<String, String> fetchHeaderValuesFromMetadata(String headerLabel, List<String> customFields) {
+        try {
+            // Construct the dynamic SELECT statement
+            String fieldsToSelect = String.join(customFields, ', ');
+            String query = 'SELECT ' + fieldsToSelect + ' FROM Document_Header_Mapping__mdt WHERE MasterLabel = :headerLabel LIMIT 1';
+
+            // Execute the query
+            List<Document_Header_Mapping__mdt> headerMappings = Database.query(query);
+
+            // Prepare the result map
+            Map<String, String> resultMap = new Map<String, String>();
+
+            if (!headerMappings.isEmpty()) {
+                Document_Header_Mapping__mdt headerMapping = headerMappings[0];
+                for (String field : customFields) {
+                    resultMap.put(field, (String)headerMapping.get(field));
+                }
+            } else {
+                throw new AuraHandledException('No matching header found for label: ' + headerLabel);
+            }
+
+            return resultMap;
+        } catch (Exception e) {
+            throw new AuraHandledException('Error fetching header values: ' + e.getMessage());
+        }
+    }
 
     public class PDFTronException extends Exception {}
 
