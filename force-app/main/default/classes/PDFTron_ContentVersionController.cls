@@ -766,11 +766,16 @@ public with sharing class PDFTron_ContentVersionController {
             this.contentDocumentId = pl.contentDocumentId;
         }
     }
+    
     @AuraEnabled
     public static Map<String, String> fetchHeaderValuesFromMetadata(String headerLabel, List<String> customFields) {
         try {
             // Construct the dynamic SELECT statement
-            String fieldsToSelect = String.join(customFields, ', ');
+            List<String> fieldsWithSuffix = new List<String>();
+            for(String field : customFields) {
+                fieldsWithSuffix.add(field + '__c');
+            }
+            String fieldsToSelect = String.join(fieldsWithSuffix, ', ');
             String query = 'SELECT ' + fieldsToSelect + ' FROM Document_Header_Mapping__mdt WHERE MasterLabel = :headerLabel LIMIT 1';
 
             // Execute the query
@@ -782,7 +787,7 @@ public with sharing class PDFTron_ContentVersionController {
             if (!headerMappings.isEmpty()) {
                 Document_Header_Mapping__mdt headerMapping = headerMappings[0];
                 for (String field : customFields) {
-                    resultMap.put(field, (String)headerMapping.get(field));
+                    resultMap.put(field, (String)headerMapping.get(field + '__c'));
                 }
             } else {
                 throw new AuraHandledException('No matching header found for label: ' + headerLabel);
