@@ -30,11 +30,11 @@
             <!-- First Line: Items count and Refresh button -->
             <div class="slds-text-body_small slds-grid slds-wrap slds-grid_align-spread">
                 <div class="slds-col slds-size_1-of-2">
-                    <template if:true = {newCase}>
-                        {filteredHistoryItems.length} items - {sortedByText} - {lastUpdated}
+                    <template if:true={newCase}>
+                        {filteredHistoryItems.length} items - <span aria-live="polite">{sortedByText}</span> - {lastUpdated}
                     </template>
-                    <template if:false = {newCase}>
-                        {filteredHistoryItems.length} items - {sortedByText} - Updated {lastUpdated}
+                    <template if:false={newCase}>
+                        {filteredHistoryItems.length} items - <span aria-live="polite">{sortedByText}</span> - Updated {lastUpdated}
                     </template>
                     <lightning-button-icon icon-name="utility:refresh" size="small" alternative-text="Refresh" onclick={refreshHistoryItems} class="slds-m-bottom_small slds-m-right_small slds-col slds-size_1-of-12 slds-m-left_small"></lightning-button-icon>
                 </div>
@@ -332,6 +332,7 @@
     </template>
     <c-email-quick-action record-id={recordId}></c-email-quick-action>
 </template>
+
 
 
 
