@@ -50,7 +50,7 @@
                                             <a class="slds-th__action slds-text-link_reset" href="#" role="button" tabindex="0">
                                                 <span class="slds-assistive-text">Sort by: </span>
                                                 <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
-                                                    <span class="slds-truncate" title={column.label}>{column.label}</span>
+                                                    <span class="slds-wrap" title={column.label}>{column.label}</span>
                                                     <lightning-icon if:true={column.isSortedAsc} icon-name="utility:arrowup" alternative-text="Ascending" size="x-small"></lightning-icon>
                                                     <lightning-icon if:true={column.isSortedDesc} icon-name="utility:arrowdown" alternative-text="Descending" size="x-small"></lightning-icon>
                                                 </div>
