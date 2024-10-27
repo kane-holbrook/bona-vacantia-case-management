@@ -213,19 +213,6 @@
                                             </template>
                                         </button>
                                     </th>
-                                    <th class="selected" scope="col">
-                                        <button class="slds-button slds-button_reset slds-truncate slds-cell-fixed" 
-                                                title="Selected" 
-                                                onclick={handleSort} 
-                                                data-column="Selected"
-                                                aria-label={ariaLabelForSelected}
-                                                aria-live="polite">
-                                            Selected
-                                            <template if:true={isSortedBySelected}>
-                                                <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
-                                            </template>
-                                        </button>
-                                    </th>
                                     <th class="actions" scope="col">
                                         <div class="slds-button slds-button_reset slds-truncate slds-cell-fixed" title="Actions">Actions</div>
                                     </th>
