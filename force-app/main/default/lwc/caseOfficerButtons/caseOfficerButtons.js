@@ -238,7 +238,7 @@ export default class CaseOfficerButtons extends LightningElement {
             const hiddenScreenControlsComponent = this.template.querySelector('c-hidden-screen-controls');
             hiddenScreenControlsComponent.bvCaseId = this.recordId;
             hiddenScreenControlsComponent.recordTypeId = this.adminHiddenScreenRecordTypeId;
-            hiddenScreenControlsComponent.isEstates = this.isEstates;
+            hiddenScreenControlsComponent.recordTypeDeveloperName = this.recordTypeDeveloperName;
             hiddenScreenControlsComponent.openModal();
         } else if (actionName === 'LM case review') {
             // Fetch files from SharePoint for the appropriate document type

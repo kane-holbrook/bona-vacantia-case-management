@@ -27,7 +27,7 @@ export default class HiddenScreenControls extends LightningElement {
 
     @api bvCaseId;
     @api recordTypeId;
-    @api isEstates = false; // New property to determine if it's an Estates screen
+    @api recordTypeDeveloperName;
     caseDetailId;
     wiredCaseDetailResult; // Variable to store the wired result
 
@@ -38,7 +38,7 @@ export default class HiddenScreenControls extends LightningElement {
         if (data) {
             this.caseDetailId = data.Id;
             console.log('result', data);
-            if (this.isEstates) {
+            if (this.isEstatesOrSimilarScreen) {
                 this.isHideFromHuelChecked = data.Hide_From_Huel__c === 'Yes';
                 this.caseTypeCode = data.Case_Type_Code__c;
                 this.enteredBy = data.Entered_By__c;
@@ -77,7 +77,7 @@ export default class HiddenScreenControls extends LightningElement {
         const fields = {};
         fields.Id = this.caseDetailId;
         
-        if (this.isEstates) {
+        if (this.isEstatesOrSimilarScreen) {
             fields[HIDE_FROM_HUEL_FIELD.fieldApiName] = this.isHideFromHuelChecked ? 'Yes' : 'No';
             fields[CASE_TYPE_CODE_FIELD.fieldApiName] = this.caseTypeCode;
             fields[ENTERED_BY_FIELD.fieldApiName] = this.enteredBy;
@@ -120,5 +120,9 @@ export default class HiddenScreenControls extends LightningElement {
                     console.error('Error creating case detail:', error);
                 });
         }
+    }
+
+    get isEstatesOrSimilarScreen() {
+        return ['ESTA', 'COMP', 'CONV'].includes(this.recordTypeDeveloperName);
     }
 }

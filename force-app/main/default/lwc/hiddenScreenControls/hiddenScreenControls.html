@@ -13,7 +13,7 @@
 
                 <!-- Modal/Popup Body -->
                 <div class="slds-modal__content slds-p-around_medium">
-                    <template if:true={isEstates}>
+                    <template if:true={isEstatesOrSimilarScreen}>
                         <lightning-input type="checkbox" label="Hide from Huel" checked={isHideFromHuelChecked} onchange={handleCheckboxChange} data-field="isHideFromHuelChecked"></lightning-input>
                         <lightning-input type="text" label="Case Type Code" value={caseTypeCode} onchange={handleInputChange} data-field="caseTypeCode"></lightning-input>
                         <lightning-input type="text" label="Entered By" value={enteredBy} onchange={handleInputChange} data-field="enteredBy"></lightning-input>
@@ -21,7 +21,7 @@
                         <lightning-input type="text" label="Open/Closed" value={openClosed} onchange={handleInputChange} data-field="openClosed"></lightning-input>
                         <lightning-input type="number" label="BV Fais No" value={bvFaisNo} onchange={handleInputChange} data-field="bvFaisNo"></lightning-input>
                     </template>
-                    <template if:false={isEstates}>
+                    <template if:false={isEstatesOrSimilarScreen}>
                         <lightning-input type="checkbox" label="Cleared for Publishing" checked={isClearedForPublishingChecked} onchange={handleCheckboxChange} data-field="isClearedForPublishingChecked"></lightning-input>
                         <lightning-input type="checkbox" label="Published" checked={isPublishedChecked} onchange={handleCheckboxChange} data-field="isPublishedChecked"></lightning-input>
                     </template>
