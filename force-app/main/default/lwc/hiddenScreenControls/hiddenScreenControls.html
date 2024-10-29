@@ -14,6 +14,7 @@
                 <!-- Modal/Popup Body -->
                 <div class="slds-modal__content slds-p-around_medium">
                     <template if:true={isEstatesOrSimilarScreen}>
+                        <!-- Original layout for Estates or Similar Screen -->
                         <lightning-input type="checkbox" label="Hide from Huel" checked={isHideFromHuelChecked} onchange={handleCheckboxChange} data-field="isHideFromHuelChecked"></lightning-input>
                         <lightning-input type="text" label="Case Type Code" value={caseTypeCode} onchange={handleInputChange} data-field="caseTypeCode"></lightning-input>
                         <lightning-input type="text" label="Entered By" value={enteredBy} onchange={handleInputChange} data-field="enteredBy"></lightning-input>
@@ -22,20 +23,29 @@
                         <lightning-input type="number" label="BV Fais No" value={bvFaisNo} onchange={handleInputChange} data-field="bvFaisNo"></lightning-input>
                     </template>
                     <template if:true={isFoirScreen}>
-                        <lightning-input type="text" label="Entered By" value={enteredBy} onchange={handleInputChange} data-field="enteredBy"></lightning-input>
-                        <lightning-input type="date" label="Date Entered" value={dateEntered} onchange={handleInputChange} data-field="dateEntered"></lightning-input>
-                        <lightning-combobox label="Open/Closed" value={openClosed} options={openClosedOptions} onchange={handleInputChange} data-field="openClosed"></lightning-combobox>
-                        <lightning-input type="text" label="Time Opened" value={timeOpened} onchange={handleInputChange} data-field="timeOpened"></lightning-input>
-                        <lightning-input type="checkbox" label="Hod Approval Needed" checked={hodApprovalNeeded} onchange={handleCheckboxChange} data-field="hodApprovalNeeded"></lightning-input>
-                        <lightning-input type="checkbox" label="Approved" checked={approved} onchange={handleCheckboxChange} data-field="approved"></lightning-input>
-                        <lightning-input type="checkbox" label="Cleared for Publishing" checked={clearedForPublishing} onchange={handleCheckboxChange} data-field="clearedForPublishing"></lightning-input>
-                        <lightning-input type="checkbox" label="Completed" checked={completed} onchange={handleCheckboxChange} data-field="completed"></lightning-input>
-                        <lightning-input type="checkbox" label="Published" checked={published} onchange={handleCheckboxChange} data-field="published"></lightning-input>
-                        <lightning-input type="checkbox" label="Granted In Full" checked={grantedInFull} onchange={handleCheckboxChange} data-field="grantedInFull"></lightning-input>
-                        <lightning-input type="checkbox" label="Full Refusal" checked={fullRefusal} onchange={handleCheckboxChange} data-field="fullRefusal"></lightning-input>
-                        <lightning-input type="checkbox" label="Part Refusal" checked={partRefusal} onchange={handleCheckboxChange} data-field="partRefusal"></lightning-input>
-                        <lightning-input type="text" label="Info Held" value={infoHeld} onchange={handleInputChange} data-field="infoHeld"></lightning-input>
-                        <lightning-input type="checkbox" label="Debug" checked={debug} onchange={handleCheckboxChange} data-field="debug"></lightning-input>
+                        <!-- New layout for FOIR Screen -->
+                        <div class="slds-grid slds-wrap">
+                            <div class="slds-col slds-size_1-of-2">
+                                <lightning-input type="text" label="Entered By" value={enteredBy} onchange={handleInputChange} data-field="enteredBy"></lightning-input>
+                                <lightning-input type="date" label="Date Entered" value={dateEntered} onchange={handleInputChange} data-field="dateEntered"></lightning-input>
+                                <lightning-combobox label="Open/Closed" value={openClosed} options={openClosedOptions} onchange={handleInputChange} data-field="openClosed"></lightning-combobox>
+                                <lightning-input type="text" label="Time Opened" value={timeOpened} onchange={handleInputChange} data-field="timeOpened"></lightning-input>
+                            </div>
+                            <div class="slds-col slds-size_1-of-2 slds-p-left_medium">
+                                <lightning-input type="checkbox" label="Hod Approval Needed" checked={hodApprovalNeeded} onchange={handleCheckboxChange} data-field="hodApprovalNeeded"></lightning-input>
+                                <lightning-input type="checkbox" label="Approved" checked={approved} onchange={handleCheckboxChange} data-field="approved"></lightning-input>
+                                <lightning-input type="checkbox" label="Cleared for Publishing" checked={clearedForPublishing} onchange={handleCheckboxChange} data-field="clearedForPublishing"></lightning-input>
+                                <lightning-input type="checkbox" label="Completed" checked={completed} onchange={handleCheckboxChange} data-field="completed"></lightning-input>
+                                <lightning-input type="checkbox" label="Published" checked={published} onchange={handleCheckboxChange} data-field="published"></lightning-input>
+                            </div>
+                            <div class="slds-col slds-size_1-of-2">
+                                <lightning-input type="checkbox" label="Granted In Full" checked={grantedInFull} onchange={handleCheckboxChange} data-field="grantedInFull"></lightning-input>
+                                <lightning-input type="checkbox" label="Full Refusal" checked={fullRefusal} onchange={handleCheckboxChange} data-field="fullRefusal"></lightning-input>
+                                <lightning-input type="checkbox" label="Part Refusal" checked={partRefusal} onchange={handleCheckboxChange} data-field="partRefusal"></lightning-input>
+                                <lightning-input type="text" label="Info Held" value={infoHeld} onchange={handleInputChange} data-field="infoHeld"></lightning-input>
+                                <lightning-input type="checkbox" label="Debug" checked={debug} onchange={handleCheckboxChange} data-field="debug"></lightning-input>
+                            </div>
+                        </div>
                     </template>
                 </div>
 
