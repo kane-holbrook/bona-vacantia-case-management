@@ -108,37 +108,46 @@
                         <div class="slds-col slds-size_3-of-7 slds-m-bottom_medium slds-m-top_medium">
                             <div class="slds-text-align_left">
                                 <div class="slds-form-element">
-                                    <label class="slds-form-element__label" for="template-search">Search Template</label>
+                                    <label class="slds-form-element__label" for="template-combobox-input">Search Template</label>
                                     <div class="slds-combobox_container">
-                                        <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open">
+                                        <div class={comboboxClass} role="combobox" aria-expanded={shouldShowDropdown} aria-haspopup="listbox">
                                             <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
                                                 <input 
                                                     type="text" 
                                                     class="slds-input slds-combobox__input" 
-                                                    id="template-search" 
-                                                    aria-autocomplete="list" 
-                                                    aria-controls="template-options" 
-                                                    aria-expanded={shouldShowDropdown} 
-                                                    aria-haspopup="listbox" 
-                                                    autocomplete="off" 
-                                                    role="combobox" 
+                                                    id="template-combobox-input"
+                                                    aria-controls="template-listbox"
+                                                    aria-labelledby="template-combobox-label"
+                                                    autocomplete="off"
+                                                    role="textbox"
                                                     placeholder="Search for a Template" 
-                                                    value={searchTerm} 
+                                                    value={searchTerm}
                                                     oninput={handleSearchChange}
-                                                    onkeydown={handleKeyDown} />
+                                                    onkeydown={handleKeyDown}
+                                                    aria-activedescendant={activeDescendant} />
                                                 <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_right">
-                                                    <lightning-icon icon-name="utility:search" size="x-small"></lightning-icon>
+                                                    <lightning-icon icon-name="utility:search" size="x-small" alternative-text="Search"></lightning-icon>
                                                 </span>
                                             </div>
                                             <!-- Dropdown list -->
                                             <template if:true={shouldShowDropdown}>
-                                                <div id="template-options" class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox" aria-label="Template Options" tabindex="-1" aria-busy="false">
+                                                <div id="template-listbox" 
+                                                     class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" 
+                                                     role="listbox"
+                                                     aria-label="Templates">
                                                     <ul class="slds-listbox slds-listbox_vertical" role="presentation">
                                                         <template for:each={filteredTemplates} for:item="template">
-                                                            <li key={template.value} role="presentation" class="slds-listbox__item" data-value={template.value} data-label={template.label} onclick={handleTemplateSelect} tabindex="0">
-                                                                <div class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_term" role="option">
+                                                            <li key={template.value} 
+                                                                role="option"
+                                                                class="slds-listbox__item"
+                                                                data-value={template.value}
+                                                                data-label={template.label}
+                                                                onclick={handleTemplateSelect}
+                                                                id={template.optionId}
+                                                                aria-selected={template.selected}>
+                                                                <div class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small">
                                                                     <span class="slds-media__body">
-                                                                        <span class="slds-listbox__option-text slds-listbox__option-text_entity">{template.label}</span>
+                                                                        <span class="slds-truncate" title={template.label}>{template.label}</span>
                                                                     </span>
                                                                 </div>
                                                             </li>
