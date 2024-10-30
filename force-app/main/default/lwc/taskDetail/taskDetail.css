@@ -37,3 +37,30 @@
 .high-icon {
     --slds-c-icon-color-foreground-default: #194e31;
 }
+
+/* Styles for the combobox listbox items */
+.slds-listbox__item[aria-selected="true"] .slds-listbox__option {
+    background-color: #f3f2f2;
+    border-left: 3px solid #0070d2;
+}
+
+.slds-listbox__item:hover .slds-listbox__option {
+    background-color: #f3f2f2;
+    cursor: pointer;
+}
+
+/* Add focus styles for keyboard navigation */
+.slds-listbox__item:focus {
+    outline: none;
+}
+
+.slds-listbox__item .slds-listbox__option {
+    padding: 0.5rem 0.75rem;
+}
+
+/* Ensure the dropdown has a proper z-index and max-height */
+.slds-dropdown {
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 7000;
+}

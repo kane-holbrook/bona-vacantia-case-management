@@ -64,6 +64,9 @@ export default class TaskDetail extends LightningElement {
     @track isManageModalOpen = false;
     @track isDeleteModalOpen = false;
 
+    @track activeDescendant = '';
+    @track highlightedOptionIndex = -1;
+
     @wire(getRecord, { recordId: '$recordId', fields: [
         TASK_ID_FIELD, TASK_NAME_FIELD, TASK_PARENT_FIELD, TASK_ASSIGNED_TO_FIELD, TASK_DUE_DATE_FIELD, TASK_PRIORITY_FIELD, 
         TASK_COMMENTS_FIELD, TASK_CREATED_BY_FIELD, TASK_LAST_MODIFIED_BY_FIELD, TASK_NEXT_TASK_FIELD, 
@@ -433,23 +436,26 @@ export default class TaskDetail extends LightningElement {
         return this.subTasks.length > 0;
     }
 
+    get comboboxClass() {
+        return `slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click ${
+            this.shouldShowDropdown ? 'slds-is-open' : ''
+        }`;
+    }
+
     handleTemplateSelect(event) {
         this.selectedTemplate = event.currentTarget.dataset.value;
         const selectedFile = this.templates.find(template => template.value === this.selectedTemplate);
     
         if (selectedFile) {
             this.selectedDocumentType = selectedFile.type;
-            this.searchTerm = selectedFile.label;
-    
-            // Append the selected template's listItemId to the TASK_TEMPLATES_FIELD
+            this.searchTerm = '';
             this.appendTemplateId(selectedFile.listItemId);
         }
     
         this.shouldShowDropdown = false;
+        this.highlightedOptionIndex = -1;
+        this.activeDescendant = '';
         this.prepareFlowInputs();
-
-        // Clear the input field
-        this.searchTerm = '';
     }
     
     appendTemplateId(newListItemId) {
@@ -810,39 +816,86 @@ export default class TaskDetail extends LightningElement {
         if (this.searchTerm) {
             const searchTermLowerCase = this.searchTerm.toLowerCase();
     
-            // Filter templates based on label, value (Document ID), and category
-            this.filteredTemplates = this.templates.filter(template => {
-                const documentNameLowerCase = template.label.toLowerCase();
-                const documentCategoryLowerCase = template.type.toLowerCase();
-                
-                // Check if search term matches the label, category, or ID
-                return documentNameLowerCase.includes(searchTermLowerCase) || 
-                    documentCategoryLowerCase.includes(searchTermLowerCase);
-            });
+            this.filteredTemplates = this.templates
+                .filter(template => {
+                    const documentNameLowerCase = template.label.toLowerCase();
+                    const documentCategoryLowerCase = template.type.toLowerCase();
+                    
+                    return documentNameLowerCase.includes(searchTermLowerCase) || 
+                        documentCategoryLowerCase.includes(searchTermLowerCase);
+                })
+                .map((template, index) => ({
+                    ...template,
+                    optionId: `template-option-${index}`,
+                    selected: index === this.highlightedOptionIndex
+                }));
             
             this.shouldShowDropdown = this.filteredTemplates.length > 0;
+            this.highlightedOptionIndex = -1;
+            this.activeDescendant = '';
         } else {
             this.filteredTemplates = [];
             this.shouldShowDropdown = false;
+            this.highlightedOptionIndex = -1;
+            this.activeDescendant = '';
         }
     }
 
     handleKeyDown(event) {
         const { key } = event;
-        const options = this.template.querySelectorAll('.slds-listbox__item');
-        const currentIndex = Array.from(options).findIndex(option => option.contains(document.activeElement));
+        
+        if (!this.filteredTemplates.length) return;
 
-        if (key === 'ArrowDown') {
-            event.preventDefault();
-            const nextIndex = (currentIndex + 1) % options.length;
-            options[nextIndex].focus();
-        } else if (key === 'ArrowUp') {
-            event.preventDefault();
-            const prevIndex = (currentIndex - 1 + options.length) % options.length;
-            options[prevIndex].focus();
-        } else if (key === 'Enter') {
-            event.preventDefault();
-            options[currentIndex].click();
+        switch (key) {
+            case 'ArrowDown':
+                event.preventDefault();
+                this.highlightedOptionIndex = Math.min(
+                    this.highlightedOptionIndex + 1,
+                    this.filteredTemplates.length - 1
+                );
+                if (this.highlightedOptionIndex === -1) this.highlightedOptionIndex = 0;
+                break;
+
+            case 'ArrowUp':
+                event.preventDefault();
+                this.highlightedOptionIndex = Math.max(this.highlightedOptionIndex - 1, 0);
+                break;
+
+            case 'Enter':
+                event.preventDefault();
+                if (this.highlightedOptionIndex >= 0) {
+                    this.handleTemplateSelect({
+                        currentTarget: {
+                            dataset: {
+                                value: this.filteredTemplates[this.highlightedOptionIndex].value,
+                                label: this.filteredTemplates[this.highlightedOptionIndex].label
+                            }
+                        }
+                    });
+                }
+                break;
+
+            case 'Escape':
+                event.preventDefault();
+                this.shouldShowDropdown = false;
+                this.highlightedOptionIndex = -1;
+                break;
+
+            default:
+                return;
+        }
+
+        // Update aria-activedescendant
+        if (this.highlightedOptionIndex >= 0) {
+            this.activeDescendant = this.filteredTemplates[this.highlightedOptionIndex].optionId;
+            
+            // Update selected state for all options
+            this.filteredTemplates = this.filteredTemplates.map((template, index) => ({
+                ...template,
+                selected: index === this.highlightedOptionIndex
+            }));
+        } else {
+            this.activeDescendant = '';
         }
     }
 }
