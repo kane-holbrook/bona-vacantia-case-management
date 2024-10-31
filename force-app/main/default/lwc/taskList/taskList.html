@@ -148,10 +148,10 @@
                                 <td data-label="Description">{item.Name}</td>
                                 <td data-label="Priority">
                                     <template if:true={item.isCritical}>
-                                        <lightning-icon icon-name="utility:info" alternative-text="Info" size="small" class="critical-icon slds-m-right_x-small"></lightning-icon>
+                                        <lightning-icon icon-name="utility:info" alternative-text="Critical Priority" size="small" class="critical-icon slds-m-right_x-small"></lightning-icon>
                                     </template>
                                     <template if:true={item.isHigh}>
-                                        <lightning-icon icon-name="utility:info_alt" alternative-text="Info" size="small" class="high-icon slds-m-right_x-small"></lightning-icon>
+                                        <lightning-icon icon-name="utility:info_alt" alternative-text="High Priority" size="small" class="high-icon slds-m-right_x-small"></lightning-icon>
                                     </template>
                                     {item.Priority__c}
                                 </td>
@@ -182,10 +182,10 @@
                                         <td data-label="Description">{subTask.Description__c}</td>
                                         <td data-label="Priority">
                                             <template if:true={subTask.isCritical}>
-                                                <lightning-icon icon-name="utility:info" alternative-text="Info" size="small" class="critical-icon slds-m-right_x-small"></lightning-icon>
+                                                <lightning-icon icon-name="utility:info" alternative-text="Critical Priority" size="small" class="critical-icon slds-m-right_x-small"></lightning-icon>
                                             </template>
                                             <template if:true={subTask.isHigh}>
-                                                <lightning-icon icon-name="utility:info_alt" alternative-text="Info" size="small" class="high-icon slds-m-right_x-small"></lightning-icon>
+                                                <lightning-icon icon-name="utility:info_alt" alternative-text="High Priority" size="small" class="high-icon slds-m-right_x-small"></lightning-icon>
                                             </template>
                                             {subTask.Priority__c}
                                         </td>
