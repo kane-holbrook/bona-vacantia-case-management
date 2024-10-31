@@ -175,6 +175,7 @@ export default class HistoryList extends NavigationMixin(LightningElement) {
                     firstDocumentType: shDocuments.length > 0 ? shDocuments[0].DocumentType__c : '',
                     totalFileSize: this.calculateTotalFileSize(shDocuments),
                     firstDocumentDraft: shDocuments.length > 0 ? (shDocuments[0].Draft__c ? 'Yes' : 'No') : '',
+                    flagAlternativeText: history.Flag_as_important__c ? 'Flagged as important' : 'Not flagged as important',
                 };
 
                 recordsMap[history.Id] = mergedRecord;
