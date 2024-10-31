@@ -827,7 +827,8 @@ export default class TaskDetail extends LightningElement {
                 .map((template, index) => ({
                     ...template,
                     optionId: `template-option-${index}`,
-                    selected: index === this.highlightedOptionIndex
+                    selected: index === this.highlightedOptionIndex,
+                    index
                 }));
             
             this.shouldShowDropdown = this.filteredTemplates.length > 0;
@@ -854,11 +855,13 @@ export default class TaskDetail extends LightningElement {
                     this.filteredTemplates.length - 1
                 );
                 if (this.highlightedOptionIndex === -1) this.highlightedOptionIndex = 0;
+                this.scrollOptionIntoView();
                 break;
 
             case 'ArrowUp':
                 event.preventDefault();
                 this.highlightedOptionIndex = Math.max(this.highlightedOptionIndex - 1, 0);
+                this.scrollOptionIntoView();
                 break;
 
             case 'Enter':
@@ -896,6 +899,29 @@ export default class TaskDetail extends LightningElement {
             }));
         } else {
             this.activeDescendant = '';
+        }
+    }
+
+    scrollOptionIntoView() {
+        if (this.highlightedOptionIndex >= 0) {
+            requestAnimationFrame(() => {
+                const listbox = this.template.querySelector('.slds-dropdown');
+                const highlightedOption = this.template.querySelector(`[data-index="${this.highlightedOptionIndex}"]`);
+                
+                if (listbox && highlightedOption) {
+                    const listboxRect = listbox.getBoundingClientRect();
+                    const optionRect = highlightedOption.getBoundingClientRect();
+                    
+                    // Check if the highlighted option is below the visible area
+                    if (optionRect.bottom > listboxRect.bottom) {
+                        listbox.scrollTop += (optionRect.bottom - listboxRect.bottom);
+                    }
+                    // Check if the highlighted option is above the visible area
+                    else if (optionRect.top < listboxRect.top) {
+                        listbox.scrollTop -= (listboxRect.top - optionRect.top);
+                    }
+                }
+            });
         }
     }
 }

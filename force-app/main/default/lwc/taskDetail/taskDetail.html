@@ -136,12 +136,13 @@
                                                      role="listbox"
                                                      aria-label="Templates">
                                                     <ul class="slds-listbox slds-listbox_vertical" role="presentation">
-                                                        <template for:each={filteredTemplates} for:item="template">
+                                                        <template for:each={filteredTemplates} for:item="template" for:index="index">
                                                             <li key={template.value} 
                                                                 role="option"
                                                                 class="slds-listbox__item"
                                                                 data-value={template.value}
                                                                 data-label={template.label}
+                                                                data-index={index}
                                                                 onclick={handleTemplateSelect}
                                                                 id={template.optionId}
                                                                 aria-selected={template.selected}>
