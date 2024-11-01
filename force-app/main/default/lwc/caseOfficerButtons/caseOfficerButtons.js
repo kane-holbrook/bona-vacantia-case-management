@@ -129,7 +129,7 @@ export default class CaseOfficerButtons extends LightningElement {
                     { actionId: '7', label: 'Section 27', disabled: false }
                 ];
                 this.isEstates = true;
-                this.documentType = 'LMREV';
+                this.documentType = 'LMEST';
             } else if (recordTypeDeveloperName === 'COMP') {
                 this.actions = [
                     { actionId: '1', label: 'Put away', disabled: false },
