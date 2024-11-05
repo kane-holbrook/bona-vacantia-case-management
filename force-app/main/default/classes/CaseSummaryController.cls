@@ -1,4 +1,3 @@
-// File: force-app/main/default/classes/CaseSummaryController.cls
 public with sharing class CaseSummaryController {
     @AuraEnabled(cacheable=true)
     public static Map<String, Object> getCaseSummaryData(Id caseId) {
@@ -9,7 +8,7 @@ public with sharing class CaseSummaryController {
             SELECT Key_Name__c, Key_Address__c, Case_Type__c, Date_Opened__c, On_Report_To__c,
                    Referred_To__c, Referred_To_Date__c, Current_Status__c, Former_Ref__c,
                    Details_Complete__c, Date_Case_Last_Reviewed__c, Date_Of_Last_Lm_Review__c,
-                   Date_Of_Last_Co_Review__c, Owner.Name
+                   Date_Of_Last_Co_Review__c, Owner.Name, Current_Status_Date__c
             FROM BV_Case__c
             WHERE Id = :caseId
             LIMIT 1
@@ -24,6 +23,7 @@ public with sharing class CaseSummaryController {
         result.put('referredTo', caseRecord.Referred_To__c);
         result.put('referredToDate', caseRecord.Referred_To_Date__c);
         result.put('currentStatus', caseRecord.Current_Status__c);
+        result.put('currentStatusDate', caseRecord.Date_Of_Last_Co_Review__c);
         result.put('formerRef', caseRecord.Former_Ref__c);
         result.put('detailsComplete', caseRecord.Details_Complete__c);
         result.put('dateCaseLastReviewed', caseRecord.Date_Case_Last_Reviewed__c);
@@ -33,15 +33,29 @@ public with sharing class CaseSummaryController {
 
         // Query Case_History__c for earliest and latest records
         List<Case_History__c> historyRecords = [
-            SELECT CreatedDate
+            SELECT CreatedDate, Action__c
             FROM Case_History__c
             WHERE BV_Case__c = :caseId
             ORDER BY CreatedDate ASC
         ];
 
         if (!historyRecords.isEmpty()) {
+            result.put('lastAction', historyRecords[historyRecords.size() - 1].Action__c);
             result.put('firstActionDate', historyRecords[0].CreatedDate);
             result.put('lastActionDate', historyRecords[historyRecords.size() - 1].CreatedDate);
+        }
+
+        // Query Case_Detail__c for Officer_History record type
+        List<Case_Detail__c> officerDetails = [
+            SELECT Current_Officer__c, Date_Officer__c
+            FROM Case_Detail__c
+            WHERE BV_Case__c = :caseId AND RecordType.DeveloperName = 'Officer_History'
+            LIMIT 1
+        ];
+
+        if (!officerDetails.isEmpty()) {
+            result.put('caseOfficer', officerDetails[0].Current_Officer__c);
+            result.put('allocatedDate', officerDetails[0].Date_Officer__c);
         }
 
         return result;

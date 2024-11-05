@@ -8,14 +8,16 @@ export default class CaseSummaryScreen extends LightningElement {
     keyAddress = '';
     caseType = '';
     caseOfficer = '';
-    dateOpened = '';
+    dateOpened = ''; 
     firstActionDate = '';
     allocatedDate = '';
     onReportTo = '';
     referredTo = '';
     referredToDate = '';
+    lastAction = '';
     lastActionDate = '';
     currentStatus = '';
+    currentStatusDate = '';
     formerRef = '';
     detailsComplete = '';
     dateCaseLastReviewed = '';
@@ -24,18 +26,21 @@ export default class CaseSummaryScreen extends LightningElement {
 
     @wire(getCaseSummaryData, { caseId: '$recordId' })
     wiredCaseSummary({ error, data }) {
-        if (data) {
+        if (data) { 
             this.keyName = data.keyName || '';
             this.keyAddress = data.keyAddress || '';
             this.caseType = data.caseType || '';
             this.caseOfficer = data.caseOfficer || '';
+            this.allocatedDate = this.formatDate(data.allocatedDate);
             this.dateOpened = this.formatDate(data.dateOpened);
             this.firstActionDate = this.formatDate(data.firstActionDate);
             this.onReportTo = data.onReportTo || '';
             this.referredTo = data.referredTo || '';
             this.referredToDate = this.formatDate(data.referredToDate);
+            this.lastAction = data.lastAction || '';
             this.lastActionDate = this.formatDate(data.lastActionDate);
             this.currentStatus = data.currentStatus || '';
+            this.currentStatusDate = this.formatDate(data.currentStatusDate);
             this.formerRef = data.formerRef || '';
             this.detailsComplete = data.detailsComplete || '';
             this.dateCaseLastReviewed = this.formatDate(data.dateCaseLastReviewed);
