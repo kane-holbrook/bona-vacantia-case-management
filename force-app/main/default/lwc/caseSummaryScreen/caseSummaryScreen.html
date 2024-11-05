@@ -127,6 +127,70 @@
             <template if:true={isGene}>
                 <!-- No additional fields for GENE -->
             </template>
+
+            <!-- CONV Specific Fields -->
+            <template if:true={isConv}>
+                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+                    <label class="slds-form-element__label">Key Address:</label>
+                    <input type="text" class="slds-input" value={keyAddress} readonly />
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+                    <label class="slds-form-element__label">On Report to:</label>
+                    <input type="text" class="slds-input" value={onReportTo} readonly />
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+                    <label class="slds-form-element__label">On Report to Date:</label>
+                    <input type="text" class="slds-input" value={onReportToDate} readonly />
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+                    <label class="slds-form-element__label">Referred to:</label>
+                    <input type="text" class="slds-input" value={referredTo} readonly />
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+                    <label class="slds-form-element__label">Referred to Date:</label>
+                    <input type="text" class="slds-input" value={referredToDate} readonly />
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+                    <label class="slds-form-element__label">Current Status:</label>
+                    <input type="text" class="slds-input" value={currentStatus} readonly />
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+                    <label class="slds-form-element__label">Current Status Date:</label>
+                    <input type="text" class="slds-input" value={currentStatusDate} readonly />
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+                    <label class="slds-form-element__label">Disclaim by:</label>
+                    <input type="text" class="slds-input" value={disclaimBy} readonly />
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+                    <label class="slds-form-element__label">Date Disclosed:</label>
+                    <input type="text" class="slds-input" value={dateDisclosed} readonly />
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+                    <label class="slds-form-element__label">HIPS Required:</label>
+                    <input type="text" class="slds-input" value={hipsRequired} readonly />
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+                    <label class="slds-form-element__label">Part Sale:</label>
+                    <input type="text" class="slds-input" value={partSale} readonly />
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+                    <label class="slds-form-element__label">Disclosed By:</label>
+                    <input type="text" class="slds-input" value={disclosedBy} readonly />
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+                    <label class="slds-form-element__label">Method:</label>
+                    <input type="text" class="slds-input" value={method} readonly />
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+                    <label class="slds-form-element__label">Date Last Reviewed:</label>
+                    <input type="text" class="slds-input" value={dateCaseLastReviewed} readonly />
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+                    <label class="slds-form-element__label">Date of Last RM Review:</label>
+                    <input type="text" class="slds-input" value={dateOfLastLmReview} readonly />
+                </div>
+            </template>
         </div>
     </div>
 </template>

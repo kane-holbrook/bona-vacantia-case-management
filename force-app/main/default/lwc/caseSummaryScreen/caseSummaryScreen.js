@@ -31,6 +31,14 @@ export default class CaseSummaryScreen extends LightningElement {
 
     recordTypeDeveloperName = '';
 
+    disclaimBy = '';
+    dateDisclosed = '';
+    hipsRequired = '';
+    partSale = '';
+    disclosedBy = '';
+    method = '';
+    onReportToDate = '';
+
     connectedCallback() {
         this.retrieveRecordTypeDeveloperName();
     }
@@ -59,6 +67,14 @@ export default class CaseSummaryScreen extends LightningElement {
             this.dateOfLastCoReview = this.formatDate(data.dateOfLastCoReview);
             this.dateOfNotification = this.formatDate(data.dateOfNotification);
             this.dateDisclaimerSent = this.formatDate(data.dateDisclaimerSent);
+
+            this.disclaimBy = data.disclaimBy || '';
+            this.dateDisclosed = this.formatDate(data.dateDisclosed);
+            this.hipsRequired = data.hipsRequired || '';
+            this.partSale = data.partSale || '';
+            this.disclosedBy = data.disclosedBy || '';
+            this.method = data.method || '';
+            this.onReportToDate = this.formatDate(data.onReportToDate);
         } else if (error) {
             console.error(error);
         }
@@ -93,5 +109,9 @@ export default class CaseSummaryScreen extends LightningElement {
 
     get isGene() {
         return this.recordTypeDeveloperName === 'GENE';
+    }
+
+    get isConv() {
+        return this.recordTypeDeveloperName === 'CONV';
     }
 }

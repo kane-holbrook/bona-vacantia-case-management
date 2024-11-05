@@ -9,7 +9,9 @@ public with sharing class CaseSummaryController {
                    Referred_To__c, Referred_To_Date__c, Current_Status__c, Former_Ref__c,
                    Details_Complete__c, Date_Case_Last_Reviewed__c, Date_Of_Last_Lm_Review__c,
                    Date_Of_Last_Co_Review__c, Owner.Name, Current_Status_Date__c, Date_Of_Notification__c,
-                   Date_Disclaimer_Sent__c
+                   Date_Disclaimer_Sent__c, Disclaim_by__c, Date_Disclosed__c, HIPS_required__c,
+                   Part_sale__c, Disclosed_by__c, Method__c,
+                   On_Report_To_Date__c
             FROM BV_Case__c
             WHERE Id = :caseId
             LIMIT 1
@@ -33,6 +35,13 @@ public with sharing class CaseSummaryController {
         result.put('caseOfficer', caseRecord.Owner.Name);
         result.put('dateOfNotification', caseRecord.Date_Of_Notification__c);
         result.put('dateDisclaimerSent', caseRecord.Date_Disclaimer_Sent__c);
+        result.put('disclaimBy', caseRecord.Disclaim_by__c);
+        result.put('dateDisclosed', caseRecord.Date_Disclosed__c);
+        result.put('hipsRequired', caseRecord.HIPS_required__c);
+        result.put('partSale', caseRecord.Part_sale__c);
+        result.put('disclosedBy', caseRecord.Disclosed_by__c);
+        result.put('method', caseRecord.Method__c);
+        result.put('onReportToDate', caseRecord.On_Report_To_Date__c);
 
         // Query Case_History__c for earliest and latest records
         List<Case_History__c> historyRecords = [
