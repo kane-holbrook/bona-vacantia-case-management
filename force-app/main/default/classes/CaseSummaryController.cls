@@ -8,7 +8,8 @@ public with sharing class CaseSummaryController {
             SELECT Key_Name__c, Key_Address__c, Case_Type__c, Date_Opened__c, On_Report_To__c,
                    Referred_To__c, Referred_To_Date__c, Current_Status__c, Former_Ref__c,
                    Details_Complete__c, Date_Case_Last_Reviewed__c, Date_Of_Last_Lm_Review__c,
-                   Date_Of_Last_Co_Review__c, Owner.Name, Current_Status_Date__c
+                   Date_Of_Last_Co_Review__c, Owner.Name, Current_Status_Date__c, Date_Of_Notification__c,
+                   Date_Disclaimer_Sent__c
             FROM BV_Case__c
             WHERE Id = :caseId
             LIMIT 1
@@ -30,6 +31,8 @@ public with sharing class CaseSummaryController {
         result.put('dateOfLastLmReview', caseRecord.Date_Of_Last_Lm_Review__c);
         result.put('dateOfLastCoReview', caseRecord.Date_Of_Last_Co_Review__c);
         result.put('caseOfficer', caseRecord.Owner.Name);
+        result.put('dateOfNotification', caseRecord.Date_Of_Notification__c);
+        result.put('dateDisclaimerSent', caseRecord.Date_Disclaimer_Sent__c);
 
         // Query Case_History__c for earliest and latest records
         List<Case_History__c> historyRecords = [

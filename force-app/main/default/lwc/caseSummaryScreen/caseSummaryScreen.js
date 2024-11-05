@@ -1,5 +1,7 @@
 import { LightningElement, api, wire } from 'lwc';
 import getCaseSummaryData from '@salesforce/apex/CaseSummaryController.getCaseSummaryData';
+import getRecordTypeIdForRecord from '@salesforce/apex/LayoutController.getRecordTypeIdForRecord';
+import getRecordTypeDeveloperName from '@salesforce/apex/LayoutController.getRecordTypeDeveloperName';
 
 export default class CaseSummaryScreen extends LightningElement {
     @api recordId;
@@ -23,6 +25,15 @@ export default class CaseSummaryScreen extends LightningElement {
     dateCaseLastReviewed = '';
     dateOfLastLmReview = '';
     dateOfLastCoReview = '';
+    dateCaseLastReviewed = '';
+    dateOfNotification = '';
+    dateDisclaimerSent = '';
+
+    recordTypeDeveloperName = '';
+
+    connectedCallback() {
+        this.retrieveRecordTypeDeveloperName();
+    }
 
     @wire(getCaseSummaryData, { caseId: '$recordId' })
     wiredCaseSummary({ error, data }) {
@@ -46,6 +57,8 @@ export default class CaseSummaryScreen extends LightningElement {
             this.dateCaseLastReviewed = this.formatDate(data.dateCaseLastReviewed);
             this.dateOfLastLmReview = this.formatDate(data.dateOfLastLmReview);
             this.dateOfLastCoReview = this.formatDate(data.dateOfLastCoReview);
+            this.dateOfNotification = this.formatDate(data.dateOfNotification);
+            this.dateDisclaimerSent = this.formatDate(data.dateDisclaimerSent);
         } else if (error) {
             console.error(error);
         }
@@ -58,5 +71,27 @@ export default class CaseSummaryScreen extends LightningElement {
         const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
         const year = date.getFullYear();
         return `${day}/${month}/${year}`;
+    }
+
+    async retrieveRecordTypeDeveloperName() {
+        try {
+            const recordTypeId = await getRecordTypeIdForRecord({ recordId: this.recordId });
+            const recordTypeDeveloperName = await getRecordTypeDeveloperName({ recordTypeId });
+            this.recordTypeDeveloperName = recordTypeDeveloperName;
+        } catch (error) {
+            console.error('Error retrieving record type developer name:', error);
+        }
+    }
+
+    get isEsta() {
+        return this.recordTypeDeveloperName === 'ESTA';
+    }
+
+    get isComp() {
+        return this.recordTypeDeveloperName === 'COMP';
+    }
+
+    get isGene() {
+        return this.recordTypeDeveloperName === 'GENE';
     }
 }
