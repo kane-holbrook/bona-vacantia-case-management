@@ -187,7 +187,37 @@
 
             <!-- GENE Specific Fields -->
             <template if:true={isGene}>
-                <!-- No additional fields for GENE -->
+                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+                    <label class="slds-form-element__label">Case Type:</label>
+                    <input type="text" class="slds-input" value={caseType} readonly />
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+                    <label class="slds-form-element__label">Date Case Opened:</label>
+                    <input type="text" class="slds-input" value={dateOpened} readonly />
+                </div>
+
+                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+                    <label class="slds-form-element__label">Case Officer:</label>
+                    <input type="text" class="slds-input" value={caseOfficer} readonly />
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+                    <label class="slds-form-element__label">Allocation Date:</label>
+                    <input type="text" class="slds-input" value={allocatedDate} readonly />
+                </div>
+
+                <div class="slds-col slds-size_1-of-1 slds-p-horizontal_small">
+                    <label class="slds-form-element__label">Former ref:</label>
+                    <input type="text" class="slds-input" value={formerRef} readonly />
+                </div>
+
+                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+                    <label class="slds-form-element__label">Last Action:</label>
+                    <input type="text" class="slds-input" value={lastAction} readonly />
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+                    <label class="slds-form-element__label">Last Action Date:</label>
+                    <input type="text" class="slds-input" value={lastActionDate} readonly />
+                </div>
             </template>
 
             <!-- CONV Specific Fields -->
