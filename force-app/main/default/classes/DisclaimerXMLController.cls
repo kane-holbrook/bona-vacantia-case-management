@@ -5,6 +5,7 @@ public with sharing class DisclaimerXMLController {
     public String formattedCurrentDate { get; private set; }
     public String formattedCurrentDateLong { get; private set; }
     public String currentTime { get; private set; }
+    public String xmlHeader { get; private set; }
     
     public class DisclaimerWrapper {
         public Case_Detail__c disclaimer { get; set; }
@@ -12,6 +13,8 @@ public with sharing class DisclaimerXMLController {
     }
     
     public DisclaimerXMLController() {
+        xmlHeader = '<?xml version="1.0" encoding="UTF-8"?>';
+
         // Initialize data
         currentUser = UserInfo.getName();
         Date currentDate = Date.today();

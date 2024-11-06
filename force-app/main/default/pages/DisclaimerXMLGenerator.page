@@ -1,0 +1,57 @@
+<apex:page controller="DisclaimerXMLController" standardStylesheets="false" contentType="text/xml#disclaimer.xml" cache="false">
+<apex:outputText value="{!xmlHeader}" escape="false"/>
+<Gazette Title='London' SchemaVersion='1.0' 
+    xmlns:ukm='http://www.tso.co.uk/assets/namespace/metadata' 
+    xmlns:fo='http://www.w3.org/1999/XSL/Format' 
+    xmlns:xhtml='http://www.w3.org/1999/xhtml' 
+    xmlns='http://www.tso.co.uk/assets/namespace/gazette' 
+    xmlns:lga='http://www.tso.co.uk/assets/namespace/gazette' 
+    xmlns:dc='http://purl.org/dc/elements/1.1/' 
+    xmlns:msxsl='urn:schemas-microsoft-com:xslt' 
+    xmlns:local='#local-functions' 
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+    <Body>
+        <Category Type='26'>
+            <Notice Type='2603'>
+                <Legislation>Notice of Disclaimer Under Section 1013 of the Companies Act 2006</Legislation>
+                <Title>Disclaimer of Whole of the Property</Title>
+                <P>
+                    <Text>T S ref: BV22209416/1/NAC</Text>
+                    <P1 SpaceBefore='3'>
+                        <Pnumber>1</Pnumber>
+                        <P1para>
+                            <Text>In this notice the following shall apply:</Text>
+                        </P1para>
+                    </P1>
+                </P>
+                <Company>
+                    <CompanyName Class='Company'>Idris Davies Developments Ltd</CompanyName>
+                    <CompanyNumber>10007404</CompanyNumber>
+                </Company>
+                <P>
+                    <Text>Interest: freehold</Text>
+                </P>
+                <P>
+                    <Text>Title number: CYM283715</Text>
+                </P>
+                <P>
+                    <Text>Property: The Property situated at 1-25 (inc), Sunnybank Gardens, Narbeth, SA67 7FF being the land comprised in the above mentioned title</Text>
+                </P>
+                <P>
+                    <Text>Treasury Solicitor: The Solicitor for the Affairs of Her Majesty&apos;s Treasury of 1 Ruskin Square, Croydon CR0 2WF (DX 325801 Croydon 51).</Text>
+                    <P1 SpaceBefore='3'>
+                        <Pnumber>2</Pnumber>
+                        <P1para>
+                            <Text>In pursuance of the powers granted by Section 1013 of the Companies Act 2006, the Treasury Solicitor as nominee for the Crown (in whom the property and rights of the Company vested when the Company was dissolved) hereby disclaims the Crown&apos;s title (if any) in the property, the vesting of the property having come to his notice on 6 July 2022.</Text>
+                        </P1para>
+                    </P1>
+                </P>
+                <Administration>
+                    <Administrator>Assistant Treasury Solicitor</Administrator>
+                    <DateSigned Date='2024-10-09'>9 October 2024</DateSigned>
+                </Administration>
+            </Notice>
+        </Category>
+    </Body>
+</Gazette>
+</apex:page> 
