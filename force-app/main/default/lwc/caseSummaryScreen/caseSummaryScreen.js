@@ -38,7 +38,7 @@ export default class CaseSummaryScreen extends LightningElement {
     disclosedBy = '';
     method = '';
     onReportToDate = '';
-
+    dateOfDeathOrDissolution = '';
     connectedCallback() {
         this.retrieveRecordTypeDeveloperName();
     }
@@ -75,6 +75,7 @@ export default class CaseSummaryScreen extends LightningElement {
             this.disclosedBy = data.disclosedBy || '';
             this.method = data.method || '';
             this.onReportToDate = this.formatDate(data.onReportToDate);
+            this.dateOfDeathOrDissolution = this.formatDate(data.dateOfDeathOrDissolution);
         } else if (error) {
             console.error(error);
         }

@@ -12,7 +12,7 @@ public with sharing class CaseSummaryController {
                        Date_Of_Last_Co_Review__c, Owner.Name, Current_Status_Date__c, Date_Of_Notification__c,
                        Date_Disclaimer_Sent__c, Disclaim_by__c, Date_Disclosed__c, HIPS_required__c,
                        Part_sale__c, Disclosed_by__c, Method__c,
-                       On_Report_To_Date__c
+                       On_Report_To_Date__c, Date_of_Death_or_Dissolution__c
                 FROM BV_Case__c
                 WHERE Id = :caseId
                 LIMIT 1
@@ -43,6 +43,7 @@ public with sharing class CaseSummaryController {
             result.put('disclosedBy', caseRecord.Disclosed_by__c);
             result.put('method', caseRecord.Method__c);
             result.put('onReportToDate', caseRecord.On_Report_To_Date__c);
+            result.put('dateOfDeathOrDissolution', caseRecord.Date_of_Death_or_Dissolution__c);
 
             // Query Case_History__c for earliest and latest records
             List<Case_History__c> historyRecords = [
