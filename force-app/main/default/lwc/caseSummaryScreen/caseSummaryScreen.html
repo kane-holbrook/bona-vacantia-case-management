@@ -2,37 +2,9 @@
     <div class="slds-box slds-theme_default slds-p-around_medium">
         <div class="slds-grid slds-wrap">
             <!-- Common Fields -->
-            <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+            <div class="slds-col slds-size_1-of-1 slds-p-horizontal_small">
                 <label class="slds-form-element__label">Key Name:</label>
                 <input type="text" class="slds-input" value={keyName} readonly />
-            </div>
-            <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
-                <label class="slds-form-element__label">Case Type:</label>
-                <input type="text" class="slds-input" value={caseType} readonly />
-            </div>
-            <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
-                <label class="slds-form-element__label">Case Officer:</label>
-                <input type="text" class="slds-input" value={caseOfficer} readonly />
-            </div>
-            <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
-                <label class="slds-form-element__label">Former ref:</label>
-                <input type="text" class="slds-input" value={formerRef} readonly />
-            </div>
-            <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
-                <label class="slds-form-element__label">Last Action:</label>
-                <input type="text" class="slds-input" value={lastAction} readonly />
-            </div>
-            <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
-                <label class="slds-form-element__label">Date Case Opened:</label>
-                <input type="text" class="slds-input" value={dateOpened} readonly />
-            </div>
-            <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
-                <label class="slds-form-element__label">Allocation Date:</label>
-                <input type="text" class="slds-input" value={allocatedDate} readonly />
-            </div>
-            <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
-                <label class="slds-form-element__label">Last Action Date:</label>
-                <input type="text" class="slds-input" value={lastActionDate} readonly />
             </div>
 
             <!-- ESTA Specific Fields -->
@@ -42,21 +14,46 @@
                     <input type="text" class="slds-input" value={keyAddress} readonly />
                 </div>
                 <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+                    <label class="slds-form-element__label">Date Case Opened:</label>
+                    <input type="text" class="slds-input" value={dateOpened} readonly />
+                </div>
+
+                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+                    <label class="slds-form-element__label">Case Type:</label>
+                    <input type="text" class="slds-input" value={caseType} readonly />
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+                    <label class="slds-form-element__label">First Action:</label>
+                    <input type="text" class="slds-input" value={firstActionDate} readonly />
+                </div>
+
+                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+                    <label class="slds-form-element__label">Case Officer:</label>
+                    <input type="text" class="slds-input" value={caseOfficer} readonly />
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+                    <label class="slds-form-element__label">Allocation Date:</label>
+                    <input type="text" class="slds-input" value={allocatedDate} readonly />
+                </div>
+
+                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
                     <label class="slds-form-element__label">On Report to:</label>
                     <input type="text" class="slds-input" value={onReportTo} readonly />
                 </div>
                 <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
                     <label class="slds-form-element__label">On Report To Date:</label>
                     <input type="text" class="slds-input" value={onReportToDate} readonly />
-                </div> 
+                </div>
+
                 <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
-                    <label class="slds-form-element__label">Referred to:</label>
-                    <input type="text" class="slds-input" value={referredTo} readonly />
+                    <label class="slds-form-element__label">Last Action:</label>
+                    <input type="text" class="slds-input" value={lastAction} readonly />
                 </div>
                 <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
-                    <label class="slds-form-element__label">Referred To Date:</label>
-                    <input type="text" class="slds-input" value={referredToDate} readonly />
+                    <label class="slds-form-element__label">Last Action Date:</label>
+                    <input type="text" class="slds-input" value={lastActionDate} readonly />
                 </div>
+
                 <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
                     <label class="slds-form-element__label">Current Status:</label>
                     <input type="text" class="slds-input" value={currentStatus} readonly />
@@ -65,25 +62,27 @@
                     <label class="slds-form-element__label">Current Status Date:</label>
                     <input type="text" class="slds-input" value={currentStatusDate} readonly />
                 </div>
+
+                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+                    <label class="slds-form-element__label">Former ref:</label>
+                    <input type="text" class="slds-input" value={formerRef} readonly />
+                </div>
                 <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
                     <label class="slds-form-element__label">Details Complete:</label>
                     <input type="text" class="slds-input" value={detailsComplete} readonly />
                 </div>
-                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+
+                <div class="slds-col slds-size_1-of-3 slds-p-horizontal_small">
                     <label class="slds-form-element__label">Date case last reviewed:</label>
                     <input type="text" class="slds-input" value={dateCaseLastReviewed} readonly />
                 </div>
-                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+                <div class="slds-col slds-size_1-of-3 slds-p-horizontal_small">
                     <label class="slds-form-element__label">Date of last LM Review:</label>
                     <input type="text" class="slds-input" value={dateOfLastLmReview} readonly />
                 </div>
-                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+                <div class="slds-col slds-size_1-of-3 slds-p-horizontal_small">
                     <label class="slds-form-element__label">Date of last CO Review:</label>
                     <input type="text" class="slds-input" value={dateOfLastCoReview} readonly />
-                </div>
-                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
-                    <label class="slds-form-element__label">First Action:</label>
-                    <input type="text" class="slds-input" value={firstActionDate} readonly />
                 </div>
             </template>
 
