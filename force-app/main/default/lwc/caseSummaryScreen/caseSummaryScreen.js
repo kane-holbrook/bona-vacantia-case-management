@@ -68,7 +68,7 @@ export default class CaseSummaryScreen extends LightningElement {
             this.dateOfNotification = this.formatDate(data.dateOfNotification);
             this.dateDisclaimerSent = this.formatDate(data.dateDisclaimerSent);
 
-            this.disclaimBy = data.disclaimBy || '';
+            this.disclaimBy = this.formatDate(data.disclaimBy) || '';
             this.dateDisclosed = this.formatDate(data.dateDisclosed);
             this.hipsRequired = data.hipsRequired || '';
             this.partSale = data.partSale || '';

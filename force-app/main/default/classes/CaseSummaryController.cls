@@ -16,7 +16,7 @@ public with sharing class CaseSummaryController {
                 FROM BV_Case__c
                 WHERE Id = :caseId
                 LIMIT 1
-            ];
+            ]; 
 
             // Add BV_Case__c fields to result
             result.put('keyName', caseRecord.Key_Name__c);
@@ -27,7 +27,7 @@ public with sharing class CaseSummaryController {
             result.put('referredTo', caseRecord.Referred_To__c);
             result.put('referredToDate', caseRecord.Referred_To_Date__c);
             result.put('currentStatus', caseRecord.Current_Status__c);
-            result.put('currentStatusDate', caseRecord.Date_Of_Last_Co_Review__c);
+            result.put('currentStatusDate', caseRecord.Current_Status_Date__c);
             result.put('formerRef', caseRecord.Former_Ref__c);
             result.put('detailsComplete', caseRecord.Details_Complete__c);
             result.put('dateCaseLastReviewed', caseRecord.Date_Case_Last_Reviewed__c);
