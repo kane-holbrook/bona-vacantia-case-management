@@ -13,6 +13,7 @@
     <Body>
         <Category Type='26'>
             <Notice Type='2603'>
+                <apex:outputText value="{!metadata}" escape="false"/>
                 <Legislation>Notice of Disclaimer Under Section 1013 of the Companies Act 2006</Legislation>
                 <Title>Disclaimer of Whole of the Property</Title>
                 <P>
