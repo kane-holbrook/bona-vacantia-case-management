@@ -831,6 +831,19 @@ public with sharing class PDFTron_ContentVersionController {
         }
     }
 
+    @AuraEnabled
+    public static Map<String, String> getUserExtensionAndEmail() {
+        try {
+            User currentUser = [SELECT Extension, Email FROM User WHERE Id = :UserInfo.getUserId()];
+            Map<String, String> result = new Map<String, String>();
+            result.put('extension', currentUser.Extension);
+            result.put('email', currentUser.Email);
+            return result;
+        } catch (Exception e) {
+            throw new AuraHandledException('Error fetching user extension and email: ' + e.getMessage());
+        }
+    }
+
     public class PDFTronException extends Exception {}
 
     public void veryTemporaryTest(){

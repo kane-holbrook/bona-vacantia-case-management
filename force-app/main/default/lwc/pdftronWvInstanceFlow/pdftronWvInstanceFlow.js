@@ -21,6 +21,7 @@ import getSharePointFileDataById from '@salesforce/apex/FileControllerGraph.getG
 import { getRecordId } from 'c/sharedService';
 import fetchHeaderValuesFromMetadata from '@salesforce/apex/PDFTron_ContentVersionController.fetchHeaderValuesFromMetadata';
 import fetchFooterValuesFromMetadata from '@salesforce/apex/PDFTron_ContentVersionController.fetchFooterValuesFromMetadata';
+import getUserExtensionAndEmail from '@salesforce/apex/PDFTron_ContentVersionController.getUserExtensionAndEmail';
 
 function _base64ToArrayBuffer(base64) {
     var binary_string = window.atob(base64);
@@ -145,6 +146,7 @@ export default class PdftronWvInstanceFlow extends LightningElement {
             await this.fireDocGenOptionsEvent(); // Wait for doc_gen_options event to be handled
             await this.processHeaderKeys(); // Process header keys after doc_gen_options event
             await this.processFooterKeys(); // Process footer keys after doc_gen_options event
+            await this.fetchUserExtensionAndEmail(); // Fetch user extension and email
             await this.generateDocumentPromise(); // Wait for document generation to complete
             console.log('Document generation sequence completed.');
         } catch (error) {
@@ -797,5 +799,19 @@ export default class PdftronWvInstanceFlow extends LightningElement {
 
         // Wait for all fetch operations to complete
         await Promise.all(fetchPromises);
+    }
+
+    async fetchUserExtensionAndEmail() {
+        try {
+            const result = await getUserExtensionAndEmail();
+            if (this.doc_keys.includes('MT11_Extention')) {
+                this.mapping['MT11_Extention'] = result.extension;
+            }
+            if (this.doc_keys.includes('FE15_Email')) {
+                this.mapping['FE15_Email'] = result.email;
+            }
+        } catch (error) {
+            console.error('Error fetching user extension and email:', error);
+        }
     }
 }
