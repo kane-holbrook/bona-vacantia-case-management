@@ -1,0 +1,6 @@
+<apex:page contentType="text/csv" controller="UnclaimedEstatesController" action="{!generateCSVPage}">
+    <apex:facet name="header">
+        <apex:outputText value="attachment; filename=UnclaimedEstates.csv" escape="false"/>
+    </apex:facet>
+    <apex:outputText value="{!csvContent}" escape="false"/>
+</apex:page>
