@@ -9,25 +9,29 @@
             <Style ss:ID="orange">
                 <Alignment ss:Vertical="Top" ss:WrapText="1"/>
                 <Interior ss:Color="#ffcc99" ss:Pattern="Solid"/>
+                <Font ss:Bold="1"/>
             </Style>
             <Style ss:ID="blue">
                 <Alignment ss:Vertical="Top" ss:WrapText="1"/>
                 <Interior ss:Color="#99ccff" ss:Pattern="Solid"/>
+                <Font ss:Bold="1"/>
             </Style>
             <Style ss:ID="lightGreen">
                 <Alignment ss:Vertical="Top" ss:WrapText="1"/>
                 <Interior ss:Color="#ccffcc" ss:Pattern="Solid"/>
+                <Font ss:Bold="1"/>
             </Style>
             <Style ss:ID="lightYellow">
                 <Alignment ss:Vertical="Top" ss:WrapText="1"/>
                 <Interior ss:Color="#ffffcc" ss:Pattern="Solid"/>
+                <Font ss:Bold="1"/>
             </Style>
         </Styles>
         <Worksheet ss:Name="Section27">
             <Table>
-                <Column ss:Width="50" ss:AutoFitWidth="0"/>
+                <Column ss:Width="80" ss:AutoFitWidth="0"/>
                 <apex:repeat value="{!xlsRows}" var="row">
-                    <Row>
+                    <Row ss:Height="80">
                         <apex:repeat value="{!row.cells}" var="cell">
                             <Cell ss:StyleID="{!cell.style}">
                                 <Data ss:Type="String">{!cell.value}</Data>
