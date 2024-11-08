@@ -205,6 +205,16 @@ public with sharing class Section27Controller {
             
             xlsRows.add(dataRow);
         }
+
+        // Add empty rows to make total of 20 rows
+        Integer remainingRows = 20 - cases.size();
+        for(Integer i = 0; i < remainingRows; i++) {
+            XLSRow emptyDataRow = new XLSRow();
+            for(String header : DATA_ROW_STYLES.keySet()) {
+                addDataCell(emptyDataRow, '', DATA_ROW_STYLES.get(header));
+            }
+            xlsRows.add(emptyDataRow);
+        }
     }
     
     private String getCaseValue(BV_Case__c caseRecord, String field) {
