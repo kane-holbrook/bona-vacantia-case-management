@@ -7,20 +7,25 @@
               xmlns:html="http://www.w3.org/TR/REC-html40">
         <Styles>
             <Style ss:ID="orange">
+                <Alignment ss:Vertical="Top" ss:WrapText="1"/>
                 <Interior ss:Color="#ffcc99" ss:Pattern="Solid"/>
             </Style>
             <Style ss:ID="blue">
+                <Alignment ss:Vertical="Top" ss:WrapText="1"/>
                 <Interior ss:Color="#99ccff" ss:Pattern="Solid"/>
             </Style>
             <Style ss:ID="lightGreen">
+                <Alignment ss:Vertical="Top" ss:WrapText="1"/>
                 <Interior ss:Color="#ccffcc" ss:Pattern="Solid"/>
             </Style>
             <Style ss:ID="lightYellow">
+                <Alignment ss:Vertical="Top" ss:WrapText="1"/>
                 <Interior ss:Color="#ffffcc" ss:Pattern="Solid"/>
             </Style>
         </Styles>
         <Worksheet ss:Name="Section27">
             <Table>
+                <Column ss:Width="50" ss:AutoFitWidth="0"/>
                 <apex:repeat value="{!xlsRows}" var="row">
                     <Row>
                         <apex:repeat value="{!row.cells}" var="cell">
