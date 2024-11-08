@@ -86,7 +86,7 @@
             <Table>
                 <Column ss:Width="80" ss:AutoFitWidth="0"/>
                 <apex:repeat value="{!xlsRows}" var="row">
-                    <Row ss:Height="80">
+                    <Row>
                         <apex:repeat value="{!row.cells}" var="cell">
                             <Cell ss:StyleID="{!cell.style}">
                                 <Data ss:Type="String">{!cell.value}</Data>
