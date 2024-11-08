@@ -12,12 +12,51 @@ public with sharing class Section27Controller {
         'PDF Voucher Copy' => 'orange',
         'Print Voucher Copy' => 'orange',
         'Notice Logo' => 'orange',
+        'Surname of the Deceased' => 'blue',
+        'First Name of the Deceased' => 'blue',
+        'Middle name(s) of the Deceased' => 'blue',
+        'Title of the Deceased' => 'blue',
+        'Deceased Post Nominal Award' => 'blue',
+        'Marital Status' => 'blue',
+        'Maiden name of the Deceased' => 'blue',
+        'Place of Marriage' => 'blue',
+        'Date of Marriage' => 'blue',
+        'Spouse' => 'blue',
+        'Date of birth' => 'blue',
+        'Place of birth' => 'blue',
+        'Nationality' => 'blue',
+        'Religion' => 'blue',
+        'Alternative name the Deceased was known by (1)' => 'blue',
+        'Alternative name the Deceased was known by (2)' => 'blue',
+        'Alternative name the Deceased was known by (3)' => 'blue',
+        'Date of Death' => 'blue',
+        'OR Between the date of' => 'blue',
+        'and the date of' => 'blue',
+        'Place of Death' => 'blue',
+        'Deceased\'s Occupation' => 'blue',
+        'Date Entered UK' => 'blue',
+        'Date of Naturalisation' => 'blue',
+        'Date of Adoption' => 'blue',
+        'Date of Divorce' => 'blue',
+        'Kin or Other Details' => 'blue',
+        'Any other information' => 'blue',
         'Last Address of Deceased - Line 1' => 'orange',
         'Last Address of Deceased - Line 2' => 'orange',
         'Last Address of Deceased - Town' => 'orange',
         'Last Address of Deceased - County' => 'orange',
         'Last Address of Deceased - Country' => 'orange',
         'Last Address of Deceased - Postcode' => 'orange',
+        'Informant' => 'blue',
+        'Executors' => 'blue',
+        'Persons claims are made to - Surname' => 'blue',
+        'Persons claims are made to - First Name' => 'blue',
+        'Persons claims are made to - Middle name(s)' => 'blue',
+        'Persons claims are made to - Address 1' => 'blue',
+        'Persons claims are made to - Address 2' => 'blue',
+        'Persons claims are made to - Town' => 'blue',
+        'Persons claims are made to - County' => 'blue',
+        'Persons claims are made to - Country' => 'blue',
+        'Persons claims are made to - Postcode' => 'blue',
         'Persons claims are made to - Telephone' => 'orange',
         'Persons claims are made to - Fax' => 'orange',
         'Persons claims are made to - Email' => 'orange',
@@ -27,7 +66,13 @@ public with sharing class Section27Controller {
         'Previous Address of Deceased (1) - Town' => 'orange',
         'Previous Address of Deceased (1) - County' => 'orange',
         'Previous Address of Deceased (1) - Country' => 'orange',
-        'Previous Address of Deceased (1) - Postcode' => 'orange'
+        'Previous Address of Deceased (1) - Postcode' => 'orange',
+        'Previous Address of Deceased (2) - Line 1' => 'blue',
+        'Previous Address of Deceased (2) - Line 2' => 'blue',
+        'Previous Address of Deceased (2) - Town' => 'blue',
+        'Previous Address of Deceased (2) - County' => 'blue',
+        'Previous Address of Deceased (2) - Country' => 'blue',
+        'Previous Address of Deceased (2) - Postcode' => 'blue'
     };
 
     private static final Map<String, String> DATA_ROW_STYLES = new Map<String, String>{
@@ -132,7 +177,7 @@ public with sharing class Section27Controller {
         // Header row
         XLSRow headerRow = new XLSRow();
         for(String header : DATA_ROW_STYLES.keySet()) {
-            String style = HEADER_STYLES.containsKey(header) ? 'orange' : 'blue';
+            String style = HEADER_STYLES.containsKey(header) ? HEADER_STYLES.get(header) : 'blue';
             addHeaderCell(headerRow, header, style);
         }
         xlsRows.add(headerRow);
