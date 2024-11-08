@@ -1,38 +1,143 @@
 public with sharing class Section27Controller {
-    public String csvContent { get; private set; }
+    public String xlsHeader { get; private set; }
+    public List<XLSRow> xlsRows { get; private set; }
+    
+    private static final Map<String, String> HEADER_STYLES = new Map<String, String>{
+        'Supplier ID / BV Ref.' => 'orange',
+        'Notice code' => 'orange',
+        'Edition to place Notice in' => 'orange',
+        'Earliest publication date' => 'orange',
+        'Claim expiry date' => 'orange',
+        'PO Box Forwarding' => 'orange',
+        'PDF Voucher Copy' => 'orange',
+        'Print Voucher Copy' => 'orange',
+        'Notice Logo' => 'orange',
+        'Last Address of Deceased - Line 1' => 'orange',
+        'Last Address of Deceased - Line 2' => 'orange',
+        'Last Address of Deceased - Town' => 'orange',
+        'Last Address of Deceased - County' => 'orange',
+        'Last Address of Deceased - Country' => 'orange',
+        'Last Address of Deceased - Postcode' => 'orange',
+        'Persons claims are made to - Telephone' => 'orange',
+        'Persons claims are made to - Fax' => 'orange',
+        'Persons claims are made to - Email' => 'orange',
+        'Persons claims are made to - Reference Number' => 'orange',
+        'Previous Address of Deceased (1) - Line 1' => 'orange',
+        'Previous Address of Deceased (1) - Line 2' => 'orange',
+        'Previous Address of Deceased (1) - Town' => 'orange',
+        'Previous Address of Deceased (1) - County' => 'orange',
+        'Previous Address of Deceased (1) - Country' => 'orange',
+        'Previous Address of Deceased (1) - Postcode' => 'orange'
+    };
 
+    private static final Map<String, String> DATA_ROW_STYLES = new Map<String, String>{
+        'Supplier ID / BV Ref.' => 'lightGreen',
+        'Notice code' => 'lightYellow',
+        'Edition to place Notice in' => 'lightYellow',
+        'Earliest publication date' => 'lightYellow',
+        'Claim expiry date' => 'lightYellow',
+        'PO Box Forwarding' => 'lightGreen',
+        'PDF Voucher Copy' => 'lightGreen',
+        'Print Voucher Copy' => 'lightGreen',
+        'Notice Logo' => 'lightGreen',
+        'Surname of the Deceased' => 'lightYellow',
+        'First Name of the Deceased' => 'lightYellow',
+        'Middle name(s) of the Deceased' => 'lightGreen',
+        'Title of the Deceased' => 'lightGreen',
+        'Deceased Post Nominal Award' => 'lightGreen',
+        'Marital Status' => 'lightGreen',
+        'Maiden name of the Deceased' => 'lightGreen',
+        'Place of Marriage' => 'lightGreen',
+        'Date of Marriage' => 'lightGreen',
+        'Spouse' => 'lightGreen',
+        'Date of birth' => 'lightGreen',
+        'Place of birth' => 'lightGreen',
+        'Nationality' => 'lightGreen',
+        'Religion' => 'lightGreen',
+        'Alternative name the Deceased was known by (1)' => 'lightGreen',
+        'Alternative name the Deceased was known by (2)' => 'lightGreen',
+        'Alternative name the Deceased was known by (3)' => 'lightGreen',
+        'Date of Death' => 'lightYellow',
+        'OR Between the date of' => 'lightGreen',
+        'and the date of' => 'lightGreen',
+        'Place of Death' => 'lightGreen',
+        'Deceased\'s Occupation' => 'lightGreen',
+        'Date Entered UK' => 'lightGreen',
+        'Date of Naturalisation' => 'lightGreen',
+        'Date of Adoption' => 'lightGreen',
+        'Date of Divorce' => 'lightGreen',
+        'Kin or Other Details' => 'lightGreen',
+        'Any other information' => 'lightGreen',
+        'Last Address of Deceased - Line 1' => 'lightGreen',
+        'Last Address of Deceased - Line 2' => 'lightGreen',
+        'Last Address of Deceased - Town' => 'lightGreen',
+        'Last Address of Deceased - County' => 'lightGreen',
+        'Last Address of Deceased - Country' => 'lightGreen',
+        'Last Address of Deceased - Postcode' => 'lightGreen',
+        'Informant' => 'lightGreen',
+        'Executors' => 'lightYellow',
+        'Persons claims are made to - Surname' => 'lightYellow',
+        'Persons claims are made to - First Name' => 'lightYellow',
+        'Persons claims are made to - Middle name(s)' => 'lightGreen',
+        'Persons claims are made to - Address 1' => 'lightYellow',
+        'Persons claims are made to - Address 2' => 'lightGreen',
+        'Persons claims are made to - Town' => 'lightYellow',
+        'Persons claims are made to - County' => 'lightGreen',
+        'Persons claims are made to - Country' => 'lightGreen',
+        'Persons claims are made to - Postcode' => 'lightGreen',
+        'Persons claims are made to - Telephone' => 'lightGreen',
+        'Persons claims are made to - Fax' => 'lightGreen',
+        'Persons claims are made to - Email' => 'lightGreen',
+        'Persons claims are made to - Reference Number' => 'lightGreen',
+        'Previous Address of Deceased (1) - Line 1' => 'lightGreen',
+        'Previous Address of Deceased (1) - Line 2' => 'lightGreen',
+        'Previous Address of Deceased (1) - Town' => 'lightGreen',
+        'Previous Address of Deceased (1) - County' => 'lightGreen',
+        'Previous Address of Deceased (1) - Country' => 'lightGreen',
+        'Previous Address of Deceased (1) - Postcode' => 'lightGreen',
+        'Previous Address of Deceased (2) - Line 1' => 'lightGreen',
+        'Previous Address of Deceased (2) - Line 2' => 'lightGreen',
+        'Previous Address of Deceased (2) - Town' => 'lightGreen',
+        'Previous Address of Deceased (2) - County' => 'lightGreen',
+        'Previous Address of Deceased (2) - Country' => 'lightGreen',
+        'Previous Address of Deceased (2) - Postcode' => 'lightGreen'
+    };
+    
+    public class XLSCell {
+        public String value { get; set; }
+        public String style { get; set; }
+        
+        public XLSCell(String value, String style) {
+            this.value = value;
+            this.style = style;
+        }
+    }
+    
+    public class XLSRow {
+        public List<XLSCell> cells { get; set; }
+        
+        public XLSRow() {
+            this.cells = new List<XLSCell>();
+        }
+    }
+    
     public Section27Controller() {
-        csvContent = generateCSVContent();
+        xlsHeader = '<?xml version="1.0" encoding="UTF-8"?>';
+        generateXLSContent();
     }
-
-    @AuraEnabled
-    public static String generateCSV() {
-        return generateCSVContent();
-    }
-
-    public PageReference generateCSVPage() {
-        csvContent = generateCSVContent();
-        return null;
-    }
-
-    public static String generateCSVContent() {
-        // Define the CSV header
-        String csvHeader = 'Supplier ID/BV Reference,Notice code,Edition to place Notice in,Earliest publication date,' +
-            'Claim expiry date,PO Box Forwarding,PDF Voucher Copy,Print Voucher Copy,Notice Logo,Surname of the Deceased,' +
-            'First Name of the Deceased,Middle name(s) of the Deceased,Title of the Deceased,Deceased Post Nominal Award,' +
-            'Marital Status,Maiden name of the Deceased,Place of Marriage,Date of marriage,Spouse,Date of birth,Place of birth,' +
-            'Nationality,Religion,Alternative name the Deceased was known by (1),Alternative name the Deceased was known by (2),' +
-            'Alternative name the Deceased was known by (3),Date of Death,OR Between the date of,and the date of,Place of Death,' +
-            'Deceased\'s Occupation,Date Entered UK,Date of Naturalisation,Date of Adoption,Date of Divorce,Kin or Other Details,' +
-            'Any other information,Last Address of Deceased-Line 1,Last Addressof Deceased-Line 2,Last Address of Deceased-Town,' +
-            'Last Address of Deceased-County,Last Address of Deceased-Country,Last Address of Deceased-Postcode,Informant,Executors,' +
-            'Persons claims are made to - Surname,Persons claims are made to First name,Persons claims are made to - Middle name(s),' +
-            'Persons claims are made to Address 1,Persons claims are made to-Address 2,Persons claims are made to - Town,' +
-            'Persons claims are made to-County,Persons claims are made to - Country,Persons claims are made to - Postcode,' +
-            'Persons claims are made to - Telephone,Persons claims are made to Fax,Persons claims are made to - Email,' +
-            'Persons claims are made to - Reference Number\n';
-
-        // Query BV Cases ready for Section 27
+    
+    private void generateXLSContent() {
+        xlsRows = new List<XLSRow>();
+        
+        // Header row
+        XLSRow headerRow = new XLSRow();
+        for(String header : DATA_ROW_STYLES.keySet()) {
+            String style = HEADER_STYLES.containsKey(header) ? 'orange' : 'blue';
+            addHeaderCell(headerRow, header, style);
+        }
+        xlsRows.add(headerRow);
+        
+        // Query BV Cases
         List<BV_Case__c> cases = [
             SELECT Id, Name, Publish__c, Check_Box__c, Lg__c, Date_Of_Death__c,
                    Status__c, Maiden_Name__c, Date_Of_Birth__c, Place_Of_Birth__c, 
@@ -43,79 +148,94 @@ public with sharing class Section27Controller {
             AND Check_Box__c = true
             AND Lg__c = false
         ];
-
-        String csvContent = csvHeader;
-        Date today = Date.today();
-
-        for (BV_Case__c caseRecord : cases) {
-            String csvRow = String.join(new List<String>{
-                'BV' + caseRecord.Name, // Supplier ID/BV Reference
-                '2904', // Notice code
-                'London', // Edition to place Notice in
-                formatDate(today), // Earliest publication date
-                '', // Claim expiry date
-                'No', // PO Box Forwarding
-                'No', // PDF Voucher Copy
-                'No', // Print Voucher Copy
-                '', // Notice Logo
-                caseRecord.Surname__c ?? '', // EST01 - Surname
-                caseRecord.Forenames__c ?? '', // EST02 - Forenames
-                '', // Middle name(s)
-                caseRecord.Title__c ?? '', // EST03 - Title
-                '', // Post Nominal Award
-                caseRecord.Status__c ?? '', // EST04 - Status
-                caseRecord.Maiden_Name__c ?? '', // EST05 - Maiden Name
-                '', // Place of Marriage
-                '', // Date of marriage
-                '', // Spouse
-                formatDate(caseRecord.Date_Of_Birth__c), // EST15 - DoB
-                caseRecord.Place_Of_Birth__c ?? '', // EST16 - Born at
-                '', // Nationality
-                '', // Religion
-                '', // Alternative name 1
-                '', // Alternative name 2
-                '', // Alternative name 3
-                formatDate(caseRecord.Date_Of_Death__c), // EST06 - Died
-                '', // OR Between the date of
-                '', // and the date of
-                caseRecord.Short_Place__c ?? '', // EST14 - Short Place
-                '', // Deceased's Occupation
-                '', // Date Entered UK
-                '', // Date of Naturalisation
-                '', // Date of Adoption
-                '', // Date of Divorce
-                '', // Kin or Other Details
-                '', // Any other information
-                '', // Address Line 1
-                '', // Address Line 2
-                '', // Town
-                '', // County
-                '', // Country
-                '', // Postcode
-                '', // Informant
-                '', // Executors
-                'Government Legal Department (BV)', // Claims made to - Surname
-                '', // Claims made to - First name
-                '', // Claims made to - Middle name
-                'PO BOX 70165', // Claims made to - Address 1
-                '', // Claims made to - Address 2
-                'London', // Claims made to - Town
-                '', // Claims made to - County
-                '', // Claims made to - Country
-                'WC1A 9HG', // Claims made to - Postcode
-                '0207 210 4700', // Claims made to - Telephone
-                '', // Claims made to - Fax
-                'bvestates@governmentlegal.gov.uk', // Claims made to - Email
-                'BV' + caseRecord.Name // Claims made to - Reference Number
-            }, ',') + '\n';
-            
-            csvContent += csvRow;
-        }
         
-        return csvContent;
+        // Data rows
+        for(BV_Case__c caseRecord : cases) {
+            XLSRow dataRow = new XLSRow();
+            
+            for(String header : DATA_ROW_STYLES.keySet()) {
+                String value = getCaseValue(caseRecord, header);
+                addDataCell(dataRow, value, DATA_ROW_STYLES.get(header));
+            }
+            
+            xlsRows.add(dataRow);
+        }
     }
     
-    private static String formatDate(Date originalDate) {
-        return originalDate != null ? originalDate.format() : '';
+    private String getCaseValue(BV_Case__c caseRecord, String field) {
+        switch on field {
+            when 'Supplier ID / BV Ref.' {
+                return 'BV' + caseRecord.Name;
+            }
+            when 'Notice code' {
+                return '2904';
+            }
+            when 'Edition to place Notice in' {
+                return 'London';
+            }
+            when 'Surname of the Deceased' {
+                return caseRecord.Surname__c;
+            }
+            when 'First Name of the Deceased' {
+                return caseRecord.Forenames__c;
+            }
+            when 'Title of the Deceased' {
+                return caseRecord.Title__c;
+            }
+            when 'Marital Status' {
+                return caseRecord.Status__c;
+            }
+            when 'Maiden name of the Deceased' {
+                return caseRecord.Maiden_Name__c;
+            }
+            when 'Date of birth' {
+                return formatDate(caseRecord.Date_Of_Birth__c);
+            }
+            when 'Place of birth' {
+                return caseRecord.Place_Of_Birth__c;
+            }
+            when 'Date of Death' {
+                return formatDate(caseRecord.Date_Of_Death__c);
+            }
+            when 'Place of Death' {
+                return caseRecord.Short_Place__c;
+            }
+            when 'Persons claims are made to - Surname' {
+                return 'Government Legal Department (BV)';
+            }
+            when 'Persons claims are made to - Address 1' {
+                return 'PO BOX 70165';
+            }
+            when 'Persons claims are made to - Town' {
+                return 'London';
+            }
+            when 'Persons claims are made to - Postcode' {
+                return 'WC1A 9HG';
+            }
+            when 'Persons claims are made to - Telephone' {
+                return '0207 210 4700';
+            }
+            when 'Persons claims are made to - Email' {
+                return 'bvestates@governmentlegal.gov.uk';
+            }
+            when 'Persons claims are made to - Reference Number' {
+                return 'BV' + caseRecord.Name;
+            }
+            when else {
+                return '';
+            }
+        }
+    }
+    
+    private void addHeaderCell(XLSRow row, String value, String style) {
+        row.cells.add(new XLSCell(value, style));
+    }
+    
+    private void addDataCell(XLSRow row, String value, String style) {
+        row.cells.add(new XLSCell(value != null ? value : '', style));
+    }
+    
+    private String formatDate(Date d) {
+        return d != null ? d.format() : '';
     }
 }

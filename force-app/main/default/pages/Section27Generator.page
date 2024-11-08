@@ -1,3 +1,36 @@
-<apex:page controller="Section27Controller" contentType="text/csv#Section27.csv" cache="true">
-{!csvContent}
+<apex:page controller="Section27Controller" contentType="application/vnd.ms-excel#Section27.xls" cache="true">
+    <apex:outputText value="{!xlsHeader}" escape="false"/>
+    <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+              xmlns:o="urn:schemas-microsoft-com:office:office"
+              xmlns:x="urn:schemas-microsoft-com:office:excel"
+              xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+              xmlns:html="http://www.w3.org/TR/REC-html40">
+        <Styles>
+            <Style ss:ID="orange">
+                <Interior ss:Color="#ffcc99" ss:Pattern="Solid"/>
+            </Style>
+            <Style ss:ID="blue">
+                <Interior ss:Color="#99ccff" ss:Pattern="Solid"/>
+            </Style>
+            <Style ss:ID="lightGreen">
+                <Interior ss:Color="#ccffcc" ss:Pattern="Solid"/>
+            </Style>
+            <Style ss:ID="lightYellow">
+                <Interior ss:Color="#ffffcc" ss:Pattern="Solid"/>
+            </Style>
+        </Styles>
+        <Worksheet ss:Name="Section27">
+            <Table>
+                <apex:repeat value="{!xlsRows}" var="row">
+                    <Row>
+                        <apex:repeat value="{!row.cells}" var="cell">
+                            <Cell ss:StyleID="{!cell.style}">
+                                <Data ss:Type="String">{!cell.value}</Data>
+                            </Cell>
+                        </apex:repeat>
+                    </Row>
+                </apex:repeat>
+            </Table>
+        </Worksheet>
+    </Workbook>
 </apex:page>
