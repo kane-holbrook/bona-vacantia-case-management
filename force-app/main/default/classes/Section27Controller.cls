@@ -215,6 +215,30 @@ public with sharing class Section27Controller {
             }
             xlsRows.add(emptyDataRow);
         }
+
+        // Update the processed cases
+        updateProcessedCases(cases);
+    }
+
+    private void updateProcessedCases(List<BV_Case__c> cases) {
+        Date today = Date.today();
+        List<BV_Case__c> casesToUpdate = new List<BV_Case__c>();
+        
+        for(BV_Case__c caseRecord : cases) {
+            caseRecord.Lg__c = true;
+            caseRecord.Completed__c = today;
+            caseRecord.Published__c = today;
+            casesToUpdate.add(caseRecord);
+        }
+        
+        if(!casesToUpdate.isEmpty()) {
+            try {
+                update casesToUpdate;
+            } catch(Exception e) {
+                // Handle any errors here if needed
+                System.debug('Error updating cases: ' + e.getMessage());
+            }
+        }
     }
     
     private String getCaseValue(BV_Case__c caseRecord, String field) {
