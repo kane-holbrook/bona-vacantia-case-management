@@ -310,6 +310,11 @@ export default class TaskList extends LightningElement {
         this.sortOrder = (this.sortedBy === column && this.sortOrder === 'asc') ? 'desc' : 'asc';
         this.sortOrderIcon = this.sortOrder === 'asc' ? 'utility:arrowup' : 'utility:arrowdown';
         this.sortedBy = column;
+        
+        // Announce the new sort state to screen readers
+        const columnName = this.sortLabels[column] || column;
+        const announcement = `${columnName} sorted ${this.sortOrder === 'asc' ? 'ascending' : 'descending'}`;
+        
         this.sortTaskItems();
     }
 
@@ -570,5 +575,34 @@ export default class TaskList extends LightningElement {
 
             menuItems[nextIndex].focus();
         }
+    }
+
+    // Add these getter methods to handle sort directions
+    get getDueDateSortDirection() {
+        return this.getSortDirection('Due_Date__c');
+    }
+
+    get getDescriptionSortDirection() {
+        return this.getSortDirection('Description__c');
+    }
+
+    get getPrioritySortDirection() {
+        return this.getSortDirection('Priority__c');
+    }
+
+    get getCaseOfficerSortDirection() {
+        return this.getSortDirection('Case_Officer_Name__c');
+    }
+
+    getSortDirection(column) {
+        if (this.sortedBy !== column) {
+            return 'none';
+        }
+        return this.sortOrder === 'asc' ? 'ascending' : 'descending';
+    }
+
+    // Add a getter for the sort direction text for screen readers
+    get sortDirectionText() {
+        return `Sorted ${this.sortOrder === 'asc' ? 'ascending' : 'descending'}`;
     }
 }

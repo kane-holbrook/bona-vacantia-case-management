@@ -2,6 +2,7 @@ import { LightningElement, api, wire } from 'lwc';
 import getCaseSummaryData from '@salesforce/apex/CaseSummaryController.getCaseSummaryData';
 import getRecordTypeIdForRecord from '@salesforce/apex/LayoutController.getRecordTypeIdForRecord';
 import getRecordTypeDeveloperName from '@salesforce/apex/LayoutController.getRecordTypeDeveloperName';
+import { getRecordId } from 'c/sharedService';
 
 export default class CaseSummaryScreen extends LightningElement {
     @api recordId;
@@ -40,6 +41,7 @@ export default class CaseSummaryScreen extends LightningElement {
     onReportToDate = '';
     dateOfDeathOrDissolution = '';
     connectedCallback() {
+        this.recordId = getRecordId();
         this.retrieveRecordTypeDeveloperName();
     }
 

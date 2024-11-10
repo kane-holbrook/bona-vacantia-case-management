@@ -1,7 +1,16 @@
 <template>
     <article class="slds-card card-background">
         <c-two-column-layout>
-            <c-case-officer-history slot="column-left" ref="caseOfficerHistory"></c-case-officer-history>
+            <div slot="column-left">
+                <lightning-tabset>
+                    <lightning-tab label="Case Summary">
+                        <c-case-summary-screen></c-case-summary-screen>
+                    </lightning-tab>
+                    <lightning-tab label="Case Officer History">
+                        <c-case-officer-history></c-case-officer-history>
+                    </lightning-tab>
+                </lightning-tabset>
+            </div>
             <c-case-officer-buttons slot="column-right" onflowfinished={handleFlowFinished}></c-case-officer-buttons>
         </c-two-column-layout>
     </article>

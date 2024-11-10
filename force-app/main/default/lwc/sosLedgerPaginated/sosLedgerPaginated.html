@@ -60,18 +60,25 @@
                     </div>
                 </template>
                 <template if:false={isLoading}>
-                    <lightning-datatable
-                                        class="slds-table_col-bordered" 
-                                        key-field="id"
-                                        data={pageData}
-                                        columns={columns}
-                                        onrowselection={handleRowSelection}
-                                        default-sort-direction={defaultSortDirection}
-                                        sorted-direction={sortDirection}
-                                        sorted-by={sortedBy}
-                                        hide-checkbox-column="true"
-                                        onsort={onHandleSort}>
-                    </lightning-datatable>
+                    <div class="slds-table-container">
+                        <lightning-datatable
+                            class="slds-table_col-bordered" 
+                            key-field="id"
+                            data={pageData}
+                            columns={columns}
+                            onrowselection={handleRowSelection}
+                            default-sort-direction={defaultSortDirection}
+                            sorted-direction={sortDirection}
+                            sorted-by={sortedBy}
+                            hide-checkbox-column="true"
+                            onsort={onHandleSort}
+                            aria-label="SOS Ledger entries"
+                            aria-describedby="sortDescription">
+                        </lightning-datatable>
+                        <div id="sortDescription" class="slds-assistive-text">
+                            Click column headers to sort. Click again to change sort direction.
+                        </div>
+                    </div>
                 </template>
                 <!-- Totals Display -->
                 <div class="slds-grid slds-grid_align-spread slds-m-around_medium">

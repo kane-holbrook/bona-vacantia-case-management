@@ -32,13 +32,56 @@ export default class SosLedger extends LightningElement {
     sortedBy;
 
     columns = [
-        { label: 'Date Posted', fieldName: 'datePosted', type: 'text', sortable: true },
-        { label: 'Status', fieldName: 'status', type: 'text', sortable: true },
-        { label: 'Office Debit', fieldName: 'officeDebit', type: 'currency', sortable: true },
-        { label: 'Office Credit', fieldName: 'officeCredit', type: 'currency', sortable: true },
-        { label: 'Accruals Debit', fieldName: 'accrualsDebit', type: 'currency', sortable: true },
-        { label: 'Accruals Credit', fieldName: 'accrualsCredit', type: 'currency', sortable: true },
-        { label: 'Description', fieldName: 'description', type: 'text', sortable: true, wrapText: true},
+        { 
+            label: 'Date Posted', 
+            fieldName: 'datePosted', 
+            type: 'text', 
+            sortable: true,
+            ariaLabel: 'Sort by Date Posted'
+        },
+        { 
+            label: 'Status', 
+            fieldName: 'status', 
+            type: 'text', 
+            sortable: true,
+            ariaLabel: 'Sort by Status'
+        },
+        { 
+            label: 'Office Debit', 
+            fieldName: 'officeDebit', 
+            type: 'currency', 
+            sortable: true,
+            ariaLabel: 'Sort by Office Debit'
+        },
+        { 
+            label: 'Office Credit', 
+            fieldName: 'officeCredit', 
+            type: 'currency', 
+            sortable: true,
+            ariaLabel: 'Sort by Office Credit'
+        },
+        { 
+            label: 'Accruals Debit', 
+            fieldName: 'accrualsDebit', 
+            type: 'currency', 
+            sortable: true,
+            ariaLabel: 'Sort by Accruals Debit'
+        },
+        { 
+            label: 'Accruals Credit', 
+            fieldName: 'accrualsCredit', 
+            type: 'currency', 
+            sortable: true,
+            ariaLabel: 'Sort by Accruals Credit'
+        },
+        { 
+            label: 'Description', 
+            fieldName: 'description', 
+            type: 'text', 
+            sortable: true, 
+            wrapText: true,
+            ariaLabel: 'Sort by Description'
+        },
     ];
 
     @wire(getRecord, { recordId: '$recordId', fields: FIELDS })
@@ -273,39 +316,53 @@ export default class SosLedger extends LightningElement {
         return new Date(parts[2], parts[1] - 1, parts[0]);
     }
 
+    announceSort(columnLabel, direction) {
+        const announcement = `Table sorted by ${columnLabel} in ${direction === 'asc' ? 'ascending' : 'descending'} order`;
+        
+        // Create and append live region if it doesn't exist
+        let liveRegion = this.template.querySelector('[role="status"]');
+        if (!liveRegion) {
+            liveRegion = document.createElement('div');
+            liveRegion.setAttribute('role', 'status');
+            liveRegion.setAttribute('aria-live', 'polite');
+            liveRegion.classList.add('slds-assistive-text');
+            this.template.querySelector('lightning-card').appendChild(liveRegion);
+        }
+        
+        // Update the announcement
+        liveRegion.textContent = announcement;
+    }
+
     onHandleSort(event) {
         const { fieldName: sortedBy, sortDirection } = event.detail;
         const cloneData = [...this.filteredData];
     
-        // Determine if we need to toggle the sort direction
         if (this.sortedBy === sortedBy) {
-            // If the same column is sorted again, toggle the direction
             this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
         } else {
-            // If a different column is sorted, use the provided direction
             this.sortDirection = sortDirection;
         }
     
         let primer;
     
         if (sortedBy === 'datePosted') {
-            // Primer for date fields
             primer = (dateString) => {
                 const parts = dateString.split('/');
                 return new Date(parts[2], parts[1] - 1, parts[0]);
             };
         } else if (['officeDebit', 'officeCredit', 'accrualsDebit', 'accrualsCredit'].includes(sortedBy)) {
-            // Primer for numeric fields
             primer = (value) => parseInt(value);
         }
     
-        // Adjust the sort logic based on the direction
         cloneData.sort(this.sortBy(sortedBy, this.sortDirection === 'asc' ? 1 : -1, primer));
     
         this.filteredData = cloneData;
         this.sortedBy = sortedBy;
     
-        // Update the page data to reflect the new sorting
+        // Announce the sort change to screen readers
+        const columnLabel = this.columns.find(col => col.fieldName === sortedBy).label;
+        this.announceSort(columnLabel, this.sortDirection);
+    
         this.updatePageData();
     }
 

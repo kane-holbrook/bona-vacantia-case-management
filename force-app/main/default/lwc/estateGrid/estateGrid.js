@@ -49,6 +49,9 @@ export default class EstateGrid extends LightningElement {
     wiredBVCaseDataResult;
     wiredEstateAccDataResult;
 
+    @track ariaAnnouncement = '';
+    @track ariaLiveRegion;
+
     @wire(getBVCaseData, { recordId: '$recordId' })
     wiredBVCaseData(result) {
         this.wiredBVCaseDataResult = result;
@@ -253,6 +256,18 @@ export default class EstateGrid extends LightningElement {
     handleSort(event) {
         this.sortedBy = event.detail.fieldName;
         this.sortedDirection = event.detail.sortDirection;
+        
+        // Create accessible announcement
+        const columnLabel = event.target.name === 'assets_datatable' ? 
+            this.accrualsColumns.find(col => col.fieldName === this.sortedBy)?.label :
+            this.liabilitiesColumns.find(col => col.fieldName === this.sortedBy)?.label;
+        
+        const tableName = event.target.name === 'assets_datatable' ? 'Assets' : 'Liabilities';
+        const sortDirection = this.sortedDirection === 'asc' ? 'ascending' : 'descending';
+        
+        this.ariaAnnouncement = `${tableName} table sorted by ${columnLabel} in ${sortDirection} order`;
+        this.ariaLiveRegion.textContent = this.ariaAnnouncement;
+        
         this.sortData(event.target.name);
     }
 
@@ -281,6 +296,20 @@ export default class EstateGrid extends LightningElement {
             this.estateAccData = { ...this.estateAccData, Assets__r: data };
         } else {
             this.estateAccData = { ...this.estateAccData, Liabilities__r: data };
+        }
+    }
+
+    connectedCallback() {
+        // Create aria-live region for announcements
+        this.ariaLiveRegion = document.createElement('div');
+        this.ariaLiveRegion.setAttribute('aria-live', 'polite');
+        this.ariaLiveRegion.classList.add('slds-assistive-text');
+        document.body.appendChild(this.ariaLiveRegion);
+    }
+
+    disconnectedCallback() {
+        if (this.ariaLiveRegion && this.ariaLiveRegion.parentNode) {
+            this.ariaLiveRegion.parentNode.removeChild(this.ariaLiveRegion);
         }
     }
 }

@@ -92,34 +92,50 @@
                                 <div class="slds-truncate" title="Expand"></div>
                             </th>
                             <th scope="col">
-                                <button class="slds-button slds-button_reset slds-truncate" title="Due Date" onclick={handleSort} data-column="Due_Date__c">
+                                <button class="slds-button slds-button_reset slds-truncate" 
+                                        title="Due Date" 
+                                        onclick={handleSort} 
+                                        data-column="Due_Date__c"
+                                        aria-sort={getDueDateSortDirection}>
                                     Due Date
                                     <template if:true={isSortedByDue}>
-                                        <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
+                                        <lightning-icon icon-name={sortOrderIcon} alternative-text={sortDirectionText} size="x-small" class="slds-m-left_xx-small"></lightning-icon>
                                     </template>
                                 </button>
                             </th>
                             <th scope="col">
-                                <button class="slds-button slds-button_reset slds-truncate" title="Description" onclick={handleSort} data-column="Description__c">
+                                <button class="slds-button slds-button_reset slds-truncate" 
+                                        title="Description" 
+                                        onclick={handleSort} 
+                                        data-column="Description__c"
+                                        aria-sort={getDescriptionSortDirection}>
                                     Description
                                     <template if:true={isSortedByDescription}>
-                                        <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
+                                        <lightning-icon icon-name={sortOrderIcon} alternative-text={sortDirectionText} size="x-small" class="slds-m-left_xx-small"></lightning-icon>
                                     </template>
                                 </button>
                             </th>
                             <th scope="col">
-                                <button class="slds-button slds-button_reset slds-truncate" title="Priority" onclick={handleSort} data-column="Priority__c">
+                                <button class="slds-button slds-button_reset slds-truncate" 
+                                        title="Priority" 
+                                        onclick={handleSort} 
+                                        data-column="Priority__c"
+                                        aria-sort={getPrioritySortDirection}>
                                     Priority
                                     <template if:true={isSortedByPriority}>
-                                        <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
+                                        <lightning-icon icon-name={sortOrderIcon} alternative-text={sortDirectionText} size="x-small" class="slds-m-left_xx-small"></lightning-icon>
                                     </template>
                                 </button>
                             </th>
                             <th scope="col">
-                                <button class="slds-button slds-button_reset slds-truncate" title="Case Officer" onclick={handleSort} data-column="Case_Officer_Name__c">
+                                <button class="slds-button slds-button_reset slds-truncate" 
+                                        title="Case Officer" 
+                                        onclick={handleSort} 
+                                        data-column="Case_Officer_Name__c"
+                                        aria-sort={getCaseOfficerSortDirection}>
                                     Case Officer
                                     <template if:true={isSortedByCaseOfficer}>
-                                        <lightning-icon icon-name={sortOrderIcon} alternative-text="Sort Order" size="x-small" class="slds-m-left_xx-small"></lightning-icon>
+                                        <lightning-icon icon-name={sortOrderIcon} alternative-text={sortDirectionText} size="x-small" class="slds-m-left_xx-small"></lightning-icon>
                                     </template>
                                 </button>
                             </th>
