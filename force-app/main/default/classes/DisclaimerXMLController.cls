@@ -97,6 +97,9 @@ public with sharing class DisclaimerXMLController {
             wrapper.formattedNotificationDate = getFormattedNotificationDate(disc.BV_Case__r.Date_Of_Notification__c);
             disclaimers.add(wrapper);
         }
+
+        // Update the records after generating XML
+        updateDisclaimerRecords();
     }
     
     private Date getPublicationDate(Date currentDate) {
@@ -118,5 +121,31 @@ public with sharing class DisclaimerXMLController {
         if (notificationDate == null) return '';
         return Datetime.newInstance(notificationDate, Time.newInstance(0, 0, 0, 0))
                       .format('d MMMM yyyy');
+    }
+    
+    public void updateDisclaimerRecords() {
+        List<Case_Detail__c> recordsToUpdate = new List<Case_Detail__c>();
+        Date publicationDate = getPublicationDate(Date.today());
+        
+        for(DisclaimerWrapper wrapper : disclaimers) {
+            Case_Detail__c disc = wrapper.disclaimer;
+            // Set DNS18 (Lg__c) to true to prevent future publication
+            disc.Lg__c = true;
+            // Set DNS17 (Published__c) to publication date
+            disc.Published__c = Datetime.newInstance(publicationDate, Time.newInstance(0, 0, 0, 0))
+                                      .format('yyyy-MM-dd');
+            recordsToUpdate.add(disc);
+        }
+        
+        if(!recordsToUpdate.isEmpty()) {
+            try {
+                update recordsToUpdate;
+            } catch(Exception e) {
+                ApexPages.addMessage(new ApexPages.Message(
+                    ApexPages.Severity.ERROR,
+                    'Error updating disclaimer records: ' + e.getMessage()
+                ));
+            }
+        }
     }
 }
