@@ -23,9 +23,9 @@ public with sharing class UnclaimedEstatesController {
         List<BV_Case__c> cases = [
             SELECT Id, Name, Ready_For_Advertising__c, Approved__c, Date_Of_Publication__c, Date_Of_Death__c,
                    Aliases__c, Kin_Details__c, Family_Informant__c, Executors__c,
-                   Family_Marital_Status__c, Spouse__c, Family_Date_Of_Birth__c, Family_Place_Of_Birth__c,
+                   Spouse__c,
                    Date_Of_Marriage__c, Place_Of_Marriage__c, Nationality__c, Religion__c, Date_Entered_Uk__c,
-                   Date_Of_Naturalisation__c, Date_Of_Adoption__c, Date_Divorced__c
+                   Date_Of_Naturalisation__c, Date_Of_Adoption__c, Date_Divorced__c, Maiden_Name__c, Short_Place__c, Status__c, Date_Of_Birth__c, Place_Of_Birth__c
             FROM BV_Case__c
             WHERE Kin_Located__c != 'Yes' AND Will_Located__c != 'Yes' AND Insolvent__c != 'Yes'
             AND RecordType.DeveloperName = 'ESTA'
@@ -34,7 +34,7 @@ public with sharing class UnclaimedEstatesController {
         // Query related Case_Detail__c records
         Map<Id, Case_Detail__c> caseDetailsMap = new Map<Id, Case_Detail__c>();
         for (Case_Detail__c detail : [
-            SELECT BV_Case__c, Forenames__c, Surname__c, Paper_Date_1__c
+            SELECT BV_Case__c, Forenames__c, Surname__c, Paper_Date_1__c, Informant__c
             FROM Case_Detail__c
             WHERE BV_Case__c IN :cases
         ]) {
@@ -53,12 +53,12 @@ public with sharing class UnclaimedEstatesController {
                 detail != null ? detail.Forenames__c : '',
                 detail != null ? detail.Surname__c : '',
                 formatDate(caseRecord.Date_Of_Death__c),
-                '', // Place of Death not specified in mapping
-                '', // Maiden Name not specified in mapping
-                caseRecord.Family_Marital_Status__c,
+                caseRecord.Short_Place__c,
+                caseRecord.Maiden_Name__c,
+                caseRecord.Status__c,
                 caseRecord.Spouse__c,
-                formatDate(caseRecord.Family_Date_Of_Birth__c),
-                caseRecord.Family_Place_Of_Birth__c,
+                formatDate(caseRecord.Date_Of_Birth__c),
+                caseRecord.Place_Of_Birth__c,
                 caseRecord.Aliases__c,
                 formatDate(caseRecord.Date_Of_Marriage__c),
                 caseRecord.Place_Of_Marriage__c,
@@ -69,7 +69,7 @@ public with sharing class UnclaimedEstatesController {
                 formatDate(caseRecord.Date_Of_Adoption__c),
                 formatDate(caseRecord.Date_Divorced__c),
                 caseRecord.Kin_Details__c,
-                caseRecord.Family_Informant__c,
+                detail != null ? detail.Informant__c : '',
                 caseRecord.Executors__c
             }, ',') + '\n';
             
