@@ -17,7 +17,9 @@
                         onsave={handleSaveAssets}
                         sorted-by={sortedBy}
                         sorted-direction={sortedDirection}
-                        onsort={handleSort}>
+                        onsort={handleSort}
+                        aria-label="Assets Table"
+                        aria-sort={sortedDirection}>
                     </lightning-datatable>
                 </div>
 
@@ -36,7 +38,9 @@
                         onsave={handleSaveLiabilities}
                         sorted-by={sortedBy}
                         sorted-direction={sortedDirection}
-                        onsort={handleSort}>
+                        onsort={handleSort}
+                        aria-label="Liabilities Table"
+                        aria-sort={sortedDirection}>
                     </lightning-datatable>
                 </div>
             </div>
