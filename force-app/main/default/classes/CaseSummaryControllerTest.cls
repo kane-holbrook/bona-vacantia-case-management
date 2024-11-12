@@ -67,8 +67,8 @@ public with sharing class CaseSummaryControllerTest {
         
         // Verify Case History data
         System.assertEquals('Last Action', result.get('lastAction'), 'Last action should match');
-        System.assertNotEquals(null, result.get('firstActionDate'), 'First action date should not be null');
-        System.assertNotEquals(null, result.get('lastActionDate'), 'Last action date should not be null');
+        System.assertNotEquals(null, result.get('firstActionDate') instanceof DateTime, 'First action date should be a DateTime value');
+        System.assertNotEquals(null, result.get('lastActionDate') instanceof DateTime, 'Last action date should not be null');
         
         // Verify Officer History data
         System.assertEquals('Test Officer', result.get('caseOfficer'), 'Case officer should match');

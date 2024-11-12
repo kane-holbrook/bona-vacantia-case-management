@@ -47,16 +47,16 @@ public with sharing class CaseSummaryController {
 
             // Query Case_History__c for earliest and latest records
             List<Case_History__c> historyRecords = [
-                SELECT CreatedDate, Action__c
+                SELECT CreatedDate, Action__c, Date_Inserted_Time__c
                 FROM Case_History__c
                 WHERE BV_Case__c = :caseId
-                ORDER BY CreatedDate ASC
+                ORDER BY Date_Inserted_Time__c ASC
             ];
 
             if (!historyRecords.isEmpty()) {
                 result.put('lastAction', historyRecords[historyRecords.size() - 1].Action__c);
-                result.put('firstActionDate', historyRecords[0].CreatedDate);
-                result.put('lastActionDate', historyRecords[historyRecords.size() - 1].CreatedDate);
+                result.put('firstActionDate', historyRecords[0].Date_Inserted_Time__c);
+                result.put('lastActionDate', historyRecords[historyRecords.size() - 1].Date_Inserted_Time__c);
             }
 
             // Query Case_Detail__c for Officer_History record type
