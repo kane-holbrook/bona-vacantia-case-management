@@ -50,7 +50,8 @@ public class BVCaseNumberHelper {
                 String lastCaseName = CaseNameList[0].Name;
                 List<String> NameParts = lastCaseName.split('#');
                 if (NameParts.size() == 2) {
-                    Integer lastID = Integer.valueOf(NameParts[1]) + 1;
+                    String lastYear = NameParts[0].substring(NameParts[0].length() - 2);
+                    Integer lastID = (lastYear == currentYear) ? Integer.valueOf(NameParts[1]) + 1 : 1;
                     newCaseName = 'FOIR' + currentYear + '#' + lastID; // Increment  case name
                 } else {
                     CaseResponse errorResponse = new CaseResponse();
@@ -74,7 +75,8 @@ public class BVCaseNumberHelper {
                 String lastCaseName = CaseNameList[0].Name;
                 List<String> NameParts = lastCaseName.split('#');
                 if (NameParts.size() == 2) {
-                    Integer lastID = Integer.valueOf(NameParts[1]) + 1;
+                    String lastYear = NameParts[0].substring(NameParts[0].length() - 2);
+                    Integer lastID = (lastYear == currentYear) ? Integer.valueOf(NameParts[1]) + 1 : 1;
                     newCaseName = 'ESTA' + currentYear + '#' + lastID; // Increment  case name
                 } else {
                     CaseResponse errorResponse = new CaseResponse();
@@ -97,7 +99,8 @@ public class BVCaseNumberHelper {
                 String lastCaseName = CaseNameList[0].Name;
                 List<String> NameParts = lastCaseName.split('#');
                 if (NameParts.size() == 2) {
-                    Integer lastID = Integer.valueOf(NameParts[1]) + 1;
+                    String lastYear = NameParts[0].substring(NameParts[0].length() - 2);
+                    Integer lastID = (lastYear == currentYear) ? Integer.valueOf(NameParts[1]) + 1 : 1;
                     newCaseName = 'COMP' + currentYear + '#' + lastID; // Increment  case name
                 } else {
                     CaseResponse errorResponse = new CaseResponse();
@@ -120,7 +123,8 @@ public class BVCaseNumberHelper {
                 String lastCaseName = CaseNameList[0].Name;
                 List<String> NameParts = lastCaseName.split('#');
                 if (NameParts.size() == 2) {
-                    Integer lastID = Integer.valueOf(NameParts[1]) + 1;
+                    String lastYear = NameParts[0].substring(NameParts[0].length() - 2);
+                    Integer lastID = (lastYear == currentYear) ? Integer.valueOf(NameParts[1]) + 1 : 1;
                     newCaseName = 'GENE' + currentYear + '#' + lastID; // Increment  case name
                 } else {
                     CaseResponse errorResponse = new CaseResponse();
@@ -143,7 +147,8 @@ public class BVCaseNumberHelper {
                 String lastCaseName = CaseNameList[0].Name;
                 List<String> NameParts = lastCaseName.split('#');
                 if (NameParts.size() == 2) {
-                    Integer lastID = Integer.valueOf(NameParts[1]) + 1;
+                    String lastYear = NameParts[0].substring(NameParts[0].length() - 2);
+                    Integer lastID = (lastYear == currentYear) ? Integer.valueOf(NameParts[1]) + 1 : 1;
                     newCaseName = 'CONV' + currentYear + '#' + lastID; // Increment  case name
                 } else {
                     CaseResponse errorResponse = new CaseResponse();
