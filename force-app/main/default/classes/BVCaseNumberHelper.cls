@@ -33,7 +33,8 @@ public class BVCaseNumberHelper {
                 String lastFOIRNumber = FOIRCases[0].Foi_No__c;
                 List<String> FOIRNumberParts = lastFOIRNumber.split('/');
                 if (FOIRNumberParts.size() == 2) {
-                    Integer firstPart = Integer.valueOf(FOIRNumberParts[0]) + 1;
+                    String lastYear = FOIRNumberParts[1];
+                    Integer firstPart = (lastYear == currentYear) ? Integer.valueOf(FOIRNumberParts[0]) + 1 : 1;
                     newFOIRNumber = firstPart + '/' + currentYear; // Increment FOIR number
                 } else {
                     CaseResponse errorResponse = new CaseResponse();
