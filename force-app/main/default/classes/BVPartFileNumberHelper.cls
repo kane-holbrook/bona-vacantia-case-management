@@ -18,15 +18,49 @@ public class BVPartFileNumberHelper {
             return responseList;
         }
         String lastCaseName = CaseNameList[0].Name;
-        String inputCaseName = RecordCaseName[0];
+        String prefixPartOne = RecordCaseName[0].split('/')[0]; // Extract the prefix before '/PN'
+
+        System.debug('prefixPartOne: ' + prefixPartOne);
+
+        // Query cases with the same prefix (TYPEYY#ID) to find all related part files
+        List<BV_Case__c> matchingCases = [
+            SELECT Name 
+            FROM BV_Case__c 
+            WHERE Name LIKE :prefixPartOne + '/%' 
+            ORDER BY CreatedDate DESC 
+        ];
+
+        Integer maxPartNumber = 0;
+        String maxPartCaseName = ''; // Track the name with the highest part number
+
+        System.debug('matchingCases: ' + matchingCases);
+
+        for (BV_Case__c matchingCase : matchingCases) {
+            String[] nameParts = matchingCase.Name.split('/');
+            if (nameParts.size() == 2) {
+                Integer partNumber = Integer.valueOf(nameParts[1]);
+                if (partNumber > maxPartNumber) {
+                    maxPartNumber = partNumber;
+                    maxPartCaseName = matchingCase.Name; // Store the name of the case with the highest part number
+                }
+            }
+        }
+
+        System.debug('maxPartCaseName: ' + maxPartCaseName);
+
+        // Update inputCaseName to the case with the highest part number
+        String inputCaseName = maxPartCaseName;
+
+        System.debug('inputCaseName: ' + inputCaseName);
+
 
         if (CaseNameList.isEmpty() || CaseNameList[0].Name == null || (!caseNamePattern.matcher(lastCaseName).matches() && !legacyNamePattern.matcher(lastCaseName).matches())) {
             // Starting case name: "CONVYY#1/1"
-            newCaseName = 'CONV' + currentYear + '#1/1';
+            // newCaseName = 'CONV' + currentYear + '#1/1';
         } else {
-            if (inputCaseName.contains('COMP')) {
-                // Handle COMP case to only increment the part number
-                List<String> nameParts = inputCaseName.split('#|/'); // Split COMPYY#ID/PN into parts
+            if (inputCaseName.contains('COMP') || inputCaseName.contains('ESTA')) {
+                // Handle COMP or ESTA case to only increment the part number
+                List<String> nameParts = inputCaseName.split('#|/'); // Split TYPEYY#ID/PN into parts
                 
                 if (nameParts.size() == 3) { // Ensure we have PREFIXYY, ID, and PN
                     String prefixPart = nameParts[0] + '#' + nameParts[1];
@@ -35,22 +69,6 @@ public class BVPartFileNumberHelper {
                 } else {
                     CaseResponse errorResponse = new CaseResponse();
                     errorResponse.CaseName = 'Error: Invalid Case Name Format for COMP';
-                    responseList.add(errorResponse);
-                    return responseList;
-                }
-            } else {
-                // For non-CONV case names, follow the adjusted logic to handle /PN
-                List<String> nameParts = lastCaseName.split('#|/');
-                
-                if (nameParts.size() == 3) { // Ensure we have three parts: PREFIXYY, ID, and PN
-                    String lastYear = nameParts[0].substring(nameParts[0].length() - 2);
-                    Integer lastID = (lastYear == currentYear) ? Integer.valueOf(nameParts[1]) + 1 : 1;
-                    
-                    // Start the part number at 1 for a new non-CONV case, as it's a new sequence
-                    newCaseName = 'CONV' + currentYear + '#' + lastID + '/1';
-                } else {
-                    CaseResponse errorResponse = new CaseResponse();
-                    errorResponse.CaseName = 'Error: Invalid Case Name Format';
                     responseList.add(errorResponse);
                     return responseList;
                 }
