@@ -4,7 +4,7 @@ public class BVCaseNumberHelper {
         List<CaseResponse> responseList = new List<CaseResponse>();
         String newCaseName;
         String currentYear = String.valueOf(Date.today().year()).right(2);
-        Pattern caseNamePattern = Pattern.compile('^(FOIR|ESTA|COMP|GENE|CONV)\\d{2}#\\d+$');
+        Pattern caseNamePattern = Pattern.compile('^(FOIR|ESTA|COMP|GENE|CONV)\\d{2}#\\d+/\\d+$');
 
         // Query last 100 cases for FOIR Case Name
         List<BV_Case__c> CaseNameList = [SELECT Name FROM BV_Case__c 
@@ -13,47 +13,19 @@ public class BVCaseNumberHelper {
 
         if(RecordCaseType == null || RecordCaseType.isEmpty()) {
             CaseResponse errorResponse = new CaseResponse();
-            errorResponse.FOIRCaseNumber = 'Error: Record Case Type is required';
             responseList.add(errorResponse);
             return responseList;
         } else if (RecordCaseType.contains('FOIR')) {
-            // Query the last 100 cases, sorted by CreatedDate descending
-            List<BV_Case__c> FOIRCases = [SELECT Foi_No__c FROM BV_Case__c
-                                            WHERE Record_Type_Dev_Name__c = 'FOIR' 
-                                            ORDER BY CreatedDate DESC 
-                                            LIMIT 100];
-
-            // Initialize default values
-            String newFOIRNumber;
-
-            // Determine FOIR Number
-            if (FOIRCases.isEmpty() || FOIRCases[0].Foi_No__c == null) {
-                newFOIRNumber = '1/' + currentYear; // Starting FOIR number: "1/YY"
-            } else {
-                String lastFOIRNumber = FOIRCases[0].Foi_No__c;
-                List<String> FOIRNumberParts = lastFOIRNumber.split('/');
-                if (FOIRNumberParts.size() == 2) {
-                    String lastYear = FOIRNumberParts[1];
-                    Integer firstPart = (lastYear == currentYear) ? Integer.valueOf(FOIRNumberParts[0]) + 1 : 1;
-                    newFOIRNumber = firstPart + '/' + currentYear; // Increment FOIR number
-                } else {
-                    CaseResponse errorResponse = new CaseResponse();
-                    errorResponse.FOIRCaseNumber = 'Error: Invalid FOIR Number Format';
-                    responseList.add(errorResponse);
-                    return responseList;
-                }
-            }
-
             // Determine Case Name
             if (CaseNameList.isEmpty() || CaseNameList[0].Name == null || !caseNamePattern.matcher(CaseNameList[0].Name).matches()) {
-                newCaseName = 'FOIR' + currentYear + '#1'; // Starting case name: "TYPEYY#1"
+                newCaseName = 'FOIR' + currentYear + '#1/1'; // Starting case name: "TYPEYY#1"
             } else {
                 String lastCaseName = CaseNameList[0].Name;
-                List<String> NameParts = lastCaseName.split('#');
-                if (NameParts.size() == 2) {
+                List<String> nameParts = lastCaseName.split('#|/');
+                if (NameParts.size() == 3) {
                     String lastYear = NameParts[0].substring(NameParts[0].length() - 2);
                     Integer lastID = (lastYear == currentYear) ? Integer.valueOf(NameParts[1]) + 1 : 1;
-                    newCaseName = 'FOIR' + currentYear + '#' + lastID; // Increment  case name
+                    newCaseName = 'FOIR' + currentYear + '#' + lastID + '/1'; // Increment  case name
                 } else {
                     CaseResponse errorResponse = new CaseResponse();
                     errorResponse.CaseName = 'Error: Invalid Case Name Format';
@@ -64,21 +36,20 @@ public class BVCaseNumberHelper {
 
             // Add both FOIRNumber and CaseName to the response
             CaseResponse caseResponse = new CaseResponse();
-            caseResponse.FOIRCaseNumber = newFOIRNumber;
             caseResponse.CaseName = newCaseName;
             responseList.add(caseResponse);
 
             return responseList;
         }else if (RecordCaseType.contains('ESTA')){
             if (CaseNameList.isEmpty() || CaseNameList[0].Name == null || !caseNamePattern.matcher(CaseNameList[0].Name).matches()) {
-                newCaseName = 'ESTA' + currentYear + '#1'; // Starting case name: "TYPEYY#1"
+                newCaseName = 'ESTA' + currentYear + '#1/1'; // Starting case name: "TYPEYY#1"
             } else {
                 String lastCaseName = CaseNameList[0].Name;
-                List<String> NameParts = lastCaseName.split('#');
-                if (NameParts.size() == 2) {
+                List<String> nameParts = lastCaseName.split('#|/');
+                if (NameParts.size() == 3) {
                     String lastYear = NameParts[0].substring(NameParts[0].length() - 2);
                     Integer lastID = (lastYear == currentYear) ? Integer.valueOf(NameParts[1]) + 1 : 1;
-                    newCaseName = 'ESTA' + currentYear + '#' + lastID; // Increment  case name
+                    newCaseName = 'ESTA' + currentYear + '#' + lastID + '/1'; // Increment  case name
                 } else {
                     CaseResponse errorResponse = new CaseResponse();
                     errorResponse.CaseName = 'Error: Invalid Case Name Format';
@@ -95,14 +66,14 @@ public class BVCaseNumberHelper {
 
         }else if (RecordCaseType.contains('COMP')){
             if (CaseNameList.isEmpty() || CaseNameList[0].Name == null || !caseNamePattern.matcher(CaseNameList[0].Name).matches()) {
-                newCaseName = 'COMP' + currentYear + '#1'; // Starting case name: "TYPEYY#1"
+                newCaseName = 'COMP' + currentYear + '#1/1'; // Starting case name: "TYPEYY#1"
             } else {
                 String lastCaseName = CaseNameList[0].Name;
-                List<String> NameParts = lastCaseName.split('#');
-                if (NameParts.size() == 2) {
+                List<String> nameParts = lastCaseName.split('#|/');
+                if (NameParts.size() == 3) {
                     String lastYear = NameParts[0].substring(NameParts[0].length() - 2);
                     Integer lastID = (lastYear == currentYear) ? Integer.valueOf(NameParts[1]) + 1 : 1;
-                    newCaseName = 'COMP' + currentYear + '#' + lastID; // Increment  case name
+                    newCaseName = 'COMP' + currentYear + '#' + lastID + '/1'; // Increment  case name
                 } else {
                     CaseResponse errorResponse = new CaseResponse();
                     errorResponse.CaseName = 'Error: Invalid Case Name Format';
@@ -119,38 +90,14 @@ public class BVCaseNumberHelper {
 
         }else if (RecordCaseType.contains('GENE')){
             if (CaseNameList.isEmpty() || CaseNameList[0].Name == null || !caseNamePattern.matcher(CaseNameList[0].Name).matches()) {
-                newCaseName = 'GENE' + currentYear + '#1'; // Starting case name: "TYPEYY#1"
+                newCaseName = 'GENE' + currentYear + '#1/1'; // Starting case name: "TYPEYY#1"
             } else {
                 String lastCaseName = CaseNameList[0].Name;
-                List<String> NameParts = lastCaseName.split('#');
-                if (NameParts.size() == 2) {
+                List<String> nameParts = lastCaseName.split('#|/');
+                if (NameParts.size() == 3) {
                     String lastYear = NameParts[0].substring(NameParts[0].length() - 2);
                     Integer lastID = (lastYear == currentYear) ? Integer.valueOf(NameParts[1]) + 1 : 1;
-                    newCaseName = 'GENE' + currentYear + '#' + lastID; // Increment  case name
-                } else {
-                    CaseResponse errorResponse = new CaseResponse();
-                    errorResponse.CaseName = 'Error: Invalid Case Name Format';
-                    responseList.add(errorResponse);
-                    return responseList;
-                }
-            }
-
-            CaseResponse caseResponse = new CaseResponse();
-            caseResponse.CaseName = newCaseName;
-            responseList.add(caseResponse);
-
-            return responseList;
-
-        } else if (RecordCaseType.contains('CONV')){
-            if (CaseNameList.isEmpty() || CaseNameList[0].Name == null || !caseNamePattern.matcher(CaseNameList[0].Name).matches()) {
-                newCaseName = 'CONV' + currentYear + '#1'; // Starting case name: "TYPEYY#1"
-            } else {
-                String lastCaseName = CaseNameList[0].Name;
-                List<String> NameParts = lastCaseName.split('#');
-                if (NameParts.size() == 2) {
-                    String lastYear = NameParts[0].substring(NameParts[0].length() - 2);
-                    Integer lastID = (lastYear == currentYear) ? Integer.valueOf(NameParts[1]) + 1 : 1;
-                    newCaseName = 'CONV' + currentYear + '#' + lastID; // Increment  case name
+                    newCaseName = 'GENE' + currentYear + '#' + lastID + '/1'; // Increment  case name
                 } else {
                     CaseResponse errorResponse = new CaseResponse();
                     errorResponse.CaseName = 'Error: Invalid Case Name Format';
@@ -175,8 +122,5 @@ public class BVCaseNumberHelper {
     public class CaseResponse {
         @InvocableVariable(required=false description='Case Name')
         public String CaseName;
-
-        @InvocableVariable(required=false description='FOIR Case Number')
-        public String FOIRCaseNumber;
     }
 }

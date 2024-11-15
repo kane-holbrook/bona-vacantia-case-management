@@ -1,9 +1,9 @@
 global class CSVEmailHandler implements Messaging.InboundEmailHandler {
     String bankName = '';
-    Integer spreadsheetNumber = 0;
+    String spreadsheetNumber = '';
     Decimal cashBalance = 0;
 
-    Pattern caseNamePattern = Pattern.compile('^(FOIR|ESTA|COMP|GENE|CONV)\\d{2}#\\d+$');
+    Pattern caseNamePattern = Pattern.compile('^(FOIR|ESTA|COMP|GENE|CONV)\\d{2}#\\d+/\\d+$');
 
     global Messaging.InboundEmailResult handleInboundEmail(Messaging.InboundEmail email, Messaging.InboundEnvelope envelope) {
         Messaging.InboundEmailResult result = new Messaging.InboundEmailResult();
@@ -130,7 +130,7 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
                 
                     if (jurisdictionStatus == 1) {
                         // Generate a unique case name for each accepted case
-                        String newCaseName = 'COMP' + currentYear + '#' + nextCaseID;
+                        String newCaseName = 'COMP' + currentYear + '#' + nextCaseID + '/1';
                         nextCaseID++; // Increment for the next case
 
                         caseRecord.Name = newCaseName; // Assign the new case name
@@ -190,14 +190,7 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
         }
 
         bankName = bankAndSpreadsheetColumns[0];
-        String spreadsheetNumberStr = bankAndSpreadsheetColumns[1].trim();
-
-        try {
-            spreadsheetNumber = Integer.valueOf(spreadsheetNumberStr);
-        } catch (Exception e) {
-            errorMessages.add('Spreadsheet number is not a valid integer: ' + spreadsheetNumberStr);
-            return cases;
-        }
+        spreadsheetNumber = bankAndSpreadsheetColumns[1].trim();
 
         // Remove the first two values (Bank Name/Spreadsheet Number line)
         csvLines.remove(0); 
@@ -664,7 +657,7 @@ global class CSVEmailHandler implements Messaging.InboundEmailHandler {
         insert caseDetail;
     }
 
-    private void createBankBuildingSociety(BV_Case__c caseRecord, String bankName, Integer spreadsheetNumber) {
+    private void createBankBuildingSociety(BV_Case__c caseRecord, String bankName, String spreadsheetNumber) {
         AssetLiability__c assetLiability = new AssetLiability__c();
         assetLiability.BV_Case__c = caseRecord.Id;
         assetLiability.Balance__c = cashBalance;
