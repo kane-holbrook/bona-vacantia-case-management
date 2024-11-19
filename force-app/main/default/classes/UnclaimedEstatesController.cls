@@ -71,15 +71,39 @@ public with sharing class UnclaimedEstatesController {
             caseDetailsMap.put(detail.BV_Case__c, detail);
         }
         
+        // Additional query for aliases
+        Map<Id, List<Case_Detail__c>> aliasesMap = new Map<Id, List<Case_Detail__c>>();
+        for (Case_Detail__c alias : [
+            SELECT BV_Case__c, Forenames__c, Surname__c 
+            FROM Case_Detail__c 
+            WHERE BV_Case__c IN :cases 
+            AND RecordType.DeveloperName = 'Estates_Aliases' // Assuming there's a record type for aliases
+        ]) {
+            if (!aliasesMap.containsKey(alias.BV_Case__c)) {
+                aliasesMap.put(alias.BV_Case__c, new List<Case_Detail__c>());
+            }
+            aliasesMap.get(alias.BV_Case__c).add(alias);
+        }
+        
         // Initialize CSV content with the header
         String csvContent = csvHeader;
         
-        // Process each case and append to CSV content
+        // Process each case
         for (BV_Case__c caseRecord : cases) {
+            // Get publication date and category
+            Date publicationDate = getPublicationDate(caseRecord);
+            String category = getPublicationCategory(publicationDate);
+            
+            // Process aliases
+            List<Case_Detail__c> caseAliases = aliasesMap.get(caseRecord.Id);
+            String aliasesString = processAliases(caseRecord, caseAliases != null ? caseAliases : new List<Case_Detail__c>());
+            
             Case_Detail__c detail = caseDetailsMap.get(caseRecord.Id);
+            
+            // Modify the existing csvRow construction to use these values
             String csvRow = String.join(new List<String>{
                 caseRecord.Name,
-                formatDate(caseRecord.Date_Of_Publication__c),
+                publicationDate != null ? publicationDate.format() : '',  // Use processed publication date
                 detail != null ? detail.Forenames__c : '',
                 detail != null ? detail.Surname__c : '',
                 formatDate(caseRecord.Date_Of_Death__c),
@@ -89,7 +113,7 @@ public with sharing class UnclaimedEstatesController {
                 caseRecord.Spouse__c,
                 formatDate(caseRecord.Date_Of_Birth__c),
                 caseRecord.Place_Of_Birth__c,
-                caseRecord.Aliases__c,
+                aliasesString,  // Use processed aliases string
                 formatDate(caseRecord.Date_Of_Marriage__c),
                 caseRecord.Place_Of_Marriage__c,
                 caseRecord.Nationality__c,
@@ -99,8 +123,9 @@ public with sharing class UnclaimedEstatesController {
                 formatDate(caseRecord.Date_Of_Adoption__c),
                 formatDate(caseRecord.Date_Divorced__c),
                 caseRecord.Kin_Details__c,
-                getInformantInfo(caseRecord, detail),
-                caseRecord.Executors__c
+                getInformantInfo(caseRecord, detail),  // Already being used
+                caseRecord.Executors__c,
+                category  // Add publication category
             }, ',') + '\n';
             
             csvContent += csvRow;
@@ -172,5 +197,41 @@ public with sharing class UnclaimedEstatesController {
         }
         
         return '';
+    }
+
+    private static Date getPublicationDate(BV_Case__c caseRecord) {
+        if (caseRecord.Ready_For_Advertising__c == 'true' 
+            && caseRecord.Approved__c == 'true' 
+            && caseRecord.Date_Adverts_Submitted__c >= Date.newInstance(2013, 1, 7)
+            && caseRecord.Date_Of_Publication__c == null) {
+            return Date.today();
+        }
+        return caseRecord.Date_Of_Publication__c;
+    }
+
+    private static String getPublicationCategory(Date publicationDate) {
+        if (publicationDate >= Date.newInstance(2013, 1, 7)) {
+            if (publicationDate == Date.today()) {
+                return 'A - New';
+            }
+            return 'B - Old';
+        }
+        return 'B - Old';
+    }
+
+    private static String processAliases(BV_Case__c caseRecord, List<Case_Detail__c> aliases) {
+        if (String.isBlank(caseRecord.Aliases__c)) {
+            String aliasString = '';
+            for (Integer i = 0; i < aliases.size(); i++) {
+                Case_Detail__c alias = aliases[i];
+                if (i == 0) {
+                    aliasString = alias.Forenames__c + ' ' + alias.Surname__c;
+                } else {
+                    aliasString += ' otherwise ' + alias.Forenames__c + ' ' + alias.Surname__c;
+                }
+            }
+            return aliasString;
+        }
+        return caseRecord.Aliases__c;
     }
 }
