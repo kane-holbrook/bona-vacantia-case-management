@@ -32,7 +32,8 @@ public with sharing class UnclaimedEstatesController {
                    Spouse__c, Letters_Of_Admin__c, Limitation_Date__c, Date_Adverts_Submitted__c,
                    Date_Of_Marriage__c, Place_Of_Marriage__c, Nationality__c, Religion__c, Date_Entered_Uk__c,
                    Date_Of_Naturalisation__c, Date_Of_Adoption__c, Date_Divorced__c, Maiden_Name__c, 
-                   Short_Place__c, Status__c, Date_Of_Birth__c, Place_Of_Birth__c, Lapsed_Share__c
+                   Short_Place__c, Status__c, Date_Of_Birth__c, Place_Of_Birth__c, Lapsed_Share__c,
+                   Informant_Type__c, Informant__c
             FROM BV_Case__c
             WHERE Kin_Located__c != 'Yes' 
             AND Will_Located__c != 'Yes' 
@@ -176,24 +177,29 @@ public with sharing class UnclaimedEstatesController {
     }
 
     private static String getInformantInfo(BV_Case__c caseRecord, Case_Detail__c detail) {
-        if (caseRecord.Informant_Type__c == null && caseRecord.Family_Informant__c == null) {
+        if (String.isBlank(caseRecord.Informant_Type__c) && 
+            String.isBlank(caseRecord.Family_Informant__c)) {
             return '';
         }
         
-        if (caseRecord.Informant_Type__c?.startsWith('Pub') && caseRecord.Family_Informant__c == null) {
+        if (caseRecord.Informant_Type__c?.startsWith('Pub') && 
+            String.isBlank(caseRecord.Family_Informant__c)) {
             return caseRecord.Informant__c;
         }
         
-        if (caseRecord.Informant_Type__c == null && caseRecord.Family_Informant__c != null) {
+        if (String.isBlank(caseRecord.Informant_Type__c) && 
+            String.isNotBlank(caseRecord.Family_Informant__c)) {
             return caseRecord.Family_Informant__c;
         }
         
-        if (caseRecord.Informant_Type__c != null && caseRecord.Family_Informant__c != null) {
+        if (String.isNotBlank(caseRecord.Informant_Type__c) && 
+            String.isNotBlank(caseRecord.Family_Informant__c)) {
             return caseRecord.Family_Informant__c;
         }
         
         if (caseRecord.Informant_Type__c?.startsWith('UD')) {
-            return caseRecord.Family_Informant__c != null ? caseRecord.Family_Informant__c : '';
+            return String.isNotBlank(caseRecord.Family_Informant__c) ? 
+                   caseRecord.Family_Informant__c : '';
         }
         
         return '';
@@ -210,12 +216,14 @@ public with sharing class UnclaimedEstatesController {
     }
 
     private static String getPublicationCategory(Date publicationDate) {
-        if (publicationDate >= Date.newInstance(2013, 1, 7)) {
-            if (publicationDate == Date.today()) {
-                return 'A - New';
-            }
+        if (publicationDate == null) {
             return 'B - Old';
         }
+        
+        if (publicationDate >= Date.newInstance(2013, 1, 7)) {
+            return publicationDate == Date.today() ? 'A - New' : 'B - Old';
+        }
+        
         return 'B - Old';
     }
 
