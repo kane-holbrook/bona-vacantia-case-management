@@ -17,7 +17,7 @@ public with sharing class UnclaimedEstatesController {
 
     public static String generateCSVContent() {
         // Define the CSV header
-        String csvHeader = 'BV Reference,Date of Publication,Forename,Surname,Date of Death,Place of Death,Maiden Name,Marital Status,Spouse,Date of Birth,Place of Birth,Aliases,Date of Marriage,Place of Marriage,Nationality,Religion,Date Entered UK,Date of Naturalisation,Date of Adoption,Date of Divorce,Kin or Other Details,Informant,Executors\n';
+        String csvHeader = 'BV Reference,Date of Publication,Forename,Surname,Date of Death,Place of Death,Maiden Name,Marital Status,Spouse,Date of Birth,Place of Birth,Aliases,Date of Marriage,Place of Marriage,Nationality,Religion,Date Entered UK,Date of Naturalisation,Date of Adoption,Date of Divorce,Kin or Other Details,Informant,Executors,XLSORT\n';
         
         // First get cases with Paper_Date_1__c
         Set<Id> casesWithPaperDates = new Set<Id>();
