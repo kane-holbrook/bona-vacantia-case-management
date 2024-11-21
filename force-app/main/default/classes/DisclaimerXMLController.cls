@@ -17,13 +17,13 @@ public with sharing class DisclaimerXMLController {
     public DisclaimerXMLController() {
         xmlHeader = '<?xml version="1.0" encoding="UTF-8"?>';
         metadata = '<ukm:Metadata>\n' + 
-                   '    <ukm:PublishDate>2024-10-14</ukm:PublishDate>\n' + 
+                   '    <ukm:PublishDate>' + formattedCurrentDate + '</ukm:PublishDate>\n' + 
                    '    <ukm:SupplierNoticeID></ukm:SupplierNoticeID>\n' + 
                    '    <ukm:KeyedBy>DAS</ukm:KeyedBy>\n' + 
                    '    <ukm:SortKey />\n' + 
                    '    <ukm:Language>English</ukm:Language>\n' + 
                    '    <ukm:NoticeClass>Standard</ukm:NoticeClass>\n' + 
-                   '    <ukm:TimeStamp>09:37</ukm:TimeStamp>\n' + 
+                   '    <ukm:TimeStamp>' + currentTime + '</ukm:TimeStamp>\n' + 
                    '</ukm:Metadata>';
 
         // Initialize data
