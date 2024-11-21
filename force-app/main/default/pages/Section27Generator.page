@@ -1,0 +1,100 @@
+<apex:page controller="Section27Controller" contentType="application/vnd.ms-excel#Section27.xls" cache="true">
+    <apex:outputText value="{!xlsHeader}" escape="false"/>
+    <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+              xmlns:o="urn:schemas-microsoft-com:office:office"
+              xmlns:x="urn:schemas-microsoft-com:office:excel"
+              xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+              xmlns:html="http://www.w3.org/TR/REC-html40">
+        <Styles>
+            <Style ss:ID="orange">
+                <Alignment ss:Vertical="Top" ss:WrapText="1"/>
+                <Interior ss:Color="#ffcc99" ss:Pattern="Solid"/>
+                <Font ss:Bold="1"/>
+            </Style>
+            <Style ss:ID="blue">
+                <Alignment ss:Vertical="Top" ss:WrapText="1"/>
+                <Interior ss:Color="#99ccff" ss:Pattern="Solid"/>
+                <Font ss:Bold="1"/>
+            </Style>
+            <Style ss:ID="lightGreen">
+                <Alignment ss:Vertical="Top" ss:WrapText="1"/>
+                <Interior ss:Color="#ccffcc" ss:Pattern="Solid"/>
+                <Font ss:Bold="1"/>
+            </Style>
+            <Style ss:ID="lightYellow">
+                <Alignment ss:Vertical="Top" ss:WrapText="1"/>
+                <Interior ss:Color="#ffffcc" ss:Pattern="Solid"/>
+                <Font ss:Bold="1"/>
+            </Style>
+            <Style ss:ID="guidanceHeader">
+                <Alignment ss:Vertical="Top" ss:WrapText="1"/>
+                <Font ss:Size="14" ss:Bold="1"/>
+            </Style>
+            <Style ss:ID="guidanceText">
+                <Alignment ss:Vertical="Top" ss:WrapText="1"/>
+                <Font ss:Size="11"/>
+            </Style>
+        </Styles>
+        
+        <Worksheet ss:Name="Guidance">
+            <Table>
+                <Column ss:Width="100" ss:AutoFitWidth="0"/>
+                <Column ss:Width="800" ss:AutoFitWidth="0"/>
+                
+                <Row ss:Height="30"/>
+                
+                <Row ss:Height="30">
+                    <Cell/>
+                    <Cell ss:StyleID="guidanceHeader">
+                        <Data ss:Type="String">Guidance Notes</Data>
+                    </Cell>
+                </Row>
+                
+                <Row ss:Height="30"/>
+                
+                <Row ss:Height="30">
+                    <Cell/>
+                    <Cell ss:StyleID="guidanceText">
+                        <Data ss:Type="String">Select the 'Notices' tab to begin adding 2904 Deceased Estates Notices.</Data>
+                    </Cell>
+                </Row>
+                
+                <Row ss:Height="30">
+                    <Cell/>
+                    <Cell ss:StyleID="guidanceText">
+                        <Data ss:Type="String">Click in the shaded cells to enter data. All data should be keyed directly into the sheet rather than being pasted from another document in order to prevent it being rejected by the upload process.</Data>
+                    </Cell>
+                </Row>
+                
+                <Row ss:Height="30">
+                    <Cell/>
+                    <Cell ss:StyleID="guidanceText">
+                        <Data ss:Type="String">If you wish to include a logo with your submissions, please ensure you insert it on the 'Logos' sheet. Details of how to do this are shown on that sheet.</Data>
+                    </Cell>
+                </Row>
+                
+                <Row ss:Height="30">
+                    <Cell/>
+                    <Cell ss:StyleID="guidanceText">
+                        <Data ss:Type="String">Please note the pale yellow fields are for mandatory data required within the notice, whilst the green fields are optional for use should the information be available or applicable.</Data>
+                    </Cell>
+                </Row>
+            </Table>
+        </Worksheet>
+        
+        <Worksheet ss:Name="Notices">
+            <Table>
+                <Column ss:Width="80" ss:AutoFitWidth="0"/>
+                <apex:repeat value="{!xlsRows}" var="row">
+                    <Row>
+                        <apex:repeat value="{!row.cells}" var="cell">
+                            <Cell ss:StyleID="{!cell.style}">
+                                <Data ss:Type="String">{!cell.value}</Data>
+                            </Cell>
+                        </apex:repeat>
+                    </Row>
+                </apex:repeat>
+            </Table>
+        </Worksheet>
+    </Workbook>
+</apex:page>
