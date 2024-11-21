@@ -40,37 +40,20 @@ public with sharing class DisclaimerXMLController {
         formattedCurrentDateLong = dtCurrentDate.format('d MMMM yyyy');
         currentTime = Datetime.now().format('HH:mm');
         
-        // Fetch case number from URL
-        String caseNumber = ApexPages.currentPage().getParameters().get('caseNumber');
-        
-        // Query disclaimers and related records
-        List<Case_Detail__c> disclaimerRecords;
-        if (caseNumber != null) {
-            disclaimerRecords = [
-                SELECT Id, Publish__c, Completed__c, Lg__c, Published__c, 
-                       Disclaimer_Notice_Type__c, Former_Name__c, Whole_Part__c,
-                       Power__c, Bv_Ref__c, Company_Name__c, Company_Number__c,
-                       Tenure__c, Title_No__c, Conveyance__c, Other_Details__c,
-                       BV_Case__c, BV_Case__r.Date_Of_Notification__c
-                FROM Case_Detail__c
-                WHERE Publish__c = true 
-                AND Completed__c = true 
-                AND Lg__c = false
-                AND BV_Case__r.Id = :caseNumber
-            ];
-        } else {
-            disclaimerRecords = [
-                SELECT Id, Publish__c, Completed__c, Lg__c, Published__c, 
-                       Disclaimer_Notice_Type__c, Former_Name__c, Whole_Part__c,
-                       Power__c, Bv_Ref__c, Company_Name__c, Company_Number__c,
-                       Tenure__c, Title_No__c, Conveyance__c, Other_Details__c,
-                       BV_Case__c, BV_Case__r.Date_Of_Notification__c
-                FROM Case_Detail__c
-                WHERE Publish__c = true 
-                AND Completed__c = true 
-                AND Lg__c = false
-            ];
-        }
+        // Query all disclaimers that match the criteria
+        List<Case_Detail__c> disclaimerRecords = [
+            SELECT Id, Publish__c, Completed__c, Lg__c, Published__c, 
+                   Disclaimer_Notice_Type__c, Former_Name__c, Whole_Part__c,
+                   Power__c, Bv_Ref__c, Company_Name__c, Company_Number__c,
+                   Tenure__c, Title_No__c, Conveyance__c, Other_Details__c,
+                   BV_Case__c, BV_Case__r.Date_Of_Notification__c,
+                   BV_Case__r.RecordType.DeveloperName
+            FROM Case_Detail__c
+            WHERE Publish__c = true 
+            AND Completed__c = true 
+            AND Lg__c = false
+            AND BV_Case__r.RecordType.DeveloperName = 'COMP'
+        ];
         
         // Get related Asset/Liability records
         Set<Id> bvCaseIds = new Set<Id>();
