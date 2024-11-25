@@ -3,9 +3,11 @@
         <c-two-column-layout>
             <div slot="column-left">
                 <lightning-tabset>
-                    <lightning-tab label="Case Summary">
-                        <c-case-summary-screen></c-case-summary-screen>
-                    </lightning-tab>
+                    <template if:false={isConv}>
+                        <lightning-tab label="Case Summary">
+                            <c-case-summary-screen></c-case-summary-screen>
+                        </lightning-tab>
+                    </template>
                     <lightning-tab label="Case Officer History">
                         <c-case-officer-history></c-case-officer-history>
                     </lightning-tab>
