@@ -317,4 +317,8 @@ public with sharing class Section27Controller {
     private String formatDate(Date d) {
         return d != null ? d.format() : '';
     }
+
+    public static Integer getHeaderCount() {
+        return DATA_ROW_STYLES.size();
+    }
 }
