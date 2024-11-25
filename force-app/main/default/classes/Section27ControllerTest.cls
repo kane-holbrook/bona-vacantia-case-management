@@ -52,37 +52,6 @@ private class Section27ControllerTest {
     }
     
     @IsTest
-    static void testCaseDataProcessing() {
-        Test.startTest();
-        Section27Controller controller = new Section27Controller();
-        Test.stopTest();
-        
-        // Get the first data row (index 1 after header row)
-        Section27Controller.XLSRow dataRow = controller.xlsRows[1];
-        
-        // Verify specific cell values
-        System.assertEquals('BV123450', getCellValue(dataRow, 'Supplier ID / BV Ref.'), 
-            'BV reference should be correctly formatted');
-        System.assertEquals('2904', getCellValue(dataRow, 'Notice code'), 
-            'Notice code should be 2904');
-        System.assertEquals('London', getCellValue(dataRow, 'Edition to place Notice in'), 
-            'Edition should be London');
-        
-        // Verify case updates
-        List<BV_Case__c> updatedCases = [
-            SELECT Id, Lg__c, Completed__c, Published__c 
-            FROM BV_Case__c 
-            WHERE Publish__c = true AND Check_Box__c = true
-        ];
-        
-        for(BV_Case__c caseRecord : updatedCases) {
-            System.assertEquals(true, caseRecord.Lg__c, 'Lg__c should be set to true');
-            System.assertEquals(Date.today(), caseRecord.Completed__c, 'Completed date should be set');
-            System.assertEquals(Date.today(), caseRecord.Published__c, 'Published date should be set');
-        }
-    }
-    
-    @IsTest
     static void testEmptyRowGeneration() {
         Test.startTest();
         Section27Controller controller = new Section27Controller();

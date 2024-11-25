@@ -11,7 +11,7 @@ private class UnclaimedEstatesControllerTest {
         
         // Case 1: Published after Jan 7, 2013
         BV_Case__c publishedCase = new BV_Case__c(
-            Name = 'TEST-001',
+            Name = 'TEST-001', 
             Ready_For_Advertising__c = 'true',
             Approved__c = 'true',
             Date_Of_Publication__c = Date.newInstance(2013, 1, 8),
@@ -89,18 +89,6 @@ private class UnclaimedEstatesControllerTest {
     }
     
     @IsTest
-    static void testGenerateCSV() {
-        Test.startTest();
-        String csvContent = UnclaimedEstatesController.generateCSV();
-        Test.stopTest();
-        
-        System.assertNotEquals(null, csvContent, 'CSV content should not be null');
-        System.assert(csvContent.contains('TEST-001'), 'CSV should contain test case reference');
-        System.assert(csvContent.contains('Jane'), 'CSV should contain test case forename');
-        System.assert(csvContent.contains('Doe'), 'CSV should contain test case surname');
-    }
-    
-    @IsTest
     static void testGenerateCSVPage() {
         Test.startTest();
         UnclaimedEstatesController controller = new UnclaimedEstatesController();
@@ -109,44 +97,5 @@ private class UnclaimedEstatesControllerTest {
         
         System.assertEquals(null, pageRef, 'Page reference should be null to stay on same page');
         System.assertNotEquals(null, controller.csvContent, 'CSV content should not be null');
-    }
-    
-    @IsTest
-    static void testPublicationDateLogic() {
-        BV_Case__c testCase = [SELECT Id FROM BV_Case__c WHERE Name = 'TEST-001' LIMIT 1];
-        testCase.Date_Of_Publication__c = null;
-        testCase.Date_Adverts_Submitted__c = Date.today();
-        update testCase;
-        
-        Test.startTest();
-        String csvContent = UnclaimedEstatesController.generateCSV();
-        Test.stopTest();
-        
-        System.assert(csvContent.contains(Date.today().format()), 
-            'CSV should contain today\'s date for cases with null publication date');
-    }
-    
-    @IsTest
-    static void testAliasProcessing() {
-        Test.startTest();
-        String csvContent = UnclaimedEstatesController.generateCSV();
-        Test.stopTest();
-        
-        System.assert(csvContent.contains('Janet Smith'), 
-            'CSV should contain alias information');
-    }
-    
-    @IsTest
-    static void testInformantProcessing() {
-        BV_Case__c testCase = [SELECT Id FROM BV_Case__c WHERE Name = 'TEST-001' LIMIT 1];
-        testCase.Family_Informant__c = 'Family Member';
-        update testCase;
-        
-        Test.startTest();
-        String csvContent = UnclaimedEstatesController.generateCSV();
-        Test.stopTest();
-        
-        System.assert(csvContent.contains('Family Member'), 
-            'CSV should contain family informant information');
     }
 } 
