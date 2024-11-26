@@ -17,64 +17,68 @@ public class BVPartFileNumberHelper {
             responseList.add(errorResponse);
             return responseList;
         }
-        String lastCaseName = CaseNameList[0].Name;
-        String prefixPartOne = RecordCaseName[0].split('/')[0]; // Extract the prefix before '/PN'
 
-        System.debug('prefixPartOne: ' + prefixPartOne);
-
-        // Query cases with the same prefix (TYPEYY#ID) to find all related part files
-        List<BV_Case__c> matchingCases = [
-            SELECT Name 
-            FROM BV_Case__c 
-            WHERE Name LIKE :prefixPartOne + '/%' 
-            ORDER BY CreatedDate DESC 
-        ];
-
-        Integer maxPartNumber = 0;
-        String maxPartCaseName = ''; // Track the name with the highest part number
-
-        System.debug('matchingCases: ' + matchingCases);
-
-        for (BV_Case__c matchingCase : matchingCases) {
-            String[] nameParts = matchingCase.Name.split('/');
+        String inputCaseName = RecordCaseName[0];
+        Boolean isLegacyCase = legacyNamePattern.matcher(inputCaseName).matches();
+        
+        if (isLegacyCase) {
+            // Handle legacy case format (e.g., 2000543/7)
+            List<String> nameParts = inputCaseName.split('/');
             if (nameParts.size() == 2) {
-                Integer partNumber = Integer.valueOf(nameParts[1]);
-                if (partNumber > maxPartNumber) {
-                    maxPartNumber = partNumber;
-                    maxPartCaseName = matchingCase.Name; // Store the name of the case with the highest part number
+                String baseNumber = nameParts[0];
+                Integer partNumber = Integer.valueOf(nameParts[1]) + 1;
+                newCaseName = baseNumber + '/' + partNumber;
+            } else {
+                CaseResponse errorResponse = new CaseResponse();
+                errorResponse.CaseName = 'Error: Invalid Legacy Case Name Format';
+                responseList.add(errorResponse);
+                return responseList;
+            }
+        } else {
+            // Existing modern case handling logic
+            String prefixPartOne = inputCaseName.split('/')[0];
+            
+            List<BV_Case__c> matchingCases = [
+                SELECT Name 
+                FROM BV_Case__c 
+                WHERE Name LIKE :prefixPartOne + '/%' 
+                ORDER BY CreatedDate DESC 
+            ];
+
+            Integer maxPartNumber = 0;
+            String maxPartCaseName = '';
+
+            for (BV_Case__c matchingCase : matchingCases) {
+                String[] nameParts = matchingCase.Name.split('/');
+                if (nameParts.size() == 2) {
+                    Integer partNumber = Integer.valueOf(nameParts[1]);
+                    if (partNumber > maxPartNumber) {
+                        maxPartNumber = partNumber;
+                        maxPartCaseName = matchingCase.Name;
+                    }
                 }
             }
-        }
 
-        System.debug('maxPartCaseName: ' + maxPartCaseName);
+            if (maxPartCaseName != '') {
+                inputCaseName = maxPartCaseName;
+            }
 
-        // Update inputCaseName to the case with the highest part number
-        String inputCaseName = maxPartCaseName;
-
-        System.debug('inputCaseName: ' + inputCaseName);
-
-
-        if (CaseNameList.isEmpty() || CaseNameList[0].Name == null || (!caseNamePattern.matcher(lastCaseName).matches() && !legacyNamePattern.matcher(lastCaseName).matches())) {
-            // Starting case name: "CONVYY#1/1"
-            // newCaseName = 'CONV' + currentYear + '#1/1';
-        } else {
+            // Only handle COMP and ESTA cases for part files
             if (inputCaseName.contains('COMP') || inputCaseName.contains('ESTA')) {
-                // Handle COMP or ESTA case to only increment the part number
-                List<String> nameParts = inputCaseName.split('#|/'); // Split TYPEYY#ID/PN into parts
+                List<String> nameParts = inputCaseName.split('#|/');
                 
-                if (nameParts.size() == 3) { // Ensure we have PREFIXYY, ID, and PN
+                if (nameParts.size() == 3) {
                     String prefixPart = nameParts[0] + '#' + nameParts[1];
-                    Integer partNumber = Integer.valueOf(nameParts[2]) + 1; // Increment only the part number
+                    Integer partNumber = Integer.valueOf(nameParts[2]) + 1;
                     newCaseName = prefixPart + '/' + partNumber;
                 } else {
                     CaseResponse errorResponse = new CaseResponse();
-                    errorResponse.CaseName = 'Error: Invalid Case Name Format for COMP';
+                    errorResponse.CaseName = 'Error: Invalid Case Name Format for COMP/ESTA';
                     responseList.add(errorResponse);
                     return responseList;
                 }
-            }            
+            }
         }
-        
 
         CaseResponse caseResponse = new CaseResponse();
         caseResponse.CaseName = newCaseName;
