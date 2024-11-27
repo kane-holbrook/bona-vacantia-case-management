@@ -347,6 +347,7 @@ public class SOSFinanceController
         HttpRequest req = new HttpRequest();
         req.setEndpoint(sosEndpoint); // Assuming the endpoint includes the mtcode
         req.setMethod('PATCH');
+        req.setTimeout(30000); // Set timeout to 30 seconds (30 seconds)
         req.setHeader('Content-Type', 'application/json');
         
         // Serialize the update data to JSON
