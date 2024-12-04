@@ -100,53 +100,84 @@ public with sharing class TaskController {
         List<Date> resultDates = new List<Date>();
 
         for (String input : inputs) {
-            // Get the current date
-            Date currentDate = Date.today();
-            Date resultDate = currentDate;
-
-            // Parse the input string
-            Pattern pattern = Pattern.compile('(After|Before) (\\d+) (Working Days|Days|Weeks|Months|Years)');
+            Date startDate = Date.today(); // Default to today
+            
+            // Updated pattern to be more flexible with whitespace
+            // Uses \s+ to match one or more whitespace characters
+            Pattern pattern = Pattern.compile('(?:(\\d{1,2}\\s+(?:January|February|March|April|May|June|July|August|September|October|November|December)\\s+\\d{4})\\s+)?(After|Before)\\s+(\\d+)\\s+(Working Days|Days|Weeks|Months|Years)');
             Matcher matcher = pattern.matcher(input);
 
             if (matcher.matches()) {
-                String direction = matcher.group(1);
-                Integer amount = Integer.valueOf(matcher.group(2));
-                String unit = matcher.group(3);
+                // If date group exists, parse it
+                if (matcher.group(1) != null) {
+                    try {
+                        startDate = Date.parse(matcher.group(1).trim());
+                    } catch (Exception e) {
+                        // If date parsing fails, default to today
+                        startDate = Date.today();
+                    }
+                }
+
+                String direction = matcher.group(2);
+                Integer amount = Integer.valueOf(matcher.group(3));
+                String unit = matcher.group(4);
 
                 // Determine the sign based on direction
                 Integer sign = direction == 'After' ? 1 : -1;
 
                 // Calculate the result date based on the unit
+                Date resultDate = startDate;
+                
                 if (unit == 'Working Days') {
-                    resultDate = addWorkingDays(currentDate, sign * amount);
+                    resultDate = addWorkingDays(startDate, sign * amount);
                 } else if (unit == 'Days') {
-                    resultDate = currentDate.addDays(sign * amount);
+                    resultDate = startDate.addDays(sign * amount);
                 } else if (unit == 'Weeks') {
-                    resultDate = currentDate.addDays(sign * amount * 7);
+                    resultDate = startDate.addDays(sign * amount * 7);
                 } else if (unit == 'Months') {
-                    resultDate = currentDate.addMonths(sign * amount);
+                    resultDate = startDate.addMonths(sign * amount);
                 } else if (unit == 'Years') {
-                    resultDate = currentDate.addYears(sign * amount);
+                    resultDate = startDate.addYears(sign * amount);
                 }
+                
+                resultDates.add(resultDate);
+            } else {
+                // If pattern doesn't match, add the original start date
+                resultDates.add(startDate);
             }
-
-            resultDates.add(resultDate);
         }
 
         return resultDates;
     }
 
     private static Date addWorkingDays(Date startDate, Integer workingDays) {
-        Integer addedDays = 0;
         Date resultDate = startDate;
-
+    
+        // Check if the start date is a weekend, if so, adjust to the next working day
+        Integer startDayOfWeek = resultDate.toStartOfWeek().addDays(0).daysBetween(resultDate) + 1;
+        while (startDayOfWeek == 6 || startDayOfWeek == 7) { // 6 = Saturday, 7 = Sunday
+            resultDate = workingDays > 0 ? resultDate.addDays(1) : resultDate.addDays(-1);
+            startDayOfWeek = resultDate.toStartOfWeek().addDays(0).daysBetween(resultDate) + 1;
+        }
+    
+        Integer addedDays = 1; // Start from 1 since we include the first valid day
         while (addedDays < Math.abs(workingDays)) {
             resultDate = workingDays > 0 ? resultDate.addDays(1) : resultDate.addDays(-1);
-            if (resultDate.toStartOfWeek() != resultDate && resultDate.toStartOfWeek().addDays(6) != resultDate) { // Skip weekends
+    
+            // Check if the day is not a weekend (Saturday or Sunday)
+            Integer dayOfWeek = resultDate.toStartOfWeek().addDays(0).daysBetween(resultDate) + 1;
+            if (dayOfWeek != 6 && dayOfWeek != 7) {
                 addedDays++;
             }
         }
-
+    
+        // Ensure the final date is not a weekend
+        Integer finalDayOfWeek = resultDate.toStartOfWeek().addDays(0).daysBetween(resultDate) + 1;
+        while (finalDayOfWeek == 6 || finalDayOfWeek == 7) {
+            resultDate = workingDays > 0 ? resultDate.addDays(1) : resultDate.addDays(-1);
+            finalDayOfWeek = resultDate.toStartOfWeek().addDays(0).daysBetween(resultDate) + 1;
+        }
+    
         return resultDate;
     }
 }
